@@ -12,6 +12,9 @@ export default function DefaultLayout() {
                     <li>
                         <Link to="/signup">Signup</Link>
                     </li>
+                    <li>
+                        <Link to="/dashboard">Dashboard</Link>
+                    </li>
                 </ul>
             </nav>
         </header>

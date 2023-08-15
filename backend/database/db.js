@@ -1,3 +1,4 @@
+import mysql from ('mysql');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -11,6 +12,8 @@ connection.connect((error)=>{
         console.log('El error de conexión es: ' + error);
         return;
     }
-    console.log('¡Conectado!');
+    console.log('¡Conectado a la DB!');
 });
 module.exports = connection;
+
+export default connection;

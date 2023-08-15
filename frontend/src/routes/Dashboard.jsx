@@ -1,9 +1,10 @@
-import DefaultLayout from "../layout/DefaultLayout"
+import Navbar from "../routes/Navbar"
 
-function Dashboard() {
+function Dashboard(user) {
+    console.log(user);
     return(
     <>
-        <DefaultLayout></DefaultLayout>
+        <Navbar></Navbar>
         <p>Dash</p>
     </>
     );

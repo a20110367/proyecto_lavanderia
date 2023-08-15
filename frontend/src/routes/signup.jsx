@@ -1,9 +1,9 @@
-import DefaultLayout from "../layout/DefaultLayout"
+import Navbar from "../routes/Navbar"
 
 function Signup() {
     return(
         <>
-            <DefaultLayout></DefaultLayout>
+            <Navbar></Navbar>
             <p>Signup</p>
         </>
         );

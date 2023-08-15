@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import DefaultLayout from "../layout/DefaultLayout"
+import Navbar from "../routes/Navbar"
 import Axios from "axios";
 
 export default function Login() {
@@ -16,7 +16,7 @@ export default function Login() {
 
   return (
     <div class="login-form">
-        <DefaultLayout></DefaultLayout>
+        <Navbar></Navbar>
         <form action="auth" method="POST">
             <h1 className="text-sky-300"> Autentiquese, SI </h1>
             <input type="text" name="user" id="user" placeholder="Usuario"/>

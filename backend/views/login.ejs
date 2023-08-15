@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>LOGIN</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='resources/css/main.css'>
+</head>
+
+<body>
+    <div class="login-form">
+        <h1> Autentiquese, SI </h1>
+        <form action="auth" method="POST">
+            <input type="text" name="user" id="user" placeholder="Usuario">
+            <input type="password" name="pass" id="pass" placeholder="Contraseña">
+            <input type="submit" class="btn-login" value="Login">
+        </form>
+        <a href="register" class="btn-register">Register</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <% if(typeof alert != "undefined") { %>
+        <script>
+            Swal.fire({
+                title: '<%= alertTitle %>',
+                text: '<%= alertMessage %>',
+                icon: '<%= alertIcon %>',
+                showConfirmButton: <%= showConfirmButton %>,
+                time: <%= time %>
+            }).then(()=>{
+                window.location= '<%= ruta %>'
+            })
+        </script>
+        <% } %>
+</body>
+
+</html>

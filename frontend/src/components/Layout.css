@@ -11,8 +11,3 @@
 .Hidden{
     padding: 1rem/* 16px */;
 }
-
-.Header{
-    --tw-bg-opacity: 1;
-    background-color: rgb(204 251 241 / var(--tw-bg-opacity));
-}

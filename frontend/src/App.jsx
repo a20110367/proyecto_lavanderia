@@ -35,7 +35,7 @@ function App() {
             <Routes>
                <Route index element={<Login />} />
                 <Route path="/login" element={<Login />} />
-                  <Route element={<ProtectedRoute
+                   <Route element={<ProtectedRoute
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
                 >

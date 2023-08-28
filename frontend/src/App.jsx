@@ -6,7 +6,7 @@ import Login from './routes/Login'
 import Signup from './routes/signup'
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
-import Layout from "./components/Layout"
+import Layout from "./components/shared/Layout"
 import Equipos from "./components/Equipos"
 import Cajas from "./components/Cajas"
 
@@ -25,23 +25,23 @@ function App() {
 
     return (
         <Router>
-            {
+            {/*{
                 user ? (
                     <button onClick={logout}>Logout</button>
                 ) : (
                     <button onClick={login}>Login</button>
                 )
-            }
+            }*/}
             <Routes>
                <Route index element={<Login />} />
                 <Route path="/login" element={<Login />} />
-                   <Route element={<ProtectedRoute
+                   {/*<Route element={<ProtectedRoute
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
                 >
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/signup" element={<Signup />} />
-                </Route>
+                   </Route>*/}
                 
                 <Route path = "/" element = {<Layout/>}>
                     <Route path = "/dashboard" element = {<Dashboard/>}/>

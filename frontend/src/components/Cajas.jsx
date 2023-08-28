@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function Cajass () {
     return(
-         <div>
-             <p>Esta es la pagina de Cajas</p>  <Link to="/dashboard">Ir al dashboard </Link>
+         <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+                <strong>Cajas</strong>
          </div>
     )
          

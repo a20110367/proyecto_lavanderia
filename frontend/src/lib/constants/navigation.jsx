@@ -35,11 +35,4 @@ export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
         path: '/settings',
         icon: <HiOutlineCog/>
     },
-    {
-        key: 'logout',
-        label: 'Cerrar Sesion',
-        path: '/logout',
-        icon: <HiOutlineLogout/>
-
-    }
 ]

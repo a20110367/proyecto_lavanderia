@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import UserRoute from './routes/UserRoute.js';
 import bcryptjs from "bcryptjs";
+
+//Rutas de los modelos
+import UserRoute from './routes/UserRoute.js';
 
 dotenv.config({ path: '.env' });
 const app = express();

@@ -25,12 +25,13 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    const {name, email, phone, rol, pass} = req.body;
+    const {name, email, accessToken, phone, rol, pass} = req.body;
     try {
         const user = await prisma.user.create({
             data:{
                 name: name,
                 email: email,
+                accessToken: accessToken,
                 phone: phone,
                 rol: rol,
                 pass: pass
@@ -43,7 +44,7 @@ export const createUser = async (req, res) =>{
 }
 
 export const updateUser =  async (req, res) =>{
-    const {name, email, phone, rol, pass} = req.body;
+    const {name, email, accessToken, phone, rol, pass} = req.body;
     try {
         const user = await prisma.user.update({
             where:{
@@ -52,6 +53,7 @@ export const updateUser =  async (req, res) =>{
             data:{
                 name: name,
                 email: email,
+                accessToken: accessToken,
                 phone: phone,
                 rol: rol,
                 pass: pass
@@ -64,7 +66,7 @@ export const updateUser =  async (req, res) =>{
 }
 
 export const deleteUser =  async (req, res) =>{
-    const {name, email, phone, rol, pass} = req.body;
+    //const {name, accessToken, email, phone, rol, pass} = req.body;
     try {
         const user = await prisma.user.delete({
             where:{

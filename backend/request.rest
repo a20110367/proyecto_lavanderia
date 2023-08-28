@@ -12,7 +12,8 @@ Content-Type: application/json
 {
     "name": "Juan",
     "email": "a20110367@ceti.mx",
-    "phone": 324325359,
+    "accessToken": "4b34eg5gs656fsdf67",
+    "phone": "3332515436",
     "rol": "cajero",
     "pass": "1234"
 }
@@ -25,7 +26,8 @@ Content-Type: application/json
 {
     "name": "Pedro",
     "email": "a20110367@ceti.mx",
-    "phone": 324325359,
+    "accessToken": "64634fdsfy54asdsa",
+    "phone": "3332515436",
     "rol": "cajero",
     "pass": "1234"
 }

@@ -10,7 +10,7 @@ export default function DefaultLayout() {
                         <Link to="/">Home</Link>
                     </li>
                     <li>
-                        <Link to="/signup">Signup</Link>
+                        <Link to="/addUser">Signup</Link>
                     </li>
                     <li>
                         <Link to="/dashboard">Dashboard</Link>

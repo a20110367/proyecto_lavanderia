@@ -25,7 +25,12 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         path: '/cajas',
         icon: <HiOutlineCash/>
     },
-     
+    {
+        key: 'users',
+        label: 'Usuarios',
+        path: '/users',
+        icon: <HiOutlineCash/>
+    },
 ]
 
 export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
@@ -38,7 +43,7 @@ export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
     {
         key: 'logout',
         label: 'Cerrar Sesion',
-        path: '/logout',
+        path: '/login',
         icon: <HiOutlineLogout/>
 
     }

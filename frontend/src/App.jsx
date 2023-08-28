@@ -3,15 +3,23 @@ import { useState } from "react"
 
 //Routes
 import Login from './routes/Login'
-import Signup from './routes/signup'
+
+//Usuarios
+import AddUser from './components/AddUser'
+import EditUser from './components/EditUser'
+import Users from './components/Users'
+
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
 import Layout from "./components/Layout"
 import Equipos from "./components/Equipos"
 import Cajas from "./components/Cajas"
 
+import './index.css'
+
 function App() {
     const [user, setUser] = useState(null)
+    const [token, setToken] = useState();
 
     const login = () => {
         setUser({
@@ -33,14 +41,20 @@ function App() {
                 )
             }
             <Routes>
-               <Route index element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                   <Route element={<ProtectedRoute
+            
+            <Route index element={<Login />} />
+                <Route path="/login" setToken={setToken} element={<Login />} />
+
+                {/* Rutas Protejidas */}
+                <Route element={<ProtectedRoute
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
                 >
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/signup" element={<Signup />} />
+                    {/* Users */}
+                    <Route path="/addUser" element={<AddUser />} />
+                    <Route path="/editUser/:id" element={<EditUser />} />
+                    <Route path="/users" element={<Users />} />
                 </Route>
                 
                 <Route path = "/" element = {<Layout/>}>

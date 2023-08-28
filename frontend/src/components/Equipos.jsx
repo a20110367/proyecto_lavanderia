@@ -1,11 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export default function Equipos () {
-    return(
-         <div>
-             <p>Esta es la pagina de equipos</p>  <Link to="/dashboard">Ir al dashboard </Link>
-         </div>
-    )
-         
+export default function Equipos() {
+  return (
+    <div className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+      <strong>Equipos de lavado</strong>
+    </div>
+  );
 }

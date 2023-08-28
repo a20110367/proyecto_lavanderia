@@ -11,7 +11,7 @@ import Users from './components/Users'
 
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
-import Layout from "./components/Layout"
+import Layout from "./components/shared/Layout"
 import Equipos from "./components/Equipos"
 import Cajas from "./components/Cajas"
 

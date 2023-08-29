@@ -95,7 +95,7 @@ export default function Login() {
           <div>
             <input type={"checkbox"} id="recordar" />
             <label className="ml-2 font-medium text-base" for="recordar">
-              Recordarme por 30 dias
+              Recordarme por 3 Horas
             </label>
           </div>
           <button className="font-medium text-base text-violet-500">

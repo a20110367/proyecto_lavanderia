@@ -15,6 +15,9 @@ export default function DefaultLayout() {
                     <li>
                         <Link to="/dashboard">Dashboard</Link>
                     </li>
+                    <li>
+                        <Link to="/equipos">Equipos</Link>
+                    </li>
                 </ul>
             </nav>
         </header>

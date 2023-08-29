@@ -81,7 +81,7 @@ function EditUser() {
             return;
         }
         try {
-            await Axios.patch("http://localhost:5000/users/${id}", {
+            await Axios.patch(`http://localhost:5000/users/${id}`, {
                 name: user,
                 email: email,
                 accessToken: "afefeg5gs656fsdf67",

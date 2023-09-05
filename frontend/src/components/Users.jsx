@@ -84,13 +84,13 @@ function Users() {
                                     <td className="py-3 px-6">{user.pass}</td>
                                     <td className="py-3 px-1 text-center">
                                         <Link
-                                            to={`/editUser/${user.id}`}
+                                            to={`/editUser/${user.id_user}`}
                                             className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
                                         >
                                             Edit
                                         </Link>
                                         <button
-                                            onClick={() => handleClickOpen(user.name, user.id)}
+                                            onClick={() => handleClickOpen(user.name, user.id_user)}
                                             className="font-medium bg-red-400 hover:bg-red-500 px-3 py-1 rounded text-white"
                                         >
                                             Delete

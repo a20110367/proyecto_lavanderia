@@ -98,6 +98,9 @@ function Signup() {
 
     return (
         <div className="signup-form">
+            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+                <strong>Añadir Usuario</strong>
+            </div>
             {success ? (
                 <section>
                     <h1>Success!</h1>
@@ -106,16 +109,16 @@ function Signup() {
                     </p>
                 </section>
             ) : (
-                <section>
+                <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Register</h1>
+                    <h1 className="font-medium text-lg text-gray-500 mt-4">Por favor añade los datos de Registration</h1>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">
-                            Username:
+                        <label className="text-lg font-medium" htmlFor="username">
+                            Username
                             <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
                         </label>
-                        <input
+                        <input className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="text"
                             id="username"
                             ref={userRef}
@@ -136,12 +139,13 @@ function Signup() {
                         </p>
 
 
-                        <label htmlFor="password">
-                            Password:
+                        <label  className="text-lg font-medium" htmlFor="password">
+                            Password
                             <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
                         </label>
                         <input
+                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
                             type="password"
                             id="password"
                             onChange={(e) => setPwd(e.target.value)}
@@ -160,12 +164,13 @@ function Signup() {
                         </p>
 
 
-                        <label htmlFor="confirm_pwd">
-                            Confirm Password:
+                        <label  className="text-lg font-medium" htmlFor="confirm_pwd">
+                            Confirm Password
                             <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
                         </label>
                         <input
+                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="password"
                             id="confirm_pwd"
                             onChange={(e) => setMatchPwd(e.target.value)}
@@ -181,10 +186,11 @@ function Signup() {
                             Must match the first password input field.
                         </p>
 
-                        <label htmlFor="email">
-                            Email:
+                        <label  className="text-lg font-medium" htmlFor="email">
+                            Email
                         </label>
                         <input
+                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="email"
                             id="email"
                             onChange={(e) => setEmail(e.target.value)}
@@ -192,10 +198,11 @@ function Signup() {
                             required
                         />
 
-                        <label htmlFor="phone">
-                            Telefono:
+                        <label className="text-lg font-medium" htmlFor="phone">
+                            Telefono
                         </label>
                         <input
+                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="tel"
                             id="phone"
                             onChange={(e) => setPhone(e.target.value)}

@@ -51,10 +51,13 @@ function Users() {
 
     return (
         <div className="flex flex-col mt-5">
-            <div className="w-full">
+            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+                <strong>Usuarios</strong>
+            </div>
+            <div className="w-full pt-4">
                 <Link
                     to="/addUser"
-                    className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg"
+                    className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg pt-"
                 >
                     Añadir un Nuevo Usuario
                 </Link>

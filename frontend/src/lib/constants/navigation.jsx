@@ -10,6 +10,8 @@ import{
     HiShoppingCart
 } from  "react-icons/hi"
 
+import{ MdLocalLaundryService, MdOutlineLocalLaundryService } from "react-icons/md";
+
 export const DASHBOARD_SIDEBAR_LINKS = [
     {
         key: 'dashboard',
@@ -40,6 +42,18 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         label: 'Clientes',
         path: '/clients',
         icon: <HiShoppingCart/>
+    },
+    {
+        key: 'lavados',
+        label: 'Lavado',
+        path: '/lavados',
+        icon: <MdLocalLaundryService/>
+    },
+    {
+        key: 'planchados',
+        label: 'Planchado',
+        path: '/planchados',
+        icon: <MdOutlineLocalLaundryService/>
     },
 ]
 

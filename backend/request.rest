@@ -20,7 +20,7 @@ Content-Type: application/json
 
 ###
 
-PATCH  http://localhost:5000/users/9
+PATCH  http://localhost:5000/users/2
 Content-Type: application/json
 
 {

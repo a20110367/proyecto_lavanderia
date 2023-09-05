@@ -78,3 +78,15 @@ export const deleteUser =  async (req, res) =>{
         res.status(400).json({msg:e.message});
     }
 }
+
+// PARA DESHABILITAR TEMPORALMENTE UNA FK y hacer que servicio pueda tener FK vacias
+// const vehicle = await prisma.vehicle.update({
+//     where: {
+//       id,
+//     },
+//     data: {
+//       Vehicle_Model_Category: {
+//         disconnect: true,
+//       },
+//     },
+//   });

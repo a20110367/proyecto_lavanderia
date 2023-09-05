@@ -55,6 +55,7 @@ model Servicio{
   fk_user Int // relacion de campo escalar
   client Client @relation(fields: [fk_client], references: [id_cliente])
   fk_client Int
+  tipo String
   lavado Lavado @relation(fields: [fk_lavado], references: [id_lavado])
   fk_lavado Int
   planchado Planchado @relation(fields: [fk_planchado], references: [id_planchado])

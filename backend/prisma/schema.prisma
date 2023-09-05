@@ -11,11 +11,63 @@ datasource db {
 }
 
 model User{
-  id Int @id @default(autoincrement())
+  id_user Int @id @default(autoincrement())
   name String
   email String
   accessToken String
   phone String
   rol String
   pass String
+  servicios Servicio[]
+}
+
+model Client{
+  id_cliente Int @id @default(autoincrement())
+  name String
+  apellido_p String
+  apellido_m String
+  phone String
+  email String
+  servicios Servicio[]
+}
+
+model Lavado{
+  id_lavado Int @id @default(autoincrement())
+  precio String
+  tipo String
+  modelo String
+  tiempo_ciclo Int
+  estatus String
+  notas String
+  servicios Servicio[]
+}
+
+model Planchado{
+  id_planchado Int @id @default(autoincrement())
+  precio String
+  piezas String
+  servicios Servicio[]
+}
+
+model Servicio{
+  id_servicio Int @id @default(autoincrement())
+  user User @relation(fields: [fk_user], references: [id_user])
+  fk_user Int // relacion de campo escalar
+  client Client @relation(fields: [fk_client], references: [id_cliente])
+  fk_client Int
+  lavado Lavado @relation(fields: [fk_lavado], references: [id_lavado])
+  fk_lavado Int
+  planchado Planchado @relation(fields: [fk_planchado], references: [id_planchado])
+  fk_planchado Int
+  tickets Ticket[]
+}
+
+model Ticket{
+  id_ticket Int @id @default(autoincrement())
+  f_recepcion DateTime
+  f_entrega DateTime
+  forma_pago String
+  tipo_pago String
+  servicio Servicio @relation(fields: [fk_servicio], references: [id_servicio])
+  fk_servicio Int
 }

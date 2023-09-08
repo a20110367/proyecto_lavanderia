@@ -45,7 +45,7 @@ export const createClient = async (req, res) =>{
 export const updateClient =  async (req, res) =>{
     const {name, apellido_p, apellido_m, phone, email} = req.body;
     try {
-        const client = await prisma.user.update({
+        const client = await prisma.client.update({
             where:{
                 id_cliente: Number(req.params.id)
             },

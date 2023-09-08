@@ -10,65 +10,93 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model UserType{
+//   id_userType Int @id @default(autoincrement())
+//   descripcion String
+//   user User?
+// }
+
+enum Role {
+  admin
+  employee
+}
+
 model User{
   id_user Int @id @default(autoincrement())
   name String
-  email String
-  accessToken String
+  firstName String
+  secondName String
+  email String @unique
   phone String
-  rol String
   pass String
-  servicios Servicio[]
+  role Role @default(employee)
+  orders Order[]
 }
 
 model Client{
-  id_cliente Int @id @default(autoincrement())
+  id_client Int @id @default(autoincrement())
   name String
-  apellido_p String
-  apellido_m String
+  firstName String
+  secondName String
+  email String @unique
   phone String
-  email String
-  servicios Servicio[]
+  pass String?
+  orders Order[]
 }
 
-model Lavado{
-  id_lavado Int @id @default(autoincrement())
-  precio String
-  tipo String
-  modelo String
-  tiempo_ciclo Int
-  estatus String
-  notas String
-  servicios Servicio[]
+
+enum MachineType {
+  lavadora
+  secadora
 }
 
-model Planchado{
-  id_planchado Int @id @default(autoincrement())
-  precio String
-  piezas String
-  servicios Servicio[]
+enum Status {
+  available
+  unavailable
 }
 
-model Servicio{
-  id_servicio Int @id @default(autoincrement())
-  user User @relation(fields: [fk_user], references: [id_user])
-  fk_user Int // relacion de campo escalar
-  client Client @relation(fields: [fk_client], references: [id_cliente])
+model Machine{
+  id_machine Int @id @default(autoincrement())
+  machineType MachineType @default(lavadora)
+  model String
+  cicleTime Int
+  weight Int
+  status Status @default(available)
+  notes String
+}
+
+model Service{
+  id_service Int @id @default(autoincrement())
+  description String
+  // Precio Unitario
+  price Float
+  time Int
+  weight Int
+  orders Order[]
+}
+
+enum PayMethod {
+  tarjeta
+  efectivo
+}
+
+enum OrderStatus {
+  pendiente
+  finalizado
+}
+
+model Order{
+  id_order Int @id @default(autoincrement())
+  units Int @default(1)
+  receptionDate DateTime @db.DateTime()
+  deliveryDate DateTime @db.DateTime()
+  payMethod PayMethod @default(efectivo)
+  orderStatus OrderStatus @default(pendiente)
+  totalPrice Float
   fk_client Int
-  tipo String
-  lavado Lavado @relation(fields: [fk_lavado], references: [id_lavado])
-  fk_lavado Int
-  planchado Planchado @relation(fields: [fk_planchado], references: [id_planchado])
-  fk_planchado Int
-  tickets Ticket[]
-}
-
-model Ticket{
-  id_ticket Int @id @default(autoincrement())
-  f_recepcion DateTime
-  f_entrega DateTime
-  forma_pago String
-  tipo_pago String
-  servicio Servicio @relation(fields: [fk_servicio], references: [id_servicio])
-  fk_servicio Int
+  fk_employee Int
+  fk_service Int
+  client Client @relation(fields: [fk_client], references: [id_client])
+  employee User @relation(fields: [fk_employee], references: [id_user])
+  service Service @relation(fields: [fk_service], references: [id_service])
 }

@@ -12,9 +12,7 @@ Content-Type: application/json
 {
     "name": "Juan",
     "email": "a20110367@ceti.mx",
-    "accessToken": "4b34eg5gs656fsdf67",
     "phone": "3332515436",
-    "rol": "cajero",
     "pass": "1234"
 }
 

@@ -3,8 +3,14 @@ import{
     HiOutlineCash,
     HiOutlineViewGrid,
     HiOutlineCog,
-    HiOutlineLogout
+    HiOutlineLogout,
+    HiUsers,
+    HiTruck,
+    HiCash,
+    HiShoppingCart
 } from  "react-icons/hi"
+
+import{ MdLocalLaundryService, MdOutlineLocalLaundryService } from "react-icons/md";
 
 export const DASHBOARD_SIDEBAR_LINKS = [
     {
@@ -17,19 +23,37 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         key: 'equipos',
         label: 'Equipos',
         path: '/equipos',
-        icon: <HiUserGroup/>
+        icon: <HiTruck/>
     },
     {
         key: 'cajas',
         label: 'Cajas',
         path: '/cajas',
-        icon: <HiOutlineCash/>
+        icon: <HiCash/>
     },
     {
         key: 'users',
         label: 'Usuarios',
         path: '/users',
-        icon: <HiOutlineCash/>
+        icon: <HiUsers/>
+    },
+    {
+        key: 'clients',
+        label: 'Clientes',
+        path: '/clients',
+        icon: <HiShoppingCart/>
+    },
+    {
+        key: 'lavados',
+        label: 'Lavado',
+        path: '/lavados',
+        icon: <MdLocalLaundryService/>
+    },
+    {
+        key: 'planchados',
+        label: 'Planchado',
+        path: '/planchados',
+        icon: <MdOutlineLocalLaundryService/>
     },
 ]
 

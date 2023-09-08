@@ -1,15 +1,15 @@
-import Navbar from "../routes/Navbar"
-import { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {useNavigate} from "react-router-dom";
-import Axios from "axios";
+import NavBar from '../../routes/Navbar'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%]).{8,24}$/;
 
-function Signup() {
-
+function EditUser() {
+    
     const userRef = useRef();
     const errRef = useRef();
 
@@ -33,8 +33,6 @@ function Signup() {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
         userRef.current.focus();
     }, [])
@@ -52,6 +50,21 @@ function Signup() {
         setErrMsg('');
     }, [user, pwd, matchPwd])
 
+    const navigate = useNavigate();
+    const { id } = useParams();
+
+    useEffect(() => {
+        const getUserById = async () => {
+            const response = await Axios.get(`http://localhost:5000/users/${id}`);
+            setUser(response.data.name);
+            setPwd(response.data.pass);
+            setEmail(response.data.email);
+            setPhone(response.data.phone);
+            setRol(response.data.rol);
+        };
+        getUserById();
+    }, [id]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(user)
@@ -68,7 +81,7 @@ function Signup() {
             return;
         }
         try {
-            await Axios.post("http://localhost:5000/users", {
+            await Axios.patch(`http://localhost:5000/users/${id}`, {
                 name: user,
                 email: email,
                 accessToken: "afefeg5gs656fsdf67",
@@ -95,7 +108,6 @@ function Signup() {
         }
     }
 
-
     return (
         <div className="signup-form">
             {success ? (
@@ -108,7 +120,7 @@ function Signup() {
             ) : (
                 <section>
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Register</h1>
+                    <h1>Actualizando perfil de: {user}</h1>
                     <form onSubmit={handleSubmit}>
                         <label htmlFor="username">
                             Username:
@@ -142,7 +154,7 @@ function Signup() {
                             <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
                         </label>
                         <input
-                            type="password"
+                            type="text"
                             id="password"
                             onChange={(e) => setPwd(e.target.value)}
                             value={pwd}
@@ -166,7 +178,7 @@ function Signup() {
                             <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
                         </label>
                         <input
-                            type="password"
+                            type="text"
                             id="confirm_pwd"
                             onChange={(e) => setMatchPwd(e.target.value)}
                             value={matchPwd}
@@ -217,13 +229,13 @@ function Signup() {
                         </select>
                     
 
-                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Actualizar</button>
                     </form>
                 </section>
             )}
-            <Navbar></Navbar>
+            <NavBar></NavBar>
         </div>
     )
-}
+};
 
-export default Signup
+export default EditUser

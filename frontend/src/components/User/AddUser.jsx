@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import Navbar from "../../routes/Navbar"
+import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NavBar from '../routes/Navbar'
+import {useNavigate} from "react-router-dom";
+import Axios from "axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%]).{8,24}$/;
 
-function EditUser() {
-    
+function Signup() {
+
     const userRef = useRef();
     const errRef = useRef();
 
@@ -33,6 +33,8 @@ function EditUser() {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         userRef.current.focus();
     }, [])
@@ -50,21 +52,6 @@ function EditUser() {
         setErrMsg('');
     }, [user, pwd, matchPwd])
 
-    const navigate = useNavigate();
-    const { id } = useParams();
-
-    useEffect(() => {
-        const getUserById = async () => {
-            const response = await Axios.get(`http://localhost:5000/users/${id}`);
-            setUser(response.data.name);
-            setPwd(response.data.pass);
-            setEmail(response.data.email);
-            setPhone(response.data.phone);
-            setRol(response.data.rol);
-        };
-        getUserById();
-    }, [id]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(user)
@@ -81,7 +68,7 @@ function EditUser() {
             return;
         }
         try {
-            await Axios.patch(`http://localhost:5000/users/${id}`, {
+            await Axios.post("http://localhost:5000/users", {
                 name: user,
                 email: email,
                 accessToken: "afefeg5gs656fsdf67",
@@ -108,8 +95,12 @@ function EditUser() {
         }
     }
 
+
     return (
         <div className="signup-form">
+            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+                <strong>Añadir Usuario</strong>
+            </div>
             {success ? (
                 <section>
                     <h1>Success!</h1>
@@ -118,16 +109,16 @@ function EditUser() {
                     </p>
                 </section>
             ) : (
-                <section>
+                <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
                     <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Actualizando perfil de: {user}</h1>
+                    <h1 className="font-medium text-lg text-gray-500 mt-4">Por favor añade los datos de Registration</h1>
                     <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">
-                            Username:
+                        <label className="text-lg font-medium" htmlFor="username">
+                            Username
                             <FontAwesomeIcon icon={faCheck} className={validName ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validName || !user ? "hide" : "invalid"} />
                         </label>
-                        <input
+                        <input className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="text"
                             id="username"
                             ref={userRef}
@@ -148,13 +139,14 @@ function EditUser() {
                         </p>
 
 
-                        <label htmlFor="password">
-                            Password:
+                        <label  className="text-lg font-medium" htmlFor="password">
+                            Password
                             <FontAwesomeIcon icon={faCheck} className={validPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validPwd || !pwd ? "hide" : "invalid"} />
                         </label>
                         <input
-                            type="text"
+                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
+                            type="password"
                             id="password"
                             onChange={(e) => setPwd(e.target.value)}
                             value={pwd}
@@ -172,13 +164,14 @@ function EditUser() {
                         </p>
 
 
-                        <label htmlFor="confirm_pwd">
-                            Confirm Password:
+                        <label  className="text-lg font-medium" htmlFor="confirm_pwd">
+                            Confirm Password
                             <FontAwesomeIcon icon={faCheck} className={validMatch && matchPwd ? "valid" : "hide"} />
                             <FontAwesomeIcon icon={faTimes} className={validMatch || !matchPwd ? "hide" : "invalid"} />
                         </label>
                         <input
-                            type="text"
+                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
+                            type="password"
                             id="confirm_pwd"
                             onChange={(e) => setMatchPwd(e.target.value)}
                             value={matchPwd}
@@ -193,10 +186,11 @@ function EditUser() {
                             Must match the first password input field.
                         </p>
 
-                        <label htmlFor="email">
-                            Email:
+                        <label  className="text-lg font-medium" htmlFor="email">
+                            Email
                         </label>
                         <input
+                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="email"
                             id="email"
                             onChange={(e) => setEmail(e.target.value)}
@@ -204,10 +198,11 @@ function EditUser() {
                             required
                         />
 
-                        <label htmlFor="phone">
-                            Telefono:
+                        <label className="text-lg font-medium" htmlFor="phone">
+                            Telefono
                         </label>
                         <input
+                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
                             type="tel"
                             id="phone"
                             onChange={(e) => setPhone(e.target.value)}
@@ -229,13 +224,13 @@ function EditUser() {
                         </select>
                     
 
-                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Actualizar</button>
+                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
                     </form>
                 </section>
             )}
-            <NavBar></NavBar>
+            <Navbar></Navbar>
         </div>
     )
-};
+}
 
-export default EditUser
+export default Signup

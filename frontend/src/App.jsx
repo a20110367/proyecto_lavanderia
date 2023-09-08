@@ -5,9 +5,22 @@ import { useState } from "react"
 import Login from './routes/Login'
 
 //Usuarios
-import AddUser from './components/AddUser'
-import EditUser from './components/EditUser'
-import Users from './components/Users'
+import AddUser from './components/User/AddUser'
+import EditUser from './components/User/EditUser'
+import Users from './components/User/Users'
+
+//Usuarios
+import AddClient from './components/Client/AddClient'
+import EditClient from './components/Client/EditClient'
+import Clients from './components/Client/Clients'
+
+//lavado
+import Lavados from "./components/Lavado/Lavados"
+import AddLavado from "./components/Lavado/AddLavado"
+
+//planchados
+import Planchados from "./components/Planchado/Planchados"
+import AddPlanchado from "./components/Planchado/AddPlanchado"
 
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
@@ -50,18 +63,30 @@ function App() {
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
                 >
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    {/* Users */}
-                    <Route path="/addUser" element={<AddUser />} />
-                    <Route path="/editUser/:id" element={<EditUser />} />
-                    <Route path="/users" element={<Users />} />
+                    <Route path = "/" element = {<Layout/>}>
+                        <Route path = "/dashboard" element = {<Dashboard/>}/>
+                        <Route path = "/equipos" element = {<Equipos />}/>
+                        <Route path = "/cajas" element = {<Cajas />}/>
+                        {/* Users */}
+                        <Route path="/addUser" element={<AddUser />} />
+                        <Route path="/editUser/:id" element={<EditUser />} />
+                        <Route path="/users" element={<Users />} />
+                        {/* Clients */}
+                        <Route path="/addClient" element={<AddClient />} />
+                        <Route path="/editClient/:id" element={<EditClient />} />
+                        <Route path="/clients" element={<Clients />} />
+                        {/*Lavado */}
+                        <Route path="/lavados" element={<Lavados />} />
+                        <Route path="/addLavado" element={<AddLavado />} />
+                        {/*planchado */}
+                        <Route path="/planchados" element={<Planchados />} />
+                        <Route path="/addPlanchado" element={<AddPlanchado />} />
+                    </Route>
+
+                    
                 </Route>
                 
-                <Route path = "/" element = {<Layout/>}>
-                    <Route path = "/dashboard" element = {<Dashboard/>}/>
-                    <Route path = "/equipos" element = {<Equipos />}/>
-                    <Route path = "/cajas" element = {<Cajas />}/>
-                </Route>
+                
             </Routes>
         </Router>
     )

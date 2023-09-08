@@ -54,7 +54,7 @@ export default function Login() {
     return response.data;
   };
 
-  const { data } = useSWR("users", fetcher);
+  const { data } = useSWR("clients", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   function auth(e) {

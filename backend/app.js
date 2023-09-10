@@ -6,8 +6,6 @@ import bcryptjs from "bcryptjs";
 //Rutas de los modelos
 import UserRoute from './routes/UserRoute.js';
 import ClientRoute from './routes/ClientRoute.js'
-import LavadoRoute from './routes/LavadoRoute.js'
-import PlanchadoRoute from './routes/PlanchadoRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -18,8 +16,7 @@ app.use(express.json());
 //Uso de rutas de por la aplicación
 app.use(UserRoute);
 app.use(ClientRoute)
-app.use(LavadoRoute)
-app.use(PlanchadoRoute)
+
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

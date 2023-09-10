@@ -11,9 +11,12 @@ Content-Type: application/json
 
 {
     "name": "Juan",
+    "firstName": "Perez",
+    "secondName": "Perez",
     "email": "a20110367@ceti.mx",
     "phone": "3332515436",
-    "pass": "1234"
+    "pass": "1234",
+    "role":  "employee"
 }
 
 ###

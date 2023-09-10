@@ -15,7 +15,7 @@ export const getClientsById = async (req, res) =>{
     try {
         const response = await prisma.client.findUnique({
             where:{
-                id_cliente: Number(req.params.id)
+                id_client: Number(req.params.id)
             }
         });
         res.status(200).json(response);
@@ -25,15 +25,16 @@ export const getClientsById = async (req, res) =>{
 }
 
 export const createClient = async (req, res) =>{
-    const {name, apellido_p, apellido_m, phone, email} = req.body;
+    const {name, firstName, secondName, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.create({
             data:{
                 name: name,
-                apellido_p: apellido_p,
-                apellido_m: apellido_m,
-                phone: phone,
-                email: email,
+                firstName: firstName,
+                secondName: secondName,
+                email: email,                
+                phone: phone,            
+                pass: pass
             }
         });
         res.status(201).json(client);
@@ -43,18 +44,19 @@ export const createClient = async (req, res) =>{
 }
 
 export const updateClient =  async (req, res) =>{
-    const {name, apellido_p, apellido_m, phone, email} = req.body;
+    const {name, firstName, secondName, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.update({
             where:{
-                id_cliente: Number(req.params.id)
+                id_client: Number(req.params.id)
             },
             data:{
                 name: name,
-                apellido_p: apellido_p,
-                apellido_m: apellido_m,
-                phone: phone,
-                email: email,
+                firstName: firstName,
+                secondName: secondName,
+                email: email,                
+                phone: phone,            
+                pass: pass
             }
         });
         res.status(200).json(client);
@@ -64,14 +66,13 @@ export const updateClient =  async (req, res) =>{
 }
 
 export const deleteClient =  async (req, res) =>{
-    //const {name, accessToken, email, phone, rol, pass} = req.body;
     try {
-        const client = await prisma.client.delete({
+        const user = await prisma.client.delete({
             where:{
-                id_cliente: Number(req.params.id)
+                id_client: Number(req.params.id)
             }
         });
-        res.status(200).json(client);
+        res.status(200).json(user);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

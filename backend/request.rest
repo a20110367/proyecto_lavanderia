@@ -19,6 +19,18 @@ Content-Type: application/json
     "role":  "employee"
 }
 
+### 
+
+POST http://localhost:5000/services
+Content-Type: application/json
+
+{
+    "description": "Lavado 8Kg",
+    "price": 135.0,
+    "time": 45,
+    "weight": 8
+}
+
 ###
 
 PATCH  http://localhost:5000/users/2

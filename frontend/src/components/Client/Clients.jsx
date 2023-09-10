@@ -58,7 +58,7 @@ function Clients() {
                     to="/addClient"
                     className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg"
                 >
-                   Añadir Nuevo Cliente
+                Añadir Nuevo Cliente
                 </Link>
                 <div className="relative shadow rounded-lg mt-3">
                     <table className="w-full text-sm text-left text-gray-500">

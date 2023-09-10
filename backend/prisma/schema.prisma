@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// FOR DOESN'T LOSE INFO OF THE DB USE 
+// npx prisma db push
+
 generator client {
   provider = "prisma-client-js"
 }

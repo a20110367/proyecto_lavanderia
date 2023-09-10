@@ -14,10 +14,13 @@ import AddClient from './components/Client/AddClient'
 import EditClient from './components/Client/EditClient'
 import Clients from './components/Client/Clients'
 
+//Servicios
+import AddService from './components/Service/AddService'
+import EditService from "./components/Service/EditService"
+import Services from "./components/Service/Services"
+
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
-
-import Servicios from "./components/Servicios/Servicios"
 
 import Pedidos from "./components/Pedidos/Pedidos"
 
@@ -74,10 +77,13 @@ function App() {
                         <Route path="/addClient" element={<AddClient />} />
                         <Route path="/editClient/:id" element={<EditClient />} />
                         <Route path="/clients" element={<Clients />} />
+                        {/* Services */}
+                        <Route path="/addService" element={<AddService/>}/>
+                        <Route path="/editService/:id" element={<EditService/>}/>
+                        <Route path="/services" element={<Services/>}/>
                         {/*Punto de venta */}
                         <Route path="/puntoVenta" element={<PuntoVenta/>}/>
                         <Route path="/pedidos" element={<Pedidos/>}/>
-                        <Route path="/servicios" element={<Servicios/>}/>
                     </Route>
 
                     

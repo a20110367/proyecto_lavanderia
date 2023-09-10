@@ -67,6 +67,8 @@ function Users() {
                             <tr>
                                 <th className="py-3 px-1 text-center">ID</th>
                                 <th className="py-3 px-6">Nombre</th>
+                                <th className="py-3 px-6">Apellido Paterno</th>
+                                <th className="py-3 px-6">Apellido Materno</th>
                                 <th className="py-3 px-6">Rol</th>
                                 <th className="py-3 px-6">Email</th>
                                 <th className="py-3 px-6">Telefono</th>
@@ -81,16 +83,23 @@ function Users() {
                                     <td className="py-3 px-6 font-medium text-gray-900">
                                         {user.name}
                                     </td>
-                                    <td className="py-3 px-6">{user.rol}</td>
+                                    <td className="py-3 px-6 font-medium text-gray-900">
+                                        {user.firstName}
+                                    </td>
+                                    <td className="py-3 px-6 font-medium text-gray-900">
+                                        {user.secondName}
+                                    </td>
+                                    <td className="py-3 px-6">{user.role}</td>
                                     <td className="py-3 px-6">{user.email}</td>
                                     <td className="py-3 px-6">{user.phone}</td>
                                     <td className="py-3 px-6">{user.pass}</td>
+                                    
                                     <td className="py-3 px-1 text-center">
                                         <Link
                                             to={`/editUser/${user.id_user}`}
                                             className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
                                         >
-                                            Edit
+                                            Editar
                                         </Link>
                                         <button
                                             onClick={() => handleClickOpen(user.name, user.id_user)}

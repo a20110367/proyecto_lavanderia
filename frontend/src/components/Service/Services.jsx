@@ -11,13 +11,13 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-function Servicios() {
+function Services() {
   const [serviceSelDesc, setServiceSelDesc] = React.useState();
   const [serviceSelId, setServiceSelId] = React.useState();
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/servs");
+    const response = await Axios.get("http://localhost:5000/services");
     return response.data;
   };
 
@@ -53,7 +53,7 @@ function Servicios() {
       </div>
       <div className="w-full pt-4">
         <Link
-          to="/addServicio"
+          to="/addService"
           className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg"
         >
           Agregar un Nuevo Servicio
@@ -130,4 +130,4 @@ function Servicios() {
   );
 }
 
-export default Servicios;
+export default Services;

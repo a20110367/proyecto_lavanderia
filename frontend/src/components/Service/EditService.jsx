@@ -1,19 +1,34 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 
-function AddServicio() {
+function EditService() {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const timeRef = useRef();
   const weightRef = useRef();
 
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [time, setTime] = useState("");
-  const [weight, setWeight] = useState("");
+  const [price, setPrice] = useState(0);
+  const [time, setTime] = useState(0);
+  const [weight, setWeight] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    const getServiceById = async () => {
+        const response = await Axios.get(`http://localhost:5000/services/${id}`);
+        setDescription(response.data.description);
+        setPrice(response.data.price);
+        setTime(response.data.time);
+        setWeight(response.data.weight);
+      };
+      getServiceById();
+    }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,34 +41,28 @@ function AddServicio() {
 
     try {
 
-      await Axios.post("http://localhost:5000/services", {
-        description,
-        price,
-        time,
-        weight,
+      await Axios.patch(`http://localhost:5000/services/${id}`, {
+        description: description,
+        price: parseFloat(price),
+        time: Number(time),
+        weight: Number(weight),
       });
-
-
-      setDescription("");
-      setPrice("");
-      setTime("");
-      setWeight("");
+      navigate('/services')
       setSuccess(true);
     } catch (err) {
 
-      setErrMsg("Failed to add service.");
+      setErrMsg("Failed to update service.");
     }
   };
 
   return (
-    <div className="add-servicio-form">
+    <div className="edit-servicio-form">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Añadir Servicio</strong>
+        <strong>Editar Servicio</strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>
-         
         </section>
       ) : (
         <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
@@ -61,7 +70,7 @@ function AddServicio() {
             {errMsg}
           </p>
           <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, ingresa los datos del servicio
+            Por favor, modifica los datos del servicio
           </h1>
           <form onSubmit={handleSubmit}>
             <label className="text-lg font-medium" htmlFor="description">
@@ -118,10 +127,10 @@ function AddServicio() {
             />
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-11"
               type="submit"
             >
-              Añadir Servicio
+              Guardar Cambios
             </button>
           </form>
         </section>
@@ -130,4 +139,4 @@ function AddServicio() {
   );
 }
 
-export default AddServicio;
+export default EditService;

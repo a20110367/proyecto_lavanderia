@@ -72,7 +72,7 @@ export const deleteClient =  async (req, res) =>{
                 id_client: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(client);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

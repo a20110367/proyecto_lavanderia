@@ -95,7 +95,7 @@ function AddClient() {
       setEmail("");
       setPhone("");
       setPass("");
-      navigate("/login");
+      navigate("/clients");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -200,7 +200,7 @@ function AddClient() {
             {/* Email */}
             <label className="text-lg font-medium" htmlFor="email">
               Email
-             
+
             </label>
             <input
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"

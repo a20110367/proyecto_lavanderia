@@ -53,9 +53,9 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         icon: <FcSalesPerformance/>
     },
     {
-        key: 'servicios',
+        key: 'services',
         label: 'Servicios',
-        path: '/servicios',
+        path: '/services',
         icon: <FcServices/>
     },
     {

@@ -1,38 +1,22 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-function EditServicio({ servicioId }) {
+function AddServicio() {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const timeRef = useRef();
   const weightRef = useRef();
 
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [time, setTime] = useState("");
-  const [weight, setWeight] = useState("");
+  const [price, setPrice] = useState(0);
+  const [time, setTime] = useState(0);
+  const [weight, setWeight] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
-  useEffect(() => {
-    async function fetchServicioData() {
-      try {
-        const response = await Axios.get(`http://localhost:5000/services/${servicioId}`);
-        const servicioData = response.data;
-
-
-        setDescription(servicioData.description);
-        setPrice(servicioData.price);
-        setTime(servicioData.time);
-        setWeight(servicioData.weight);
-      } catch (error) {
-        setErrMsg("Failed to fetch service data.");
-      }
-    }
-
-    fetchServicioData();
-  }, [servicioId]);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,29 +28,32 @@ function EditServicio({ servicioId }) {
     }
 
     try {
-
-      await Axios.put(`http://localhost:5000/services/${servicioId}`, {
-        description,
-        price,
-        time,
-        weight,
+      await Axios.post("http://localhost:5000/services", {
+        description: description,
+        price: parseFloat(price),
+        time: Number(time),
+        weight: Number(weight),
       });
-
+      setDescription("");
+      setPrice("");
+      setTime("");
+      setWeight("");
       setSuccess(true);
-    } catch (err) {
 
-      setErrMsg("Failed to update service.");
+      navigate("/services");
+      } catch (err) {
+      setErrMsg("Failed to add service.");
     }
   };
 
   return (
-    <div className="edit-servicio-form">
+    <div className="add-service-form">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Editar Servicio</strong>
+        <strong>Añadir Servicio</strong>
       </div>
       {success ? (
         <section>
-          <h1>Success!</h1>
+          <h1>Success!</h1>  
         </section>
       ) : (
         <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
@@ -74,7 +61,7 @@ function EditServicio({ servicioId }) {
             {errMsg}
           </p>
           <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, modifica los datos del servicio
+            Por favor, ingresa los datos del servicio
           </h1>
           <form onSubmit={handleSubmit}>
             <label className="text-lg font-medium" htmlFor="description">
@@ -97,6 +84,7 @@ function EditServicio({ servicioId }) {
             <input
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
               type="number"
+              step='0.1'
               id="price"
               ref={priceRef}
               onChange={(e) => setPrice(e.target.value)}
@@ -118,7 +106,7 @@ function EditServicio({ servicioId }) {
             />
 
             <label className="text-lg font-medium" htmlFor="weight">
-              Peso (gramos)
+              Peso (Kilogramos)
             </label>
             <input
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
@@ -131,10 +119,10 @@ function EditServicio({ servicioId }) {
             />
 
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
               type="submit"
             >
-              Guardar Cambios
+              Añadir Servicio
             </button>
           </form>
         </section>
@@ -143,4 +131,4 @@ function EditServicio({ servicioId }) {
   );
 }
 
-export default EditServicio;
+export default AddServicio;

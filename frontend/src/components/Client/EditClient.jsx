@@ -1,179 +1,339 @@
 import React, { useState, useEffect, useRef } from "react";
 import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faTimes,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NavBar from '../../routes/Navbar'
+import NavBar from "../../routes/Navbar";
 
+const NAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%*]).{8,24}$/;
 
 function EditClient() {
-    
-    const clientRef = useRef();
-    const errRef = useRef();
+  const nameRef = useRef();
+  const errRef = useRef();
 
-    const [client, setClient] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [clientFocus, setClientFocus] = useState(false);
+  const [name, setName] = useState("");
+  const [validName, setValidName] = useState(false);
+  const [nameFocus, setNameFocus] = useState(false);
 
-    const [apellido_p, setApellido_p] = useState('');
-    const [validApellido_p, setValidApellido_p] = useState(false);
-    const [apellido_pFocus, setApellido_pFocus] = useState(false);
+  const [pwd, setPwd] = useState("");
+  const [validPwd, setValidPwd] = useState(false);
+  const [pwdFocus, setPwdFocus] = useState(false);
 
-    const [apellido_m, setApellido_m] = useState('');
-    const [validApellido_m, setValidApellido_m] = useState(false);
-    const [apellido_mFocus, setApellido_mFocus] = useState(false);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [validFirstName, setValidFirstName] = useState(false);
+  const [firstnameFocus, setFirstNameFocus] = useState(false);
 
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
+  const [secondName, setSecondName] = useState("");
+  const [validSecondName, setValidSecondName] = useState(false);
+  const [secondNameFocus, setSecondNameFocus] = useState(false);
 
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
+  const [matchPwd, setMatchPwd] = useState("");
+  const [validMatch, setValidMatch] = useState(false);
+  const [matchFocus, setMatchFocus] = useState(false);
 
-    useEffect(() => {
-        clientRef.current.focus();
-    }, [])
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
 
-    const navigate = useNavigate();
-    const { id } = useParams();
+  useEffect(() => {
+    nameRef.current.focus();
+  }, []);
 
-    useEffect(() => {
-        const getUserById = async () => {
-            const response = await Axios.get(`http://localhost:5000/clients/${id}`);
-            setClient(response.data.name);
-            setApellido_p(response.data.apellido_p);
-            setApellido_m(response.data.apellido_m)
-            setPhone(response.data.phone);
-            setEmail(response.data.email);
+  useEffect(() => {
+    setValidName(NAME_REGEX.test(name));
+  }, [name]);
 
-        };
-        getUserById();
-    }, [id]);
+  useEffect(() => {
+    setValidPwd(PWD_REGEX.test(pwd));
+    setValidMatch(pwd === matchPwd);
+  }, [pwd, matchPwd]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(client)
-        console.log(apellido_p)
-        console.log(apellido_m)
-        console.log(phone)
-        console.log(email)
-        
-        try {
-            await Axios.patch(`http://localhost:5000/clients/${id}`, {
-                name: client,
-                apellido_p: apellido_p,
-                apellido_m: apellido_m,
-                phone: phone,
-                email: email,
-            });
-            //console.log(JSON.stringify(response))
-            setSuccess(true);
-            //clear state and controlled inputs
-            setClient('');
-            setApellido_p('');
-            setApellido_m('');
-            navigate('/login')
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else if (err.response?.status === 409) {
-                setErrMsg('Username Taken');
-            } else {
-                setErrMsg('Registration Failed')
-            }
-            errRef.current.focus();
-        }
+  useEffect(() => {
+    setErrMsg("");
+  }, [name, pwd, matchPwd]);
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    const getClientById = async () => {
+      const response = await Axios.get(`http://localhost:5000/clients/${id}`);
+      setName(response.data.name);
+      setEmail(response.data.email);
+      setPhone(response.data.phone);
+      setFirstName(response.data.firstName);
+      setSecondName(response.data.secondName);
+    };
+    getClientById();
+  }, [id]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const isNameValid = NAME_REGEX.test(name);
+    const isPwdValid = PWD_REGEX.test(pwd);
+
+    if (!isNameValid || !isPwdValid) {
+      setErrMsg("Entrada inválida");
+      return;
     }
 
-    return (
-        <div className="signup-form">
-            {success ? (
-                <section>
-                    <h1>Success!</h1>
-                    <p>
-                        <a href="/login">Sign In</a>
-                    </p>
-                </section>
-            ) : (
-                <section>
-                    <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1>Actualizando perfil de: {client}</h1>
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="username">
-                            Nombre
-                        </label>
-                        <input
-                            type="text"
-                            id="clientname"
-                            ref={clientRef}
-                            autoComplete="off"
-                            onChange={(e) => setClient(e.target.value)}
-                            value={client}
-                            required
-                            onFocus={() => setClientFocus(true)}
-                            onBlur={() => setClientFocus(false)}
-                        />
+    try {
+      await Axios.patch(`http://localhost:5000/clients/${id}`, {
+        name: name,
+        email: email,
+        phone: phone,
+        firstName: firstName,
+        secondName: secondName,
+        pass: pwd,
+      });
+      
+      setSuccess(true);
+      setName("");
+      setPwd("");
+      setMatchPwd("");
+      navigate("/login");
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No hay respuesta del servidor");
+      } else if (err.response?.status === 409) {
+        setErrMsg("Nombre de usuario ya existente");
+      } else {
+        setErrMsg("Fallo en la actualización");
+      }
+      errRef.current.focus();
+    }
+  };
 
+  return (
+    <div className="signup-form">
+      <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
+        <strong>Actualizar Datos Cliente</strong>
+      </div>
+      {success ? (
+        <section>
+          <h1>¡Éxito!</h1>
+          <p>
+            <a href="/login">Iniciar sesión</a>
+          </p>
+        </section>
+      ) : (
+        <section className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
+          <p
+            ref={errRef}
+            className={errMsg ? "errmsg" : "offscreen"}
+            aria-live="assertive"
+          >
+            {errMsg}
+          </p>
+          <h1 className="font-medium text-lg text-gray-500 ">
+            Actualizando perfil de: {name}
+          </h1>
+          <form onSubmit={handleSubmit}>
+            {/* Nombre de usuario */}
+            <label className="text-lg font-medium" htmlFor="name">
+              Nombre:
+              {validName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="name"
+              ref={nameRef}
+              autoComplete="off"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              required
+              aria-invalid={validName ? "false" : "true"}
+              aria-describedby="namenote"
+              onFocus={() => setNameFocus(true)}
+              onBlur={() => setNameFocus(false)}
+            />
+            <div className="group">
+              <p
+                id="namenote"
+                className={`instructions text-sm text-red-600 ${
+                  nameFocus && name && !validName ? "block" : "hidden"
+                }`}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} /> 4 a 24 caracteres.
+                <br />
+                Debe comenzar con una letra.
+                <br />
+                Letras, números, guiones bajos y guiones permitidos.
+              </p>
+            </div>
 
-                        <label htmlFor="apellido_p">
-                            Apellido Parterno
-                           
-                        </label>
-                        <input
-                            type="text"
-                            id="apellido_p"
-                            onChange={(e) => setApellido_p(e.target.value)}
-                            value={apellido_p}
-                            required
-                            onFocus={() => setApellido_pFocus(true)}
-                            onBlur={() => setApellido_pFocus(false)}
-                        />
+            <label className="text-lg font-medium" htmlFor="firstName">
+              Apellido Paterno
+             
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="firstName"
+              autoComplete="off"
+              onChange={(e) => setFirstName(e.target.value)}
+              value={firstName}
+              required
+              aria-invalid={validFirstName ? "false" : "true"}
+              aria-describedby="firstNamenote"
+              onFocus={() => setFirstNameFocus(true)}
+              onBlur={() => setFirstNameFocus(false)}
+            />
+          
+            <label className="text-lg font-medium" htmlFor="secondName">
+              Apellido Materno
+              
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="secondName"
+              autoComplete="off"
+              onChange={(e) => setSecondName(e.target.value)}
+              value={secondName}
+              required
+              aria-invalid={validSecondName ? "false" : "true"}
+              aria-describedby="secondNamenote"
+              onFocus={() => setSecondNameFocus(true)}
+              onBlur={() => setSecondNameFocus(false)}
+            />
+            
+            {/* Contraseña */}
+            <label className="text-lg font-medium" htmlFor="password">
+              Contraseña:
+              {validPwd ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="password"
+              id="password"
+              onChange={(e) => setPwd(e.target.value)}
+              value={pwd}
+              required
+              aria-invalid={validPwd ? "false" : "true"}
+              aria-describedby="pwdnote"
+              onFocus={() => setPwdFocus(true)}
+              onBlur={() => setPwdFocus(false)}
+            />
+            <div className="group">
+              <p
+                id="pwdnote"
+                className={`instructions text-sm text-red-600 ${
+                  pwdFocus && !validPwd ? "block" : "hidden"
+                }`}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} /> 8 a 24 caracteres.
+                <br />
+                Debe incluir letras mayúsculas y minúsculas, un número y un
+                carácter especial.
+                <br />
+                Caracteres especiales permitidos:{" "}
+                <span aria-label="exclamation mark">!</span>{" "}
+                <span aria-label="at symbol">@</span>{" "}
+                <span aria-label="hashtag">#</span>{" "}
+                <span aria-label="dollar sign">$</span>{" "}
+                <span aria-label="percent">%</span>{" "}
+                <span aria-label="question mark">?</span>{" "}
+                <span aria-label="equal sign">=</span>{" "}
+                <span aria-label="asterisk">*</span>
+              </p>
+            </div>
 
-                        <label htmlFor="apellido_m">
-                            Apellido Materno
-                           
-                        </label>
-                        <input
-                            type="text"
-                            id="apellido_m"
-                            onChange={(e) => setApellido_m(e.target.value)}
-                            value={apellido_m}
-                            required
-                            onFocus={() => setApellido_mFocus(true)}
-                            onBlur={() => setApellido_mFocus(false)}
-                        />
+            {/* Confirmar contraseña */}
+            <label className="text-lg font-medium" htmlFor="confirm_pwd">
+              Confirmar Contraseña:
+              {validMatch && matchPwd ? (
+                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="password"
+              id="confirm_pwd"
+              onChange={(e) => setMatchPwd(e.target.value)}
+              value={matchPwd}
+              required
+              aria-invalid={validMatch ? "false" : "true"}
+              aria-describedby="confirmnote"
+              onFocus={() => setMatchFocus(true)}
+              onBlur={() => setMatchFocus(false)}
+            />
+            <div className="group">
+              <p
+                id="confirmnote"
+                className={`instructions text-sm text-red-600 ${
+                  matchFocus && !validMatch ? "block" : "hidden"
+                }`}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} /> Debe coincidir con la
+                primera contraseña ingresada.
+              </p>
+            </div>
 
-                        <label htmlFor="phone">
-                            Telefono:
-                        </label>
-                        <input
-                            type="tel"
-                            id="phone"
-                            onChange={(e) => setPhone(e.target.value)}
-                            value={phone}
-                            required
-                            pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                        />
+            {/* Email */}
+            <label className="pl-5 pr-2 text-lg font-medium" htmlFor="email">
+              Email:
+            </label>
+            <input
+              className="border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              required
+            />
 
-                        <label htmlFor="email">
-                            Email:
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            onChange={(e) => setEmail(e.target.value)}
-                            value={email}
-                            required
-                        />
+            {/* Teléfono */}
+            <label className="pl-5 pr-2 text-lg font-medium" htmlFor="phone">
+              Teléfono:
+            </label>
+            <input
+              className="border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="tel"
+              id="phone"
+              onChange={(e) => setPhone(e.target.value)}
+              value={phone}
+              required
+              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+            />
 
-                    
+            {/* Botón para actualizar */}
+            <button
+              className="ml-28 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              disabled={!validName || !validPwd || !validMatch ? true : false}
+            >
+              Actualizar
+            </button>
+          </form>
+        </section>
+      )}
+      <NavBar />
+    </div>
+  );
+}
 
-                        <button disabled={!validName || !validApellido_p ? true : false}>Actualizar</button>
-                    </form>
-                </section>
-            )}
-            <NavBar></NavBar>
-        </div>
-    )
-};
-
-export default EditClient
+export default EditClient;

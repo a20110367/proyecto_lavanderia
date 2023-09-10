@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Axios from "axios";
 
-function AddServicio() {
+function EditServicio({ servicioId }) {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const timeRef = useRef();
@@ -15,6 +15,25 @@ function AddServicio() {
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    async function fetchServicioData() {
+      try {
+        const response = await Axios.get(`http://localhost:5000/services/${servicioId}`);
+        const servicioData = response.data;
+
+
+        setDescription(servicioData.description);
+        setPrice(servicioData.price);
+        setTime(servicioData.time);
+        setWeight(servicioData.weight);
+      } catch (error) {
+        setErrMsg("Failed to fetch service data.");
+      }
+    }
+
+    fetchServicioData();
+  }, [servicioId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,34 +45,28 @@ function AddServicio() {
 
     try {
 
-      await Axios.post("http://localhost:5000/services", {
+      await Axios.put(`http://localhost:5000/services/${servicioId}`, {
         description,
         price,
         time,
         weight,
       });
 
-
-      setDescription("");
-      setPrice("");
-      setTime("");
-      setWeight("");
       setSuccess(true);
     } catch (err) {
 
-      setErrMsg("Failed to add service.");
+      setErrMsg("Failed to update service.");
     }
   };
 
   return (
-    <div className="add-servicio-form">
+    <div className="edit-servicio-form">
       <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Añadir Servicio</strong>
+        <strong>Editar Servicio</strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>
-         
         </section>
       ) : (
         <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
@@ -61,7 +74,7 @@ function AddServicio() {
             {errMsg}
           </p>
           <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, ingresa los datos del servicio
+            Por favor, modifica los datos del servicio
           </h1>
           <form onSubmit={handleSubmit}>
             <label className="text-lg font-medium" htmlFor="description">
@@ -118,10 +131,10 @@ function AddServicio() {
             />
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-11"
               type="submit"
             >
-              Añadir Servicio
+              Guardar Cambios
             </button>
           </form>
         </section>
@@ -130,4 +143,4 @@ function AddServicio() {
   );
 }
 
-export default AddServicio;
+export default EditServicio;

@@ -50,7 +50,7 @@ function Users() {
     }
 
     return (
-        <div className="flex flex-col mt-5">
+        <div>
             <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
                 <strong>Usuarios</strong>
             </div>
@@ -59,7 +59,7 @@ function Users() {
                     to="/addUser"
                     className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg pt-"
                 >
-                    Añadir un Nuevo Usuario
+                    Añadir Nuevo Usuario
                 </Link>
                 <div className="relative shadow rounded-lg mt-3">
                     <table className="w-full text-sm text-left text-gray-500">

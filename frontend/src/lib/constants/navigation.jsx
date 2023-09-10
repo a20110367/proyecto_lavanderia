@@ -10,6 +10,9 @@ import{
     HiShoppingCart
 } from  "react-icons/hi"
 
+import { FcSalesPerformance, FcServices } from "react-icons/fc"
+import { LuListOrdered } from "react-icons/lu"
+
 import{ MdLocalLaundryService, MdOutlineLocalLaundryService } from "react-icons/md";
 
 export const DASHBOARD_SIDEBAR_LINKS = [
@@ -44,16 +47,22 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         icon: <HiShoppingCart/>
     },
     {
-        key: 'lavados',
-        label: 'Lavado',
-        path: '/lavados',
-        icon: <MdLocalLaundryService/>
+        key: 'puntoventa',
+        label: 'Punto de Venta',
+        path: '/puntoVenta',
+        icon: <FcSalesPerformance/>
     },
     {
-        key: 'planchados',
-        label: 'Planchado',
-        path: '/planchados',
-        icon: <MdOutlineLocalLaundryService/>
+        key: 'servicios',
+        label: 'Servicios',
+        path: '/servicios',
+        icon: <FcServices/>
+    },
+    {
+        key: 'pedidos',
+        label: 'Pedidos',
+        path: '/pedidos',
+        icon: <LuListOrdered/>
     },
 ]
 
@@ -64,11 +73,4 @@ export const DASHBOARD_SIDEBAR_BOTTOM_LINKS = [
         path: '/settings',
         icon: <HiOutlineCog/>
     },
-    {
-        key: 'logout',
-        label: 'Cerrar Sesion',
-        path: '/login',
-        icon: <HiOutlineLogout/>
-
-    }
 ]

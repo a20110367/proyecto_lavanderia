@@ -6,7 +6,12 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      // Agrega clases personalizadas para mostrar u ocultar elementos
+      variants: {
+        display: ["group-hover", "group-focus"],
+      },
   },
   plugins: [],
+}
 }

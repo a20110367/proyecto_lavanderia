@@ -67,6 +67,7 @@ function Users() {
                             <tr>
                                 <th className="py-3 px-1 text-center">ID</th>
                                 <th className="py-3 px-6">Nombre</th>
+                                <th className="py-3 px-6">Nombre de usuario</th>
                                 <th className="py-3 px-6">Apellido Paterno</th>
                                 <th className="py-3 px-6">Apellido Materno</th>
                                 <th className="py-3 px-6">Rol</th>
@@ -82,6 +83,9 @@ function Users() {
                                     <td className="py-3 px-1 text-center">{index + 1}</td>
                                     <td className="py-3 px-6 font-medium text-gray-900">
                                         {user.name}
+                                    </td>
+                                    <td className="py-3 px-6 font-medium text-gray-900">
+                                        {user.userName}
                                     </td>
                                     <td className="py-3 px-6 font-medium text-gray-900">
                                         {user.firstName}

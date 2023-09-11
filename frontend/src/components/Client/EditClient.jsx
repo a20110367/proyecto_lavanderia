@@ -9,12 +9,17 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NavBar from "../../routes/Navbar";
 
-const NAME_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%*]).{8,24}$/;
 
 function EditClient() {
   const nameRef = useRef();
+  const userRef = useRef();
   const errRef = useRef();
+
+  const [userName, setUserName] = useState("");
+  const [validUserName, setValidUserName] = useState(false);
+  const [userNameFocus, setUserNameFocus] = useState(false);
 
   const [name, setName] = useState("");
   const [validName, setValidName] = useState(false);
@@ -44,9 +49,16 @@ function EditClient() {
   useEffect(() => {
     nameRef.current.focus();
   }, []);
+  
 
   useEffect(() => {
-    setValidName(NAME_REGEX.test(name));
+    setValidUserName(USER_REGEX.test(userName));
+  }, [userName]);
+
+
+
+  useEffect(() => {
+    setValidName(name.trim().length > 0);
   }, [name]);
 
   useEffect(() => {
@@ -76,7 +88,7 @@ function EditClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isNameValid = NAME_REGEX.test(name);
+    const isNameValid = USER_REGEX.test(name);
     const isPwdValid = PWD_REGEX.test(pwd);
 
     if (!isNameValid || !isPwdValid) {
@@ -162,18 +174,46 @@ function EditClient() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
+                      {/**Nombre Usuario */}
+                      <label className="text-lg font-medium" htmlFor="username">
+              Nombre de usuario
+              {validUserName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="username"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUserName(e.target.value)}
+              value={userName}
+              required
+              aria-invalid={validUserName ? "false" : "true"}
+              aria-describedby="uidnote"
+              onFocus={() => setUserNameFocus(true)}
+              onBlur={() => setUserNameFocus(false)}
+            />
             <div className="group">
               <p
-                id="namenote"
+                id="uidnote"
                 className={`instructions text-sm text-red-600 ${
-                  nameFocus && name && !validName ? "block" : "hidden"
+                  userNameFocus && userName && !validUserName
+                    ? "block"
+                    : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 4 a 24 caracteres.
+                <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
                 <br />
-                Debe comenzar con una letra.
+                Must begin with a letter.
                 <br />
-                Letras, números, guiones bajos y guiones permitidos.
+                Letters, numbers, underscores, hyphens allowed.
               </p>
             </div>
 

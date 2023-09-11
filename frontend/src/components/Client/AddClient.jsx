@@ -16,6 +16,10 @@ function AddClient() {
   const userRef = useRef();
   const errRef = useRef();
 
+  const [userName, setUserName] = useState("");
+  const [validUserName, setValidUserName] = useState(false);
+  const [userNameFocus, setUserNameFocus] = useState(false);
+
   const [name, setName] = useState("");
   const [firstName, setFirstName] = useState("");
   const [secondName, setSecondName] = useState("");
@@ -43,11 +47,15 @@ function AddClient() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setValidUserName(USER_REGEX.test(userName));
+  }, [userName]);
+
+  useEffect(() => {
     userRef.current.focus();
   }, []);
 
   useEffect(() => {
-    setValidName(USER_REGEX.test(name));
+    setValidName(name.trim().length > 0);
   }, [name]);
 
   useEffect(() => {
@@ -164,6 +172,49 @@ function AddClient() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
+            {/**Nombre Usuario */}
+            <label className="text-lg font-medium" htmlFor="username">
+              Nombre de usuario
+              {validUserName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="username"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUserName(e.target.value)}
+              value={userName}
+              required
+              aria-invalid={validUserName ? "false" : "true"}
+              aria-describedby="uidnote"
+              onFocus={() => setUserNameFocus(true)}
+              onBlur={() => setUserNameFocus(false)}
+            />
+            <div className="group">
+              <p
+                id="uidnote"
+                className={`instructions text-sm text-red-600 ${
+                  userNameFocus && userName && !validUserName
+                    ? "block"
+                    : "hidden"
+                }`}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
+                <br />
+                Must begin with a letter.
+                <br />
+                Letters, numbers, underscores, hyphens allowed.
+              </p>
+            </div>
+
             {/* First Name */}
             <label className="text-lg font-medium" htmlFor="firstName">
               Apellido Paterno

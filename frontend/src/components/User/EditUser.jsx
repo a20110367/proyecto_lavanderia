@@ -16,9 +16,22 @@ function EditUser() {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [user, setUser] = useState("");
+  const [userName, setUserName] = useState("");
+  const [validUserName, setValidUserName] = useState(false);
+  const [userNameFocus, setUserNameFocus] = useState(false);
+
+  
+  const [name, setName] = useState("");
   const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
+  const [nameFocus, setNameFocus] = useState(false);
+
+  const [firstName, setFirstName] = useState("");
+  const [validFirstName, setValidFirstName] = useState(false);
+  const [firstNameFocus, setFirstNameFocus] = useState(false);
+
+  const [secondName, setSecondName] = useState("");
+  const [validSecondName, setValidSecondName] = useState(false);
+  const [secondNameFocus, setSecondNameFocus] = useState(false);
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -41,8 +54,8 @@ function EditUser() {
   }, []);
 
   useEffect(() => {
-    setValidName(USER_REGEX.test(user));
-  }, [user]);
+    setValidUserName(USER_REGEX.test(userName));
+  }, [userName]);
 
   useEffect(() => {
     setValidPwd(PWD_REGEX.test(pwd));
@@ -51,7 +64,19 @@ function EditUser() {
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd, matchPwd]);
+  }, [userName, pwd, matchPwd]);
+
+  useEffect(() => {
+    setValidName(USER_REGEX.test(name));
+  }, [name]);
+
+  useEffect(() => {
+    setValidFirstName(firstName.trim().length > 0);
+  }, [firstName]);
+
+  useEffect(() => {
+    setValidSecondName(secondName.trim().length > 0);
+  }, [secondName]);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -59,7 +84,7 @@ function EditUser() {
   useEffect(() => {
     const getUserById = async () => {
       const response = await Axios.get(`http://localhost:5000/users/${id}`);
-      setUser(response.data.name);
+      setUserName(response.data.name);
       setPwd(response.data.pass);
       setEmail(response.data.email);
       setPhone(response.data.phone);
@@ -70,14 +95,14 @@ function EditUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(user);
+    console.log(userName);
     console.log(pwd);
     console.log(email);
     console.log(phone);
     console.log(accessToken);
     console.log(rol);
 
-    const v1 = USER_REGEX.test(user);
+    const v1 = USER_REGEX.test(userName);
     const v2 = PWD_REGEX.test(pwd);
     if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
@@ -85,7 +110,8 @@ function EditUser() {
     }
     try {
       await Axios.patch(`http://localhost:5000/users/${id}`, {
-        name: user,
+        name: name,
+        userName: userName,
         email: email,
         accessToken: "afefeg5gs656fsdf67",
         phone: phone,
@@ -95,7 +121,7 @@ function EditUser() {
 
       setSuccess(true);
 
-      setUser("");
+      setUserName("");
       setPwd("");
       setMatchPwd("");
       navigate("/login");
@@ -133,12 +159,37 @@ function EditUser() {
             {errMsg}
           </p>
           <h1 className="font-medium text-lg text-gray-500 ">
-            Actualizando perfil de: {user}
+            Actualizando perfil de: {userName}
           </h1>
           <form onSubmit={handleSubmit}>
-            <label className="text-lg font-medium" htmlFor="username">
-              Username:
+              {/**Nombre empleado */}
+              <label className="text-lg font-medium" htmlFor="name">
+              Nombre del empleado
               {validName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="name"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              required
+              aria-invalid={validName ? "false" : "true"}
+              onFocus={() => setNameFocus(true)}
+              onBlur={() => setNameFocus(false)}
+            />
+            <label className="text-lg font-medium" htmlFor="username">
+              Nombre de usuario
+              {validUserName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
                   className="ml-3 text-green-500"
@@ -153,19 +204,67 @@ function EditUser() {
               id="username"
               ref={userRef}
               autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
+              onChange={(e) => setUserName(e.target.value)}
+              value={userName}
               required
-              aria-invalid={validName ? "false" : "true"}
+              aria-invalid={validUserName ? "false" : "true"}
               aria-describedby="uidnote"
-              onFocus={() => setUserFocus(true)}
-              onBlur={() => setUserFocus(false)}
+              onFocus={() => setUserNameFocus(true)}
+              onBlur={() => setUserNameFocus(false)}
+            />
+             {/* First Name */}
+             <label className="text-lg font-medium" htmlFor="firstName">
+              Apellido Paterno
+              {validFirstName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="firstName"
+              autoComplete="off"
+              onChange={(e) => setFirstName(e.target.value)}
+              value={firstName}
+              required
+              aria-invalid={validFirstName ? "false" : "true"}
+              onFocus={() => setFirstNameFocus(true)}
+              onBlur={() => setFirstNameFocus(false)}
+            />
+            {/* Second Name */}
+            <label className="text-lg font-medium" htmlFor="secondName">
+              Apellido Materno
+              {validSecondName ? (
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
+              ) : (
+                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+              )}
+            </label>
+            <input
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              type="text"
+              id="secondName"
+              autoComplete="off"
+              onChange={(e) => setSecondName(e.target.value)}
+              value={secondName}
+              required
+              aria-invalid={validSecondName ? "false" : "true"}
+              onFocus={() => setSecondNameFocus(true)}
+              onBlur={() => setSecondNameFocus(false)}
             />
             <div className="group">
               <p
                 id="uidnote"
                 className={`instructions text-sm text-red-600 ${
-                  userFocus && user && !validName ? "block" : "hidden"
+                  userNameFocus && userName && !validUserName ? "block" : "hidden"
                 }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
@@ -300,7 +399,7 @@ function EditUser() {
 
             <button
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
-              disabled={!validName || !validPwd || !validMatch ? true : false}
+              disabled={!validUserName || !validPwd || !validMatch ? true : false}
             >
               Actualizar
             </button>

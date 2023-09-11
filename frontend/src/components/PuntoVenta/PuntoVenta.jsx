@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // import data from "../../lib/constants/data";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import Axios from "axios";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { Link } from "react-router-dom";
 
 
@@ -26,6 +26,8 @@ const TicketPDF = ({ cart, subtotal }) => {
 
 export default function PuntoVenta() {
 
+  const [cart, setCart] = useState([]);
+
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
     return response.data;
@@ -33,8 +35,6 @@ export default function PuntoVenta() {
 
   const { data } = useSWR("services", fetcher);
   if (!data) return <h2>Loading...</h2>;
-
-  const [cart, setCart] = useState([]);
 
   const addToCart = (serviceId, service) => {
     // const serviceToAdd = data.products.find((service) => service.id === serviceId);

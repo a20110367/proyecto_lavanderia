@@ -225,7 +225,10 @@ function EditUser() {
             <label className="text-lg font-medium" htmlFor="confirm_pwd">
               Confirm Password:
               {validMatch && matchPwd ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -300,6 +303,12 @@ function EditUser() {
               disabled={!validName || !validPwd || !validMatch ? true : false}
             >
               Actualizar
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              onClick={() => navigate("/users")}
+            >
+              Cancelar
             </button>
           </form>
         </section>

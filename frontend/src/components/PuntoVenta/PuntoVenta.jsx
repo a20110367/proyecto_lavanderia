@@ -1,8 +1,8 @@
-import { useState } from "react";
+import React, { useState } from "react";
 // import data from "../../lib/constants/data";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import Axios from "axios";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { Link } from "react-router-dom";
 
 

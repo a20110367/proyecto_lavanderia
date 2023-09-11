@@ -21,16 +21,24 @@ import Services from "./components/Service/Services"
 
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
+import MenuPuntoVenta from "./components/PuntoVenta/MenuPuntoVenta"
 
+//
 import Pedidos from "./components/Pedidos/Pedidos"
+import PedidosProceso from "./components/Pedidos/PedidosProceso"
+import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
 
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
 import Layout from "./components/shared/Layout"
 import Equipos from "./components/Equipos"
-import Cajas from "./components/Cajas"
+
+import Cajas from "./components/Cajas/Cajas"
+import CajaEntregas from "./components/Cajas/CajaEntregas"
 
 import './index.css'
+import CajaDevolucion from "./components/Cajas/CajaDevolucion"
+import CajaRetiros from "./components/Cajas/CajaRetiros"
 
 function App() {
     const [user, setUser] = useState(null)
@@ -66,9 +74,17 @@ function App() {
                     redirectTo="/login"
                 >
                     <Route path = "/" element = {<Layout/>}>
+                        {/*Punto de venta */}
+                        <Route path="/puntoVenta" element={<PuntoVenta/>}/>
+                        <Route path="/menuPuntoVenta" element={<MenuPuntoVenta/>}/>
+
+                        
                         <Route path = "/dashboard" element = {<Dashboard/>}/>
                         <Route path = "/equipos" element = {<Equipos />}/>
                         <Route path = "/cajas" element = {<Cajas />}/>
+                        <Route path = "/cajaEntregas" element = {<CajaEntregas />}/>
+                        <Route path = "/cajaDevolucion" element = {<CajaDevolucion />}/>
+                        <Route path = "/cajaRetiros" element = {<CajaRetiros />}/>
                         {/* Users */}
                         <Route path="/addUser" element={<AddUser />} />
                         <Route path="/editUser/:id" element={<EditUser />} />
@@ -81,9 +97,10 @@ function App() {
                         <Route path="/addService" element={<AddService/>}/>
                         <Route path="/editService/:id" element={<EditService/>}/>
                         <Route path="/services" element={<Services/>}/>
-                        {/*Punto de venta */}
-                        <Route path="/puntoVenta" element={<PuntoVenta/>}/>
+
                         <Route path="/pedidos" element={<Pedidos/>}/>
+                        <Route path="/pedidosProceso" element={<PedidosProceso/>}/>
+                        <Route path="/pedidosFinalizados" element={<PedidosFinalizados/>}/>
                     </Route>
 
                     

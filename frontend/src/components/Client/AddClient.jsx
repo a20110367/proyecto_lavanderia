@@ -73,7 +73,13 @@ function AddClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validName || !validFirstName || !validSecondName || !validEmail || !validPwd) {
+    if (
+      !validName ||
+      !validFirstName ||
+      !validSecondName ||
+      !validEmail ||
+      !validPwd
+    ) {
       setErrMsg("Invalid Entry");
       return;
     }
@@ -137,7 +143,10 @@ function AddClient() {
             <label className="text-lg font-medium" htmlFor="name">
               Name
               {validName ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -159,7 +168,10 @@ function AddClient() {
             <label className="text-lg font-medium" htmlFor="firstName">
               Apellido Paterno
               {validFirstName ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -180,7 +192,10 @@ function AddClient() {
             <label className="text-lg font-medium" htmlFor="secondName">
               Apellido Materno
               {validSecondName ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -200,7 +215,6 @@ function AddClient() {
             {/* Email */}
             <label className="text-lg font-medium" htmlFor="email">
               Email
-
             </label>
             <input
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
@@ -231,7 +245,10 @@ function AddClient() {
             <label className="text-lg font-medium" htmlFor="password">
               Password
               {validPwd ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -273,9 +290,21 @@ function AddClient() {
 
             <button
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
-              disabled={!validName || !validFirstName || !validSecondName || !validEmail || !validPwd}
+              disabled={
+                !validName ||
+                !validFirstName ||
+                !validSecondName ||
+                !validEmail ||
+                !validPwd
+              }
             >
               Sign Up
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              onClick={() => navigate("/clients")}
+            >
+              Cancelar
             </button>
           </form>
         </section>

@@ -124,6 +124,12 @@ function AddServicio() {
             >
               Añadir Servicio
             </button>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-11 ml-3"
+              onClick={() => navigate("/services")}
+            >
+              Cancelar
+            </button>
           </form>
         </section>
       )}

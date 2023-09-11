@@ -17,6 +17,12 @@ import{ MdLocalLaundryService, MdOutlineLocalLaundryService } from "react-icons/
 
 export const DASHBOARD_SIDEBAR_LINKS = [
     {
+        key: 'puntoventa',
+        label: 'Punto de Venta',
+        path: '/menuPuntoVenta',
+        icon: <FcSalesPerformance/>
+    },
+    {
         key: 'dashboard',
         label: 'Dashboard',
         path: '/dashboard',
@@ -45,12 +51,6 @@ export const DASHBOARD_SIDEBAR_LINKS = [
         label: 'Clientes',
         path: '/clients',
         icon: <HiShoppingCart/>
-    },
-    {
-        key: 'puntoventa',
-        label: 'Punto de Venta',
-        path: '/puntoVenta',
-        icon: <FcSalesPerformance/>
     },
     {
         key: 'services',

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import data from "../../lib/constants/data";
+// import data from "../../lib/constants/data";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
@@ -56,10 +56,19 @@ export default function PuntoVenta() {
   };
 
   const removeFromCart = (serviceId) => {
+    const updatedCart = cart.map((item) => {
+        if (item.quantity > 0) {
+          return item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
+        }else{
+          return item
+        }
+      }
+    )
+    // item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
     // const updatedCart = cart.filter((item) => item.id_service !== serviceId);
-    const updatedCart = cart.map((item) =>
-      item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
-    );
+    // const updatedCart = cart.map((item) =>
+    //   item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
+    // );
     setCart(updatedCart);
   };
 

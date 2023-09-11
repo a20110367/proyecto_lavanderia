@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export default function CajaEntregas() {
   const [pedidos, setPedidos] = useState([]);
@@ -103,6 +104,14 @@ export default function CajaEntregas() {
             ))}
           </tbody>
         </table>
+        <Link
+          to="/cajas"
+          className="mt-4 flex text-center text-decoration-none"
+        >
+          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
+            <div className="text-lg font-semibold">Volver</div>
+          </button>
+        </Link>
       </div>
     </div>
   );

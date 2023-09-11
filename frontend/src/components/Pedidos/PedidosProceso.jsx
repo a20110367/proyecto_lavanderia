@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { HiOutlineSearch } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 function PedidosProceso() {
   const [pedidos, setPedidos] = useState([]);
@@ -36,7 +37,7 @@ function PedidosProceso() {
   const filteredPedidos = pedidos.filter((pedido) => {
     return (
       pedido.nombreCliente.toLowerCase().includes(filtro.toLowerCase()) ||
-      pedido.id.toString().includes(filtro)||
+      pedido.id.toString().includes(filtro) ||
       pedido.tipoPedido.toLowerCase().includes(filtro.toLowerCase())
     );
   });
@@ -99,6 +100,14 @@ function PedidosProceso() {
             ))}
           </tbody>
         </table>
+        <Link
+          to="/menuPuntoVenta"
+          className="mt-4 flex text-center text-decoration-none"
+        >
+          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
+            <div className="text-lg font-semibold">Volver</div>
+          </button>
+        </Link>
       </div>
     </div>
   );

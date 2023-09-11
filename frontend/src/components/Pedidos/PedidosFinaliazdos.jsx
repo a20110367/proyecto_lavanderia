@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { HiOutlineSearch } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 function PedidosFinalizados() {
   const [pedidos, setPedidos] = useState([]);
@@ -84,20 +85,32 @@ function PedidosFinalizados() {
                   {pedido.tipoPedido}
                 </td>
                 <td className="py-3 px-6">${pedido.precio}</td>
-                <td className={`py-3 px-6 ${
-                  pedido.estado === "Finalizado con adeudo"
-                    ? "text-red-600"
-                    : "text-green-600"
-                }`}>
+                <td
+                  className={`py-3 px-6 ${
+                    pedido.estado === "Finalizado con adeudo"
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
                   {pedido.estado}
                   {pedido.adeudo && pedido.adeudo > 0 && (
-                    <span className="text-red-600 pl-1">(+${pedido.adeudo} Adeudo)</span>
+                    <span className="text-red-600 pl-1">
+                      (+${pedido.adeudo} Adeudo)
+                    </span>
                   )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <Link
+          to="/menuPuntoVenta"
+          className="mt-4 flex text-center text-decoration-none"
+        >
+          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
+            <div className="text-lg font-semibold">Volver</div>
+          </button>
+        </Link>
       </div>
     </div>
   );

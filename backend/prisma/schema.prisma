@@ -49,7 +49,6 @@ model Client{
   orders Order[]
 }
 
-
 enum MachineType {
   lavadora
   secadora

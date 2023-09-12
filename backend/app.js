@@ -7,6 +7,8 @@ import bcryptjs from "bcryptjs";
 import UserRoute from './routes/UserRoute.js';
 import ClientRoute from './routes/ClientRoute.js'
 import ServiceRoute from './routes/ServiceRoute.js'
+import MachineRoute from './routes/MachineRoute.js'
+import OrderRoute from './routes/OrderRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -18,6 +20,8 @@ app.use(express.json());
 app.use(UserRoute)
 app.use(ClientRoute)
 app.use(ServiceRoute)
+app.use(MachineRoute)
+app.use(OrderRoute)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

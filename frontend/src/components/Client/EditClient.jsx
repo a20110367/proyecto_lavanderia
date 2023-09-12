@@ -98,6 +98,7 @@ function EditClient() {
 
     try {
       await Axios.patch(`http://localhost:5000/clients/${id}`, {
+        username: userName,
         name: name,
         email: email,
         phone: phone,

@@ -96,6 +96,7 @@ function Signup() {
     }
     try {
       await Axios.post("http://localhost:5000/users", {
+        username: userName,
         name: name,
         userName: userName,
         email: email,

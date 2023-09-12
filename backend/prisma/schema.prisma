@@ -26,6 +26,7 @@ enum Role {
 
 model User{
   id_user Int @id @default(autoincrement())
+  username String
   name String
   firstName String
   secondName String
@@ -38,6 +39,7 @@ model User{
 
 model Client{
   id_client Int @id @default(autoincrement())
+  username String
   name String
   firstName String
   secondName String
@@ -83,6 +85,11 @@ enum PayMethod {
   efectivo
 }
 
+enum PayStatus {
+  paid
+  unpaid
+}
+
 enum OrderStatus {
   pendiente
   finalizado
@@ -91,9 +98,10 @@ enum OrderStatus {
 model Order{
   id_order Int @id @default(autoincrement())
   units Int @default(1)
-  receptionDate DateTime @db.DateTime()
-  deliveryDate DateTime @db.DateTime()
+  receptionDate DateTime @default(now())
+  deliveryDate DateTime @default(now())
   payMethod PayMethod @default(efectivo)
+  payStatus PayStatus @default(unpaid)
   orderStatus OrderStatus @default(pendiente)
   totalPrice Float
   fk_client Int

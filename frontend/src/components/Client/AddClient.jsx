@@ -94,6 +94,7 @@ function AddClient() {
 
     try {
       await Axios.post("http://localhost:5000/clients", {
+        username: userName,
         name: name,
         firstName: firstName,
         secondName: secondName,

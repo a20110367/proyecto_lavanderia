@@ -21,7 +21,7 @@ function Users() {
         return response.data;
     };
 
-    const { data } = useSWR("clients", fetcher);
+    const { data } = useSWR("users", fetcher);
     if (!data) return <h2>Loading...</h2>;
 
     const deleteUser = async (userId) => {
@@ -85,7 +85,7 @@ function Users() {
                                         {user.name}
                                     </td>
                                     <td className="py-3 px-6 font-medium text-gray-900">
-                                        {user.userName}
+                                        {user.username}
                                     </td>
                                     <td className="py-3 px-6 font-medium text-gray-900">
                                         {user.firstName}

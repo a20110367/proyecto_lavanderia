@@ -83,7 +83,7 @@ function Clients() {
                                         {client.name}
                                     </td>
                                     <td className="py-3 px-6 font-medium text-gray-900">
-                                        {client.userName}
+                                        {client.username}
                                     </td>
                                     <td className="py-3 px-6">{client.firstName}</td>
                                     <td className="py-3 px-6">{client.secondName}</td>

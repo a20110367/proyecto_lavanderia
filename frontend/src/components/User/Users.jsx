@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
@@ -12,8 +12,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 function Users() {
-    const [userSelName, setUserSelName] = React.useState();
-    const [userSelId, setUserSelId] = React.useState();
+    const [userSelName, setUserSelName] = useState();
+    const [userSelId, setUserSelId] = useState();
+    const [open, setOpen] = useState(false);
 
     const { mutate } = useSWRConfig();
     const fetcher = async () => {
@@ -28,8 +29,6 @@ function Users() {
         await Axios.delete(`http://localhost:5000/users/${userId}`);
         mutate("users");
     };
-
-    const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = (userName, userId) => {    
         setUserSelId(userId)

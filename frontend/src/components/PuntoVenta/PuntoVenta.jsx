@@ -25,6 +25,7 @@ const TicketPDF = ({ cart, subtotal }) => {
 
 export default function PuntoVenta() {
   const [cart, setCart] = useState([]);
+  const [img, setImg] = useState(["https://www.asociacionaden.com/wp-content/uploads/2021/09/lavar-la-ropa-de-deporte.jpg", "https://www.ocu.org/-/media/ocu/images/home/electrodomesticos/secadora/secadora-eficiencia-tiempo-programa.jpg?rev=ceb8727f-ccca-46dc-a0d1-f4d3e83d8031&hash=D0C547A95C98B9C4704FA36A6B136090", "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg"])
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -94,7 +95,7 @@ export default function PuntoVenta() {
                   className="bg-white rounded-lg shadow-lg"
                 >
                   <img
-                    // src={service.image}
+                    src = {img[0]}
                     alt={`Imagen de ${service.description}`}
                     className="h-48 w-full object-cover rounded-t-lg"
                   />
@@ -128,7 +129,7 @@ export default function PuntoVenta() {
                   >
                     <div className="flex items-center">
                       <img
-                        // src={product.image}
+                        src={img[0]}
                         alt={`Imagen de ${service.description}`}
                         className="h-16 w-16 object-cover rounded-lg mr-4"
                       />

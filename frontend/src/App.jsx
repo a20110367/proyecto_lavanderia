@@ -31,7 +31,11 @@ import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
 import Layout from "./components/shared/Layout"
-import Equipos from "./components/Equipos"
+
+//equipos
+import Equipos from "./components//Equipos/Equipos"
+import AddEquipo from "./components/Equipos/AddEquipo"
+import EditEquipo from "./components/Equipos/EditEquipo"
 
 import Cajas from "./components/Cajas/Cajas"
 import CajaEntregas from "./components/Cajas/CajaEntregas"
@@ -80,7 +84,11 @@ function App() {
 
                         
                         <Route path = "/dashboard" element = {<Dashboard/>}/>
+                        
                         <Route path = "/equipos" element = {<Equipos />}/>
+                        <Route path = "/addEquipo" element = {<AddEquipo/>}/>
+                        <Route path = "/editEquipo" element = {<EditEquipo/>}/>
+                        
                         <Route path = "/cajas" element = {<Cajas />}/>
                         <Route path = "/cajaEntregas" element = {<CajaEntregas />}/>
                         <Route path = "/cajaDevolucion" element = {<CajaDevolucion />}/>

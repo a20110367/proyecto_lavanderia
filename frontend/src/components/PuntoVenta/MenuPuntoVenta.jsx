@@ -34,7 +34,7 @@ export default function MenuPuntoVenta() {
         </Link>
         <Link
           to="/cajas"
-          className="bg-orange-500 text-white p-6 rounded-lg shadow-lg hover:bg-orange-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none"
+          className="bg-orange-500 text-white p-6 rounded-lg shadow-lg hover:bg-orange-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none "
           style={{ textDecoration: "none" }}
         >
           <div className="text-2xl font-semibold">Cajas</div>

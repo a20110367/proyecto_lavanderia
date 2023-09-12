@@ -2,6 +2,20 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export const authLogin = async (req, res) =>{
+    try {
+        const response = await prisma.user.findUnique({            
+            where:{
+                username: req.params.username,
+                pass: req.params.pass
+            }
+        });
+        res.status(200).json(response);
+    }catch(e){
+        res.status(404).json({msg:e.message});
+    }
+}
+
 export const getUsers = async (req, res) =>{
     try {
         const response = await prisma.user.findMany();
@@ -25,10 +39,11 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass, role} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,
@@ -45,13 +60,14 @@ export const createUser = async (req, res) =>{
 }
 
 export const updateUser =  async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass, role} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.update({
             where:{
                 id_user: Number(req.params.id)
             },
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,

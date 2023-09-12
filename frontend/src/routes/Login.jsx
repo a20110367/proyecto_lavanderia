@@ -7,10 +7,15 @@ import useSWR, { useSWRConfig } from "swr";
 
 export default function Login() {
 
-  const [user, setUser] = useState('');
+  const [username, setUsername] = useState('');
   const [pwd, setPwd] = useState('');
   const [errMsg, setErr] = useState('');
   const [success, setSuccess] = useState(false);
+
+      // const navigate = useNavigate();
+    // const location = useLocation();
+    const from = location.state?.from?.pathname || "/linkpage";
+    // const { auth, setAuth } = useAuth();
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -23,7 +28,7 @@ export default function Login() {
 
   async function loginUser (credentials) {
     try {
-      const response = await Axios.post("http://localhost:5000/users",
+      const response = await Axios.get("http://localhost:5000/authEmployee/login",
       JSON.stringify({name, pass}),
         {
           headers: { 'Content-Type': 'application/json' },
@@ -32,7 +37,7 @@ export default function Login() {
       )
       const accessToken = response?.data?.accessToken
       const rol = response?.data?.rol
-      setUser('')
+      setUsername('')
       setPwd('')
       setSuccess(true)
     }catch(err){

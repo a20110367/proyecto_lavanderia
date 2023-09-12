@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom"
 import { useState } from "react"
 
 //Routes
@@ -43,6 +43,7 @@ import CajaRetiros from "./components/Cajas/CajaRetiros"
 function App() {
     const [user, setUser] = useState(null)
     const [token, setToken] = useState();
+
 
     const login = () => {
         setUser({

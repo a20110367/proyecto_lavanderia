@@ -6,17 +6,26 @@ GET http://localhost:5000/users/1
 
 ###
 
+GET http://localhost:5000/authEmployee/login/pedrito,1234
+
+###
+
+GET http://localhost:5000/authEmployee/login/pedrito,4321
+
+###
+
 POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-    "name": "Juan",
-    "firstName": "Perez",
-    "secondName": "Perez",
-    "email": "a20110367@ceti.mx",
-    "phone": "3332515436",
-    "pass": "1234",
-    "role":  "employee"
+    "name": "Pedro",
+    "username": "pedrito",
+    "firstName": "Darkness",
+    "secondName": "Flare",
+    "email": "a20110423@ceti.mx",
+    "phone": "3325544320",
+    "pass": "4321",
+    "role":  "admin"
 }
 
 ### 

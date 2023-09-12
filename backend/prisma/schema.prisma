@@ -26,6 +26,7 @@ enum Role {
 
 model User{
   id_user Int @id @default(autoincrement())
+  username String @unique
   name String
   firstName String
   secondName String
@@ -33,11 +34,13 @@ model User{
   phone String
   pass String
   role Role @default(employee)
+  refreshTokens RefreshToken[]
   orders Order[]
 }
 
 model Client{
   id_client Int @id @default(autoincrement())
+  username String @unique
   name String
   firstName String
   secondName String
@@ -47,6 +50,14 @@ model Client{
   orders Order[]
 }
 
+model RefreshToken {
+  id_token    Int   @id @default(autoincrement())
+  hashedToken String
+  fk_user     Int
+  user        User     @relation(fields: [fk_user], references: [id_user], onDelete: Cascade)
+  revoked     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
 
 enum MachineType {
   lavadora
@@ -83,6 +94,11 @@ enum PayMethod {
   efectivo
 }
 
+enum PayStatus {
+  paid
+  unpaid
+}
+
 enum OrderStatus {
   pendiente
   finalizado
@@ -91,9 +107,10 @@ enum OrderStatus {
 model Order{
   id_order Int @id @default(autoincrement())
   units Int @default(1)
-  receptionDate DateTime @db.DateTime()
-  deliveryDate DateTime @db.DateTime()
+  receptionDate DateTime @default(now())
+  deliveryDate DateTime @default(now())
   payMethod PayMethod @default(efectivo)
+  payStatus PayStatus @default(unpaid)
   orderStatus OrderStatus @default(pendiente)
   totalPrice Float
   fk_client Int

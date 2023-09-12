@@ -95,13 +95,13 @@ function Clients() {
                                             to={`/editClient/${client.id_client}`}
                                             className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
                                         >
-                                            Edit
+                                            Editar
                                         </Link>
                                         <button
                                             onClick={() => handleClickOpen(client.name, client.id_client)}
                                             className="font-medium bg-red-400 hover:bg-red-500 px-3 py-1 rounded text-white"
                                         >
-                                            Delete
+                                            Borrar
                                         </button>
                                         <Dialog
                                             open={open}
@@ -114,13 +114,13 @@ function Clients() {
                                             </DialogTitle>
                                             <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">
-                                                    Are you sure you want to delete the client: {clientSelName}?
+                                                    Estas seguro de eliminar al cliente: {clientSelName}?
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>
-                                                <Button onClick={handleClose}>Cancel</Button>
+                                                <Button onClick={handleClose}>Cancelar</Button>
                                                 <Button onClick={() => deleteAndClose(clientSelId)} autoFocus>
-                                                    Delete
+                                                    Borrar
                                                 </Button>
                                             </DialogActions>
                                         </Dialog>

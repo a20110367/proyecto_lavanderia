@@ -109,7 +109,7 @@ function Users() {
                                             onClick={() => handleClickOpen(user.name, user.id_user)}
                                             className="font-medium bg-red-400 hover:bg-red-500 px-3 py-1 rounded text-white"
                                         >
-                                            Delete
+                                            Borrar
                                         </button>
                                         <Dialog
                                             open={open}

@@ -12,7 +12,6 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 function Equipos() {
-
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
@@ -82,14 +81,21 @@ function Equipos() {
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {machine.model}
                   </td>
-                  
+
                   <td className="py-3 px-6">{machine.cicleTime}</td>
                   <td className="py-3 px-6">{machine.weight}</td>
-                  <td className="py-3 px-6">{machine.status}</td>
+                  <td
+                    className={`py-3 px-6 ${
+                      machine.status === "available"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {machine.status}
+                  </td>
                   <td className="py-3 px-6">{machine.notes}</td>
 
                   <td className="py-3 px-1 text-center">
-                    
                     <Link
                       to={`/editEquipo/${machine.id_machine}`}
                       className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
@@ -104,7 +110,7 @@ function Equipos() {
                     >
                       Borrar
                     </button>
-                    
+
                     <Dialog
                       open={open}
                       onClose={handleClose}
@@ -137,9 +143,7 @@ function Equipos() {
         </div>
       </div>
     </div>
-    
   );
-  
 }
 
 export default Equipos;

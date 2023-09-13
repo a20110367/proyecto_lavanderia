@@ -87,7 +87,7 @@ function App() {
                         
                         <Route path = "/equipos" element = {<Equipos />}/>
                         <Route path = "/addEquipo" element = {<AddEquipo/>}/>
-                        <Route path = "/editEquipo" element = {<EditEquipo/>}/>
+                        <Route path = "/editEquipo/:id" element = {<EditEquipo/>}/>
                         
                         <Route path = "/cajas" element = {<Cajas />}/>
                         <Route path = "/cajaEntregas" element = {<CajaEntregas />}/>

@@ -136,6 +136,22 @@ function EditEquipo() {
             Actualizando equipo con modelo: {model}
           </h1>
           <form onSubmit={handleSubmit}>
+
+            {/* Tipo de Máquina */}
+            <label className="text-lg font-medium" htmlFor="machineType">
+              Tipo de Máquina:
+            </label>
+            <select
+              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              value={machineType}
+              onChange={(e) => setMachineType(e.target.value)}
+              name="machineType"
+              id="machineType"
+            >
+              <option value="lavadora">Lavadora</option>
+              <option value="secadora">Secadora</option>
+            </select>
+
             {/* Modelo */}
             <label className="text-lg font-medium" htmlFor="model">
               Modelo:
@@ -159,24 +175,9 @@ function EditEquipo() {
               onBlur={() => setModelFocus(false)}
             />
 
-            {/* Tipo de Máquina */}
-            <label className="text-lg font-medium" htmlFor="machineType">
-              Tipo de Máquina:
-            </label>
-            <select
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
-              value={machineType}
-              onChange={(e) => setMachineType(e.target.value)}
-              name="machineType"
-              id="machineType"
-            >
-              <option value="lavadora">Lavadora</option>
-              <option value="secadora">Secadora</option>
-            </select>
-
             {/* Tiempo de Ciclo */}
             <label className="text-lg font-medium" htmlFor="cicleTime">
-              Tiempo de Ciclo:
+              Tiempo de Ciclo (Horas):
               {validCicleTime ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
               ) : (
@@ -197,7 +198,7 @@ function EditEquipo() {
 
             {/* Peso */}
             <label className="text-lg font-medium" htmlFor="weight">
-              Peso:
+              Peso (Kg):
               {validWeight ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
               ) : (

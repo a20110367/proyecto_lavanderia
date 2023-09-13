@@ -9,15 +9,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+const MODEL_REGEX = /^[A-z0-9-_]{1,191}$/;
+const TIME_REGEX = /^[0-9]{1,}$/;
+const WEIGHT_REGEX = /^[0-9]{1,}$/;
+
 function AddEquipo() {
   const modelRef = useRef();
   const errRef = useRef();
 
-  const [machineType, setMachineType] = useState("lavadora");
   const [model, setModel] = useState("");
   const [validModel, setValidModel] = useState(false);
   const [modelFocus, setModelFocus] = useState(false);
 
+  const [machineType, setMachineType] = useState("lavadora");
   const [cicleTime, setCicleTime] = useState("");
   const [validCicleTime, setValidCicleTime] = useState(false);
   const [cicleTimeFocus, setCicleTimeFocus] = useState(false);
@@ -39,20 +43,20 @@ function AddEquipo() {
   }, []);
 
   useEffect(() => {
-    setValidModel(model.trim().length > 0);
+    setValidModel(MODEL_REGEX.test(model));
   }, [model]);
+
+  useEffect(() => {
+    setValidCicleTime(TIME_REGEX.test(cicleTime));
+  }, [cicleTime]);
+
+  useEffect(() => {
+    setValidWeight(WEIGHT_REGEX.test(weight));
+  }, [weight]);
 
   useEffect(() => {
     setErrMsg("");
   }, [model, cicleTime, weight]);
-
-  useEffect(() => {
-    setValidCicleTime(!isNaN(cicleTime) && cicleTime >= 0);
-  }, [cicleTime]);
-
-  useEffect(() => {
-    setValidWeight(!isNaN(weight) && weight >= 0);
-  }, [weight]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,6 +84,7 @@ function AddEquipo() {
       setCicleTime("");
       setWeight("");
       setNotes("");
+      navigate("/equipos");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
@@ -117,7 +122,7 @@ function AddEquipo() {
           <form onSubmit={handleSubmit}>
             {/** Tipo de Máquina */}
             <label className="text-lg font-medium" htmlFor="machineType">
-              Tipo de Máquina
+              Tipo de Máquina:
             </label>
             <select
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
@@ -131,9 +136,12 @@ function AddEquipo() {
 
             {/** Modelo */}
             <label className="text-lg font-medium" htmlFor="model">
-              Modelo
+              Modelo:
               {validModel ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -154,9 +162,12 @@ function AddEquipo() {
 
             {/** Tiempo de Ciclo */}
             <label className="text-lg font-medium" htmlFor="cicleTime">
-              Tiempo de Ciclo
+              Tiempo de Ciclo (Horas):
               {validCicleTime ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -175,9 +186,12 @@ function AddEquipo() {
 
             {/** Peso */}
             <label className="text-lg font-medium" htmlFor="weight">
-              Peso
+              Peso (kg):
               {validWeight ? (
-                <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                <FontAwesomeIcon
+                  icon={faCheck}
+                  className="ml-3 text-green-500"
+                />
               ) : (
                 <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
               )}
@@ -196,21 +210,22 @@ function AddEquipo() {
 
             {/** Estado */}
             <label className="text-lg font-medium" htmlFor="status">
-              Estado
+              Estado:
             </label>
             <select
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
-              id="status"
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => setStatus(e.target.value)} 
+              name="status"
+              id="status"
             >
               <option value="available">Disponible</option>
-              <option value="unavailable">No Disponible</option>
+              <option value="unavailable">No disponible</option>
             </select>
 
             {/** Notas */}
             <label className="text-lg font-medium" htmlFor="notes">
-              Notas
+              Notas:
             </label>
             <textarea
               className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
@@ -223,7 +238,7 @@ function AddEquipo() {
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
               disabled={!validModel || !validCicleTime || !validWeight}
             >
-              Agregar Equipo
+              Agregar equipo
             </button>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"

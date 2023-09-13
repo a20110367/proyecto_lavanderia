@@ -82,8 +82,13 @@ function Pedidos() {
             {pedidos
               .filter((pedido) => {
                 return (
-                  pedido.nombreCliente.toLowerCase().includes(filtro.toLowerCase()) ||
-                  pedido.id.toString().includes(filtro)
+                  pedido.nombreCliente
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase()) ||
+                  pedido.id.toString().includes(filtro) ||
+                  pedido.nombreEmpleado
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
                 );
               })
               .map((pedido) => (
@@ -96,17 +101,21 @@ function Pedidos() {
                     {pedido.nombreEmpleado}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.tipoServicio.descripcion} (${pedido.tipoServicio.precio})
+                    {pedido.tipoServicio.descripcion} ($
+                    {pedido.tipoServicio.precio})
                   </td>
                   <td className="py-3 px-6">{pedido.fechaPedido}</td>
                   <td
                     className={`py-3 px-6 ${
-                      pedido.estatus === "Adeudo" ? "text-red-600" : "text-green-600"
+                      pedido.estatus === "Adeudo"
+                        ? "text-red-600"
+                        : "text-green-600"
                     }`}
                   >
                     {pedido.estatus === "Adeudo" ? (
                       <span className="text-red-600 pl-1">
-                        Anticipo ${pedido.tipoServicio.precio - pedido.adeudo} (+${pedido.adeudo} Adeudo)
+                        Anticipo ${pedido.tipoServicio.precio - pedido.adeudo}{" "}
+                        (+${pedido.adeudo} Adeudo)
                       </span>
                     ) : (
                       `Pagado $${pedido.tipoServicio.precio}`

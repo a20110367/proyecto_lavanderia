@@ -40,6 +40,31 @@ export default function MenuPuntoVenta() {
           <div className="text-2xl font-semibold">Cajas</div>
           <div className="mt-2">Ver movimientos de dinero</div>
         </Link>
+
+        <Link
+          to="/puntoVenta"
+          className="bg-blue-500 text-white p-6 rounded-lg shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none"
+          style={{ textDecoration: "none" }}
+        >
+          <div className="text-2xl font-semibold">Auto Servicio</div>
+          <div className="mt-2">No se lavado rapido</div>
+        </Link>
+        <Link
+          to="/pedidosProceso"
+          className="bg-green-500 text-white p-6 rounded-lg shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none"
+          style={{ textDecoration: "none" }}
+        >
+          <div className="text-2xl font-semibold">Lavado por encargo</div>
+          <div className="mt-2">Dejar encargada la ropa</div>
+        </Link>
+        <Link
+          to="/pedidosFinalizados"
+          className="bg-purple-500 text-white p-6 rounded-lg shadow-lg hover:bg-purple-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none"
+          style={{ textDecoration: "none" }}
+        >
+          <div className="text-2xl font-semibold">Planchado</div>
+          <div className="mt-2">Planchar Ropa</div>
+        </Link>
       </div>
     </div>
   );

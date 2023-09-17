@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import bcryptjs from "bcryptjs";
 
 //Rutas de los modelos
 import UserRoute from './routes/UserRoute.js';

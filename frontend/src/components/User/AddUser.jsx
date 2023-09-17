@@ -37,7 +37,6 @@ function Signup() {
   const [pwdFocus, setPwdFocus] = useState(false);
 
   const [email, setEmail] = useState("");
-  const [accessToken, setAccessToken] = useState("");
   const [phone, setPhone] = useState("");
   const [rol, setRol] = useState("cajero");
 
@@ -81,12 +80,12 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(userName);
-    console.log(pwd);
-    console.log(email);
-    console.log(phone);
-    console.log(accessToken);
-    console.log(rol);
+    // console.log(userName);
+    // console.log(pwd);
+    // console.log(email);
+    // console.log(phone);
+    // console.log(accessToken);
+    // console.log(rol);
     // if button enabled with JS hack
     const v1 = USER_REGEX.test(userName);
     const v2 = PWD_REGEX.test(pwd);
@@ -100,7 +99,6 @@ function Signup() {
         name: name,
         userName: userName,
         email: email,
-        accessToken: "afefeg5gs656fsdf67",
         phone: phone,
         rol: rol,
         pass: pwd,
@@ -111,7 +109,7 @@ function Signup() {
       setUserName("");
       setPwd("");
       setMatchPwd("");
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -394,7 +392,7 @@ function Signup() {
                 !validUserName || !validPwd || !validMatch ? true : false
               }
             >
-              Sign Up
+              Registrar
             </button>
             <button
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"

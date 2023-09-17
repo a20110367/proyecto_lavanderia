@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { useState } from "react"
+import './index.css'
 
 //Routes
 import Login from './routes/Login'
@@ -36,7 +37,6 @@ import Equipos from "./components/Equipos"
 import Cajas from "./components/Cajas/Cajas"
 import CajaEntregas from "./components/Cajas/CajaEntregas"
 
-import './index.css'
 import CajaDevolucion from "./components/Cajas/CajaDevolucion"
 import CajaRetiros from "./components/Cajas/CajaRetiros"
 
@@ -64,11 +64,11 @@ function App() {
                 )
             }
             <Routes>
-            
+
             <Route index element={<Login />} />
                 <Route path="/login" setToken={setToken} element={<Login />} />
-
-                {/* Rutas Protejidas */}
+                
+                {/* Rutas Protegidas */}
                 <Route element={<ProtectedRoute
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
@@ -77,7 +77,6 @@ function App() {
                         {/*Punto de venta */}
                         <Route path="/puntoVenta" element={<PuntoVenta/>}/>
                         <Route path="/menuPuntoVenta" element={<MenuPuntoVenta/>}/>
-
                         
                         <Route path = "/dashboard" element = {<Dashboard/>}/>
                         <Route path = "/equipos" element = {<Equipos />}/>
@@ -102,11 +101,7 @@ function App() {
                         <Route path="/pedidosProceso" element={<PedidosProceso/>}/>
                         <Route path="/pedidosFinalizados" element={<PedidosFinalizados/>}/>
                     </Route>
-
-                    
                 </Route>
-                
-                
             </Routes>
         </Router>
     )

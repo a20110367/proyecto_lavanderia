@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+// import bcryptjs from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -67,7 +68,7 @@ export const updateClient =  async (req, res) =>{
 
 export const deleteClient =  async (req, res) =>{
     try {
-        const user = await prisma.client.delete({
+        const client = await prisma.client.delete({
             where:{
                 id_client: Number(req.params.id)
             }

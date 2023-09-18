@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Axios from "axios";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
@@ -13,17 +12,29 @@ function PedidosProceso() {
       {
         id: 1,
         nombreCliente: "Saul",
-        tipoPedido: "Lavado de patas",
-        precio: 100,
-        estado: "Pagado",
+        nombreEmpleado: "Juan",
+        tipoServicio: { descripcion: "Lavado de patas", precio: 100 },
+        fechaPedido: "2023-09-12",
+        estatus: "En proceso", // Cambiado a "En proceso"
+        adeudo: 0,
       },
       {
         id: 2,
         nombreCliente: "Axel",
-        tipoPedido: "Monas Chinas",
-        precio: 150,
-        estado: "Adeudo",
+        nombreEmpleado: "Maria",
+        tipoServicio: { descripcion: "Monas Chinas", precio: 150 },
+        fechaPedido: "2023-09-13",
+        estatus: "Atrasado", // Cambiado a "Atrasado"
         adeudo: 50,
+      },
+      {
+        id: 3,
+        nombreCliente: "Carlos",
+        nombreEmpleado: "Luis",
+        tipoServicio: { descripcion: "Planchado", precio: 80 },
+        fechaPedido: "2023-09-14",
+        estatus: "Finalizado", // Cambiado a "Finalizado"
+        adeudo: 0,
       },
     ];
 
@@ -34,19 +45,24 @@ function PedidosProceso() {
     setFiltro(event.target.value);
   };
 
-  const filteredPedidos = pedidos.filter((pedido) => {
-    return (
-      pedido.nombreCliente.toLowerCase().includes(filtro.toLowerCase()) ||
-      pedido.id.toString().includes(filtro) ||
-      pedido.tipoPedido.toLowerCase().includes(filtro.toLowerCase())
-    );
-  });
+  const getStatusClass = (estatus) => {
+    switch (estatus) {
+      case "En proceso":
+        return "text-yellow-600";
+      case "Finalizado":
+        return "text-green-600";
+      case "Atrasado":
+        return "text-red-600";
+      default:
+        return "";
+    }
+  };
 
   return (
     <div>
       <div className="mb-3">
-        <div className=" bg-white px-4 pt-3 pb-4 rounded-md border vorder-gray-200 flex-1">
-          <strong>Pedidos en Proceso</strong>
+        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
+          <strong>Pedidos</strong>
         </div>
       </div>
       <div className="bg-neutral-600 rounded-md min-h-screen p-4">
@@ -54,13 +70,13 @@ function PedidosProceso() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Buscar..."
+              placeholder="Buscar por nombre del cliente o ID..."
               className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
               value={filtro}
               onChange={handleFiltroChange}
             />
             <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400 " />
+              <HiOutlineSearch fontSize={20} className="text-gray-400" />
             </div>
           </div>
         </div>
@@ -69,35 +85,52 @@ function PedidosProceso() {
             <tr>
               <th className="py-3 px-1 text-center">ID</th>
               <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Tipo de Pedido</th>
-              <th className="py-3 px-6">Precio</th>
-              <th className="py-3 px-6">Estado</th>
+              <th className="py-3 px-6">Nombre del Empleado</th>
+              <th className="py-3 px-6">Tipo de Servicio</th>
+              <th className="py-3 px-6">Fechas del Pedido</th>
+              <th className="py-3 px-6">Estatus</th>
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id}>
-                <td className="py-3 px-1 text-center">{pedido.id}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.nombreCliente}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.tipoPedido}
-                </td>
-                <td className="py-3 px-6">${pedido.precio}</td>
-                <td
-                  className={`py-3 px-6 ${
-                    pedido.estado === "Pagado"
-                      ? "text-green-600"
-                      : "text-red-600"
-                  }`}
-                >
-                  {pedido.estado === "Adeudo"
-                    ? `$${pedido.adeudo} Adeudo`
-                    : pedido.estado}
-                </td>
-              </tr>
-            ))}
+            {pedidos
+              .filter((pedido) => {
+                return (
+                  pedido.nombreCliente
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase()) ||
+                  pedido.id.toString().includes(filtro) ||
+                  pedido.nombreEmpleado
+                  .toLowerCase()
+                  .includes(filtro.toLowerCase())
+                );
+              })
+              .map((pedido) => (
+                <tr className="bg-white border-b" key={pedido.id}>
+                  <td className="py-3 px-1 text-center">{pedido.id}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.nombreCliente}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.nombreEmpleado}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.tipoServicio.descripcion} ($
+                    {pedido.tipoServicio.precio})
+                  </td>
+                  <td className="py-3 px-6">{pedido.fechaPedido}</td>
+                  <td
+                    className={`py-3 px-6 ${getStatusClass(pedido.estatus)}`} // Asignar clase CSS según el estatus
+                  >
+                    {pedido.estatus === "En proceso" ? (
+                      <span className="text-yellow-600 pl-1">En proceso</span>
+                    ) : pedido.estatus === "Atrasado" ? (
+                      <span className="text-red-600 pl-1">Atrasado</span>
+                    ) : (
+                      `Finalizado $${pedido.tipoServicio.precio}`
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
         <Link

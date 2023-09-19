@@ -100,4 +100,7 @@
 	.shadow-container {
 		@apply relative shadow rounded-lg mt-3
 	}
+	.img-pos {
+		@apply h-48 w-full object-cover rounded-t-lg
+	}
 }

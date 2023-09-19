@@ -6,6 +6,16 @@ GET http://localhost:5000/users/1
 
 ###
 
+POST http://localhost:5000/auth
+Content-Type: application/json
+
+{
+    "username": "pedrito",
+    "pwd": "4321"
+}
+
+###
+
 GET http://localhost:5000/orders
 
 ###

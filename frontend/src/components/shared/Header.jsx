@@ -4,25 +4,39 @@ import {
   HiOutlineChatAlt,
   HiOutlineSearch,
 } from "react-icons/hi";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Popover, Transition, Menu } from "@headlessui/react";
+import { Button } from "antd";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ toggleCollapsed, collapsed }) {
   const navigate = useNavigate();
 
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <div className="relative">
-        <HiOutlineSearch
-          fontSize={20}
-          className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
-        />
-        <input
+      <div className="flex items-center">
+        {" "}
+        {/* Nueva div para alinear elementos */}
+        <Button
           type="text"
-          placeholder="Buscar..."
-          className="text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4"
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => toggleCollapsed()}
+          className="text-lg pl- w-16 h-16"
         />
+        <div className="relative ml-4">
+          {" "}
+          {/* Espacio para el botón de búsqueda */}
+          <HiOutlineSearch
+            fontSize={20}
+            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+          />
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4"
+          />
+        </div>
       </div>
       <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">

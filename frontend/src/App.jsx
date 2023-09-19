@@ -31,7 +31,7 @@ import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
 
 import Dashboard from './components/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
-import Layout from "./components/shared/Layout"
+import Sidebar from "./components/shared/Sidebar"
 
 //equipos
 import Equipos from "./components//Equipos/Equipos"
@@ -77,7 +77,7 @@ function App() {
                     isAuth={!!user && user.role.includes('admin')} />}
                     redirectTo="/login"
                 >
-                    <Route path = "/" element = {<Layout/>}>
+                    <Route path = "/" element = {<Sidebar/>}>
                         {/*Punto de venta */}
                         <Route path="/puntoVenta" element={<PuntoVenta/>}/>
                         <Route path="/menuPuntoVenta" element={<MenuPuntoVenta/>}/>

@@ -1,49 +1,132 @@
-import React from 'react'
-import { FcFullTrash } from 'react-icons/fc'
-import { DASHBOARD_SIDEBAR_BOTTOM_LINKS, DASHBOARD_SIDEBAR_LINKS } from '../../lib/constants/navigation'
-import { Link, useLocation } from 'react-router-dom'
-import classNames from 'classnames'
-import { HiOutlineLogout } from 'react-icons/hi'
+import React, { useState, useEffect } from "react";
+import {
+  SettingOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
+import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
+import {
+  MdOutlineLocalLaundryService,
+  MdLocalLaundryService,
+} from "react-icons/md";
+import { FcSalesPerformance, FcServices, FcFullTrash } from "react-icons/fc";
+import { LuListOrdered } from "react-icons/lu";
+import { Layout, Menu} from "antd";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 
-const linkClass =
-	'flex items-center gap-2 font-light px-3 py-2 hover:bg-neutral-700 hover:no-underline active:bg-neutral-600 rounded-sm text-base'
+import Header from "./Header";
+const { Sider, Content } = Layout;
 
-
-export default function Sidebar() {
-  return ( 
-    <div className="bg-neutral-900 w-60 p-3 flex flex-col">
-        <div className="flex items-center gap-2 px-1 py-3"> 
-            <FcFullTrash fontSize={24}/> 
-            <span className="text-neutral-200 text-lg">Laundry System</span>
-        </div>
-        <div className="py-8 flex flex-1 flex-col gap-0.5">
-            {DASHBOARD_SIDEBAR_LINKS.map((item) =>(
-                <SidebarLink key={item.key} item={item} />
-            ))}
-        </div>
-        <div className="flex flex-col gap-0.5 pt-2 border-t border-neutral-700">
-            {DASHBOARD_SIDEBAR_BOTTOM_LINKS.map((item) =>(
-                <SidebarLink key={item.key} item={item}/>
-            ))}
-            <div className={classNames(linkClass, 'cursor-pointer text-red-500')}>
-                <span>
-                    <HiOutlineLogout />
-                </span>
-                Cerrar Sesion
-            </div>
-        </div>
-    </div>
-  )
+function getItem(label, key, icon, children, type) {
+  return {
+    key,
+    icon,
+    children,
+    label,
+    type,
+  };
 }
 
-function SidebarLink ({item}) {
+const items = [
+  getItem("Autoservicio", "/menuPuntoVenta", <FcSalesPerformance />),
+  getItem("Lavanderia", "/lavanderia", <MdOutlineLocalLaundryService />, [
+    getItem("Encargo", "/encargo"),
+    getItem("Recepcion", "/recepcion"),
+    getItem("Entrega", "/entrega"),
+  ]),
+  getItem("Planchado", "/planchado", <MdLocalLaundryService />, [
+    getItem("Recepcion", "/recepcion"),
+    getItem("Entrega", "/entrega"),
+  ]),
+  getItem("Pedidos", "/pedidos", <LuListOrdered />, [
+    getItem("Lavanderia", "/pedidosLavanderia"),
+    getItem("Planchado", "/pedidosPlanchado"),
+  ]),
+  getItem("Clientes", "/clients", <HiShoppingCart />),
 
-    const {pathname} = useLocation()
+  getItem("Caja", "/cajas", <HiCash />, [
+    getItem("Inicio de caja", "/cajas"),
+    getItem("Corte de caja Turno", "/corteCajaTurno"),
+    getItem("Corte de caja Parcial", "/corteCajaParcial"),
+    getItem("Retiro de caja", "/retiroCaja"),
+    getItem("Reembolsos", "/reembolsos"),
+  ]),
+  getItem("Equipos", "/equipos", <HiTruck />, [
+    getItem("Equipos", "/equipos"),
+    getItem("Activar Equipos", "/activarEquipos"),
+    getItem("Administrar Equipos", "/adminEquipos"),
+  ]),
 
-    return(
-        <Link to={item.path} className={classNames(pathname === item.path ? 'bg-neutral-700 text-white' : 'text-neutral-400', linkClass)}>
-            <span className="text-xl">{item.icon}</span>
-            {item.label}
-        </Link>
-    )
+  getItem("Usurarios", "/users", <HiUsers />),
+  getItem("Servicios", "/services", <FcServices />),
+
+  { type: "divider", style: { margin: "122px " } },
+
+  getItem("Settings", "settings", <SettingOutlined />), // Agregado: Settings
+  getItem("Logout", "logout", <LogoutOutlined />),
+];
+
+export default function Sidebar () {
+  const [collapsed, setCollapsed] = useState(false);
+
+  const location = useLocation();
+  const [selectedKeys, setSelectedKeys] = useState("/");
+
+  useEffect(() => {
+    const pathName = location.pathname;
+    setSelectedKeys(pathName);
+  }, [location.pathname]);
+
+  const navigate = useNavigate();
+
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  return (
+    <Layout className="min-h-screen">
+      <Sider
+        className={` ${collapsed ? "text-center" : ""}`}
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+      >
+        <div className="h-16 bg-slate-900 flex items-center gap-2 px-1 py-3">
+          <FcFullTrash
+            fontSize={24}
+            className={`mx-auto ${collapsed ? "w-full" : ""}`}
+          />
+          <span
+            className={`text-neutral-200 text-lg pr-4 ${
+              collapsed ? "hidden" : "block"
+            }`}
+          >
+            Laundry System
+          </span>
+        </div>
+
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[selectedKeys]}
+          items={[
+            ...items, // Agrega los elementos del menú aquí
+          ]}
+          onClick={(item) => {
+            setSelectedKeys(item.key);
+            navigate(item.key);
+          }}
+          className="bg-slate-900"
+        />
+      </Sider>
+      <Layout className="bg-gray-700">
+        <Header
+          collapsed={collapsed}
+          toggleCollapsed={toggleCollapsed}
+        ></Header>
+        <Content className="bg-white rounded-lg m-3 p-3 min-h-80 mb-4">
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
+  );
 }

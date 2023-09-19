@@ -7,7 +7,6 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import NavBar from "../../routes/Navbar";
 
 const MODEL_REGEX = /^[A-z0-9-_]{1,191}$/;
 const TIME_REGEX = /^[0-9]{1,}$/;
@@ -113,8 +112,9 @@ function EditEquipo() {
 
   return (
     <div className="signup-form">
-      <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-        <strong>Actualizar Datos de Equipo</strong>
+      <div className="title-container">
+        <p className="input-label">Editando equipo con modelo:</p>   
+        <strong className="title-strong">{model}</strong>
       </div>
       {success ? (
         <section>
@@ -124,7 +124,7 @@ function EditEquipo() {
           </p>
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
+        <section className="basic-container">
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -132,17 +132,14 @@ function EditEquipo() {
           >
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500">
-            Actualizando equipo con modelo: {model}
-          </h1>
           <form onSubmit={handleSubmit}>
 
             {/* Tipo de Máquina */}
-            <label className="text-lg font-medium" htmlFor="machineType">
+            <label className="input-label" htmlFor="machineType">
               Tipo de Máquina:
             </label>
             <select
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               value={machineType}
               onChange={(e) => setMachineType(e.target.value)}
               name="machineType"
@@ -153,16 +150,16 @@ function EditEquipo() {
             </select>
 
             {/* Modelo */}
-            <label className="text-lg font-medium" htmlFor="model">
+            <label className="input-label" htmlFor="model">
               Modelo:
               {validModel ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="model"
               ref={modelRef}
@@ -176,16 +173,16 @@ function EditEquipo() {
             />
 
             {/* Tiempo de Ciclo */}
-            <label className="text-lg font-medium" htmlFor="cicleTime">
+            <label className="input-label" htmlFor="cicleTime">
               Tiempo de Ciclo (Horas):
               {validCicleTime ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="cicleTime"
               onChange={(e) => setCicleTime(e.target.value)}
@@ -197,7 +194,7 @@ function EditEquipo() {
             />
 
             {/* Peso */}
-            <label className="text-lg font-medium" htmlFor="weight">
+            <label className="input-label" htmlFor="weight">
               Peso (Kg):
               {validWeight ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -206,7 +203,7 @@ function EditEquipo() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="weight"
               onChange={(e) => setWeight(e.target.value)}
@@ -218,11 +215,11 @@ function EditEquipo() {
             />
 
             {/* Estado */}
-            <label className="text-lg font-medium" htmlFor="status">
+            <label className="input-label" htmlFor="status">
               Estado:
             </label>
             <select
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="select-2ry"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               name="status"
@@ -233,24 +230,24 @@ function EditEquipo() {
             </select>
 
             {/* Notas */}
-            <label className="text-lg font-medium" htmlFor="notes">
+            <label className="input-label" htmlFor="notes">
               Notas:
             </label>
             <textarea
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-lg"
               id="notes"
               onChange={(e) => setNotes(e.target.value)}
               value={notes}
             />
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-edit"
               disabled={!validModel || !validCicleTime || !validWeight}
             >
               Actualizar
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/equipos")}
             >
               Cancelar
@@ -258,7 +255,6 @@ function EditEquipo() {
           </form>
         </section>
       )}
-      <NavBar></NavBar>
     </div>
   );
 }

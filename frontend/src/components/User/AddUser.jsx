@@ -37,7 +37,6 @@ function Signup() {
   const [pwdFocus, setPwdFocus] = useState(false);
 
   const [email, setEmail] = useState("");
-  const [accessToken, setAccessToken] = useState("");
   const [phone, setPhone] = useState("");
   const [rol, setRol] = useState("cajero");
 
@@ -81,12 +80,6 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(userName);
-    console.log(pwd);
-    console.log(email);
-    console.log(phone);
-    console.log(accessToken);
-    console.log(rol);
     // if button enabled with JS hack
     const v1 = USER_REGEX.test(userName);
     const v2 = PWD_REGEX.test(pwd);
@@ -99,8 +92,9 @@ function Signup() {
         username: userName,
         name: name,
         userName: userName,
+        firstName: firstName,
+        secondName: secondName,
         email: email,
-        accessToken: "afefeg5gs656fsdf67",
         phone: phone,
         rol: rol,
         pass: pwd,
@@ -111,7 +105,7 @@ function Signup() {
       setUserName("");
       setPwd("");
       setMatchPwd("");
-      navigate("/login");
+      navigate("/dashboard");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -126,18 +120,19 @@ function Signup() {
 
   return (
     <div className="signup-form">
-      <div className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-        <strong>Añadir Usuario</strong>
+      <div className=" basic-container w-5/12">
+        <strong className="input-label">Favor de rellenar los campos solicitados 
+          para añadir el usuario</strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>
           <p>
-            <a href="/login">Sign In</a>
+            <a href="/users">Usuarios</a>
           </p>
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+        <section className="basic-container">
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -145,12 +140,9 @@ function Signup() {
           >
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor añade los datos de Registro
-          </h1>
           <form onSubmit={handleSubmit}>
             {/**Nombre empleado */}
-            <label className="text-lg font-medium" htmlFor="name">
+            <label className="input-label" htmlFor="name">
               Nombre del empleado
               {validName ? (
                 <FontAwesomeIcon
@@ -158,11 +150,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="name"
               ref={userRef}
@@ -174,7 +166,7 @@ function Signup() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
-            <label className="text-lg font-medium" htmlFor="username">
+            <label className="input-label" htmlFor="username">
               Nombre de usuario
               {validUserName ? (
                 <FontAwesomeIcon
@@ -182,11 +174,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="username"
               ref={userRef}
@@ -199,25 +191,24 @@ function Signup() {
               onFocus={() => setUserNameFocus(true)}
               onBlur={() => setUserNameFocus(false)}
             />
+
             <div className="group">
               <p
                 id="uidnote"
-                className={`instructions text-sm text-red-600 ${
-                  userNameFocus && userName && !validUserName
-                    ? "block"
-                    : "hidden"
+                className={`instructions ${
+                  userNameFocus && userName && !validUserName ? "block" : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
+                <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
                 <br />
-                Must begin with a letter.
+                Debera iniciar con una letra.                
                 <br />
-                Letters, numbers, underscores, hyphens allowed.
+                Letras, numeros, guiones y guiones bajos estan permitidos.
               </p>
             </div>
 
             {/* First Name */}
-            <label className="text-lg font-medium" htmlFor="firstName">
+            <label className="input-label" htmlFor="firstName">
               Apellido Paterno
               {validFirstName ? (
                 <FontAwesomeIcon
@@ -225,11 +216,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="firstName"
               autoComplete="off"
@@ -249,11 +240,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="secondName"
               autoComplete="off"
@@ -264,7 +255,7 @@ function Signup() {
               onFocus={() => setSecondNameFocus(true)}
               onBlur={() => setSecondNameFocus(false)}
             />
-            <label className="text-lg font-medium" htmlFor="password">
+            <label className="input-label" htmlFor="password">
               Password
               {validPwd ? (
                 <FontAwesomeIcon
@@ -272,11 +263,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="password"
               id="password"
               onChange={(e) => setPwd(e.target.value)}
@@ -287,19 +278,20 @@ function Signup() {
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
             />
+
             <div className="group">
               <p
                 id="pwdnote"
-                className={`instructions text-sm text-red-600 ${
+                className={`instructions ${
                   pwdFocus && !validPwd ? "block" : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 8 to 24 characters.
+                <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
                 <br />
-                Must include uppercase and lowercase letters, a number and a
-                special character.
+                Debera incluir al menos una Mayuscula, Minuscula, 
+                un Número y un caracter Especial
                 <br />
-                Allowed special characters:{" "}
+                Caracteres Especiale Permitidos:{" "}
                 <span aria-label="exclamation mark">!</span>{" "}
                 <span aria-label="at symbol">@</span>{" "}
                 <span aria-label="hashtag">#</span>{" "}
@@ -310,7 +302,8 @@ function Signup() {
                 <span aria-label="percent">*</span>
               </p>
             </div>
-            <label className="text-lg font-medium" htmlFor="confirm_pwd">
+
+            <label className="input-label" htmlFor="confirm_pwd">
               Confirm Password
               {validMatch && matchPwd ? (
                 <FontAwesomeIcon
@@ -318,11 +311,11 @@ function Signup() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="password"
               id="confirm_pwd"
               onChange={(e) => setMatchPwd(e.target.value)}
@@ -336,20 +329,21 @@ function Signup() {
             <div className="group">
               <p
                 id="confirmnote"
-                className={`instructions text-sm text-red-600 ${
+                className={`instructions ${
                   matchFocus && !validMatch ? "block" : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> Must match the first
-                password input field.
+                <FontAwesomeIcon icon={faInfoCircle} /> 
+                Debe coindicir con el primer campo de la contraseña.
               </p>
             </div>
+
             <div className="mt-3">
-              <label className=" pl-5 pr-2 text-lg font-medium" htmlFor="email">
+              <label className="input-label" htmlFor="email">
                 Email
               </label>
               <input
-                className=" border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+                className="input-2ry"
                 type="email"
                 id="email"
                 onChange={(e) => setEmail(e.target.value)}
@@ -358,13 +352,13 @@ function Signup() {
               />
 
               <label
-                className="  pl-5 pr-2 text-lg font-medium"
+                className="input-label"
                 htmlFor="phone"
               >
                 Telefono
               </label>
               <input
-                className=" border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+                className="input-2ry"
                 type="tel"
                 id="phone"
                 onChange={(e) => setPhone(e.target.value)}
@@ -373,12 +367,12 @@ function Signup() {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               />
 
-              <label className=" pl-5 pr-2 text-lg font-medium" htmlFor="rol">
+              <label className="input-label" htmlFor="rol">
                 Rol:
               </label>
 
               <select
-                className=" appearance-none bg-white border-2 border-gray-300 rounded-lg py-3 px-4 pr-8 leading-tight focus:outline-none focus:border-green-500 focus:shadow-outline-green"
+                className="select-prim"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 name="rol"
@@ -389,15 +383,15 @@ function Signup() {
               </select>
             </div>
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-primary"
               disabled={
                 !validUserName || !validPwd || !validMatch ? true : false
               }
             >
-              Sign Up
+              Añadir Empleado
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/users")}
             >
               Cancelar
@@ -405,7 +399,6 @@ function Signup() {
           </form>
         </section>
       )}
-      <Navbar></Navbar>
     </div>
   );
 }

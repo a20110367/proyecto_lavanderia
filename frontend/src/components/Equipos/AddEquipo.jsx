@@ -97,8 +97,8 @@ function AddEquipo() {
 
   return (
     <div className="add-equipo-form">
-      <div className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-        <strong>Añadir Equipo</strong>
+      <div className="basic-container w-5/12">
+        <strong className="input-label">Por favor, complete los datos del equipo</strong>
       </div>
       {success ? (
         <section>
@@ -108,7 +108,7 @@ function AddEquipo() {
           </p>
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
+        <section className="basic-container">
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -116,16 +116,13 @@ function AddEquipo() {
           >
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, complete los datos del equipo
-          </h1>
           <form onSubmit={handleSubmit}>
             {/** Tipo de Máquina */}
             <label className="text-lg font-medium" htmlFor="machineType">
               Tipo de Máquina:
             </label>
             <select
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="select-2ry"
               id="machineType"
               value={machineType}
               onChange={(e) => setMachineType(e.target.value)}
@@ -143,11 +140,11 @@ function AddEquipo() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="model"
               ref={modelRef}
@@ -161,7 +158,7 @@ function AddEquipo() {
             />
 
             {/** Tiempo de Ciclo */}
-            <label className="text-lg font-medium" htmlFor="cicleTime">
+            <label className="input-label" htmlFor="cicleTime">
               Tiempo de Ciclo (Horas):
               {validCicleTime ? (
                 <FontAwesomeIcon
@@ -169,11 +166,11 @@ function AddEquipo() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="cicleTime"
               onChange={(e) => setCicleTime(e.target.value)}
@@ -185,7 +182,7 @@ function AddEquipo() {
             />
 
             {/** Peso */}
-            <label className="text-lg font-medium" htmlFor="weight">
+            <label className="input-label" htmlFor="weight">
               Peso (kg):
               {validWeight ? (
                 <FontAwesomeIcon
@@ -193,11 +190,11 @@ function AddEquipo() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="weight"
               onChange={(e) => setWeight(e.target.value)}
@@ -209,11 +206,11 @@ function AddEquipo() {
             />
 
             {/** Estado */}
-            <label className="text-lg font-medium" htmlFor="status">
+            <label className="input-label" htmlFor="status">
               Estado:
             </label>
             <select
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="select-2ry"
               value={status}
               onChange={(e) => setStatus(e.target.value)} 
               name="status"
@@ -224,24 +221,24 @@ function AddEquipo() {
             </select>
 
             {/** Notas */}
-            <label className="text-lg font-medium" htmlFor="notes">
+            <label className="input-label" htmlFor="notes">
               Notas:
             </label>
             <textarea
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-lg"
               id="notes"
               onChange={(e) => setNotes(e.target.value)}
               value={notes}
             />
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-primary"
               disabled={!validModel || !validCicleTime || !validWeight}
             >
-              Agregar equipo
+              Registrar Equipo
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/equipos")}
             >
               Cancelar
@@ -249,7 +246,6 @@ function AddEquipo() {
           </form>
         </section>
       )}
-      <Navbar></Navbar>
     </div>
   );
 }

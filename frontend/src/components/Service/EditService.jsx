@@ -57,27 +57,25 @@ function EditService() {
 
   return (
     <div className="edit-servicio-form">
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Editar Servicio</strong>
+      <div className="title-container">
+        <p className="input-label">Editando servicio de:</p>   
+        <strong className="title-strong">{description}</strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
+        <section className="basic-container">
           <p className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, modifica los datos del servicio
-          </h1>
           <form onSubmit={handleSubmit}>
-            <label className="text-lg font-medium" htmlFor="description">
+            <label className="input-label" htmlFor="description">
               Descripción
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="description"
               ref={descriptionRef}
@@ -87,11 +85,11 @@ function EditService() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="price">
+            <label className="input-label" htmlFor="price">
               Precio Unitario
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="price"
               ref={priceRef}
@@ -100,11 +98,11 @@ function EditService() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="time">
+            <label className="input-label" htmlFor="time">
               Tiempo (minutos)
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="time"
               ref={timeRef}
@@ -113,11 +111,11 @@ function EditService() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="weight">
+            <label className="input-label" htmlFor="weight">
               Peso (gramos)
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="weight"
               ref={weightRef}
@@ -127,13 +125,13 @@ function EditService() {
             />
 
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-edit"
               type="submit"
             >
-              Guardar Cambios
+              Actualizar
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-11 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/services")}
             >
               Cancelar

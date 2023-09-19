@@ -125,18 +125,18 @@ function AddClient() {
 
   return (
     <div className="signup-form">
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Añadir Cliente</strong>
+      <div className=" basic-container w-5/12">
+        <strong className="input-label">Por favor añada los detalles del cliente</strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>
           <p>
-            <a href="/login">Sign In</a>
+            <a href="/clients">Clientes</a>
           </p>
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
+        <section className="basic-container">
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -144,12 +144,9 @@ function AddClient() {
           >
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor añada los detalles del cliente
-          </h1>
           <form onSubmit={handleSubmit}>
             {/* Name */}
-            <label className="text-lg font-medium" htmlFor="name">
+            <label className="input-label" htmlFor="name">
               Name
               {validName ? (
                 <FontAwesomeIcon
@@ -157,11 +154,11 @@ function AddClient() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="name"
               ref={userRef}
@@ -174,7 +171,7 @@ function AddClient() {
               onBlur={() => setNameFocus(false)}
             />
             {/**Nombre Usuario */}
-            <label className="text-lg font-medium" htmlFor="username">
+            <label className="input-label" htmlFor="username">
               Nombre de usuario
               {validUserName ? (
                 <FontAwesomeIcon
@@ -186,7 +183,7 @@ function AddClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="username"
               ref={userRef}
@@ -217,7 +214,7 @@ function AddClient() {
             </div>
 
             {/* First Name */}
-            <label className="text-lg font-medium" htmlFor="firstName">
+            <label className="input-label" htmlFor="firstName">
               Apellido Paterno
               {validFirstName ? (
                 <FontAwesomeIcon
@@ -229,7 +226,7 @@ function AddClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="firstName"
               autoComplete="off"
@@ -241,7 +238,7 @@ function AddClient() {
               onBlur={() => setFirstNameFocus(false)}
             />
             {/* Second Name */}
-            <label className="text-lg font-medium" htmlFor="secondName">
+            <label className="input-label" htmlFor="secondName">
               Apellido Materno
               {validSecondName ? (
                 <FontAwesomeIcon
@@ -253,7 +250,7 @@ function AddClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="secondName"
               autoComplete="off"
@@ -265,11 +262,11 @@ function AddClient() {
               onBlur={() => setSecondNameFocus(false)}
             />
             {/* Email */}
-            <label className="text-lg font-medium" htmlFor="email">
+            <label className="input-label" htmlFor="email">
               Email
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="email"
               id="email"
               autoComplete="off"
@@ -281,11 +278,11 @@ function AddClient() {
               onBlur={() => setEmailFocus(false)}
             />
             {/* Phone */}
-            <label className="text-lg font-medium" htmlFor="phone">
+            <label className="input-label" htmlFor="phone">
               Telefono
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="tel"
               id="phone"
               onChange={(e) => setPhone(e.target.value)}
@@ -294,7 +291,7 @@ function AddClient() {
               pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
             />
             {/* Password */}
-            <label className="text-lg font-medium" htmlFor="password">
+            <label className="input-label" htmlFor="password">
               Password
               {validPwd ? (
                 <FontAwesomeIcon
@@ -302,11 +299,11 @@ function AddClient() {
                   className="ml-3 text-green-500"
                 />
               ) : (
-                <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                <FontAwesomeIcon icon={faTimes} className="err-icon" />
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="password"
               id="password"
               onChange={(e) => setPass(e.target.value)}
@@ -341,7 +338,8 @@ function AddClient() {
             </div>
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-primary"
+              type='submit'
               disabled={
                 !validName ||
                 !validFirstName ||
@@ -350,10 +348,10 @@ function AddClient() {
                 !validPwd
               }
             >
-              Sign Up
+              Registrar Cliente
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/clients")}
             >
               Cancelar
@@ -361,7 +359,6 @@ function AddClient() {
           </form>
         </section>
       )}
-      <Navbar></Navbar>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 
@@ -15,6 +15,7 @@ function Clients() {
     const [clientSelName, setClientSelName] = useState();
     const [clientSelId, setClientSelId] = useState();
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate()
 
     const { mutate } = useSWRConfig();
     const fetcher = async () => {
@@ -49,58 +50,49 @@ function Clients() {
 
     return (
         <div>
-            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-                <strong>Clients</strong>
+            <div  className="title-container">
+                <strong className="title-strong">Lista de Clientes</strong>
             </div>
             <div className="w-full pt-4">
-                <Link
-                    to="/addClient"
-                    className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg"
-                >
-                Añadir Nuevo Cliente
-                </Link>
-                <div className="relative shadow rounded-lg mt-3">
-                    <table className="w-full text-sm text-left text-gray-500">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                <button className="btn-primary" onClick={() => navigate('/addClient')}>
+                    Añadir Nuevo Cliente
+                </button>
+                <div className="shadow-container">
+                    <table>
+                        <thead>
                             <tr>
-                                <th className="py-3 px-1 text-center">ID</th>
-                                <th className="py-3 px-6">Nombre</th>
-                                <th className="py-3 px-6">Nombre de usuario</th>
-                                <th className="py-3 px-6">Apellido Paterno</th>
-                                <th className="py-3 px-6">Apellido Materno</th>
-                                <th className="py-3 px-6">Email</th>
-                                <th className="py-3 px-6">Telefono</th>
-                                <th className="py-3 px-6">Contraseña</th>
-                                <th className="py-3 px-1 text-center">Opciones</th>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Nombre de usuario</th>
+                                <th>Apellido Paterno</th>
+                                <th>Apellido Materno</th>
+                                <th>Email</th>
+                                <th>Telefono</th>
+                                <th>Contraseña</th>
+                                <th>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {data.map((client, index) => (
-                                <tr className="bg-white border-b" key={client.id_client}>
-                                    <td className="py-3 px-1 text-center">{index + 1}</td>
-                                    <td className="py-3 px-6 font-medium text-gray-900">
-                                        {client.name}
-                                    </td>
-                                    <td className="py-3 px-6 font-medium text-gray-900">
-                                        {client.username}
-                                    </td>
-                                    <td className="py-3 px-6">{client.firstName}</td>
-                                    <td className="py-3 px-6">{client.secondName}</td>
-                                    <td className="py-3 px-6">{client.email}</td>
-                                    <td className="py-3 px-6">{client.phone}</td>
-                                    <td className="py-3 px-6">{client.pass || "N/A"}</td>
-                                    <td className="py-3 px-1 text-center">
-                                        <Link
-                                            to={`/editClient/${client.id_client}`}
-                                            className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
-                                        >
-                                            Editar
-                                        </Link>
+                                <tr key={client.id_client}>
+                                    <td>{index + 1}</td>
+                                    <td>{client.name}</td>
+                                    <td>{client.username}</td>
+                                    <td>{client.firstName}</td>
+                                    <td>{client.secondName}</td>
+                                    <td>{client.email}</td>
+                                    <td>{client.phone}</td>
+                                    <td>{client.pass || "N/A"}</td>
+                                    <td>
+                                        <button 
+                                            onClick={() => navigate(`/editClient/${client.id_client}`)} 
+                                            className="btn-edit"
+                                            >Editar
+                                        </button>
                                         <button
                                             onClick={() => handleClickOpen(client.name, client.id_client)}
-                                            className="font-medium bg-red-400 hover:bg-red-500 px-3 py-1 rounded text-white"
-                                        >
-                                            Borrar
+                                            className="btn-cancel"
+                                            >Borrar
                                         </button>
                                         <Dialog
                                             open={open}

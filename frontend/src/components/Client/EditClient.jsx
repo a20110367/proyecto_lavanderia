@@ -76,11 +76,13 @@ function EditClient() {
   useEffect(() => {
     const getClientById = async () => {
       const response = await Axios.get(`http://localhost:5000/clients/${id}`);
+      setUserName(response.data.username);
       setName(response.data.name);
-      setEmail(response.data.email);
-      setPhone(response.data.phone);
       setFirstName(response.data.firstName);
       setSecondName(response.data.secondName);
+      setPwd(response.data.pass);
+      setEmail(response.data.email);
+      setPhone(response.data.phone);
     };
     getClientById();
   }, [id]);
@@ -100,10 +102,11 @@ function EditClient() {
       await Axios.patch(`http://localhost:5000/clients/${id}`, {
         username: userName,
         name: name,
-        email: email,
-        phone: phone,
+        userName: userName,
         firstName: firstName,
         secondName: secondName,
+        email: email,
+        phone: phone,
         pass: pwd,
       });
       
@@ -126,14 +129,15 @@ function EditClient() {
 
   return (
     <div className="signup-form">
-      <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-        <strong>Actualizar Datos Cliente</strong>
+      <div className="title-container">
+        <p className="input-label">Editando perfil de:</p>   
+        <strong className="title-strong">{name}</strong>
       </div>
       {success ? (
         <section>
           <h1>¡Éxito!</h1>
           <p>
-            <a href="/login">Iniciar sesión</a>
+            <a href="/clients">Clientes</a>
           </p>
         </section>
       ) : (
@@ -145,12 +149,9 @@ function EditClient() {
           >
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 ">
-            Actualizando perfil de: {name}
-          </h1>
           <form onSubmit={handleSubmit}>
             {/* Nombre de usuario */}
-            <label className="text-lg font-medium" htmlFor="name">
+            <label className="input-label" htmlFor="name">
               Nombre:
               {validName ? (
                 <FontAwesomeIcon
@@ -162,7 +163,7 @@ function EditClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="name"
               ref={nameRef}
@@ -175,8 +176,8 @@ function EditClient() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
-                      {/**Nombre Usuario */}
-                      <label className="text-lg font-medium" htmlFor="username">
+            {/**Nombre Usuario */}
+            <label className="input-label" htmlFor="username">
               Nombre de usuario
               {validUserName ? (
                 <FontAwesomeIcon
@@ -188,7 +189,7 @@ function EditClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="username"
               ref={userRef}
@@ -218,12 +219,11 @@ function EditClient() {
               </p>
             </div>
 
-            <label className="text-lg font-medium" htmlFor="firstName">
+            <label className="input-label" htmlFor="firstName">
               Apellido Paterno
-             
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="firstName"
               autoComplete="off"
@@ -236,12 +236,12 @@ function EditClient() {
               onBlur={() => setFirstNameFocus(false)}
             />
           
-            <label className="text-lg font-medium" htmlFor="secondName">
+            <label className="input-label" htmlFor="secondName">
               Apellido Materno
               
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="secondName"
               autoComplete="off"
@@ -255,7 +255,7 @@ function EditClient() {
             />
             
             {/* Contraseña */}
-            <label className="text-lg font-medium" htmlFor="password">
+            <label className="input-label" htmlFor="password">
               Contraseña:
               {validPwd ? (
                 <FontAwesomeIcon
@@ -267,7 +267,7 @@ function EditClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="password"
               id="password"
               onChange={(e) => setPwd(e.target.value)}
@@ -303,7 +303,7 @@ function EditClient() {
             </div>
 
             {/* Confirmar contraseña */}
-            <label className="text-lg font-medium" htmlFor="confirm_pwd">
+            <label className="input-label" htmlFor="confirm_pwd">
               Confirmar Contraseña:
               {validMatch && matchPwd ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -312,7 +312,7 @@ function EditClient() {
               )}
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="password"
               id="confirm_pwd"
               onChange={(e) => setMatchPwd(e.target.value)}
@@ -334,51 +334,52 @@ function EditClient() {
                 primera contraseña ingresada.
               </p>
             </div>
+            <div className="mt-3">
+              {/* Email */}
+              <label className="input-label" htmlFor="email">
+                Email:
+              </label>
+              <input
+                className="input-2ry"
+                type="email"
+                id="email"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
+              />
 
-            {/* Email */}
-            <label className="pl-5 pr-2 text-lg font-medium" htmlFor="email">
-              Email:
-            </label>
-            <input
-              className="border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
-              type="email"
-              id="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-              required
-            />
+              {/* Teléfono */}
+              <label className="input-label" htmlFor="phone">
+                Teléfono:
+              </label>
+              <input
+                className="input-2ry"
+                type="tel"
+                id="phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+              />
 
-            {/* Teléfono */}
-            <label className="pl-5 pr-2 text-lg font-medium" htmlFor="phone">
-              Teléfono:
-            </label>
-            <input
-              className="border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
-              type="tel"
-              id="phone"
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
-              required
-              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-            />
-
-            {/* Botón para actualizar */}
-            <button
-              className="ml-28 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
-              disabled={!validName || !validPwd || !validMatch ? true : false}
-            >
-              Actualizar
-            </button>
-            <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-3"
-              onClick={() => navigate("/clients")}
-            >
-              Cancelar
-            </button>
+              {/* Botón para actualizar */}
+              <button
+                className="btn-edit"
+                disabled={!validName || !validPwd || !validMatch ? true : false}
+                type='submit'
+              >
+                Actualizar
+              </button>
+              <button
+                className="btn-cancel"
+                onClick={() => navigate("/clients")}
+              >
+                Cancelar
+              </button>
+            </div>
           </form>
         </section>
       )}
-      <NavBar />
     </div>
   );
 }

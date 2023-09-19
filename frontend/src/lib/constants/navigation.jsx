@@ -42,7 +42,7 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     },
     {
         key: 'users',
-        label: 'Usuarios',
+        label: 'Empleados',
         path: '/users',
         icon: <HiUsers/>
     },

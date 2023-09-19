@@ -48,27 +48,24 @@ function AddServicio() {
 
   return (
     <div className="add-service-form">
-      <div className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Añadir Servicio</strong>
+      <div className="basic-container w-5/12">
+        <strong className="input-label">Favor de rellenar los campos solicitados </strong>
       </div>
       {success ? (
         <section>
           <h1>Success!</h1>  
         </section>
       ) : (
-        <section className="bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
+        <section className="basic-container">
           <p className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">
             {errMsg}
           </p>
-          <h1 className="font-medium text-lg text-gray-500 mt-4">
-            Por favor, ingresa los datos del servicio
-          </h1>
           <form onSubmit={handleSubmit}>
-            <label className="text-lg font-medium" htmlFor="description">
+            <label className="input-label" htmlFor="description">
               Descripción
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="text"
               id="description"
               ref={descriptionRef}
@@ -78,11 +75,11 @@ function AddServicio() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="price">
+            <label className="input-label" htmlFor="price">
               Precio Unitario
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               step='0.1'
               id="price"
@@ -92,11 +89,11 @@ function AddServicio() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="time">
+            <label className="input-label" htmlFor="time">
               Tiempo (minutos)
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="time"
               ref={timeRef}
@@ -105,11 +102,11 @@ function AddServicio() {
               required
             />
 
-            <label className="text-lg font-medium" htmlFor="weight">
+            <label className="input-label" htmlFor="weight">
               Peso (Kilogramos)
             </label>
             <input
-              className="w-full border-2 border-gray-500 rounded-xl p-4 mt-1 bg-transparent"
+              className="input-prim"
               type="number"
               id="weight"
               ref={weightRef}
@@ -119,13 +116,13 @@ function AddServicio() {
             />
 
             <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-11"
+              className="btn-primary"
               type="submit"
             >
               Añadir Servicio
             </button>
             <button
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-11 ml-3"
+              className="btn-cancel"
               onClick={() => navigate("/services")}
             >
               Cancelar

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 
@@ -15,6 +15,7 @@ function Equipos() {
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate()
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
@@ -51,41 +52,35 @@ function Equipos() {
         <strong>Equipos</strong>
       </div>
       <div className="w-full pt-4">
-        <Link
-          to="/addEquipo"
-          className="bg-green-500 hover:bg-green-700 border border-slate-200 text-white font-bold py-2 px-4 rounded-lg pt-"
-        >
-          Añadir Nueva Máquina
-        </Link>
-        <div className="relative shadow rounded-lg mt-3">
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+        <button className="btn-primary" onClick={() => navigate('/addEquipo')}>
+          Añadir Nueva Maquina
+        </button>
+        <div className="shadow-container">
+          <table>
+            <thead>
               <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">Tipo de Máquina</th>
-                <th className="py-3 px-6">Modelo</th>
-                <th className="py-3 px-6">Tiempo de Ciclo</th>
-                <th className="py-3 px-6">Peso</th>
-                <th className="py-3 px-6">Estado</th>
-                <th className="py-3 px-6">Notas</th>
-                <th className="py-3 px-1 text-center">Opciones</th>
+                <th>ID</th>
+                <th>Tipo de Máquina</th>
+                <th>Modelo</th>
+                <th>Tiempo de Ciclo</th>
+                <th>Peso</th>
+                <th>Estado</th>
+                <th>Notas</th>
+                <th>Opciones</th>
               </tr>
             </thead>
             <tbody>
               {data.map((machine, index) => (
-                <tr className="bg-white border-b" key={machine.id_machine}>
-                  <td className="py-3 px-1 text-center">{index + 1}</td>
+                <tr key={machine.id_machine}>
+                  <td>{index + 1}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {machine.machineType}
                   </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {machine.model}
-                  </td>
-
-                  <td className="py-3 px-6">{machine.cicleTime}</td>
-                  <td className="py-3 px-6">{machine.weight}</td>
+                  <td>{machine.model}</td>
+                  <td>{machine.cicleTime}</td>
+                  <td>{machine.weight}</td>
                   <td
-                    className={`py-3 px-6 ${
+                    className={`${
                       machine.status === "available"
                         ? "text-green-500"
                         : "text-red-500"
@@ -93,20 +88,17 @@ function Equipos() {
                   >
                     {machine.status}
                   </td>
-                  <td className="py-3 px-6">{machine.notes}</td>
-
-                  <td className="py-3 px-1 text-center">
-                    <Link
-                      to={`/editEquipo/${machine.id_machine}`}
-                      className="font-medium bg-blue-400 hover:bg-blue-500 px-3 py-1 rounded text-white mr-1"
+                  <td>{machine.notes}</td>
+                  <td>
+                    <button
+                      onClick={() => navigate(`/editEquipo/${machine.id_machine}`)}
+                      className="btn-edit"
                     >
                       Editar
-                    </Link>
+                    </button>
                     <button
-                      onClick={() =>
-                        handleClickOpen(machine.model, machine.id_machine)
-                      }
-                      className="font-medium bg-red-400 hover:bg-red-500 px-3 py-1 rounded text-white"
+                      onClick={() => handleClickOpen(machine.model, machine.id_machine)}
+                      className="btn-cancel"
                     >
                       Borrar
                     </button>

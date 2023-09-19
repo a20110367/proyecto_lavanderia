@@ -101,8 +101,8 @@ export default function PuntoVenta() {
 
   return (
     <div>
-      <div className="w-full bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-        <strong>Lista de Servicios</strong>
+      <div className="basic-container w-5/12">
+        <strong className="title-strong">Lista de Servicios</strong>
       </div>
       <div className="container pt-4">
         <div className="row">
@@ -116,7 +116,7 @@ export default function PuntoVenta() {
                   <img
                     src={img[0]}
                     alt={`Imagen de ${service.description}`}
-                    className="h-48 w-full object-cover rounded-t-lg"
+                    className="img-pos"
                   />
                   <div className="p-4">
                     <h3 className="text-xl font-semibold">

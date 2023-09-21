@@ -2,6 +2,25 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+export const authUser = async (req, res) =>{
+    const {username, pass} = req.body
+    try{
+        const response = await prisma.user.findFirst({
+            select:{
+                id_user: true,
+                role: true,
+            },
+            where:{
+                username: username,
+                pass: pass
+            }
+        });
+        res.status(200).json(response)
+    }catch(e){
+        res.status(500).json({msg:e.message})
+    }
+}
+
 export const getUsers = async (req, res) =>{
     try {
         const response = await prisma.user.findMany();

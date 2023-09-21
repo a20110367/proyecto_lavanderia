@@ -28,14 +28,14 @@ function getItem(label, key, icon, children, type) {
 
 const items = [
   getItem("Autoservicio", "/menuPuntoVenta", <FcSalesPerformance />),
-  getItem("Lavanderia", "/lavanderia", <MdOutlineLocalLaundryService />, [
-    getItem("Encargo", "/encargo"),
-    getItem("Recepcion", "/recepcion"),
-    getItem("Entrega", "/entrega"),
+  getItem("Lavanderia", "/sideBarLavanderia", <MdOutlineLocalLaundryService />, [
+    getItem("Encargo", "/laundryEncargo"),
+    getItem("Recepción", "/laundryRecepcion"),
+    getItem("Entrega", "/laundryEntrega"),
   ]),
   getItem("Planchado", "/planchado", <MdLocalLaundryService />, [
-    getItem("Recepcion", "/recepcion"),
-    getItem("Entrega", "/entrega"),
+    getItem("Recepcion", "/IronRecepcion"),
+    getItem("Entrega", "/IronEntrega"),
   ]),
   getItem("Pedidos", "/pedidos", <LuListOrdered />, [
     getItem("Lavanderia", "/pedidosLavanderia"),
@@ -43,26 +43,26 @@ const items = [
   ]),
   getItem("Clientes", "/clients", <HiShoppingCart />),
 
-  getItem("Caja", "/cajas", <HiCash />, [
+  getItem("Caja", "/sideBarCajas", <HiCash />, [
     getItem("Inicio de caja", "/cajas"),
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
     getItem("Retiro de caja", "/retiroCaja"),
     getItem("Reembolsos", "/reembolsos"),
   ]),
-  getItem("Equipos", "/equipos", <HiTruck />, [
+  getItem("Equipos", "/sideBarEquipos", <HiTruck />, [
     getItem("Equipos", "/equipos"),
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/adminEquipos"),
   ]),
 
-  getItem("Usurarios", "/users", <HiUsers />),
+  getItem("Usuarios", "/users", <HiUsers />),
   getItem("Servicios", "/services", <FcServices />),
 
   { type: "divider", style: { margin: "122px " } },
 
   getItem("Settings", "settings", <SettingOutlined />), // Agregado: Settings
-  getItem("Logout", "logout", <LogoutOutlined />),
+  getItem("Cerrar Sesión", '/logout', <LogoutOutlined />),
 ];
 
 export default function Sidebar () {

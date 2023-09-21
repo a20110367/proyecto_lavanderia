@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { useState } from "react"
 import './index.css'
 
@@ -30,7 +30,6 @@ import PedidosProceso from "./components/Pedidos/PedidosProceso"
 import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
 
 import Dashboard from './components/Dashboard'
-import ProtectedRoute from './routes/ProtectedRoute'
 import Sidebar from "./components/shared/Sidebar"
 
 //equipos
@@ -44,39 +43,24 @@ import CajaEntregas from "./components/Cajas/CajaEntregas"
 import CajaDevolucion from "./components/Cajas/CajaDevolucion"
 import CajaRetiros from "./components/Cajas/CajaRetiros"
 
+import ProtectedRoute from './routes/ProtectedRoute'
+import { useAuth } from './hooks/auth/auth';
+import Logout from './routes/Logout'
+
 function App() {
-    const [user, setUser] = useState(null)
-    const [token, setToken] = useState();
-
-    const login = () => {
-        setUser({
-            id: 1,
-            name: "John",
-            role: "admin"
-        })
-    }
-
-    const logout = () => setUser(null)
+    const { cookies } = useAuth();
+    console.log(cookies.token)
 
     return (
-        <Router>
-            {
-                user ? (
-                    <button onClick={logout}>Logout</button>
-                ) : (
-                    <button onClick={login}>Login</button>
-                )
-            }
             <Routes>
-
-            <Route index element={<Login />} />
-                <Route path="/login" setToken={setToken} element={<Login />} />
+            <Route index element={<Navigate to={'/menuPuntoVenta'}/>} />
+                <Route path="/login" element={<Login />} />
                 
                 {/* Rutas Protegidas */}
-                <Route element={<ProtectedRoute
-                    isAuth={!!user && user.role.includes('admin')} />}
+                <Route element={<ProtectedRoute 
+                    isAuth={!!cookies.token}/>}
                     redirectTo="/login"
-                >
+                    >
                     <Route path = "/" element = {<Sidebar/>}>
                         {/*Punto de venta */}
                         <Route path="/puntoVenta" element={<PuntoVenta/>}/>
@@ -108,10 +92,11 @@ function App() {
                         <Route path="/pedidos" element={<Pedidos/>}/>
                         <Route path="/pedidosProceso" element={<PedidosProceso/>}/>
                         <Route path="/pedidosFinalizados" element={<PedidosFinalizados/>}/>
+                        
+                        <Route path="/logout" element={<Logout/>} />
                     </Route>
                 </Route>
             </Routes>
-        </Router>
     )
 }
 

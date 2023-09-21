@@ -22,7 +22,7 @@ export default function Header({ toggleCollapsed, collapsed }) {
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => toggleCollapsed()}
-          className="text-lg pl- w-16 h-16"
+          className="text-lg pl- w-16 h-9"
         />
         <div className="relative ml-4">
           {" "}

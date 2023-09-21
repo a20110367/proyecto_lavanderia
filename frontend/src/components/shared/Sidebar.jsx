@@ -7,8 +7,10 @@ import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
 import {
   MdOutlineLocalLaundryService,
   MdLocalLaundryService,
+  MdIron
 } from "react-icons/md";
-import { FcSalesPerformance, FcServices, FcFullTrash } from "react-icons/fc";
+import washingsvg from "./../../assets/washing-machine.svg"
+import { FcSalesPerformance, FcServices, FcFullTrash,FcEngineering } from "react-icons/fc";
 import { LuListOrdered } from "react-icons/lu";
 import { Layout, Menu} from "antd";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
@@ -26,43 +28,51 @@ function getItem(label, key, icon, children, type) {
   };
 }
 
+const iconStyle = {
+  fontSize: '24px', // Tamaño deseado para los iconos
+  margin: 'auto',   // Centra horizontalmente
+  marginTop: '7px',
+  marginLeft: '-3px' // Espacio vertical opcional
+};
+
+
 const items = [
-  getItem("Autoservicio", "/menuPuntoVenta", <FcSalesPerformance />),
-  getItem("Lavanderia", "/lavanderia", <MdOutlineLocalLaundryService />, [
+  getItem("Autoservicio", "/menuPuntoVenta", <FcSalesPerformance style={iconStyle} />),
+  getItem("Lavanderia", "/lavanderia", <MdLocalLaundryService style={iconStyle} />, [
     getItem("Encargo", "/encargo"),
     getItem("Recepcion", "/recepcion"),
     getItem("Entrega", "/entrega"),
   ]),
-  getItem("Planchado", "/planchado", <MdLocalLaundryService />, [
+  getItem("Planchado", "/planchado", <MdIron style={iconStyle} />, [
     getItem("Recepcion", "/recepcion"),
     getItem("Entrega", "/entrega"),
   ]),
-  getItem("Pedidos", "/pedidos", <LuListOrdered />, [
+  getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
     getItem("Lavanderia", "/pedidosLavanderia"),
     getItem("Planchado", "/pedidosPlanchado"),
   ]),
-  getItem("Clientes", "/clients", <HiShoppingCart />),
+  getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
-  getItem("Caja", "/cajas", <HiCash />, [
+  getItem("Caja", "/cajas", <HiCash style={iconStyle}/>, [
     getItem("Inicio de caja", "/cajas"),
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
     getItem("Retiro de caja", "/retiroCaja"),
     getItem("Reembolsos", "/reembolsos"),
   ]),
-  getItem("Equipos", "/equipos", <HiTruck />, [
+  getItem("Equipos", "/equipos", <HiTruck style={iconStyle}/>, [
     getItem("Equipos", "/equipos"),
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/adminEquipos"),
   ]),
 
-  getItem("Usurarios", "/users", <HiUsers />),
-  getItem("Servicios", "/services", <FcServices />),
+  getItem("Usurarios", "/users", <HiUsers style={iconStyle}/>),
+  getItem("Servicios", "/services", <FcEngineering style={iconStyle}/>),
 
   { type: "divider", style: { margin: "122px " } },
 
-  getItem("Settings", "settings", <SettingOutlined />), // Agregado: Settings
-  getItem("Logout", "logout", <LogoutOutlined />),
+  getItem("Settings", "/settings", <SettingOutlined style={iconStyle}/>), // Agregado: Settings
+  getItem("Logout", "/", <LogoutOutlined style={iconStyle}/>),
 ];
 
 export default function Sidebar () {
@@ -82,27 +92,32 @@ export default function Sidebar () {
     setCollapsed(!collapsed);
   };
 
+  
+
   return (
-    <Layout className="min-h-screen">
+    <Layout>
       <Sider
         className={` ${collapsed ? "text-center" : ""}`}
         trigger={null}
         collapsible
         collapsed={collapsed}
       >
-        <div className="h-16 bg-slate-900 flex items-center gap-2 px-1 py-3">
-          <FcFullTrash
-            fontSize={24}
-            className={`mx-auto ${collapsed ? "w-full" : ""}`}
-          />
-          <span
-            className={`text-neutral-200 text-lg pr-4 ${
-              collapsed ? "hidden" : "block"
-            }`}
-          >
-            Laundry System
-          </span>
-        </div>
+      <div className="h-16 flex items-center gap-2 px-1 pt-1.5x">
+  <div className="flex items-center pl-3.5"> {/* Contenedor flex */}
+    <img
+      src={washingsvg}
+      alt="Lavadora"
+      className={`mx-auto ${collapsed ? "w-11 h-11" : "w-24  h-11"}`}
+    />
+    <span
+      className={`font-semibold text-neutral-200 text-lg pr-6 ${
+        collapsed ? "opacity-0" : "opacity-100"
+      } transition-opacity`}
+    >
+      Laundry System
+    </span>
+  </div>
+</div>
 
         <Menu
           theme="dark"
@@ -115,10 +130,10 @@ export default function Sidebar () {
             setSelectedKeys(item.key);
             navigate(item.key);
           }}
-          className="bg-slate-900"
+
         />
       </Sider>
-      <Layout className="bg-gray-700">
+      <Layout className="bg-gray-800">
         <Header
           collapsed={collapsed}
           toggleCollapsed={toggleCollapsed}

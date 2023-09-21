@@ -4,13 +4,10 @@ const prisma = new PrismaClient();
 
 export const authUser = async (req, res) =>{
     const {username, pass} = req.body
-    console.log(username)
-    console.log(pass)
     try{
         const response = await prisma.user.findFirst({
             select:{
                 id_user: true,
-                username: true,
                 role: true,
             },
             where:{
@@ -19,7 +16,6 @@ export const authUser = async (req, res) =>{
             }
         });
         res.status(200).json(response)
-        console.log(response)
     }catch(e){
         res.status(500).json({msg:e.message})
     }

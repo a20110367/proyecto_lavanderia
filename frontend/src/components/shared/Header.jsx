@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   HiOutlineBell,
   HiOutlineChatAlt,
@@ -10,23 +10,65 @@ import { Button } from "antd";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
 
-export default function Header({ toggleCollapsed, collapsed }) {
+export default function Header({ toggleCollapsed, collapsed, items }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const [matchingRoutes, setMatchingRoutes] = useState([]);
   const navigate = useNavigate();
+
+
+  const handleSearch = (searchTerm) => {
+    const matching = items.reduce((acc, item) => {
+      if (item.type === 'divider') {
+        return acc;
+      }
+      
+      // Obtenemos las primeras letras de la etiqueta del elemento
+      const firstLetters = item.label.slice(0, searchTerm.length).toLowerCase();
+  
+      if (firstLetters === searchTerm.toLowerCase()) {
+        acc.push({ key: item.key, label: item.label });
+      }
+  
+      if (item.children) {
+        const childMatching = item.children.filter((child) => {
+          // Obtenemos las primeras letras de la etiqueta del hijo
+          const childFirstLetters = child.label.slice(0, searchTerm.length).toLowerCase();
+          return childFirstLetters === searchTerm.toLowerCase();
+        });
+        acc.push(...childMatching);
+      }
+  
+      return acc;
+    }, []);
+  
+    setMatchingRoutes(matching);
+    setShowResults(searchTerm !== "");
+  };
+  
+  const closeResults = () => {
+    setShowResults(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", closeResults);
+
+    return () => {
+      document.removeEventListener("click", closeResults);
+    };
+  }, []);
 
   return (
     <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
       <div className="flex items-center">
-        {" "}
-        {/* Nueva div para alinear elementos */}
+
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => toggleCollapsed()}
-          className="text-lg pl- w-16 h-9"
+          className="text-lg  w-16 h-9"
         />
         <div className="relative ml-4">
-          {" "}
-          {/* Espacio para el botón de búsqueda */}
           <HiOutlineSearch
             fontSize={20}
             className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
@@ -34,8 +76,37 @@ export default function Header({ toggleCollapsed, collapsed }) {
           <input
             type="text"
             placeholder="Buscar..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
             className="text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           />
+        {showResults && matchingRoutes.length > 0 && (
+  <div className="absolute top-16 left-0 w-[24rm] max-h-60 bg-white border border-gray-300 rounded-b-md shadow-md overflow-y-auto z-50">
+    <strong className="px-4 py-2 text-gray-700 font-medium text-lg block">
+      Rutas coincidentes:
+    </strong>
+    <ul>
+      {matchingRoutes.map((route) => (
+        <li
+          key={route.key}
+          className="px-4 py-2.5 cursor-pointer hover:bg-gray-100 hover:text-blue-500 text-base"
+          onClick={() => {
+            navigate(route.key);
+            setSearchTerm("");
+          }}
+        >
+          {route.label}
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
         </div>
       </div>
       <div className="flex items-center gap-2 mr-2">

@@ -34,7 +34,7 @@ import Sidebar from "./components/shared/Sidebar"
 
 //equipos
 import Equipos from "./components//Equipos/Equipos"
-import AddEquipo from "./components/Equipos/AddEquipo"
+import AddEquipo from './components/Equipos/AddEquipo'
 import EditEquipo from "./components/Equipos/EditEquipo"
 
 import Cajas from "./components/Cajas/Cajas"
@@ -69,7 +69,7 @@ function App() {
                         <Route path = "/dashboard" element = {<Dashboard/>}/>
                         
                         <Route path = "/equipos" element = {<Equipos />}/>
-                        <Route path = "/addEquipo" element = {<AddEquipo/>}/>
+                        <Route path = "/addEquipo" element = {<AddEquipo />}/>
                         <Route path = "/editEquipo/:id" element = {<EditEquipo/>}/>
                         
                         <Route path = "/cajas" element = {<Cajas />}/>

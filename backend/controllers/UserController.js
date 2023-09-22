@@ -4,6 +4,9 @@ const prisma = new PrismaClient();
 
 export const authUser = async (req, res) =>{
     const {username, pass} = req.body
+    console.log(req.body)
+    console.log(username)
+    console.log(pass)
     try{
         const response = await prisma.user.findFirst({
             select:{
@@ -12,7 +15,7 @@ export const authUser = async (req, res) =>{
             },
             where:{
                 username: username,
-                pass: pass
+                pass: pass,
             }
         });
         res.status(200).json(response)

@@ -26,10 +26,11 @@ export const getClientsById = async (req, res) =>{
 }
 
 export const createClient = async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.create({
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,
@@ -45,13 +46,14 @@ export const createClient = async (req, res) =>{
 }
 
 export const updateClient =  async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.update({
             where:{
                 id_client: Number(req.params.id)
             },
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,

@@ -4,6 +4,9 @@ const prisma = new PrismaClient();
 
 export const authUser = async (req, res) =>{
     const {username, pass} = req.body
+    console.log(req.body)
+    console.log(username)
+    console.log(pass)
     try{
         const response = await prisma.user.findFirst({
             select:{
@@ -12,7 +15,7 @@ export const authUser = async (req, res) =>{
             },
             where:{
                 username: username,
-                pass: pass
+                pass: pass,
             }
         });
         res.status(200).json(response)
@@ -44,10 +47,11 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass, role} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,
@@ -64,13 +68,14 @@ export const createUser = async (req, res) =>{
 }
 
 export const updateUser =  async (req, res) =>{
-    const {name, firstName, secondName, email, phone, pass, role} = req.body;
+    const {username, name, firstName, secondName, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.update({
             where:{
                 id_user: Number(req.params.id)
             },
             data:{
+                username: username,
                 name: name,
                 firstName: firstName,
                 secondName: secondName,

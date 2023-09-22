@@ -69,7 +69,7 @@ function App() {
                         <Route path = "/dashboard" element = {<Dashboard/>}/>
                         
                         <Route path = "/equipos" element = {<Equipos />}/>
-                        <Route path = "/addEquipo" element = {<AddEquipo />}/>
+                        <Route path = "/addEquipo" element = {<AddEquipo/>}/>
                         <Route path = "/editEquipo/:id" element = {<EditEquipo/>}/>
                         
                         <Route path = "/cajas" element = {<Cajas />}/>
@@ -89,14 +89,37 @@ function App() {
                         <Route path="/editService/:id" element={<EditService/>}/>
                         <Route path="/services" element={<Services/>}/>
 
-                        <Route path="/pedidos" element={<Pedidos/>}/>
-                        <Route path="/pedidosProceso" element={<PedidosProceso/>}/>
-                        <Route path="/pedidosFinalizados" element={<PedidosFinalizados/>}/>
-                        
-                        <Route path="/logout" element={<Logout/>} />
-                    </Route>
+                    <Route path="/pedidos" element={<Pedidos />} />
+                    <Route path="/pedidosProceso" element={<PedidosProceso />} />
+                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
+
+                    <Route path="/logout" element={<Logout />} />
+
+                    {/* Clients */}
+                    <Route path="/addClient" element={
+                        <ProtectedRoute
+                            isAuth={!!cookies.token && cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <AddClient />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/editClient/:id" element={
+                        <ProtectedRoute
+                            isAuth={!!cookies.token && cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <EditClient />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/clients" element={
+                        <ProtectedRoute
+                            isAuth={!!cookies.token && cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <Clients />
+                        </ProtectedRoute>
+                    } />
                 </Route>
-            </Routes>
+            </Route>
+        </Routes>
     )
 }
 

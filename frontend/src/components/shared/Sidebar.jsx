@@ -72,7 +72,7 @@ const items = [
   { type: "divider", style: { margin: "122px " } },
 
   getItem("Settings", "/settings", <SettingOutlined style={iconStyle}/>), // Agregado: Settings
-  getItem("Logout", "/", <LogoutOutlined style={iconStyle}/>),
+  getItem("Logout", "/logout", <LogoutOutlined style={iconStyle}/>),
 ];
 
 export default function Sidebar () {

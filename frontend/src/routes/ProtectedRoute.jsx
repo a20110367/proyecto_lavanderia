@@ -2,7 +2,6 @@ import { Outlet, Navigate } from 'react-router-dom';
 // import { useAuth } from '../hooks/auth/auth';
 
 export default function ProtectedRoute ({isAuth, children, redirectTo = '/login'}) {
-    console.log(isAuth)
     if (!isAuth) {
         return <Navigate to={redirectTo}/>
     }

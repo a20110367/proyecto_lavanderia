@@ -19,7 +19,7 @@ function EditUser() {
   const [validUserName, setValidUserName] = useState(false);
   const [userNameFocus, setUserNameFocus] = useState(false);
 
-  
+
   const [name, setName] = useState("");
   const [validName, setValidName] = useState(false);
   const [nameFocus, setNameFocus] = useState(false);
@@ -137,7 +137,7 @@ function EditUser() {
   return (
     <div className="signup-form">
       <div className="title-container">
-        <p className="input-label">Editando perfil de:</p>   
+        <p className="subtitle">Editando perfil de:</p>
         <strong className="title-strong">{userName}</strong>
       </div>
       {success ? (
@@ -157,8 +157,8 @@ function EditUser() {
             {errMsg}
           </p>
           <form onSubmit={handleSubmit}>
-              {/**Nombre empleado */}
-              <label className="input-label" htmlFor="name">
+            {/**Nombre empleado */}
+            <label className="subtitle" htmlFor="name">
               Nombre del empleado
               {validName ? (
                 <FontAwesomeIcon
@@ -182,7 +182,7 @@ function EditUser() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
-            <label className="input-label" htmlFor="username">
+            <label className="subtitle" htmlFor="username">
               Nombre de usuario
               {validUserName ? (
                 <FontAwesomeIcon
@@ -210,19 +210,18 @@ function EditUser() {
             <div className="group">
               <p
                 id="uidnote"
-                className={`instructions ${
-                  userNameFocus && userName && !validUserName ? "block" : "hidden"
-                }`}
+                className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
+                  }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
                 <br />
-                Debera iniciar con una letra.                
+                Debera iniciar con una letra.
                 <br />
                 Letras, numeros, guiones y guiones bajos estan permitidos.
               </p>
             </div>
-             {/* First Name */}
-            <label className="input-label" htmlFor="firstName">
+            {/* First Name */}
+            <label className="subtitle" htmlFor="firstName">
               Apellido Paterno
               {validFirstName ? (
                 <FontAwesomeIcon
@@ -246,7 +245,7 @@ function EditUser() {
               onBlur={() => setFirstNameFocus(false)}
             />
             {/* Second Name */}
-            <label className="input-label" htmlFor="secondName">
+            <label className="subtitle" htmlFor="secondName">
               Apellido Materno
               {validSecondName ? (
                 <FontAwesomeIcon
@@ -269,7 +268,7 @@ function EditUser() {
               onFocus={() => setSecondNameFocus(true)}
               onBlur={() => setSecondNameFocus(false)}
             />
-            <label className="input-label" htmlFor="password">
+            <label className="subtitle" htmlFor="password">
               Contraseña:
               {validPwd ? (
                 <FontAwesomeIcon
@@ -292,17 +291,16 @@ function EditUser() {
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
             />
-            
+
             <div className="group">
               <p
                 id="pwdnote"
-                className={`instructions ${
-                  pwdFocus && !validPwd ? "block" : "hidden"
-                }`}
+                className={`instructions ${pwdFocus && !validPwd ? "block" : "hidden"
+                  }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
                 <br />
-                Debera incluir al menos una Mayuscula, Minuscula, 
+                Debera incluir al menos una Mayuscula, Minuscula,
                 un Número y un carácter Especial
                 <br />
                 Caracteres Especiale Permitidos:{" "}
@@ -317,7 +315,7 @@ function EditUser() {
               </p>
             </div>
 
-            <label className="input-label" htmlFor="confirm_pwd">
+            <label className="subtitle" htmlFor="confirm_pwd">
               Confirmar Contraseña:
               {validMatch && matchPwd ? (
                 <FontAwesomeIcon
@@ -343,17 +341,16 @@ function EditUser() {
             <div className="group">
               <p
                 id="confirmnote"
-                className={`instructions ${
-                  matchFocus && !validMatch ? "block" : "hidden"
-                }`}
+                className={`instructions ${matchFocus && !validMatch ? "block" : "hidden"
+                  }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 
+                <FontAwesomeIcon icon={faInfoCircle} />
                 Debe coindicir con el primer campo de la contraseña.
               </p>
             </div>
 
             <div className="mt-3">
-              <label className="input-label" htmlFor="email">
+              <label className="subtitle mx-2" htmlFor="email">
                 Email:
               </label>
               <input
@@ -365,7 +362,7 @@ function EditUser() {
                 required
               />
 
-              <label className="input-label" htmlFor="phone">
+              <label className="subtitle mx-2" htmlFor="phone">
                 Telefono:
               </label>
               <input
@@ -378,7 +375,7 @@ function EditUser() {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               />
 
-              <label className="input-label" htmlFor="rol">
+              <label className="subtitle mx-2" htmlFor="rol">
                 Rol:
               </label>
               <select
@@ -391,20 +388,21 @@ function EditUser() {
                 <option value="cajero">Cajero</option>
                 <option value="admin">Administrador</option>
               </select>
-            
-            <button
-              className="btn-edit"
-              disabled={!validName || !validPwd || !validMatch ? true : false}
-              type='submit'
-            >
-              Actualizar
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => navigate("/clients")}
-            >
-              Cancelar
-            </button>
+              <div className="float-right">
+                <button
+                  className="btn-edit"
+                  disabled={!validName || !validPwd || !validMatch ? true : false}
+                  type='submit'
+                >
+                  Actualizar
+                </button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => navigate("/users")}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </form>
         </section>

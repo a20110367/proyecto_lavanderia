@@ -130,7 +130,7 @@ function EditClient() {
   return (
     <div className="signup-form">
       <div className="title-container">
-        <p className="input-label">Editando perfil de:</p>   
+        <p className="subtitle">Editando perfil de:</p>   
         <strong className="title-strong">{name}</strong>
       </div>
       {success ? (
@@ -151,7 +151,7 @@ function EditClient() {
           </p>
           <form onSubmit={handleSubmit}>
             {/* Nombre de usuario */}
-            <label className="input-label" htmlFor="name">
+            <label className="subtitle mt-0" htmlFor="name">
               Nombre:
               {validName ? (
                 <FontAwesomeIcon
@@ -177,8 +177,8 @@ function EditClient() {
               onBlur={() => setNameFocus(false)}
             />
             {/**Nombre Usuario */}
-            <label className="input-label" htmlFor="username">
-              Nombre de usuario
+            <label className="subtitle" htmlFor="username">
+              Nombre de usuario:
               {validUserName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -211,16 +211,16 @@ function EditClient() {
                     : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
+                <FontAwesomeIcon icon={faInfoCircle} />Debe ser de 4 a 24 caracteres.
                 <br />
-                Must begin with a letter.
+                Debe iniciar con una letra.
                 <br />
-                Letters, numbers, underscores, hyphens allowed.
+                Letras, números, guiones y guiones bajos permitidos.
               </p>
             </div>
 
-            <label className="input-label" htmlFor="firstName">
-              Apellido Paterno
+            <label className="subtitle" htmlFor="firstName">
+              Apellido Paterno:
             </label>
             <input
               className="input-prim"
@@ -236,8 +236,8 @@ function EditClient() {
               onBlur={() => setFirstNameFocus(false)}
             />
           
-            <label className="input-label" htmlFor="secondName">
-              Apellido Materno
+            <label className="subtitle" htmlFor="secondName">
+              Apellido Materno:
               
             </label>
             <input
@@ -255,7 +255,7 @@ function EditClient() {
             />
             
             {/* Contraseña */}
-            <label className="input-label" htmlFor="password">
+            <label className="subtitle" htmlFor="password">
               Contraseña:
               {validPwd ? (
                 <FontAwesomeIcon
@@ -285,7 +285,7 @@ function EditClient() {
                   pwdFocus && !validPwd ? "block" : "hidden"
                 }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 8 a 24 caracteres.
+                <FontAwesomeIcon icon={faInfoCircle} />Debe ser de 8 a 24 caracteres.
                 <br />
                 Debe incluir letras mayúsculas y minúsculas, un número y un
                 carácter especial.
@@ -303,7 +303,7 @@ function EditClient() {
             </div>
 
             {/* Confirmar contraseña */}
-            <label className="input-label" htmlFor="confirm_pwd">
+            <label className="subtitle" htmlFor="confirm_pwd">
               Confirmar Contraseña:
               {validMatch && matchPwd ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -336,7 +336,7 @@ function EditClient() {
             </div>
             <div className="mt-3">
               {/* Email */}
-              <label className="input-label" htmlFor="email">
+              <label className="subtitle mx-2" htmlFor="email">
                 Email:
               </label>
               <input
@@ -349,7 +349,7 @@ function EditClient() {
               />
 
               {/* Teléfono */}
-              <label className="input-label" htmlFor="phone">
+              <label className="subtitle mx-2" htmlFor="phone">
                 Teléfono:
               </label>
               <input
@@ -361,7 +361,7 @@ function EditClient() {
                 required
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               />
-
+              <div className="float-right">
               {/* Botón para actualizar */}
               <button
                 className="btn-edit"
@@ -376,6 +376,7 @@ function EditClient() {
               >
                 Cancelar
               </button>
+              </div>
             </div>
           </form>
         </section>

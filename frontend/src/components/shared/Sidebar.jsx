@@ -45,35 +45,35 @@ const items = [
     "/lavanderia",
     <MdLocalLaundryService style={iconStyle} />,
     [
-      getItem("Encargo", "/encargo"),
-      getItem("Recepcion", "/recepcion"),
-      getItem("Entrega", "/entrega"),
+      getItem("Encargo", "/encargoWash"),
+      getItem("Recepcion", "/recepcionWash"),
+      getItem("Entrega", "/entregaWash"),
     ]
   ),
-  getItem("Planchado", "/planchado", <MdIron style={iconStyle} />, [
-    getItem("Recepcion", "/recepcion"),
-    getItem("Entrega", "/entrega"),
+  getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
+    getItem("Recepcion", "/recepcionIron"),
+    getItem("Entrega", "/entregaIron"),
   ]),
-  getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
+  getItem("Pedidos", "/pedidosList", <LuListOrdered style={iconStyle} />, [
     getItem("Lavanderia", "/pedidosLavanderia"),
     getItem("Planchado", "/pedidosPlanchado"),
   ]),
   getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
-  getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
+  getItem("Caja", "/cajasList", <HiCash style={iconStyle} />, [
     getItem("Inicio de caja", "/cajas"),
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
     getItem("Retiro de caja", "/retiroCaja"),
     getItem("Reembolsos", "/reembolsos"),
   ]),
-  getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
+  getItem("Equipos", "/equiposList", <HiTruck style={iconStyle} />, [
     getItem("Equipos", "/equipos"),
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/adminEquipos"),
   ]),
 
-  getItem("Usurarios", "/users", <HiUsers style={iconStyle} />),
+  getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
   getItem("Servicios", "/services", <FcEngineering style={iconStyle} />),
 
   { type: "divider", style: { margin: "122px " } },

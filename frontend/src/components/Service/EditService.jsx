@@ -58,7 +58,7 @@ function EditService() {
   return (
     <div className="edit-servicio-form">
       <div className="title-container">
-        <p className="input-label">Editando servicio de:</p>   
+        <p className="subtitle">Editando servicio de:</p>   
         <strong className="title-strong">{description}</strong>
       </div>
       {success ? (
@@ -71,8 +71,8 @@ function EditService() {
             {errMsg}
           </p>
           <form onSubmit={handleSubmit}>
-            <label className="input-label" htmlFor="description">
-              Descripción
+            <label className="subtitle mt-0" htmlFor="description">
+              Descripción:
             </label>
             <input
               className="input-prim"
@@ -85,8 +85,8 @@ function EditService() {
               required
             />
 
-            <label className="input-label" htmlFor="price">
-              Precio Unitario
+            <label className="subtitle" htmlFor="price">
+              Precio Unitario:
             </label>
             <input
               className="input-prim"
@@ -98,8 +98,8 @@ function EditService() {
               required
             />
 
-            <label className="input-label" htmlFor="time">
-              Tiempo (minutos)
+            <label className="subtitle" htmlFor="time">
+              Tiempo (minutos):
             </label>
             <input
               className="input-prim"
@@ -111,8 +111,8 @@ function EditService() {
               required
             />
 
-            <label className="input-label" htmlFor="weight">
-              Peso (gramos)
+            <label className="subtitle" htmlFor="weight">
+              Peso (gramos):
             </label>
             <input
               className="input-prim"

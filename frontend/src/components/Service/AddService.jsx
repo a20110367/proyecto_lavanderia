@@ -41,7 +41,7 @@ function AddServicio() {
       setSuccess(true);
 
       navigate("/services");
-      } catch (err) {
+    } catch (err) {
       setErrMsg("Failed to add service.");
     }
   };
@@ -49,11 +49,11 @@ function AddServicio() {
   return (
     <div className="add-service-form">
       <div className="basic-container w-5/12">
-        <strong className="input-label">Favor de rellenar los campos solicitados </strong>
+        <strong className="subtitle">Favor de rellenar los campos solicitados </strong>
       </div>
       {success ? (
         <section>
-          <h1>Success!</h1>  
+          <h1>Success!</h1>
         </section>
       ) : (
         <section className="basic-container">
@@ -61,8 +61,8 @@ function AddServicio() {
             {errMsg}
           </p>
           <form onSubmit={handleSubmit}>
-            <label className="input-label" htmlFor="description">
-              Descripción
+            <label className="subtitle mt-0" htmlFor="description">
+              Descripción:
             </label>
             <input
               className="input-prim"
@@ -75,8 +75,8 @@ function AddServicio() {
               required
             />
 
-            <label className="input-label" htmlFor="price">
-              Precio Unitario
+            <label className="subtitle" htmlFor="price">
+              Precio Unitario:
             </label>
             <input
               className="input-prim"
@@ -89,8 +89,8 @@ function AddServicio() {
               required
             />
 
-            <label className="input-label" htmlFor="time">
-              Tiempo (minutos)
+            <label className="subtitle" htmlFor="time">
+              Tiempo (minutos):
             </label>
             <input
               className="input-prim"
@@ -102,8 +102,8 @@ function AddServicio() {
               required
             />
 
-            <label className="input-label" htmlFor="weight">
-              Peso (Kilogramos)
+            <label className="subtitle" htmlFor="weight">
+              Peso (Kilogramos):
             </label>
             <input
               className="input-prim"
@@ -114,7 +114,6 @@ function AddServicio() {
               value={weight}
               required
             />
-
             <button
               className="btn-primary"
               type="submit"

@@ -16,13 +16,14 @@ export const UserProvider = ({ children }) => {
         });
 
         setCookies('token', res.data.id_user, { path: '/' }); // your token
+        setCookies('username', res.data.username, { path: '/' }); // optional data
         setCookies('role', res.data.role, { path: '/' }); // optional data
 
         navigate('/menuPuntoVenta');
     };
 
     const logout = () => {
-        ['token', 'role'].forEach(obj => removeCookie(obj)); // remove data save in cookies
+        ['token', 'role', 'username'].forEach(obj => removeCookie(obj)); // remove data save in cookies
         navigate('/login');
     };
 

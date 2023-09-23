@@ -9,12 +9,14 @@ import { Popover, Transition, Menu } from "@headlessui/react";
 import { Button } from "antd";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth/auth";
 
 export default function Header({ toggleCollapsed, collapsed, items }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [matchingRoutes, setMatchingRoutes] = useState([]);
   const navigate = useNavigate();
+  const { cookies } = useAuth();
 
 
   const handleSearch = (searchTerm) => {
@@ -22,14 +24,14 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
       if (item.type === 'divider') {
         return acc;
       }
-      
+
       // Obtenemos las primeras letras de la etiqueta del elemento
       const firstLetters = item.label.slice(0, searchTerm.length).toLowerCase();
-  
+
       if (firstLetters === searchTerm.toLowerCase()) {
         acc.push({ key: item.key, label: item.label });
       }
-  
+
       if (item.children) {
         const childMatching = item.children.filter((child) => {
           // Obtenemos las primeras letras de la etiqueta del hijo
@@ -38,14 +40,14 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
         });
         acc.push(...childMatching);
       }
-  
+
       return acc;
     }, []);
-  
+
     setMatchingRoutes(matching);
     setShowResults(searchTerm !== "");
   };
-  
+
   const closeResults = () => {
     setShowResults(false);
   };
@@ -59,7 +61,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
   }, []);
 
   return (
-    <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
+    <div className="bg-slate-100 h-16 px-4 flex justify-between items-center border-b border-gray-200">
       <div className="flex items-center">
 
         <Button
@@ -86,28 +88,29 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
               e.stopPropagation();
             }}
           />
-        {showResults && matchingRoutes.length > 0 && (
-  <div className="absolute top-16 left-0 w-[24rm] max-h-60 bg-white border border-gray-300 rounded-b-md shadow-md overflow-y-auto z-50">
-    <strong className="px-4 py-2 text-gray-700 font-medium text-lg block">
-      Rutas coincidentes:
-    </strong>
-    <ul>
-      {matchingRoutes.map((route) => (
-        <li
-          key={route.key}
-          className="px-4 py-2.5 cursor-pointer hover:bg-gray-100 hover:text-blue-500 text-base"
-          onClick={() => {
-            navigate(route.key);
-            setSearchTerm("");
-          }}
-        >
-          {route.label}
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+          {showResults && matchingRoutes.length > 0 && (
+            <div className="absolute top-16 left-0 w-[24rm] max-h-60 bg-white border border-gray-300 rounded-b-md shadow-md overflow-y-auto z-50">
+              <strong className="px-4 py-2 text-gray-700 font-medium text-lg block">
+                Rutas coincidentes:
+              </strong>
+              <ul>
+                {matchingRoutes.map((route) => (
+                  <li
+                    key={route.key}
+                    className="px-4 py-2.5 cursor-pointer hover:bg-gray-100 hover:text-blue-500 text-base"
+                    onClick={() => {
+                      navigate(route.key);
+                      setSearchTerm("");
+                    }}
+                  >
+                    {route.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+          <p className="ml-8 subtitle text-2xl">Empleado:</p><p className="ml-2 subtitle text-xl text-dodgerBlue">{cookies.username}</p>
       </div>
       <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">

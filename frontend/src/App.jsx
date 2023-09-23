@@ -54,7 +54,6 @@ function App() {
         <Routes>
             <Route index element={<Navigate to={'/menuPuntoVenta'} />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/logout" element={<Logout />} />
 
             {/* Rutas Protegidas */}
             <Route element={<ProtectedRoute
@@ -62,6 +61,8 @@ function App() {
                 redirectTo="/login"
             >
                 <Route path="/" element={<Sidebar />}>
+                    <Route path="/logout" element={<Logout />} />
+
                     {/*Punto de venta */}
                     <Route path="/puntoVenta" element={<PuntoVenta />} />
                     <Route path="/menuPuntoVenta" element={<MenuPuntoVenta />} />

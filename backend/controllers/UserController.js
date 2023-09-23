@@ -8,6 +8,7 @@ export const authUser = async (req, res) =>{
         const response = await prisma.user.findFirst({
             select:{
                 id_user: true,
+                username: true,
                 role: true,
             },
             where:{

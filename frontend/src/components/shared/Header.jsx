@@ -61,8 +61,8 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
   }, []);
 
   return (
-    <div className="bg-slate-100 h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <div className="flex items-center">
+    <div className="header-container">
+      <div className="fc">
 
         <Button
           type="text"
@@ -73,7 +73,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
         <div className="relative ml-4">
           <HiOutlineSearch
             fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            className="Search"
           />
           <input
             type="text"
@@ -83,21 +83,21 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
               setSearchTerm(e.target.value);
               handleSearch(e.target.value);
             }}
-            className="text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4"
+            className="Search-input"
             onClick={(e) => {
               e.stopPropagation();
             }}
           />
           {showResults && matchingRoutes.length > 0 && (
-            <div className="absolute top-16 left-0 w-[24rm] max-h-60 bg-white border border-gray-300 rounded-b-md shadow-md overflow-y-auto z-50">
-              <strong className="px-4 py-2 text-gray-700 font-medium text-lg block">
+            <div className="Search-container">
+              <strong className="Search-result">
                 Rutas coincidentes:
               </strong>
               <ul>
                 {matchingRoutes.map((route) => (
                   <li
                     key={route.key}
-                    className="px-4 py-2.5 cursor-pointer hover:bg-gray-100 hover:text-blue-500 text-base"
+                    className="Search-text"
                     onClick={() => {
                       navigate(route.key);
                       setSearchTerm("");
@@ -110,7 +110,8 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
             </div>
           )}
         </div>
-          <p className="ml-8 subtitle text-2xl">Empleado:</p><p className="ml-2 subtitle text-xl text-dodgerBlue">{cookies.username}</p>
+          <p className="user font-bold">{cookies.role === 'admin' ? 'Administrador:' : 'Empleado:'}</p>
+          <p className="user text-dodgerBlue">{cookies.username}</p>
       </div>
       <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">
@@ -119,7 +120,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
               <Popover.Button
                 className={classNames(
                   open && "bg-gray-100",
-                  "p-1.5 rounded-sm inline-flex items-center text-gray700 hover:text-opacity-100 focus:outline-none active:bg-gray-100"
+                  "Popover-btn"
                 )}
               >
                 <HiOutlineChatAlt fontSize={24} />
@@ -133,12 +134,12 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute right-0 z-10 mt-2.5 w-80">
-                  <div className="bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5">
-                    <strong className="text-gray-700 font-medium">
+                <Popover.Panel className="Popover">
+                  <div className="Popover-container">
+                    <strong className="Popover-title">
                       Mensajes
                     </strong>
-                    <div className="mt-2 py-1 text-sm">
+                    <div className="Popover-text">
                       Este es el panel de mensajes
                     </div>
                   </div>
@@ -153,7 +154,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
               <Popover.Button
                 className={classNames(
                   open && "bg-gray-100",
-                  "p-1.5 rounded-sm inline-flex items-center text-gray700 hover:text-opacity-100 focus:outline-none active:bg-gray-100"
+                  "Popover-btn"
                 )}
               >
                 <HiOutlineBell fontSize={24} />
@@ -167,12 +168,12 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute right-0 z-10 mt-2.5 w-80">
-                  <div className="bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5">
-                    <strong className="text-gray-700 font-medium">
+                <Popover.Panel className="Popover">
+                  <div className="Popover-container">
+                    <strong className="Popover-title">
                       Notificaciones
                     </strong>
-                    <div className="mt-2 py-1 text-sm">
+                    <div className="Popover-text">
                       Este es el panel de Notificaciones
                     </div>
                   </div>
@@ -183,10 +184,10 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
         </Popover>
         <Menu as="div" className="relative">
           <div>
-            <Menu.Button className="ml-2 inline-flex rounded-full focus:outline-none focus:ring-2 focus:ring-neutral-400">
+            <Menu.Button className="menu-btn">
               <span className="sr-only">Abrir Usuario</span>
               <div
-                className="h-10 w-10 rounded-full bg-gray-500 bg-cover bg-no-repeat bg-center"
+                className="menu-btn-img"
                 style={{
                   backgroundImage:
                     "url(https://celestiabuilds.com/wp-content/uploads/2021/06/Hu-Tao.png)",
@@ -206,13 +207,13 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="origin-top-right z-10 absolute right-0 mt-2 w-48 rounded-sm shadow-md p-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="menu">
               <Menu.Item>
                 {({ active }) => (
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/perfil")}
                   >
@@ -225,7 +226,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/configuraciones")}
                   >
@@ -238,7 +239,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/")}
                   >

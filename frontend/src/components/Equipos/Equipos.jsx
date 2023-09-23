@@ -86,7 +86,7 @@ function Equipos() {
                         : "text-red-500"
                     }`}
                   >
-                    {machine.status}
+                    {machine.status === 'available' ? 'Disponible' : 'No Disponible'}
                   </td>
                   <td>{machine.notes}</td>
                   <td>

@@ -54,21 +54,21 @@ const items = [
     getItem("Recepcion", "/recepcionIron"),
     getItem("Entrega", "/entregaIron"),
   ]),
-  getItem("Pedidos", "/pedidosList", <LuListOrdered style={iconStyle} />, [
+  getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
     getItem("Lavanderia", "/pedidosLavanderia"),
     getItem("Planchado", "/pedidosPlanchado"),
   ]),
   getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
-  getItem("Caja", "/cajasList", <HiCash style={iconStyle} />, [
+  getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
     getItem("Inicio de caja", "/cajas"),
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
     getItem("Retiro de caja", "/retiroCaja"),
     getItem("Reembolsos", "/reembolsos"),
   ]),
-  getItem("Equipos", "/equiposList", <HiTruck style={iconStyle} />, [
-    getItem("Equipos", "/equipos"),
+  getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
+    getItem("Lista de Equipos", "/equipos"),
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/adminEquipos"),
   ]),
@@ -100,15 +100,15 @@ export default function Sidebar() {
   };
 
   return (
-    <Layout className=" flex flex-col min-h-screen">
+    <Layout className="Layout">
       <Sider
         className={` ${collapsed ? "text-center" : ""}`}
         trigger={null}
         collapsible
         collapsed={collapsed}
       >
-        <div className="h-16 flex items-center gap-2 px-1 pt-1.5x">
-          <div className="flex items-center pl-3.5">
+        <div className="img-container-side">
+          <div className="img-side">
             {" "}
             {/* Contenedor flex */}
             <img
@@ -125,7 +125,7 @@ export default function Sidebar() {
             </span>
           </div>
         </div>
-        <div className="max-h-[calc(100vh-64px)] overflow-y-auto ">
+        <div className="side-menu">
           <Menu
             theme="dark"
             mode="inline"
@@ -144,7 +144,7 @@ export default function Sidebar() {
           toggleCollapsed={toggleCollapsed}
           items={items}
         ></Header>
-        <Content className="bg-white rounded-lg m-3 p-3 min-h-80 mb-4">
+        <Content className="content">
           <Outlet />
         </Content>
       </Layout>

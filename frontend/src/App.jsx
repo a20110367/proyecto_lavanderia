@@ -91,21 +91,21 @@ function App() {
                     {/* Clients */}
                     <Route path="/addClient" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <AddClient />
                         </ProtectedRoute>
                     } />
                     <Route path="/editClient/:id" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <EditClient />
                         </ProtectedRoute>
                     } />
                     <Route path="/clients" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <Clients />
                         </ProtectedRoute>
@@ -114,21 +114,21 @@ function App() {
                     {/* Empleados */}
                     <Route path="/addUser" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <AddUser />
                         </ProtectedRoute>
                     } />
                     <Route path="/editUser/:id" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <EditUser />
                         </ProtectedRoute>
                     } />
                     <Route path="/users" element={
                         <ProtectedRoute
-                            isAuth={!!cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <Users />
                         </ProtectedRoute>

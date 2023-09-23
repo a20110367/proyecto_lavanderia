@@ -45,6 +45,9 @@
 
 @layer components {
 	/*-------------------- CONTAINERS ---------------*/
+	.fc{
+		@apply flex items-center
+	}
 	.components-container{
 		@apply bg-neutral-500 h-screen w-screen overflow-hidden flex flex-row
 	}
@@ -86,6 +89,9 @@
 	.link {
 		@apply font-medium text-base text-oxfordBlue hover:text-dodgerBlue
 	}
+	.user {
+		@apply font-semibold text-2xl ml-3 text-oxfordBlue
+	}
 	/* strongs */
 	.title-strong {
 		@apply pl-5 pr-2 text-lg font-medium text-blue-700
@@ -100,6 +106,7 @@
 	.input-lg {
 		@apply bg-transparent border-2 border-gray-500 rounded-lg p-8 mt-2  focus:outline-none  focus:ring-blue-400 focus:ring-2 w-full
 	}
+	/*-------------------- SELECTS ---------------*/
 	.select-prim {
 		@apply appearance-none bg-transparent border-2 border-gray-500 rounded-lg py-3 px-4 pr-8  focus:outline-none focus:border-blue-500 text-base w-1/6
 	}
@@ -120,5 +127,69 @@
 	}
 	.img-pos {
 		@apply h-48 w-full object-cover rounded-t-lg
+	}
+
+	/*-------------------- HEADER ---------------*/
+	.header-container {
+		@apply bg-slate-100 h-16 px-4 flex justify-between items-center border-b border-gray-200
+	}
+	.menu-item {
+		@apply text-gray-700 focus:bg-gray-200 cursor-pointer rounded-sm px-4 py-2
+	}
+	.menu {
+		@apply origin-top-right z-10 absolute right-0 mt-2 w-48 rounded-sm shadow-md p-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none
+	}
+	.menu-btn-img {
+		@apply h-10 w-10 rounded-full bg-gray-500 bg-cover bg-no-repeat bg-center
+	}
+	.menu-btn {
+		@apply ml-2 inline-flex rounded-full focus:outline-none focus:ring-2 focus:ring-neutral-400
+	}
+	.Search {
+		@apply text-gray-400 absolute top-1/2 -translate-y-1/2 left-3
+	}
+	.Search-input{
+		@apply text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4
+	}
+	.Search-container{
+		@apply absolute top-16 left-0 w-[24rm] max-h-60 bg-white border border-gray-300 rounded-b-md shadow-md overflow-y-auto z-50
+	}
+	.Search-result{
+		@apply px-4 py-2 text-gray-700 font-medium text-lg block
+	}
+	.Search-text{
+		@apply px-4 py-2.5 cursor-pointer hover:bg-gray-100 hover:text-blue-500 text-base
+	}
+	.Popover-btn{
+		@apply p-1.5 rounded-sm inline-flex items-center text-gray-700 hover:text-opacity-100 focus:outline-none active:bg-gray-100
+	}
+	.Popover {
+		@apply absolute right-0 z-10 mt-2.5 w-80
+	}
+	.Popover-container {
+		@apply bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5
+	}
+	.Popover-title {
+		@apply text-gray-700 font-medium
+	}
+	.Popover-text {
+		@apply mt-2 py-1 text-sm
+	}
+
+	/*-------------------- SIDEBAR ---------------*/
+	.Layout{
+		@apply flex flex-col min-h-screen
+	}
+	.img-container-side{
+		@apply h-16 flex items-center gap-2 px-1 pt-1.5
+	}
+	.img-side{
+		@apply flex items-center pl-3.5
+	}
+	.side-menu{
+		@apply max-h-[calc(100vh-64px)] overflow-y-auto
+	}
+	.content{
+		@apply bg-white rounded-lg m-3 p-3 min-h-fit mb-4
 	}
 }

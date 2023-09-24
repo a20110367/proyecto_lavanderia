@@ -73,8 +73,12 @@ function Equipos() {
               {data.map((machine, index) => (
                 <tr key={machine.id_machine}>
                   <td>{index + 1}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {machine.machineType}
+                  <td className={`font-semibold ${
+                      machine.machineType === "lavadora"
+                        ? "text-dodgerBlue"
+                        : "text-green-500"
+                    }`}>
+                    {machine.machineType === 'lavadora' ? 'Lavadora' : 'Secadora'}
                   </td>
                   <td>{machine.model}</td>
                   <td>{machine.cicleTime}</td>

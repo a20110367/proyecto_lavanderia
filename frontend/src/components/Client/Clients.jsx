@@ -62,8 +62,8 @@ function Clients() {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Nombre</th>
                                 <th>Nombre de usuario</th>
+                                <th>Nombre</th>
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
                                 <th>Email</th>
@@ -76,10 +76,10 @@ function Clients() {
                             {data.map((client, index) => (
                                 <tr key={client.id_client}>
                                     <td>{index + 1}</td>
+                                    <td className="font-semibold text-slate-700" >{client.username}</td>
                                     <td>{client.name}</td>
-                                    <td>{client.username}</td>
-                                    <td>{client.firstName}</td>
-                                    <td>{client.secondName}</td>
+                                    <td>{client.firstLN}</td>
+                                    <td>{client.secondLN}</td>
                                     <td>{client.email}</td>
                                     <td>{client.phone}</td>
                                     <td>{client.pass || "N/A"}</td>
@@ -105,7 +105,7 @@ function Clients() {
                                             </DialogTitle>
                                             <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">
-                                                    Estas seguro de eliminar al cliente: {clientSelName}?
+                                                    Estas seguro de eliminar al cliente: <p className="text-dodgerBlue">{clientSelName}</p>
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>

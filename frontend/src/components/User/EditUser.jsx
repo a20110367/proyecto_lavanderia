@@ -281,7 +281,7 @@ function EditUser() {
               </label>
               <input
                 className="form-input"
-                type="text"
+                type="password"
                 id="password"
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
@@ -328,7 +328,7 @@ function EditUser() {
               </label>
               <input
                 className="form-input"
-                type="text"
+                type="password"
                 id="confirm_pwd"
                 onChange={(e) => setMatchPwd(e.target.value)}
                 value={matchPwd}

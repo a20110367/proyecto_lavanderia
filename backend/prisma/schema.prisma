@@ -25,18 +25,17 @@ enum Role {
 }
 
 model User {
-  id_user  Int     @id @default(autoincrement())
-  username String
+  id_user  Int       @id @default(autoincrement())
+  username String    @unique
   name     String
   firstLN  String
   secondLN String
-  email    String  @unique
+  email    String    @unique
   phone    String
   pass     String
-  role     Role    @default(employee)
+  role     Role      @default(employee)
   orders   Order[]
   payment  Payment[]
-
 
   created   DateTime @default(now())
   updatedAT DateTime @updatedAt
@@ -44,10 +43,10 @@ model User {
 
 model Client {
   id_client Int     @id @default(autoincrement())
-  username  String
+  username  String?
   name      String
   firstLN   String
-  secondLN  String
+  secondLN  String?
   email     String  @unique
   phone     String
   pass      String?
@@ -97,7 +96,7 @@ model Service {
   time        Int?
   weight      Int?
   pieces      Int?
-  category    Category             @relation(fields: [fk_category], references: [id_category],onDelete:NoAction, onUpdate:Cascade)
+  category    Category             @relation(fields: [fk_category], references: [id_category], onDelete: NoAction, onUpdate: Cascade)
   Orders      OrderServiceDetail[]
 
   created   DateTime @default(now())
@@ -120,18 +119,19 @@ enum PayStatus {
 }
 
 enum OrderStatus {
-  pendiente
-  finalizado
+  pending
+  inProgress
+  finish
 }
 
 model Order {
   id_order      Int         @id @default(autoincrement())
-  //units         Int         @default(1)
+  numberOfItems Int         @default(1)
   receptionDate DateTime    @default(now())
   deliveryDate  DateTime    @default(now())
   payForm       PayForm     @default(delivery)
   payStatus     PayStatus   @default(unpaid)
-  orderStatus   OrderStatus @default(pendiente)
+  orderStatus   OrderStatus @default(pending)
   totalPrice    Float
   fk_client     Int
   fk_employee   Int
@@ -150,9 +150,10 @@ model Order {
 model OrderServiceDetail {
   fk_idService Int       @unique
   fk_idOrder   Int       @unique
-  servicePrice Float
   units        Int
+  subtotal     Float
   finishDate   DateTime?
+  token        Int?
 
   order     Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   service   Service  @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
@@ -186,16 +187,16 @@ model DryMachineDetail {
 }
 
 model Payment {
-  id_payment Int       @id @default(autoincrement())
-  fk_idOrder Int       @unique
-  fk_userChaser Int    
-  payMethod  PayMethod
-  payDate    DateTime  @default(now())
-  cashCut    Int
+  id_payment     Int       @id @default(autoincrement())
+  fk_idOrder     Int       @unique
+  fk_userCashier Int
+  payMethod      PayMethod
+  payDate        DateTime  @default(now())
+  cashCut        Int?
 
   created   DateTime @default(now())
   updatedAT DateTime @updatedAt
 
   order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  user  User  @relation(fields: [fk_userChaser], references: [id_user],onDelete: NoAction, onUpdate: NoAction)
+  user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
 }

@@ -34,7 +34,7 @@ import Sidebar from "./components/shared/Sidebar"
 
 //equipos
 import Equipos from "./components//Equipos/Equipos"
-import AddEquipo from "./components/Equipos/AddEquipo"
+import AddEquipo from './components/Equipos/AddEquipo'
 import EditEquipo from "./components/Equipos/EditEquipo"
 
 import Cajas from "./components/Cajas/Cajas"
@@ -49,54 +49,93 @@ import Logout from './routes/Logout'
 
 function App() {
     const { cookies } = useAuth();
-    console.log(cookies.token)
 
     return (
-            <Routes>
-            <Route index element={<Navigate to={'/menuPuntoVenta'}/>} />
-                <Route path="/login" element={<Login />} />
-                
-                {/* Rutas Protegidas */}
-                <Route element={<ProtectedRoute 
-                    isAuth={!!cookies.token}/>}
-                    redirectTo="/login"
-                    >
-                    <Route path = "/" element = {<Sidebar/>}>
-                        {/*Punto de venta */}
-                        <Route path="/puntoVenta" element={<PuntoVenta/>}/>
-                        <Route path="/menuPuntoVenta" element={<MenuPuntoVenta/>}/>
-                        
-                        <Route path = "/dashboard" element = {<Dashboard/>}/>
-                        
-                        <Route path = "/equipos" element = {<Equipos />}/>
-                        <Route path = "/addEquipo" element = {<AddEquipo/>}/>
-                        <Route path = "/editEquipo/:id" element = {<EditEquipo/>}/>
-                        
-                        <Route path = "/cajas" element = {<Cajas />}/>
-                        <Route path = "/cajaEntregas" element = {<CajaEntregas />}/>
-                        <Route path = "/cajaDevolucion" element = {<CajaDevolucion />}/>
-                        <Route path = "/cajaRetiros" element = {<CajaRetiros />}/>
-                        {/* Users */}
-                        <Route path="/addUser" element={<AddUser />} />
-                        <Route path="/editUser/:id" element={<EditUser />} />
-                        <Route path="/users" element={<Users />} />
-                        {/* Clients */}
-                        <Route path="/addClient" element={<AddClient />} />
-                        <Route path="/editClient/:id" element={<EditClient />} />
-                        <Route path="/clients" element={<Clients />} />
-                        {/* Services */}
-                        <Route path="/addService" element={<AddService/>}/>
-                        <Route path="/editService/:id" element={<EditService/>}/>
-                        <Route path="/services" element={<Services/>}/>
+        <Routes>
+            <Route index element={<Navigate to={'/menuPuntoVenta'} />} />
+            <Route path="/login" element={<Login />} />
 
-                        <Route path="/pedidos" element={<Pedidos/>}/>
-                        <Route path="/pedidosProceso" element={<PedidosProceso/>}/>
-                        <Route path="/pedidosFinalizados" element={<PedidosFinalizados/>}/>
-                        
-                        <Route path="/logout" element={<Logout/>} />
-                    </Route>
+            {/* Rutas Protegidas */}
+            <Route element={<ProtectedRoute
+                isAuth={!!cookies.token} />}
+                redirectTo="/login"
+            >
+                <Route path="/" element={<Sidebar />}>
+                    <Route path="/logout" element={<Logout />} />
+
+                    {/*Punto de venta */}
+                    <Route path="/puntoVenta" element={<PuntoVenta />} />
+                    <Route path="/menuPuntoVenta" element={<MenuPuntoVenta />} />
+
+                    <Route path="/dashboard" element={<Dashboard />} />
+
+                    <Route path="/equipos" element={<Equipos />} />
+                    <Route path="/addEquipo" element={<AddEquipo />} />
+                    <Route path="/editEquipo/:id" element={<EditEquipo />} />
+
+                    <Route path="/cajas" element={<Cajas />} />
+                    <Route path="/cajaEntregas" element={<CajaEntregas />} />
+                    <Route path="/cajaDevolucion" element={<CajaDevolucion />} />
+                    <Route path="/cajaRetiros" element={<CajaRetiros />} />
+
+                    {/* Services */}
+                    <Route path="/addService" element={<AddService />} />
+                    <Route path="/editService/:id" element={<EditService />} />
+                    <Route path="/services" element={<Services />} />
+
+                    {/* Pedidos */}
+                    <Route path="/pedidos" element={<Pedidos />} />
+                    <Route path="/pedidosProceso" element={<PedidosProceso />} />
+                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
+
+                    {/* Clients */}
+                    <Route path="/addClient" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <AddClient />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/editClient/:id" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <EditClient />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/clients" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <Clients />
+                        </ProtectedRoute>
+                    } />
+
+                    {/* Empleados */}
+                    <Route path="/addUser" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <AddUser />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/editUser/:id" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <EditUser />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/users" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                        >
+                            <Users />
+                        </ProtectedRoute>
+                    } />
                 </Route>
-            </Routes>
+            </Route>
+        </Routes>
     )
 }
 

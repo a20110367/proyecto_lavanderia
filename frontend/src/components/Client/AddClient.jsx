@@ -124,9 +124,9 @@ function AddClient() {
   };
 
   return (
-    <div className="signup-form">
+    <div>
       <div className=" basic-container w-5/12">
-        <strong className="input-label">Por favor añada los detalles del cliente</strong>
+        <strong className="subtitle">Por favor añada los detalles del cliente</strong>
       </div>
       {success ? (
         <section>
@@ -146,8 +146,8 @@ function AddClient() {
           </p>
           <form onSubmit={handleSubmit}>
             {/* Name */}
-            <label className="input-label" htmlFor="name">
-              Name
+            <label className="subtitle mt-0" htmlFor="name">
+              Nombre:
               {validName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -171,8 +171,8 @@ function AddClient() {
               onBlur={() => setNameFocus(false)}
             />
             {/**Nombre Usuario */}
-            <label className="input-label" htmlFor="username">
-              Nombre de usuario
+            <label className="subtitle" htmlFor="username">
+              Nombre de usuario:
               {validUserName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -199,23 +199,22 @@ function AddClient() {
             <div className="group">
               <p
                 id="uidnote"
-                className={`instructions text-sm text-red-600 ${
-                  userNameFocus && userName && !validUserName
-                    ? "block"
-                    : "hidden"
-                }`}
+                className={`instructions text-sm text-red-600 ${userNameFocus && userName && !validUserName
+                  ? "block"
+                  : "hidden"
+                  }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 characters.
+                <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 4 a 24 caracteres.
                 <br />
-                Must begin with a letter.
+                Debera iniciar con una letra.
                 <br />
-                Letters, numbers, underscores, hyphens allowed.
+                Letras, números, guiones y guiones bajos permitidos.
               </p>
             </div>
 
             {/* First Name */}
-            <label className="input-label" htmlFor="firstName">
-              Apellido Paterno
+            <label className="subtitle" htmlFor="firstName">
+              Apellido Paterno:
               {validFirstName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -238,8 +237,8 @@ function AddClient() {
               onBlur={() => setFirstNameFocus(false)}
             />
             {/* Second Name */}
-            <label className="input-label" htmlFor="secondName">
-              Apellido Materno
+            <label className="subtitle" htmlFor="secondName">
+              Apellido Materno:
               {validSecondName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -262,8 +261,8 @@ function AddClient() {
               onBlur={() => setSecondNameFocus(false)}
             />
             {/* Email */}
-            <label className="input-label" htmlFor="email">
-              Email
+            <label className="subtitle" htmlFor="email">
+              Email:
             </label>
             <input
               className="input-prim"
@@ -277,22 +276,9 @@ function AddClient() {
               onFocus={() => setEmailFocus(true)}
               onBlur={() => setEmailFocus(false)}
             />
-            {/* Phone */}
-            <label className="input-label" htmlFor="phone">
-              Telefono
-            </label>
-            <input
-              className="input-prim"
-              type="tel"
-              id="phone"
-              onChange={(e) => setPhone(e.target.value)}
-              value={phone}
-              required
-              pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-            />
             {/* Password */}
-            <label className="input-label" htmlFor="password">
-              Password
+            <label className="subtitle" htmlFor="password">
+              Contraseña:
               {validPwd ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -313,19 +299,17 @@ function AddClient() {
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
             />
-            <div className="group">
+            <div className="group mt-3">
               <p
                 id="pwdnote"
-                className={`instructions text-sm text-red-600 ${
-                  pwdFocus && !validPwd ? "block" : "hidden"
-                }`}
+                className={`instructions text-sm text-red-600 ${pwdFocus && !validPwd ? "block" : "hidden"
+                  }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 8 to 24 characters.
+                <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 8 a 24 characters.
                 <br />
-                Must include uppercase and lowercase letters, a number and a
-                special character.
+                Debera incluir una Mayuscula, una Minuscula, un Número y un Caracter Especial
                 <br />
-                Allowed special characters:{" "}
+                Caracteres Especiales Permitidos:{" "}
                 <span aria-label="exclamation mark">!</span>{" "}
                 <span aria-label="at symbol">@</span>{" "}
                 <span aria-label="hashtag">#</span>{" "}
@@ -335,27 +319,41 @@ function AddClient() {
                 <span aria-label="percent">=</span>
                 <span aria-label="percent">*</span>
               </p>
+              {/* Phone */}
+              <label className="subtitle mx-2" htmlFor="phone">
+                Telefono:
+              </label>
+              <input
+                className="input-2ry"
+                type="tel"
+                id="phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+              />
+              <div className="float-right">
+                <button
+                  className="btn-primary"
+                  type='submit'
+                  disabled={
+                    !validName ||
+                    !validFirstName ||
+                    !validSecondName ||
+                    !validEmail ||
+                    !validPwd
+                  }
+                >
+                  Registrar Cliente
+                </button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => navigate("/clients")}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
-
-            <button
-              className="btn-primary"
-              type='submit'
-              disabled={
-                !validName ||
-                !validFirstName ||
-                !validSecondName ||
-                !validEmail ||
-                !validPwd
-              }
-            >
-              Registrar Cliente
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => navigate("/clients")}
-            >
-              Cancelar
-            </button>
           </form>
         </section>
       )}

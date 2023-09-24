@@ -98,7 +98,7 @@ function AddEquipo() {
   return (
     <div className="add-equipo-form">
       <div className="basic-container w-5/12">
-        <strong className="input-label">Por favor, complete los datos del equipo</strong>
+        <strong className="subtitle">Por favor, complete los datos del equipo</strong>
       </div>
       {success ? (
         <section>
@@ -118,7 +118,7 @@ function AddEquipo() {
           </p>
           <form onSubmit={handleSubmit}>
             {/** Tipo de Máquina */}
-            <label className="text-lg font-medium" htmlFor="machineType">
+            <label className="subtitle mt-0" htmlFor="machineType">
               Tipo de Máquina:
             </label>
             <select
@@ -132,7 +132,7 @@ function AddEquipo() {
             </select>
 
             {/** Modelo */}
-            <label className="text-lg font-medium" htmlFor="model">
+            <label className="subtitle" htmlFor="model">
               Modelo:
               {validModel ? (
                 <FontAwesomeIcon
@@ -158,8 +158,7 @@ function AddEquipo() {
             />
 
             {/** Tiempo de Ciclo */}
-            <label className="input-label" htmlFor="cicleTime">
-              Tiempo de Ciclo (Horas):
+            <label className="subtitle" htmlFor="cicleTime">Tiempo de Ciclo (Minutos):
               {validCicleTime ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -182,7 +181,7 @@ function AddEquipo() {
             />
 
             {/** Peso */}
-            <label className="input-label" htmlFor="weight">
+            <label className="subtitle" htmlFor="weight">
               Peso (kg):
               {validWeight ? (
                 <FontAwesomeIcon
@@ -206,13 +205,13 @@ function AddEquipo() {
             />
 
             {/** Estado */}
-            <label className="input-label" htmlFor="status">
+            <label className="subtitle" htmlFor="status">
               Estado:
             </label>
             <select
               className="select-2ry"
               value={status}
-              onChange={(e) => setStatus(e.target.value)} 
+              onChange={(e) => setStatus(e.target.value)}
               name="status"
               id="status"
             >
@@ -221,7 +220,7 @@ function AddEquipo() {
             </select>
 
             {/** Notas */}
-            <label className="input-label" htmlFor="notes">
+            <label className="subtitle" htmlFor="notes">
               Notas:
             </label>
             <textarea
@@ -230,19 +229,18 @@ function AddEquipo() {
               onChange={(e) => setNotes(e.target.value)}
               value={notes}
             />
-
-            <button
-              className="btn-primary"
-              disabled={!validModel || !validCicleTime || !validWeight}
-            >
-              Registrar Equipo
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => navigate("/equipos")}
-            >
-              Cancelar
-            </button>
+              <button
+                className="btn-primary"
+                disabled={!validModel || !validCicleTime || !validWeight}
+              >
+                Registrar Equipo
+              </button>
+              <button
+                className="btn-cancel"
+                onClick={() => navigate("/equipos")}
+              >
+                Cancelar
+              </button>
           </form>
         </section>
       )}

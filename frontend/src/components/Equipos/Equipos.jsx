@@ -48,8 +48,8 @@ function Equipos() {
 
   return (
     <div>
-      <div className=" bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1">
-        <strong>Equipos</strong>
+      <div className="title-container">
+        <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
         <button className="btn-primary" onClick={() => navigate('/addEquipo')}>
@@ -86,7 +86,7 @@ function Equipos() {
                         : "text-red-500"
                     }`}
                   >
-                    {machine.status}
+                    {machine.status === 'available' ? 'Disponible' : 'No Disponible'}
                   </td>
                   <td>{machine.notes}</td>
                   <td>

@@ -121,7 +121,7 @@ function Signup() {
   return (
     <div className="signup-form">
       <div className=" basic-container w-5/12">
-        <strong className="input-label">Favor de rellenar los campos solicitados 
+        <strong className="subtitle">Favor de rellenar los campos solicitados
           para añadir el usuario</strong>
       </div>
       {success ? (
@@ -142,8 +142,8 @@ function Signup() {
           </p>
           <form onSubmit={handleSubmit}>
             {/**Nombre empleado */}
-            <label className="input-label" htmlFor="name">
-              Nombre del empleado
+            <label className="subtitle mt-0" htmlFor="name">
+              Nombre del empleado:
               {validName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -166,8 +166,8 @@ function Signup() {
               onFocus={() => setNameFocus(true)}
               onBlur={() => setNameFocus(false)}
             />
-            <label className="input-label" htmlFor="username">
-              Nombre de usuario
+            <label className="subtitle" htmlFor="username">
+              Nombre de usuario:
               {validUserName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -195,21 +195,20 @@ function Signup() {
             <div className="group">
               <p
                 id="uidnote"
-                className={`instructions ${
-                  userNameFocus && userName && !validUserName ? "block" : "hidden"
-                }`}
+                className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
+                  }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
                 <br />
-                Debera iniciar con una letra.                
+                Debera iniciar con una letra.
                 <br />
                 Letras, numeros, guiones y guiones bajos estan permitidos.
               </p>
             </div>
 
             {/* First Name */}
-            <label className="input-label" htmlFor="firstName">
-              Apellido Paterno
+            <label className="subtitle" htmlFor="firstName">
+              Apellido Paterno:
               {validFirstName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -232,8 +231,8 @@ function Signup() {
               onBlur={() => setFirstNameFocus(false)}
             />
             {/* Second Name */}
-            <label className="text-lg font-medium" htmlFor="secondName">
-              Apellido Materno
+            <label className="subtitle" htmlFor="secondName">
+              Apellido Materno:
               {validSecondName ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -255,8 +254,8 @@ function Signup() {
               onFocus={() => setSecondNameFocus(true)}
               onBlur={() => setSecondNameFocus(false)}
             />
-            <label className="input-label" htmlFor="password">
-              Password
+            <label className="subtitle" htmlFor="password">
+              Contraseña:
               {validPwd ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -282,13 +281,12 @@ function Signup() {
             <div className="group">
               <p
                 id="pwdnote"
-                className={`instructions ${
-                  pwdFocus && !validPwd ? "block" : "hidden"
-                }`}
+                className={`instructions ${pwdFocus && !validPwd ? "block" : "hidden"
+                  }`}
               >
                 <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
                 <br />
-                Debera incluir al menos una Mayuscula, Minuscula, 
+                Debera incluir al menos una Mayuscula, Minuscula,
                 un Número y un caracter Especial
                 <br />
                 Caracteres Especiale Permitidos:{" "}
@@ -303,8 +301,8 @@ function Signup() {
               </p>
             </div>
 
-            <label className="input-label" htmlFor="confirm_pwd">
-              Confirm Password
+            <label className="subtitle" htmlFor="confirm_pwd">
+              Confirmar Contraseña:
               {validMatch && matchPwd ? (
                 <FontAwesomeIcon
                   icon={faCheck}
@@ -329,18 +327,16 @@ function Signup() {
             <div className="group">
               <p
                 id="confirmnote"
-                className={`instructions ${
-                  matchFocus && !validMatch ? "block" : "hidden"
-                }`}
+                className={`instructions ${matchFocus && !validMatch ? "block" : "hidden"
+                  }`}
               >
-                <FontAwesomeIcon icon={faInfoCircle} /> 
+                <FontAwesomeIcon icon={faInfoCircle} />
                 Debe coindicir con el primer campo de la contraseña.
               </p>
             </div>
-
             <div className="mt-3">
-              <label className="input-label" htmlFor="email">
-                Email
+              <label className="subtitle mx-2" htmlFor="email">
+                Email:
               </label>
               <input
                 className="input-2ry"
@@ -352,10 +348,10 @@ function Signup() {
               />
 
               <label
-                className="input-label"
+                className="subtitle mx-2"
                 htmlFor="phone"
               >
-                Telefono
+                Telefono:
               </label>
               <input
                 className="input-2ry"
@@ -367,7 +363,7 @@ function Signup() {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               />
 
-              <label className="input-label" htmlFor="rol">
+              <label className="subtitle mx-2" htmlFor="rol">
                 Rol:
               </label>
 
@@ -381,21 +377,23 @@ function Signup() {
                 <option value="cajero">Cajero</option>
                 <option value="admin">Administrador</option>
               </select>
+              <div className="float-right">
+                <button
+                  className="btn-primary mx-2"
+                  disabled={
+                    !validUserName || !validPwd || !validMatch ? true : false
+                  }
+                >
+                  Añadir Empleado
+                </button>
+                <button
+                  className="btn-cancel mx-2"
+                  onClick={() => navigate("/users")}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
-            <button
-              className="btn-primary"
-              disabled={
-                !validUserName || !validPwd || !validMatch ? true : false
-              }
-            >
-              Añadir Empleado
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => navigate("/users")}
-            >
-              Cancelar
-            </button>
           </form>
         </section>
       )}

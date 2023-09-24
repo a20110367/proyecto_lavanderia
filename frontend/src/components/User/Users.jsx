@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 
@@ -31,7 +31,7 @@ function Users() {
         mutate("users");
     };
 
-    const handleClickOpen = (userName, userId) => {    
+    const handleClickOpen = (userName, userId) => {
         setUserSelId(userId)
         setUserSelName(userName)
         console.log(userId)
@@ -51,7 +51,7 @@ function Users() {
 
     return (
         <div>
-            <div  className="title-container">
+            <div className="title-container">
                 <strong className="title-strong">Lista de Empleados</strong>
             </div>
             <div className="w-full pt-4">
@@ -85,14 +85,17 @@ function Users() {
                                     <td>{user.username}</td>
                                     <td>{user.firstName}</td>
                                     <td>{user.secondName}</td>
-                                    <td>{user.role}</td>
+                                    <td className={`${user.role === "admin"
+                                            ? "text-blue-500"
+                                            : "text-green-500"
+                                        }`}>{user.role === 'admin' ? 'Administrador' : 'Empleado'}</td>
                                     <td>{user.email}</td>
                                     <td>{user.phone}</td>
                                     <td>{user.pass}</td>
-                                    
+
                                     <td>
                                         <button onClick={() => navigate(`/editUser/${user.id_user}`)}
-                                        className="btn-edit">
+                                            className="btn-edit">
                                             Editar
                                         </button>
                                         <button

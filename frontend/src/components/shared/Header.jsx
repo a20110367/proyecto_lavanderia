@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   HiOutlineBell,
   HiOutlineChatAlt,
@@ -9,34 +9,109 @@ import { Popover, Transition, Menu } from "@headlessui/react";
 import { Button } from "antd";
 import classNames from "classnames";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth/auth";
 
-export default function Header({ toggleCollapsed, collapsed }) {
+export default function Header({ toggleCollapsed, collapsed, items }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
+  const [matchingRoutes, setMatchingRoutes] = useState([]);
   const navigate = useNavigate();
+  const { cookies } = useAuth();
+
+
+  const handleSearch = (searchTerm) => {
+    const matching = items.reduce((acc, item) => {
+      if (item.type === 'divider') {
+        return acc;
+      }
+
+      // Obtenemos las primeras letras de la etiqueta del elemento
+      const firstLetters = item.label.slice(0, searchTerm.length).toLowerCase();
+
+      if (firstLetters === searchTerm.toLowerCase()) {
+        acc.push({ key: item.key, label: item.label });
+      }
+
+      if (item.children) {
+        const childMatching = item.children.filter((child) => {
+          // Obtenemos las primeras letras de la etiqueta del hijo
+          const childFirstLetters = child.label.slice(0, searchTerm.length).toLowerCase();
+          return childFirstLetters === searchTerm.toLowerCase();
+        });
+        acc.push(...childMatching);
+      }
+
+      return acc;
+    }, []);
+
+    setMatchingRoutes(matching);
+    setShowResults(searchTerm !== "");
+  };
+
+  const closeResults = () => {
+    setShowResults(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", closeResults);
+
+    return () => {
+      document.removeEventListener("click", closeResults);
+    };
+  }, []);
 
   return (
-    <div className="bg-white h-16 px-4 flex justify-between items-center border-b border-gray-200">
-      <div className="flex items-center">
-        {" "}
-        {/* Nueva div para alinear elementos */}
+    <div className="header-container">
+      <div className="fc">
+
         <Button
           type="text"
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           onClick={() => toggleCollapsed()}
-          className="text-lg pl- w-16 h-16"
+          className="text-lg  w-16 h-9"
         />
         <div className="relative ml-4">
-          {" "}
-          {/* Espacio para el botón de búsqueda */}
           <HiOutlineSearch
             fontSize={20}
-            className="text-gray-400 absolute top-1/2 -translate-y-1/2 left-3"
+            className="Search"
           />
           <input
             type="text"
             placeholder="Buscar..."
-            className="text-sm focus:outline-none active:outline-none h-10 w-[24rm] border border-gray-300 rounded-sm pl-11 pr-4"
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }}
+            className="Search-input"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           />
+          {showResults && matchingRoutes.length > 0 && (
+            <div className="Search-container">
+              <strong className="Search-result">
+                Rutas coincidentes:
+              </strong>
+              <ul>
+                {matchingRoutes.map((route) => (
+                  <li
+                    key={route.key}
+                    className="Search-text"
+                    onClick={() => {
+                      navigate(route.key);
+                      setSearchTerm("");
+                    }}
+                  >
+                    {route.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+          <p className="user font-bold">{cookies.role === 'admin' ? 'Administrador:' : 'Empleado:'}</p>
+          <p className="user text-dodgerBlue">{cookies.username}</p>
       </div>
       <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">
@@ -45,7 +120,7 @@ export default function Header({ toggleCollapsed, collapsed }) {
               <Popover.Button
                 className={classNames(
                   open && "bg-gray-100",
-                  "p-1.5 rounded-sm inline-flex items-center text-gray700 hover:text-opacity-100 focus:outline-none active:bg-gray-100"
+                  "Popover-btn"
                 )}
               >
                 <HiOutlineChatAlt fontSize={24} />
@@ -59,12 +134,12 @@ export default function Header({ toggleCollapsed, collapsed }) {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute right-0 z-10 mt-2.5 w-80">
-                  <div className="bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5">
-                    <strong className="text-gray-700 font-medium">
+                <Popover.Panel className="Popover">
+                  <div className="Popover-container">
+                    <strong className="Popover-title">
                       Mensajes
                     </strong>
-                    <div className="mt-2 py-1 text-sm">
+                    <div className="Popover-text">
                       Este es el panel de mensajes
                     </div>
                   </div>
@@ -79,7 +154,7 @@ export default function Header({ toggleCollapsed, collapsed }) {
               <Popover.Button
                 className={classNames(
                   open && "bg-gray-100",
-                  "p-1.5 rounded-sm inline-flex items-center text-gray700 hover:text-opacity-100 focus:outline-none active:bg-gray-100"
+                  "Popover-btn"
                 )}
               >
                 <HiOutlineBell fontSize={24} />
@@ -93,12 +168,12 @@ export default function Header({ toggleCollapsed, collapsed }) {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
               >
-                <Popover.Panel className="absolute right-0 z-10 mt-2.5 w-80">
-                  <div className="bg-white rounded-sm shadow-md ring-1 ring-black ring-opacity-5 px-2 py-2.5">
-                    <strong className="text-gray-700 font-medium">
+                <Popover.Panel className="Popover">
+                  <div className="Popover-container">
+                    <strong className="Popover-title">
                       Notificaciones
                     </strong>
-                    <div className="mt-2 py-1 text-sm">
+                    <div className="Popover-text">
                       Este es el panel de Notificaciones
                     </div>
                   </div>
@@ -109,10 +184,10 @@ export default function Header({ toggleCollapsed, collapsed }) {
         </Popover>
         <Menu as="div" className="relative">
           <div>
-            <Menu.Button className="ml-2 inline-flex rounded-full focus:outline-none focus:ring-2 focus:ring-neutral-400">
+            <Menu.Button className="menu-btn">
               <span className="sr-only">Abrir Usuario</span>
               <div
-                className="h-10 w-10 rounded-full bg-gray-500 bg-cover bg-no-repeat bg-center"
+                className="menu-btn-img"
                 style={{
                   backgroundImage:
                     "url(https://celestiabuilds.com/wp-content/uploads/2021/06/Hu-Tao.png)",
@@ -132,13 +207,13 @@ export default function Header({ toggleCollapsed, collapsed }) {
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="origin-top-right z-10 absolute right-0 mt-2 w-48 rounded-sm shadow-md p-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <Menu.Items className="menu">
               <Menu.Item>
                 {({ active }) => (
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/perfil")}
                   >
@@ -151,7 +226,7 @@ export default function Header({ toggleCollapsed, collapsed }) {
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/configuraciones")}
                   >
@@ -164,7 +239,7 @@ export default function Header({ toggleCollapsed, collapsed }) {
                   <div
                     className={classNames(
                       active && "bg-gray-100",
-                      "text-gray-700 focus:bg-gra-200 cursor-pointer rounded-sm px-4 py-2"
+                      "menu-item"
                     )}
                     onClick={() => navigate("/")}
                   >

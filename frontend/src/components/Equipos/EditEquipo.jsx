@@ -113,7 +113,7 @@ function EditEquipo() {
   return (
     <div className="signup-form">
       <div className="title-container">
-        <p className="input-label">Editando equipo con modelo:</p>   
+        <p className="subtitle">Editando equipo con modelo:</p>   
         <strong className="title-strong">{model}</strong>
       </div>
       {success ? (
@@ -135,7 +135,7 @@ function EditEquipo() {
           <form onSubmit={handleSubmit}>
 
             {/* Tipo de Máquina */}
-            <label className="input-label" htmlFor="machineType">
+            <label className="subtitle mt-0" htmlFor="machineType">
               Tipo de Máquina:
             </label>
             <select
@@ -150,7 +150,7 @@ function EditEquipo() {
             </select>
 
             {/* Modelo */}
-            <label className="input-label" htmlFor="model">
+            <label className="subtitle" htmlFor="model">
               Modelo:
               {validModel ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -173,7 +173,7 @@ function EditEquipo() {
             />
 
             {/* Tiempo de Ciclo */}
-            <label className="input-label" htmlFor="cicleTime">
+            <label className="subtitle" htmlFor="cicleTime">
               Tiempo de Ciclo (Horas):
               {validCicleTime ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -194,7 +194,7 @@ function EditEquipo() {
             />
 
             {/* Peso */}
-            <label className="input-label" htmlFor="weight">
+            <label className="subtitle" htmlFor="weight">
               Peso (Kg):
               {validWeight ? (
                 <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
@@ -215,7 +215,7 @@ function EditEquipo() {
             />
 
             {/* Estado */}
-            <label className="input-label" htmlFor="status">
+            <label className="subtitle" htmlFor="status">
               Estado:
             </label>
             <select
@@ -230,7 +230,7 @@ function EditEquipo() {
             </select>
 
             {/* Notas */}
-            <label className="input-label" htmlFor="notes">
+            <label className="subtitle" htmlFor="notes">
               Notas:
             </label>
             <textarea
@@ -239,7 +239,6 @@ function EditEquipo() {
               onChange={(e) => setNotes(e.target.value)}
               value={notes}
             />
-
             <button
               className="btn-edit"
               disabled={!validModel || !validCicleTime || !validWeight}

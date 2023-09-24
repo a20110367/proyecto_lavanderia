@@ -35,24 +35,21 @@ const iconStyle = {
 };
 
 const items = [
-  getItem(
-    "Autoservicio",
-    "/menuPuntoVenta",
-    <FcSalesPerformance style={iconStyle} />
-  ),
+
   getItem(
     "Lavanderia",
     "/lavanderia",
     <MdLocalLaundryService style={iconStyle} />,
     [
-      getItem("Encargo", "/encargoWash"),
-      getItem("Recepcion", "/recepcionWash"),
-      getItem("Entrega", "/entregaWash"),
+      getItem("Autoservicio","/menuPuntoVenta",),
+      getItem("Recepcion", "/recepcionLavanderia"),
+      getItem("Entrega", "/entregaLavanderia"),
+     
     ]
   ),
   getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
-    getItem("Recepcion", "/recepcionIron"),
-    getItem("Entrega", "/entregaIron"),
+    getItem("Recepcion", "/recepcionPlanchado"),
+    getItem("Entrega", "/entregaPlanchado"),
   ]),
   getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
     getItem("Lavanderia", "/pedidosLavanderia"),
@@ -61,10 +58,10 @@ const items = [
   getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
   getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
-    getItem("Inicio de caja", "/cajas"),
+    //getItem("Inicio de caja", "/cajas"),
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
-    getItem("Retiro de caja", "/retiroCaja"),
+    getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolsos"),
   ]),
   getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
@@ -76,7 +73,7 @@ const items = [
   getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
   getItem("Servicios", "/services", <FcEngineering style={iconStyle} />),
 
-  { type: "divider", style: { margin: "122px " } },
+  { type: "divider", style: { margin: "140px " } },
 
   getItem("Settings", "/settings", <SettingOutlined style={iconStyle} />), // Agregado: Settings
   getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),

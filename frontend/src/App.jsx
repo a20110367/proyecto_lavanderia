@@ -28,6 +28,8 @@ import MenuPuntoVenta from "./components/PuntoVenta/MenuPuntoVenta"
 import Pedidos from "./components/Pedidos/Pedidos"
 import PedidosProceso from "./components/Pedidos/PedidosProceso"
 import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
+import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
+
 
 import Dashboard from './components/Dashboard'
 import Sidebar from "./components/shared/Sidebar"
@@ -46,6 +48,16 @@ import CajaRetiros from "./components/Cajas/CajaRetiros"
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/auth/auth';
 import Logout from './routes/Logout'
+
+import EntregaLavanderia from "./components/Lavanderia/EntregaLavanderia"
+import RecepcionLavanderia from "./components/Lavanderia/RecepcionLavanderia"
+
+import EntregaPlanchado from "./components/Planchado/EntregaPlanchado"
+import RecepcionPlanchado from "./components/Planchado/RecepcionPlanchado"
+import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
+import CorteCajaTurno from "./components/Cajas/CorteCajaTurno"
+import CorteCajaParcial from "./components/Cajas/CorteCajaParcial"
+import Retiro from "./components/Cajas/Retiro"
 
 function App() {
     const { cookies } = useAuth();
@@ -77,6 +89,9 @@ function App() {
                     <Route path="/cajaEntregas" element={<CajaEntregas />} />
                     <Route path="/cajaDevolucion" element={<CajaDevolucion />} />
                     <Route path="/cajaRetiros" element={<CajaRetiros />} />
+                    <Route path="/corteCajaTurno" element={<CorteCajaTurno />} />
+                    <Route path="/corteCajaParcial" element={<CorteCajaParcial />} />
+                    <Route path="/retiro" element={<Retiro />} />
 
                     {/* Services */}
                     <Route path="/addService" element={<AddService />} />
@@ -87,6 +102,18 @@ function App() {
                     <Route path="/pedidos" element={<Pedidos />} />
                     <Route path="/pedidosProceso" element={<PedidosProceso />} />
                     <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
+                    <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
+
+                    {/*Lavanderia */}
+                    <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
+                    <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
+                    <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
+
+                    {/*Planchado */}
+                    <Route path="/entregaPlanchado" element={<EntregaPlanchado />} />
+                    <Route path="/recepcionPlanchado" element={<RecepcionPlanchado />} />
+
+
 
                     {/* Clients */}
                     <Route path="/addClient" element={

@@ -66,8 +66,8 @@ function Users() {
                         <thead>
                             <tr className="title-tr">
                                 <th>ID</th>
-                                <th>Nombre</th>
                                 <th>Nombre de usuario</th>
+                                <th>Nombre</th>
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
                                 <th>Rol</th>
@@ -80,14 +80,14 @@ function Users() {
                         <tbody>
                             {data.map((user, index) => (
                                 <tr key={user.id}>
-                                    <td>{index + 1}</td>
+                                    <td>{index + 1}</td>                                    
+                                    <td className="text-slate-700 font-semibold">{user.username}</td>
                                     <td>{user.name}</td>
-                                    <td>{user.username}</td>
-                                    <td>{user.firstName}</td>
-                                    <td>{user.secondName}</td>
+                                    <td>{user.firstLN}</td>
+                                    <td>{user.secondLN}</td>
                                     <td className={`${user.role === "admin"
-                                            ? "text-blue-500"
-                                            : "text-green-500"
+                                            ? "text-blue-500 font-semibold"
+                                            : "text-green-500 font-semibold"
                                         }`}>{user.role === 'admin' ? 'Administrador' : 'Empleado'}</td>
                                     <td>{user.email}</td>
                                     <td>{user.phone}</td>
@@ -111,11 +111,11 @@ function Users() {
                                             aria-describedby="alert-dialog-description"
                                         >
                                             <DialogTitle id="alert-dialog-title">
-                                                {"Eliminación de el usuario"}
+                                                {"Eliminación de el Empleado"}
                                             </DialogTitle>
                                             <DialogContent>
                                                 <DialogContentText id="alert-dialog-description">
-                                                    Se desea eliminar al usuario: {userSelName}?
+                                                    <p>Se desea eliminar al Empleado: <p className="text-dodgerBlue">{userSelName}</p></p>
                                                 </DialogContentText>
                                             </DialogContent>
                                             <DialogActions>

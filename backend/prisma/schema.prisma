@@ -24,29 +24,36 @@ enum Role {
   employee
 }
 
-model User{
-  id_user Int @id @default(autoincrement())
-  username String
-  name String
-  firstName String
-  secondName String
-  email String @unique
-  phone String
-  pass String
-  role Role @default(employee)
-  orders Order[]
+model User {
+  id_user  Int       @id @default(autoincrement())
+  username String    @unique
+  name     String
+  firstLN  String
+  secondLN String
+  email    String    @unique
+  phone    String
+  pass     String
+  role     Role      @default(employee)
+  orders   Order[]
+  payment  Payment[]
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
 }
 
-model Client{
-  id_client Int @id @default(autoincrement())
-  username String
-  name String
-  firstName String
-  secondName String
-  email String @unique
-  phone String
-  pass String?
-  orders Order[]
+model Client {
+  id_client Int     @id @default(autoincrement())
+  username  String?
+  name      String
+  firstLN   String
+  secondLN  String?
+  email     String  @unique
+  phone     String
+  pass      String?
+  orders    Order[]
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
 }
 
 enum MachineType {
@@ -59,29 +66,51 @@ enum Status {
   unavailable
 }
 
-model Machine{
-  id_machine Int @id @default(autoincrement())
+model Machine {
+  id_machine  Int         @id @default(autoincrement())
   machineType MachineType @default(lavadora)
-  model String
-  cicleTime Int
-  weight Int
-  status Status @default(available)
-  notes String
+  model       String
+  cicleTime   Int
+  weight      Int
+  status      Status      @default(available)
+  notes       String
+
+  created           DateTime            @default(now())
+  updatedAT         DateTime            @updatedAt
+  WashMachineDetail WashMachineDetail[]
+  DryMachineDetail  DryMachineDetail[]
 }
 
-model Service{
-  id_service Int @id @default(autoincrement())
+model Category {
+  id_category Int       @id @default(autoincrement())
+  cateforyDes String
+  service     Service[]
+}
+
+model Service {
+  id_service  Int                  @id @default(autoincrement())
   description String
+  fk_category Int                  @unique
   // Precio Unitario
-  price Float
-  time Int
-  weight Int
-  orders Order[]
+  price       Float
+  time        Int?
+  weight      Int?
+  pieces      Int?
+  category    Category             @relation(fields: [fk_category], references: [id_category], onDelete: NoAction, onUpdate: Cascade)
+  Orders      OrderServiceDetail[]
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
 }
 
 enum PayMethod {
-  tarjeta
-  efectivo
+  cash
+  credit
+}
+
+enum PayForm {
+  advance
+  delivery
 }
 
 enum PayStatus {
@@ -90,23 +119,84 @@ enum PayStatus {
 }
 
 enum OrderStatus {
-  pendiente
-  finalizado
+  pending
+  inProgress
+  finish
 }
 
-model Order{
-  id_order Int @id @default(autoincrement())
-  units Int @default(1)
-  receptionDate DateTime @default(now())
-  deliveryDate DateTime @default(now())
-  payMethod PayMethod @default(efectivo)
-  payStatus PayStatus @default(unpaid)
-  orderStatus OrderStatus @default(pendiente)
-  totalPrice Float
-  fk_client Int
-  fk_employee Int
-  fk_service Int
-  client Client @relation(fields: [fk_client], references: [id_client])
-  employee User @relation(fields: [fk_employee], references: [id_user])
-  service Service @relation(fields: [fk_service], references: [id_service])
+model Order {
+  id_order      Int         @id @default(autoincrement())
+  numberOfItems Int         @default(1)
+  receptionDate DateTime    @default(now())
+  deliveryDate  DateTime    @default(now())
+  payForm       PayForm     @default(delivery)
+  payStatus     PayStatus   @default(unpaid)
+  orderStatus   OrderStatus @default(pending)
+  totalPrice    Float
+  fk_client     Int
+  fk_employee   Int
+  client        Client      @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
+  employee      User        @relation(fields: [fk_employee], references: [id_user], onDelete: NoAction)
+
+  payment       Payment?
+  Orderservices OrderServiceDetail[]
+  washMachines  WashMachineDetail[]
+  dryMachine    DryMachineDetail[]
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model OrderServiceDetail {
+  fk_idService Int       @unique
+  fk_idOrder   Int       @unique
+  units        Int
+  subtotal     Float
+  finishDate   DateTime?
+  token        Int?
+
+  order     Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  service   Service  @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
+
+  @@id([fk_idOrder, fk_idService])
+}
+
+model WashMachineDetail {
+  fk_idOrder   Int
+  fk_idMachine Int
+  order        Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  Machine      Machine  @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+  created      DateTime @default(now())
+  updatedAT    DateTime @updatedAt
+
+  @@id([fk_idOrder, fk_idMachine])
+}
+
+model DryMachineDetail {
+  fk_idOrder   Int
+  fk_idMachine Int
+  order        Order   @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  Machine      Machine @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
+
+  @@id([fk_idOrder, fk_idMachine])
+}
+
+model Payment {
+  id_payment     Int       @id @default(autoincrement())
+  fk_idOrder     Int       @unique
+  fk_userCashier Int
+  payMethod      PayMethod
+  payDate        DateTime  @default(now())
+  cashCut        Int?
+
+  created   DateTime @default(now())
+  updatedAT DateTime @updatedAt
+
+  order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
 }

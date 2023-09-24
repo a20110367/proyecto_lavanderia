@@ -32,8 +32,8 @@ export const createClient = async (req, res) =>{
             data:{
                 username: username,
                 name: name,
-                firstName: firstName,
-                secondName: secondName,
+                firstLN: firstName,
+                secondLN: secondName,
                 email: email,                
                 phone: phone,            
                 pass: pass
@@ -56,8 +56,8 @@ export const updateClient =  async (req, res) =>{
             data:{
                 username: username,
                 name: name,
-                firstName: firstName,
-                secondName: secondName,
+                firstLN: firstName,
+                secondLN: secondName,
                 email: email,                
                 phone: phone,            
                 pass: pass

@@ -7,17 +7,18 @@ export const getOrders = async (req, res) =>{
         const response = await prisma.order.findMany({
             select: {
                 id_order: true,
-                units: true,
+                numberOfItems: true,
                 receptionDate: true,
                 deliveryDate: true,
-                payMethod: true,
+                payForm: true,
                 payStatus: true,
                 orderStatus: true,
                 totalPrice: true,
                 client: {
                     select: {
                         name: true,
-                        firstName: true,
+                        firstLN: true,
+                        secondLN: true,
                         phone: true,
                         id_client:true,
                     },

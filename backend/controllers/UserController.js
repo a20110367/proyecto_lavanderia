@@ -45,14 +45,14 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    const {username, name, firstName, secondName, email, phone, pass, role} = req.body;
+    const {username, name, firstname, secondname, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
             data:{
                 username: username,
                 name: name,
-                firstName: firstName,
-                secondName: secondName,
+                firstLN: firstname,
+                secondLN: secondname,
                 email: email,                
                 phone: phone,            
                 pass: pass,
@@ -75,8 +75,8 @@ export const updateUser =  async (req, res) =>{
             data:{
                 username: username,
                 name: name,
-                firstName: firstName,
-                secondName: secondName,
+                firstLN: firstName,
+                secondLN: secondName,
                 email: email,                
                 phone: phone,            
                 pass: pass,

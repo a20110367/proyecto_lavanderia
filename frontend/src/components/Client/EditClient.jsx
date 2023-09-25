@@ -31,11 +31,11 @@ function EditClient() {
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [firstName, setFirstName] = useState("");
+  const [firstLN, setFirstLN] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [firstnameFocus, setFirstNameFocus] = useState(false);
 
-  const [secondName, setSecondName] = useState("");
+  const [secondLN, setSecondLN] = useState("");
   const [validSecondName, setValidSecondName] = useState(false);
   const [secondNameFocus, setSecondNameFocus] = useState(false);
 
@@ -78,8 +78,8 @@ function EditClient() {
       const response = await Axios.get(`http://localhost:5000/clients/${id}`);
       setUserName(response.data.username);
       setName(response.data.name);
-      setFirstName(response.data.firstLN);
-      setSecondName(response.data.secondLN);
+      setFirstLN(response.data.firstLN);
+      setSecondLN(response.data.secondLN);
       setPwd(response.data.pass);
       setEmail(response.data.email);
       setPhone(response.data.phone);
@@ -226,8 +226,8 @@ function EditClient() {
                 type="text"
                 id="firstName"
                 autoComplete="off"
-                onChange={(e) => setFirstName(e.target.value)}
-                value={firstName}
+                onChange={(e) => setFirstLN(e.target.value)}
+                value={firstLN}
                 required
                 aria-invalid={validFirstName ? "false" : "true"}
                 aria-describedby="firstNamenote"
@@ -244,8 +244,8 @@ function EditClient() {
                 type="text"
                 id="secondName"
                 autoComplete="off"
-                onChange={(e) => setSecondName(e.target.value)}
-                value={secondName}
+                onChange={(e) => setSecondLN(e.target.value)}
+                value={secondLN}
                 required
                 aria-invalid={validSecondName ? "false" : "true"}
                 aria-describedby="secondNamenote"

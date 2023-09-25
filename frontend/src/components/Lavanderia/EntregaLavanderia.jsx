@@ -6,6 +6,8 @@ import {
   ExclamationCircleOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
+import jsPDF from "jspdf";
 
 function EntregaLavanderia() {
   const [pedidos, setPedidos] = useState([]);
@@ -13,6 +15,10 @@ function EntregaLavanderia() {
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
+  const [cobroInfo, setCobroInfo] = useState({
+    metodoPago: "",
+    fechaPago: moment().format("YYYY-MM-DD"),
+  });
 
   useEffect(() => {
     const dummyPedidos = [
@@ -24,9 +30,10 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pagado",
         totalPrice: 100,
-        forma_pago: "Tarjeta",
-        fentrega: "2023-09-15",
+        fentregaEstimada: "2023-09-15",
         f_recepcion: "2023-09-12",
+        empleadoRecibe: "Saul",
+        metodoPago: "Tarjeta",
       },
       {
         id_pedido: 2,
@@ -36,9 +43,10 @@ function EntregaLavanderia() {
         pedidoDetalle: "Monas Chinas",
         orderstatus: "Adeudo",
         totalPrice: 150,
-        forma_pago: "Efectivo",
-        fentrega: "2023-09-16",
+        fentregaEstimada: "2023-09-16",
         f_recepcion: "2023-09-13",
+        empleadoRecibe: "Maria",
+        metodoPago: "Efectivo",
       },
       {
         id_pedido: 3,
@@ -48,9 +56,10 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado",
         orderstatus: "Adeudo",
         totalPrice: 80,
-        forma_pago: "Efectivo",
-        fentrega: "2023-09-17",
+        fentregaEstimada: "2023-09-17",
         f_recepcion: "2023-09-14",
+        empleadoRecibe: "Luis",
+        metodoPago: "Tarjeta",
       },
     ];
 
@@ -79,29 +88,54 @@ function EntregaLavanderia() {
     setVisible(true);
   };
 
-  const handleEntregar = () => {
-    if (selectedPedido && selectedPedido.orderstatus === "Pagado") {
-      const updatedFilteredPedidos = filteredPedidos.filter(
-        (pedido) => pedido.id_pedido !== selectedPedido.id_pedido
-      );
-      setFilteredPedidos(updatedFilteredPedidos);
-    }
+  const handleCobroInfoChange = (event) => {
+    const { name, value } = event.target;
+    setCobroInfo({
+      ...cobroInfo,
+      [name]: value,
+    });
+  };
+
+  const handleGuardarCobro = (pedido) => {
+    const fechaEntrega = moment(cobroInfo.fechaPago)
+      .add(3, "days")
+      .format("YYYY-MM-DD");
+
+    const updatedPedido = {
+      ...pedido,
+      orderstatus: "Pagado",
+      metodoPago: cobroInfo.metodoPago,
+      f_recepcion: cobroInfo.fechaPago,
+      fentregaEstimada: fechaEntrega,
+    };
+
+    const updatedFilteredPedidos = filteredPedidos.map((p) =>
+      p.id_pedido === updatedPedido.id_pedido ? updatedPedido : p
+    );
+    setFilteredPedidos(updatedFilteredPedidos);
 
     setVisible(false);
+
+    const doc = new jsPDF();
+    doc.text(`Detalles del Pedido`, 10, 10);
+    doc.text(`Cliente: ${updatedPedido.cliente}`, 10, 20);
+    doc.text(`Pedido: ${updatedPedido.pedidoDetalle}`, 10, 30);
+    doc.text(`Estatus: Adeudo`, 10, 40);
+    doc.text(`Método de Pago: ${updatedPedido.metodoPago}`, 10, 50);
+    doc.text(
+      `Fecha de Pago: ${moment(updatedPedido.f_recepcion).format(
+        "DD/MM/YYYY"
+      )}`,
+      10,
+      60
+    );
+    doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
+    doc.save(`pedido_${updatedPedido.id_pedido}.pdf`);
   };
 
   const handleClose = () => {
     setVisible(false);
     setSelectedPedido(null);
-  };
-
-  const handleEliminarPedido = () => {
-    const updatedPedidos = pedidos.filter(
-      (pedido) => pedido.id_pedido !== selectedPedido.id_pedido
-    );
-    setPedidos(updatedPedidos);
-    setFilteredPedidos(updatedPedidos);
-    setVisible(false);
   };
 
   return (
@@ -131,65 +165,66 @@ function EntregaLavanderia() {
             <tr>
               <th className="py-3 px-1 text-center">ID</th>
               <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Nombre del Empleado</th>
+              <th className="py-3 px-6">Empleado que Recibe</th>{" "}
+              {/* Cambio de título */}
               <th className="py-3 px-6">Detalle del pedido</th>
               <th className="py-3 px-6">Fecha de Recepción</th>
               <th className="py-3 px-6">Estatus</th>
-              <th className="py-3 px-6">Forma de Pago</th>
-              <th className="py-3 px-6">Fecha de Entrega</th>
+              <th className="py-3 px-6">Fecha de Entrega Estimada</th>{" "}
+              {/* Cambio de título */}
               <th className="py-3 px-6">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {pedidos
-              .filter((pedido) => {
-                return (
-                  pedido.cliente.toLowerCase().includes(filtro.toLowerCase()) ||
-                  pedido.user.toLowerCase().includes(filtro.toLowerCase()) ||
-                  pedido.id_pedido.toString().includes(filtro)
-                );
-              })
-              .map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user}
-                  </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
-                  <td
-                    className={`py-3 px-6 ${
-                      pedido.orderstatus === "Adeudo"
-                        ? "text-red-600"
-                        : "text-green-600"
-                    }`}
-                  >
-                    {pedido.orderstatus === "Adeudo" ? (
-                      <span className="text-red-600 pl-1">
-                        <ExclamationCircleOutlined /> Adeudo $
-                        {pedido.totalPrice}{" "}
-                      </span>
-                    ) : (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-6">{pedido.forma_pago}</td>
-                  <td className="py-3 px-6">{pedido.fentrega}</td>
-                  <td>
+            {filteredPedidos.map((pedido) => (
+              <tr className="bg-white border-b" key={pedido.id_pedido}>
+                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.cliente}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleadoRecibe} {/* Cambio de campo */}
+                </td>
+                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                <td
+                  className={`py-3 px-6 ${
+                    pedido.orderstatus === "Adeudo"
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {pedido.orderstatus === "Adeudo" ? (
+                    <span className="text-red-600 pl-1">
+                      <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}{" "}
+                    </span>
+                  ) : (
+                    <span className="text-green-600 pl-1">
+                      <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>{" "}
+                {/* Cambio de campo */}
+                <td>
+                  {pedido.orderstatus === "Pagado" ? (
+                    <button
+                      onClick={() => handleCobrar(pedido)}
+                      className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                    >
+                      Guardar Pedido
+                    </button>
+                  ) : (
                     <button
                       onClick={() => handleCobrar(pedido)}
                       className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
                     >
                       Cobrar
                     </button>
-                  </td>
-                </tr>
-              ))}
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
         <Link
@@ -204,28 +239,17 @@ function EntregaLavanderia() {
       <Modal
         title="Detalles del Pedido"
         visible={visible}
-        onOk={handleEntregar}
+        onOk={() => handleGuardarCobro(selectedPedido)}
         onCancel={handleClose}
         width={600}
         footer={[
-          selectedPedido?.orderstatus === "Adeudo" ? (
-            <Button
-              key="cobrarEntregar"
-              onClick={handleEntregar}
-              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-            >
-              Realizar Cobro y Entregar
-            </Button>
-          ) : null,
-          selectedPedido?.orderstatus === "Pagado" ? (
-            <Button
-              key="eliminarPedido"
-              onClick={handleEliminarPedido}
-              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-            >
-              Eliminar Pedido
-            </Button>
-          ) : null,
+          <Button
+            key="guardarCobro"
+            onClick={() => handleGuardarCobro(selectedPedido)}
+            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+          >
+            Guardar Cobro
+          </Button>,
           <Button
             key="cerrar"
             onClick={handleClose}
@@ -235,6 +259,43 @@ function EntregaLavanderia() {
           </Button>,
         ]}
       >
+        {selectedPedido?.orderstatus === "Adeudo" && (
+          <div>
+            <p className="text-lg font-semibold">Detalles del Pedido</p>
+            <p>
+              <strong>Cliente:</strong> {selectedPedido?.cliente}
+            </p>
+            <p>
+              <strong>Pedido:</strong> {selectedPedido?.pedidoDetalle}
+            </p>
+            <p>
+              <strong>Estatus:</strong> Adeudo - <strong>Adeudo:</strong> $
+              {selectedPedido?.totalPrice}
+            </p>
+            <div className="mb-2">
+              <strong>Método de Pago:</strong>{" "}
+              <select
+                name="metodoPago"
+                value={cobroInfo.metodoPago}
+                onChange={handleCobroInfoChange}
+                className="bg-gray-200 rounded-md p-1"
+              >
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+              </select>
+            </div>
+            <div>
+              <strong>Fecha de Pago:</strong>{" "}
+              <input
+                type="date"
+                name="fechaPago"
+                value={cobroInfo.fechaPago}
+                onChange={handleCobroInfoChange}
+                className="bg-gray-200 rounded-md p-1"
+              />
+            </div>
+          </div>
+        )}
         <div className="text-center">
           {selectedPedido?.orderstatus === "Adeudo" ? (
             <ExclamationCircleOutlined
@@ -243,27 +304,12 @@ function EntregaLavanderia() {
           ) : (
             <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
           )}
+          {selectedPedido?.orderstatus === "Pagado" && (
+            <p className="text-green-600 font-bold text-lg mt-2">
+              Pago Confirmado...
+            </p>
+          )}
         </div>
-        <p>
-          <strong>Cliente:</strong> {selectedPedido?.cliente}
-        </p>
-        <p>
-          <strong>Pedido:</strong> {selectedPedido?.pedidoDetalle}
-        </p>
-        <p>
-          <strong>Estatus:</strong>{" "}
-          {selectedPedido?.orderstatus === "Pagado" ? "Pagado" : "Adeudo"}
-        </p>
-        {selectedPedido?.orderstatus === "Pagado" && (
-          <p>
-            <strong>Total Pagado:</strong> ${selectedPedido?.totalPrice}
-          </p>
-        )}
-        {selectedPedido?.orderstatus === "Adeudo" && (
-          <p>
-            <strong>Adeudo:</strong> ${selectedPedido?.totalPrice}
-          </p>
-        )}
       </Modal>
     </div>
   );

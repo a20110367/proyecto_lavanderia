@@ -58,6 +58,7 @@ import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
 import CorteCajaTurno from "./components/Cajas/CorteCajaTurno"
 import CorteCajaParcial from "./components/Cajas/CorteCajaParcial"
 import Retiro from "./components/Cajas/Retiro"
+import Reembolso from "./components/Cajas/Reembolso"
 
 function App() {
     const { cookies } = useAuth();
@@ -92,6 +93,7 @@ function App() {
                     <Route path="/corteCajaTurno" element={<CorteCajaTurno />} />
                     <Route path="/corteCajaParcial" element={<CorteCajaParcial />} />
                     <Route path="/retiro" element={<Retiro />} />
+                    <Route path="/reembolso" element={<Reembolso />} />
 
                     {/* Services */}
                     <Route path="/addService" element={<AddService />} />

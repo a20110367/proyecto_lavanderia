@@ -4,74 +4,76 @@ import { Link } from "react-router-dom";
 import { Modal, Button, Input, DatePicker } from "antd";
 import moment from "moment";
 
-function Retiro() {
-  const [retiros, setRetiros] = useState([]);
-  const [filteredRetiros, setFilteredRetiros] = useState([]);
+function Reembolso() {
+  const [reembolsos, setReembolsos] = useState([]);
+  const [filteredReembolsos, setFilteredReembolsos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
+  const [numeroPedido, setNumeroPedido] = useState("");
   const [monto, setMonto] = useState("");
   const [motivo, setMotivo] = useState("");
-  const [usuario, setUsuario] = useState("");
+  const [fecha, setFecha] = useState("");
 
   useEffect(() => {
-    const dummyRetiros = [
+    const dummyReembolsos = [
       {
         id: 1,
-        fecha: "2023-09-20",
+        numeroPedido: "1001",
         monto: 500,
-        motivo: "Gastos varios",
-        usuario: "Usuario1",
+        motivo: "Decoloracion de ropa",
+        fecha: "2023-09-20",
       },
       {
         id: 2,
-        fecha: "2023-09-21",
+        numeroPedido: "1002",
         monto: 300,
-        motivo: "Retiro personal",
-        usuario: "Usuario2",
+        motivo: "Quemado por plancha",
+        fecha: "2023-09-21",
       },
       {
         id: 3,
-        fecha: "2023-09-22",
+        numeroPedido: "1003",
         monto: 1000,
-        motivo: "Pago a proveedor",
-        usuario: "Usuario3",
+        motivo: "Rasgado por lavadora",
+        fecha: "2023-09-22",
       },
     ];
 
-    setRetiros(dummyRetiros);
-    setFilteredRetiros(dummyRetiros);
+    setReembolsos(dummyReembolsos);
+    setFilteredReembolsos(dummyReembolsos);
   }, []);
 
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
-    const filtered = retiros.filter(
-      (retiro) =>
-        retiro.motivo.toLowerCase().includes(searchTerm) ||
-        retiro.fecha.toLowerCase().includes(searchTerm) ||
-        retiro.usuario.toLowerCase().includes(searchTerm)
+    const filtered = reembolsos.filter(
+      (reembolso) =>
+        reembolso.numeroPedido.toLowerCase().includes(searchTerm) ||
+        reembolso.monto.toString().toLowerCase().includes(searchTerm) ||
+        reembolso.motivo.toLowerCase().includes(searchTerm) ||
+        reembolso.fecha.toLowerCase().includes(searchTerm)
     );
     setFiltro(event.target.value);
-    setFilteredRetiros(filtered);
+    setFilteredReembolsos(filtered);
   };
 
-  const handleRetiro = () => {
+  const handleReembolso = () => {
     setVisible(true);
   };
 
-  const handleConfirmRetiro = () => {
+  const handleConfirmReembolso = () => {
     const currentDate = moment(); 
     const formattedDate = currentDate.format("YYYY-MM-DD"); 
 
-    const nuevoRetiro = {
-      id: retiros.length + 1,
-      fecha: formattedDate,
+    const nuevoReembolso = {
+      id: reembolsos.length + 1,
+      numeroPedido: numeroPedido,
       monto: parseInt(monto),
       motivo: motivo,
-      usuario: usuario,
+      fecha: formattedDate,
     };
 
-    setRetiros([...retiros, nuevoRetiro]);
-    setFilteredRetiros([...retiros, nuevoRetiro]);
+    setReembolsos([...reembolsos, nuevoReembolso]);
+    setFilteredReembolsos([...reembolsos, nuevoReembolso]);
 
     setVisible(false);
   };
@@ -84,7 +86,7 @@ function Retiro() {
     <div>
       <div className="mb-3">
         <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Registro de Retiros</strong>
+          <strong>Registro de Reembolsos</strong>
         </div>
       </div>
       <div className="bg-neutral-600 rounded-md min-h-screen p-4">
@@ -106,30 +108,30 @@ function Retiro() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th className="py-3 px-1 text-center">ID</th>
-              <th className="py-3 px-6">Fecha</th>
+              <th className="py-3 px-6">Número de Pedido</th>
               <th className="py-3 px-6">Monto</th>
               <th className="py-3 px-6">Motivo</th>
-              <th className="py-3 px-6">Usuario</th>
+              <th className="py-3 px-6">Fecha</th>
             </tr>
           </thead>
           <tbody>
-            {filteredRetiros.map((retiro) => (
-              <tr className="bg-white border-b" key={retiro.id}>
-                <td className="py-3 px-1 text-center">{retiro.id}</td>
-                <td className="py-3 px-6">{retiro.fecha}</td>
-                <td className="py-3 px-6">{retiro.monto}</td>
-                <td className="py-3 px-6">{retiro.motivo}</td>
-                <td className="py-3 px-6">{retiro.usuario}</td>
+            {filteredReembolsos.map((reembolso) => (
+              <tr className="bg-white border-b" key={reembolso.id}>
+                <td className="py-3 px-1 text-center">{reembolso.id}</td>
+                <td className="py-3 px-6">{reembolso.numeroPedido}</td>
+                <td className="py-3 px-6">{reembolso.monto}</td>
+                <td className="py-3 px-6">{reembolso.motivo}</td>
+                <td className="py-3 px-6">{reembolso.fecha}</td>
               </tr>
             ))}
           </tbody>
         </table>
         <div className="mt-4">
           <button
-            onClick={handleRetiro}
+            onClick={handleReembolso}
             className="bg-red-500 text-white p-3 rounded-md shadow-lg hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
           >
-            Registrar Retiro
+            Registrar Reembolso
           </button>
           <Link
             to="/menuPuntoVenta"
@@ -142,18 +144,18 @@ function Retiro() {
         </div>
       </div>
       <Modal
-        title="Registrar Retiro de Caja"
+        title="Registrar Reembolso"
         visible={visible}
-        onOk={handleConfirmRetiro}
+        onOk={handleConfirmReembolso}
         onCancel={handleClose}
         width={600}
         footer={[
           <Button
             key="confirmar"
-            onClick={handleConfirmRetiro}
+            onClick={handleConfirmReembolso}
             className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
           >
-            Confirmar Retiro de Caja
+            Confirmar Reembolso
           </Button>,
           <Button
             key="cancelar"
@@ -165,6 +167,17 @@ function Retiro() {
         ]}
       >
         <form>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Número de Pedido:
+            </label>
+            <Input
+              type="text"
+              value={numeroPedido}
+              onChange={(e) => setNumeroPedido(e.target.value)}
+              placeholder="Ingrese el número de pedido"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Monto:
@@ -186,20 +199,10 @@ function Retiro() {
               placeholder="Ingrese el motivo"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Usuario:
-            </label>
-            <Input
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-              placeholder="Ingrese el nombre de usuario"
-            />
-          </div>
         </form>
       </Modal>
     </div>
   );
 }
 
-export default Retiro;
+export default Reembolso;

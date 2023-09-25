@@ -7,7 +7,6 @@ import {
 } from "react-icons/md";
 import washingsvg from "./../../assets/washing-machine.svg";
 import {
-  FcSalesPerformance,
   FcEngineering,
 } from "react-icons/fc";
 import { LuListOrdered } from "react-icons/lu";
@@ -62,7 +61,7 @@ const items = [
     getItem("Corte de caja Turno", "/corteCajaTurno"),
     getItem("Corte de caja Parcial", "/corteCajaParcial"),
     getItem("Retiro de caja", "/retiro"),
-    getItem("Reembolsos", "/reembolsos"),
+    getItem("Reembolsos", "/reembolso"),
   ]),
   getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
     getItem("Lista de Equipos", "/equipos"),

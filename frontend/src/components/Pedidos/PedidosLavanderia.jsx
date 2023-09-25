@@ -19,72 +19,69 @@ function PedidosLavanderia() {
     const dummyPedidos = [
       {
         id_pedido: 1,
-        user: "Saul",
-        cliente: "Juan",
+        empleado_recibio: "Juan",
+        empleado_entrego: "María",
+        cliente: "Saul",
         id_cobro: 1,
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pendiente",
         totalPrice: 100,
-        forma_pago: "Tarjeta",
-        fentrega: "2023-09-15",
-        f_recepcion: "2023-09-12",
-        equipo: "Lavadora 4", 
+        forma_pago: "Anticipado",
+        fecha_entrega_real: "2023-09-15",
+        metodo_pago: "Efectivo",
       },
       {
         id_pedido: 2,
-        user: "Maria",
-        cliente: "Axel",
+        empleado_recibio: "Axel",
+        empleado_entrego: "María",
+        cliente: "Maria",
         id_cobro: 2,
         pedidoDetalle: "Monas Chinas",
         orderstatus: "En proceso",
         totalPrice: 150,
-        forma_pago: "Efectivo",
-        fentrega: "2023-09-16",
-        f_recepcion: "2023-09-13",
-        equipo: "Lavadora 4",
+        forma_pago: "A la entrega",
+        fecha_entrega_real: "2023-09-16",
+        metodo_pago: "Efectivo",
       },
       {
         id_pedido: 3,
-        user: "Luis",
-        cliente: "Carlos",
+        empleado_recibio: "Carlos",
+        empleado_entrego: "Luis",
+        cliente: "Luis",
         id_cobro: 3,
         pedidoDetalle: "Lavado",
         orderstatus: "Finalizado",
         totalPrice: 80,
-        forma_pago: "Efectivo",
-        fentrega: "2023-09-17",
-        f_recepcion: "2023-09-14",
-        equipo: "Lavadora 4",
+        forma_pago: "A la entrega",
+        fecha_entrega_real: "2023-09-17",
+        metodo_pago: "Tarjeta",
       },
       {
         id_pedido: 4,
-        user: "Ana",
-        cliente: "Laura",
+        empleado_recibio: "Laura",
+        empleado_entrego: "Ana",
+        cliente: "Ana",
         id_cobro: 4,
         pedidoDetalle: "Lavado delicado",
         orderstatus: "Entregado",
         totalPrice: 120,
-        forma_pago: "Tarjeta",
-        fentrega: "2023-09-18",
-        f_recepcion: "2023-09-15",
-        equipo: "Lavadora 4",
+        forma_pago: "Anticipado",
+        fecha_entrega_real: "2023-09-18",
+        metodo_pago: "Efectivo",
       },
-      
       {
         id_pedido: 5,
-        user: "Ximena",
-        cliente: "Fernanda",
+        empleado_recibio: "Fernanda",
+        empleado_entrego: "Ximena",
+        cliente: "Ximena",
         id_cobro: 5,
         pedidoDetalle: "Lavado basico",
         orderstatus: "CANCELADO",
         totalPrice: 80,
         forma_pago: "Tarjeta",
-        fentrega: "2023-09-18",
-        f_recepcion: "2023-09-15",
-        equipo: "Lavadora 4",
+        fecha_entrega_real: "2023-09-18",
+        metodo_pago: "Tarjeta",
       },
-      
-
     ];
 
     setPedidos(dummyPedidos);
@@ -100,13 +97,13 @@ function PedidosLavanderia() {
     const filtered = pedidos.filter((pedido) => {
       return (
         pedido.cliente.toLowerCase().includes(filterText.toLowerCase()) ||
-        pedido.user.toLowerCase().includes(filterText.toLowerCase()) ||
+        pedido.empleado_recibio.toLowerCase().includes(filterText.toLowerCase()) ||
+        pedido.empleado_entrego.toLowerCase().includes(filterText.toLowerCase()) ||
         pedido.id_pedido.toString().includes(filterText)
       );
     });
     setFilteredPedidos(filtered);
   };
-
 
   return (
     <div>
@@ -131,68 +128,62 @@ function PedidosLavanderia() {
           </div>
         </div>
         <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th className="py-3 px-1 text-center">ID</th>
-              <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Nombre del Empleado</th>
-              <th className="py-3 px-6">Detalle del pedido</th>
-              <th className="py-3 px-6">Fecha de Recepción</th>
-              <th className="py-3 px-6">Estatus</th>
-              <th className="py-3 px-6">Forma de Pago</th>
-              <th className="py-3 px-6">Fecha de Entrega</th>
-              <th className="py-3 px-6">Equipo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPedidos
-              .filter((pedido) => {
-                return (
-                  pedido.cliente.toLowerCase().includes(filtro.toLowerCase()) ||
-                  pedido.user.toLowerCase().includes(filtro.toLowerCase()) ||
-                  pedido.id_pedido.toString().includes(filtro)
-                );
-              })
-              .map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user}
-                  </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
-                  <td className="py-3 px-6">
-                    {pedido.orderstatus === "Pendiente" ? (
-                      <span className="text-gray-600 pl-1">
-                        <MinusCircleOutlined /> Pendiente
-                      </span>
-                    ) : pedido.orderstatus === "En proceso" ? (
-                      <span className="text-yellow-600 pl-1">
-                        <ClockCircleOutlined /> En Proceso
-                      </span>
-                    ) : pedido.orderstatus === "Finalizado" ? (
-                      <span className="text-blue-600 pl-1">
-                        <IssuesCloseOutlined /> Finalizado no entregado
-                      </span>
-                    ) : pedido.orderstatus === "Entregado" ? (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Finalizado Entregado
-                      </span>
-                    ) : (
-                      <span className="text-red-600 pl-1">
-                        <StopOutlined /> Cancelado
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-6">{pedido.forma_pago}</td>
-                  <td className="py-3 px-6">{pedido.fentrega}</td>
-                  <td className="py-3 px-6">{pedido.equipo}</td>
-                </tr>
-              ))}
-          </tbody>
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+  <tr>
+    <th className="py-3 px-1 text-center">ID</th>
+    <th className="py-3 px-6">Empleado que Recibió</th>
+    <th className="py-3 px-6">Empleado que Entregó</th>
+    <th className="py-3 px-6">Nombre del Cliente</th>
+    <th className="py-3 px-6">Detalle del pedido</th>
+    <th className="py-3 px-6">Fecha de Entrega Real</th>
+    <th className="py-3 px-6">Estatus</th>
+    <th className="py-3 px-6">Forma de Pago</th>
+    <th className="py-3 px-6">Método de Pago</th> {/* Agrega esta columna */}
+  </tr>
+</thead>
+<tbody>
+  {filteredPedidos.map((pedido) => (
+    <tr className="bg-white border-b" key={pedido.id_pedido}>
+      <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+      <td className="py-3 px-6 font-medium text-gray-900">
+        {pedido.empleado_recibio}
+      </td>
+      <td className="py-3 px-6 font-medium text-gray-900">
+        {pedido.empleado_entrego}
+      </td>
+      <td className="py-3 px-6 font-medium text-gray-900">
+        {pedido.cliente}
+      </td>
+      <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+      <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
+      <td className="py-3 px-6">
+        {pedido.orderstatus === "Pendiente" ? (
+          <span className="text-gray-600 pl-1">
+            <MinusCircleOutlined /> Pendiente
+          </span>
+        ) : pedido.orderstatus === "En proceso" ? (
+          <span className="text-yellow-600 pl-1">
+            <ClockCircleOutlined /> En Proceso
+          </span>
+        ) : pedido.orderstatus === "Finalizado" ? (
+          <span className="text-blue-600 pl-1">
+            <IssuesCloseOutlined /> Finalizado no entregado
+          </span>
+        ) : pedido.orderstatus === "Entregado" ? (
+          <span className="text-green-600 pl-1">
+            <CheckCircleOutlined /> Finalizado Entregado
+          </span>
+        ) : (
+          <span className="text-red-600 pl-1">
+            <StopOutlined /> Cancelado
+          </span>
+        )}
+      </td>
+      <td className="py-3 px-6">{pedido.forma_pago}</td>
+      <td className="py-3 px-6">{pedido.metodo_pago}</td> {/* Agrega esta columna */}
+    </tr>
+  ))}
+</tbody>
         </table>
         <Link
           to="/menuPuntoVenta"

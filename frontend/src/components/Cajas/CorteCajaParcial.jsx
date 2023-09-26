@@ -8,6 +8,15 @@ function CorteCajaParcial() {
   const [nombreAdmin, setNombreAdmin] = useState(" SOY ADMIN"); 
   const [fechaHora, setFechaHora] = useState("");
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [dineroFondo, setDineroFondo] = useState(1500); 
+  const [retirosTotales, setRetirosTotales] = useState(200); 
+  const [ingresoEfectivo, setIngresoEfectivo] = useState(1200); 
+  const [ingresoTarjeta, setIngresoTarjeta] = useState(600); 
+
+  const ingresosTotales = ingresoEfectivo + ingresoTarjeta;
+  const finalTotalCaja = dineroFondo + ingresosTotales - retirosTotales;
+  const [tiposServicios, setTiposServicios] = useState("Lavados, Planchados, Autoservicios"); 
+
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -26,18 +35,29 @@ function CorteCajaParcial() {
   const handleConfirmCorteCaja = () => {
     const nuevoCorte = {
       fecha: fechaHora,
-      monto: 100, 
-      usuario: "Usuario1", 
-      motivo: "Motivo del corte", 
+      dineroFondo,
+      retirosTotales,
+      ingresosTotales,
+      ingresoEfectivo,
+      ingresoTarjeta,
+      finalTotalCaja,
+      tiposServicios,
+      usuario: "Usuario1",
     };
 
-    
     const pdf = new jsPDF();
     pdf.text(`Corte de Caja Parcial - ${nombreAdmin}`, 10, 10);
-    pdf.text(`Fecha y Hora: ${fechaHora}`, 10, 20);
-    pdf.text(`Monto: ${nuevoCorte.monto}`, 10, 30);
-    pdf.text(`Usuario: ${nuevoCorte.usuario}`, 10, 40);
-    pdf.text(`Motivo: ${nuevoCorte.motivo}`, 10, 50);
+    pdf.text(`Fecha y Hora: ${nuevoCorte.fecha}`, 10, 20);
+    pdf.text(`Dinero de Fondo: ${nuevoCorte.dineroFondo}`, 10, 30);
+    pdf.text(`Retiros Totales: ${nuevoCorte.retirosTotales}`, 10, 40);
+    pdf.text(`Ingresos Totales: ${nuevoCorte.ingresosTotales}`, 10, 50);
+    pdf.text(`Ingreso Total en Efectivo: ${nuevoCorte.ingresoEfectivo}`, 10, 60);
+    pdf.text(`Ingreso Total con Tarjeta: ${nuevoCorte.ingresoTarjeta}`, 10, 70);
+    pdf.text(`Final Total de la Caja: ${nuevoCorte.finalTotalCaja}`, 10, 80);
+    pdf.text(`Debería Haber: ${nuevoCorte.deberiaHaber}`, 10, 90);
+    pdf.text(` Tipos de Servicios: ${nuevoCorte.tiposServicios}`, 10, 100);
+    pdf.text(`Usuario: ${nuevoCorte.usuario}`, 10, 110);
+    pdf.text(`Fecha y Hora: ${fechaHora}`, 10, 120);
     pdf.save("corte_de_caja_parcial.pdf");
 
     setDialogVisible(false);

@@ -208,7 +208,7 @@ function EditUser() {
                 onBlur={() => setUserNameFocus(false)}
               />
               <div className="group">
-                <p
+              <p
                   id="uidnote"
                   className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
                     }`}
@@ -217,7 +217,16 @@ function EditUser() {
                   <br />
                   Debera iniciar con una letra.
                   <br />
-                  Letras, numeros, guiones y guiones bajos estan permitidos.
+                  Caracteres Permitidos:
+                  <br />
+                  Letras, p. ej. L
+                  <br />
+                  Números, p. ej. 4
+                  <br />
+                  Guiones, p. ej. -
+                  <br />
+                  Guiones Bajos p. ej. _
+                  <br />
                 </p>
               </div>
               {/* First Name */}
@@ -300,10 +309,13 @@ function EditUser() {
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
                   <br />
-                  Debera incluir al menos una Mayuscula, Minuscula,
-                  un Número y un carácter Especial
+                  Debera incluir al menos una 
                   <br />
-                  Caracteres Especiale Permitidos:{" "}
+                  Mayuscula, Minuscula,
+                  <br />
+                  un Número y un caracter Especial
+                  <br />
+                  Caracteres Especiales Permitidos:{" "}
                   <span aria-label="exclamation mark">!</span>{" "}
                   <span aria-label="at symbol">@</span>{" "}
                   <span aria-label="hashtag">#</span>{" "}

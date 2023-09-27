@@ -202,18 +202,25 @@ function EditClient() {
                 onBlur={() => setUserNameFocus(false)}
               />
               <div className="group">
-                <p
+              <p
                   id="uidnote"
-                  className={`instructions text-sm text-red-600 ${userNameFocus && userName && !validUserName
-                    ? "block"
-                    : "hidden"
+                  className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
                     }`}
                 >
-                  <FontAwesomeIcon icon={faInfoCircle} />Debe ser de 4 a 24 caracteres.
+                  <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
                   <br />
-                  Debe iniciar con una letra.
+                  Debera iniciar con una letra.
                   <br />
-                  Letras, números, guiones y guiones bajos permitidos.
+                  Caracteres Permitidos:
+                  <br />
+                  Letras, p. ej. L
+                  <br />
+                  Números, p. ej. 4
+                  <br />
+                  Guiones, p. ej. -
+                  <br />
+                  Guiones Bajos p. ej. _
+                  <br />
                 </p>
               </div>
 
@@ -284,10 +291,13 @@ function EditClient() {
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />Debe ser de 8 a 24 caracteres.
                   <br />
-                  Debe incluir letras mayúsculas y minúsculas, un número y un
-                  carácter especial.
+                  Debera incluir al menos una 
                   <br />
-                  Caracteres especiales permitidos:{" "}
+                  Mayuscula, Minuscula,
+                  <br />
+                  un Número y un caracter Especial
+                  <br />
+                  Caracteres Especiales Permitidos:{" "}
                   <span aria-label="exclamation mark">!</span>{" "}
                   <span aria-label="at symbol">@</span>{" "}
                   <span aria-label="hashtag">#</span>{" "}

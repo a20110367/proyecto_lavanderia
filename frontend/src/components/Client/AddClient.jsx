@@ -127,9 +127,9 @@ function AddClient() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <h2 class="title text-white"><em>Añadir a un Cliente</em></h2>
-          <p class="form-lbl text-white">Ingrese los detalle del cliente.</p>
-          <div class="clearBoth"></div>
+          <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
+          <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
+          <div className="clearBoth"></div>
         </div>
         {success ? (
           <section>
@@ -200,18 +200,25 @@ function AddClient() {
                 onBlur={() => setUserNameFocus(false)}
               />
               <div className="group">
-                <p
+              <p
                   id="uidnote"
-                  className={`instructions text-sm text-red-600 ${userNameFocus && userName && !validUserName
-                    ? "block"
-                    : "hidden"
+                  className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
                     }`}
                 >
-                  <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 4 a 24 caracteres.
+                  <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
                   <br />
                   Debera iniciar con una letra.
                   <br />
-                  Letras, números, guiones y guiones bajos permitidos.
+                  Caracteres Permitidos:
+                  <br />
+                  Letras, p. ej. L
+                  <br />
+                  Números, p. ej. 4
+                  <br />
+                  Guiones, p. ej. -
+                  <br />
+                  Guiones Bajos p. ej. _
+                  <br />
                 </p>
               </div>
 
@@ -310,7 +317,11 @@ function AddClient() {
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 8 a 24 characters.
                   <br />
-                  Debera incluir una Mayuscula, una Minuscula, un Número y un Caracter Especial
+                  Debera incluir al menos una 
+                  <br />
+                  Mayuscula, Minuscula,
+                  <br />
+                  un Número y un caracter Especial
                   <br />
                   Caracteres Especiales Permitidos:{" "}
                   <span aria-label="exclamation mark">!</span>{" "}

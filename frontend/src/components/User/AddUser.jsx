@@ -120,9 +120,9 @@ function Signup() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <h2 class="title text-white"><em>Añadir un Empleado</em></h2>
-          <p class="form-lbl text-white">Ingrese los detalle del empleado.</p>
-          <div class="clearBoth"></div>
+          <h2 className="title text-white"><em>Añadir un Empleado</em></h2>
+          <p className="form-lbl text-white">Ingrese los detalle del empleado.</p>
+          <div className="clearBoth"></div>
         </div>
         {success ? (
           <section >
@@ -202,7 +202,16 @@ function Signup() {
                   <br />
                   Debera iniciar con una letra.
                   <br />
-                  Letras, numeros, guiones y guiones bajos estan permitidos.
+                  Caracteres Permitidos:
+                  <br />
+                  Letras, p. ej. L
+                  <br />
+                  Números, p. ej. 4
+                  <br />
+                  Guiones, p. ej. -
+                  <br />
+                  Guiones Bajos p. ej. _
+                  <br />
                 </p>
               </div>
 
@@ -286,10 +295,13 @@ function Signup() {
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
                   <br />
-                  Debera incluir al menos una Mayuscula, Minuscula,
+                  Debera incluir al menos una 
+                  <br />
+                  Mayuscula, Minuscula,
+                  <br />
                   un Número y un caracter Especial
                   <br />
-                  Caracteres Especiale Permitidos:{" "}
+                  Caracteres Especiales Permitidos:{" "}
                   <span aria-label="exclamation mark">!</span>{" "}
                   <span aria-label="at symbol">@</span>{" "}
                   <span aria-label="hashtag">#</span>{" "}

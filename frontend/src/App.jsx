@@ -30,7 +30,6 @@ import PedidosProceso from "./components/Pedidos/PedidosProceso"
 import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
 import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
 
-
 import Dashboard from './components/Dashboard'
 import Sidebar from "./components/shared/Sidebar"
 
@@ -114,17 +113,17 @@ function App() {
                     {/*Planchado */}
                     <Route path="/entregaPlanchado" element={<EntregaPlanchado />} />
                     <Route path="/recepcionPlanchado" element={<RecepcionPlanchado />} />
-
+                    <Route path="/addClient" element={<AddClient/>}/>
 
 
                     {/* Clients */}
-                    <Route path="/addClient" element={
+                    {/* <Route path="/addClient" element={
                         <ProtectedRoute
                             isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
                         >
                             <AddClient />
                         </ProtectedRoute>
-                    } />
+                    } /> */}
                     <Route path="/editClient/:id" element={
                         <ProtectedRoute
                             isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'

@@ -99,9 +99,9 @@ function AddEquipo() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <h2 class="title text-white"><em>Añadir un Equipo</em></h2>
-          <p class="form-lbl text-white">Ingrese los detalle del equipo.</p>
-          <div class="clearBoth"></div>
+          <h2 className="title text-white"><em>Añadir un Equipo</em></h2>
+          <p className="form-lbl text-white">Ingrese los detalle del equipo.</p>
+          <div className="clearBoth"></div>
         </div>
         {success ? (
           <section>

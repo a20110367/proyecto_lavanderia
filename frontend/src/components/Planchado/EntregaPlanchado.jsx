@@ -20,6 +20,8 @@ function EntregaPlanchado() {
     fechaPago: moment().format("YYYY-MM-DD"),
   });
 
+  const [entregando, setEntregando] = useState(false);
+
   useEffect(() => {
     const dummyPedidos = [
       {
@@ -40,7 +42,7 @@ function EntregaPlanchado() {
         user: "Maria",
         cliente: "Axel",
         id_cobro: 2,
-        pedidoDetalle: "Monas Chinas Planchadas",
+        pedidoDetalle: "Monas Chinas planchadas",
         orderstatus: "Adeudo",
         totalPrice: 150,
         fentregaEstimada: "2023-09-16",
@@ -53,7 +55,7 @@ function EntregaPlanchado() {
         user: "Luis",
         cliente: "Carlos",
         id_cobro: 3,
-        pedidoDetalle: "Planchado basico",
+        pedidoDetalle: "Planchado",
         orderstatus: "Adeudo",
         totalPrice: 80,
         fentregaEstimada: "2023-09-17",
@@ -138,6 +140,32 @@ function EntregaPlanchado() {
     setSelectedPedido(null);
   };
 
+
+  const handleEntregar = (pedido) => {
+    if (pedido.orderstatus === "Pagado") {
+      setSelectedPedido(pedido);
+
+      setEntregando(true);
+
+      setTimeout(() => {
+        setEntregando(false);
+        const doc = new jsPDF();
+        doc.text(`Detalles del Pedido`, 10, 10);
+        doc.text(`Cliente: ${pedido.cliente}`, 10, 20);
+        doc.text(`Pedido: ${pedido.pedidoDetalle}`, 10, 30);
+        doc.text(`Estatus: Entregado`, 10, 40);
+        doc.text(`Método de Pago: ${pedido.metodoPago}`, 10, 50);
+        doc.text(
+          `Fecha de Pago: ${moment(pedido.f_recepcion).format("DD/MM/YYYY")}`,
+          10,
+          60
+        );
+        doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
+        doc.save(`pedido_${pedido.id_pedido}.pdf`);
+      }, 1500);
+    }
+  };
+
   return (
     <div>
       <div className="mb-3">
@@ -165,13 +193,11 @@ function EntregaPlanchado() {
             <tr>
               <th className="py-3 px-1 text-center">ID</th>
               <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Empleado que Recibe</th>{" "}
-              {/* Cambio de título */}
+              <th className="py-3 px-6">Empleado que Recibe</th>
               <th className="py-3 px-6">Detalle del pedido</th>
               <th className="py-3 px-6">Fecha de Recepción</th>
               <th className="py-3 px-6">Estatus</th>
-              <th className="py-3 px-6">Fecha de Entrega Estimada</th>{" "}
-              {/* Cambio de título */}
+              <th className="py-3 px-6">Fecha de Entrega Estimada</th>
               <th className="py-3 px-6">Acciones</th>
             </tr>
           </thead>
@@ -183,7 +209,7 @@ function EntregaPlanchado() {
                   {pedido.cliente}
                 </td>
                 <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleadoRecibe} {/* Cambio de campo */}
+                  {pedido.empleadoRecibe}
                 </td>
                 <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
                 <td className="py-3 px-6">{pedido.f_recepcion}</td>
@@ -204,15 +230,14 @@ function EntregaPlanchado() {
                     </span>
                   )}
                 </td>
-                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>{" "}
-                {/* Cambio de campo */}
+                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
                 <td>
                   {pedido.orderstatus === "Pagado" ? (
                     <button
-                      onClick={() => handleCobrar(pedido)}
+                      onClick={() => handleEntregar(pedido)}
                       className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
                     >
-                      Guardar Pedido
+                      Entregar
                     </button>
                   ) : (
                     <button
@@ -236,6 +261,23 @@ function EntregaPlanchado() {
           </button>
         </Link>
       </div>
+
+      {selectedPedido && entregando && selectedPedido.orderstatus === "Pagado" && (
+        <Modal
+          title="Pedido Entregado"
+          visible={entregando}
+          closable={false}
+          footer={null} 
+        >
+          <div className="text-center">
+            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
+            <p className="text-green-600 font-bold text-lg mt-2">
+              Pedido Entregado...
+            </p>
+          </div>
+        </Modal>
+      )}
+
       <Modal
         title="Detalles del Pedido"
         visible={visible}

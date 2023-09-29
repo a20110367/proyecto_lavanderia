@@ -1,27 +1,13 @@
 import React, { useState } from "react";
-// import data from "../../lib/constants/data";
-import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
+import jsPDF from "jspdf";
 import Axios from "axios";
-import useSWR, { useSWRConfig } from "swr";
-import { Link } from "react-router-dom";
+import useSWR from "swr";
+import { Link, useLocation } from "react-router-dom";
+import { Modal, Select } from "antd";
+import moment from "moment";
+import "moment/locale/es";
 
-const TicketPDF = ({ cart, subtotal }) => {
-  return (
-    <Document>
-      <Page>
-        <Text>Ticket de Compra</Text>
-        <Text>Productos:</Text>
-        {cart.map((service) => (
-          <Text key={service.id_service}>
-            {service.description} x {service.quantity} - $
-            {service.price * service.quantity}
-          </Text>
-        ))}
-        <Text>Subtotal: ${subtotal}</Text>
-      </Page>
-    </Document>
-  );
-};
+const { Option } = Select;
 
 export default function PuntoVenta() {
   const [cart, setCart] = useState([]);
@@ -30,6 +16,14 @@ export default function PuntoVenta() {
     "https://www.ocu.org/-/media/ocu/images/home/electrodomesticos/secadora/secadora-eficiencia-tiempo-programa.jpg?rev=ceb8727f-ccca-46dc-a0d1-f4d3e83d8031&hash=D0C547A95C98B9C4704FA36A6B136090",
     "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg",
   ]);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const clientName = queryParams.get("clientName");
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState("A la entrega");
+  const [purchaseDate, setPurchaseDate] = useState(moment());
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -40,15 +34,11 @@ export default function PuntoVenta() {
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
-    // const serviceToAdd = data.products.find((service) => service.id === serviceId);
     const serviceToAdd = service;
-    console.log(serviceId);
-    console.log(service.id_service);
     if (serviceToAdd) {
       const existingService = cart.find(
         (item) => item.id_service === serviceId
       );
-      console.log(cart);
       if (existingService) {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
@@ -63,40 +53,66 @@ export default function PuntoVenta() {
   };
 
   const removeFromCart = (serviceId) => {
-    //    const updatedCart = cart.map((item) => {
-    //      if (item.quantity > 0) {
-    //        return item.id_service === serviceId
-    //          ? { ...item, quantity: item.quantity - 1 }
-    //          : item;
-    //      } else {
-    //        return item;
-    //      }
-    //    });
     const updatedCart = cart
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
             return { ...item, quantity: item.quantity - 1 };
           } else {
-            return null; // Elimina el elemento del carrito si la cantidad es igual a 1
+            return null;
           }
         } else {
           return item;
         }
       })
-      .filter(Boolean); // Filtra elementos nulos (los eliminados)
+      .filter(Boolean);
 
     setCart(updatedCart);
-    // item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
-    // const updatedCart = cart.filter((item) => item.id_service !== serviceId);
-    // const updatedCart = cart.map((item) =>
-    //   item.id_service === serviceId ? { ...item, quantity: item.quantity - 1 } : item
-    // );
-    //setCart(updatedCart);
   };
 
   const calculateSubtotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleSaveAndGenerateTicket = () => {
+    setIsModalVisible(false);
+
+    const doc = new jsPDF();
+
+
+    doc.text(`Ticket de Compra de: ${clientName}`, 10, 10);
+    doc.text("Productos:", 10, 20);
+    let y = 30;
+
+    cart.forEach((service) => {
+      doc.text(
+        `${service.description} x ${service.quantity} - $${
+          service.price * service.quantity
+        }`,
+        10,
+        y
+      );
+      y += 10;
+    });
+
+    doc.text(`Subtotal: $${calculateSubtotal()}`, 10, y + 10);
+    doc.text(
+      `Fecha de Compra: ${purchaseDate.format("YYYY-MM-DD HH:mm:ss")}`,
+      10,
+      y + 20
+    );
+    doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 30);
+
+
+    doc.save("ticket_compra.pdf");
   };
 
   return (
@@ -137,8 +153,8 @@ export default function PuntoVenta() {
 
           <div className="col-md-4">
             <div className="card card-body mt-5">
-              <h3 className="text-center border-b-2 border-gray-500 pb-2">
-                Orden de compra
+              <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
+                <p className="font-bold">Cliente seleccionado: {clientName}</p>
               </h3>
               <ul className="divide-y divide-gray-300">
                 {cart.map((service) => (
@@ -170,32 +186,82 @@ export default function PuntoVenta() {
               <div className="mt-4 flex justify-between">
                 <button
                   className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={() => {
-                    console.log("Compra guardada");
-                  }}
+                  onClick={showModal}
                 >
                   Guardar Compra
                 </button>
-                <PDFDownloadLink
-                  document={
-                    <TicketPDF cart={cart} subtotal={calculateSubtotal()} />
-                  }
-                  fileName="ticket_compra.pdf"
+
+                <Modal
+                  title={`Guardar Compra para ${clientName}`}
+                  visible={isModalVisible}
+                  onCancel={handleCancel}
+                  footer={[
+                    
+                    <button
+                      key="submit"
+                      className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleSaveAndGenerateTicket}
+                    >
+                      Guardar
+                    </button>,
+                    <button
+                    key="back"
+                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleCancel}
+                  >
+                    Cancelar
+                  </button>,
+                  ]}
                 >
-                  {({ blob, url, loading, error }) =>
-                    loading ? (
-                      "Cargando..."
-                    ) : (
-                      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                        Generar Ticket
-                      </button>
-                    )
-                  }
-                </PDFDownloadLink>
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Detalles del Servicio:
+                    </p>
+                    {cart.map((service) => (
+                      <div key={service.id_service}>
+                        <p style={{ fontSize: "16px" }}>
+                          {service.description}
+                        </p>
+                        <p style={{ fontSize: "16px" }}>
+                          Costo: ${service.price * service.quantity}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <div>
+                    <div>
+                      <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                        Fecha de Compra:
+                      </p>
+                      <div style={{ fontSize: "16px" }}>
+                        {purchaseDate.format("YYYY-MM-DD HH:mm:ss")}
+                      </div>
+                    </div>{" "}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Subtotal:
+                    </p>
+                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Seleccionar Opción de Pago:
+                    </p>
+                    <Select
+                      style={{ width: "100%", fontSize: "16px" }}
+                      onChange={(value) => setSelectedPaymentOption(value)}
+                      value={selectedPaymentOption}
+                    >
+                      <Option value="A La Entrega">A la Entrega</Option>
+                      <Option value="Anticipado">Anticipado</Option>
+                    </Select>
+                  </div>
+                </Modal>
               </div>
             </div>
             <Link
-              to="/menuPuntoVenta"
+              to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
             >
               <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">

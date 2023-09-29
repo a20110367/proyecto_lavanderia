@@ -63,7 +63,7 @@ function Clients() {
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre de usuario</th>
-                                <th>Nombre</th>
+                                <th>Nombre del cliente</th>
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
                                 <th>Email</th>

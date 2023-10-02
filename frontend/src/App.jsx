@@ -40,6 +40,8 @@ import EditEquipo from "./components/Equipos/EditEquipo"
 
 import Cajas from "./components/Cajas/Cajas"
 import CajaEntregas from "./components/Cajas/CajaEntregas"
+import InicioCaja from "./components/Cajas/InicioCaja"
+import HistorialCaja from "./components/Cajas/HistorialCaja"
 
 import CajaDevolucion from "./components/Cajas/CajaDevolucion"
 import CajaRetiros from "./components/Cajas/CajaRetiros"
@@ -54,8 +56,7 @@ import RecepcionLavanderia from "./components/Lavanderia/RecepcionLavanderia"
 import EntregaPlanchado from "./components/Planchado/EntregaPlanchado"
 import RecepcionPlanchado from "./components/Planchado/RecepcionPlanchado"
 import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
-import CorteCajaTurno from "./components/Cajas/CorteCajaTurno"
-import CorteCajaParcial from "./components/Cajas/CorteCajaParcial"
+import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
 import Reembolso from "./components/Cajas/Reembolso"
 
@@ -89,8 +90,9 @@ function App() {
                     <Route path="/cajaEntregas" element={<CajaEntregas />} />
                     <Route path="/cajaDevolucion" element={<CajaDevolucion />} />
                     <Route path="/cajaRetiros" element={<CajaRetiros />} />
-                    <Route path="/corteCajaTurno" element={<CorteCajaTurno />} />
-                    <Route path="/corteCajaParcial" element={<CorteCajaParcial />} />
+                    <Route path="/corteCaja" element={<CorteCaja />} />
+                    <Route path="/inicioCaja" element={<InicioCaja />} />
+                    <Route path="/HistorialCaja" element={<HistorialCaja />} />
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/reembolso" element={<Reembolso />} />
 

@@ -7,11 +7,11 @@
 @layer base {
 
 	::-webkit-scrollbar {
-		width: 6px;
+		width: 10px;
 	}
 
 	::-webkit-scrollbar-track {
-		background: transparent;
+		background: #f1f5f9;
 	}
 
 	::-webkit-scrollbar-thumb {
@@ -288,7 +288,7 @@
 	}
 
 	.side-menu::-webkit-scrollbar {
-		width: 3px;
+		width: 6px;
 	}
 
 	.side-menu::-webkit-scrollbar-track {

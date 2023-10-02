@@ -7,6 +7,7 @@ import { Modal, Select } from "antd";
 import moment from "moment";
 import "moment/locale/es";
 
+
 const { Option } = Select;
 
 export default function PuntoVenta() {
@@ -23,6 +24,8 @@ export default function PuntoVenta() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState("A la entrega");
+  const [paymentMethod, setPaymentMethod] = useState("");
+
   const [purchaseDate, setPurchaseDate] = useState(moment());
 
   const fetcher = async () => {
@@ -87,7 +90,6 @@ export default function PuntoVenta() {
 
     const doc = new jsPDF();
 
-
     doc.text(`Ticket de Compra de: ${clientName}`, 10, 10);
     doc.text("Productos:", 10, 20);
     let y = 30;
@@ -111,6 +113,9 @@ export default function PuntoVenta() {
     );
     doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 30);
 
+    if (selectedPaymentOption === "Anticipado") {
+      doc.text(`Método de Pago Anticipado: ${paymentMethod}`, 10, y + 40);
+    }
 
     doc.save("ticket_compra.pdf");
   };
@@ -196,7 +201,6 @@ export default function PuntoVenta() {
                   visible={isModalVisible}
                   onCancel={handleCancel}
                   footer={[
-                    
                     <button
                       key="submit"
                       className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -205,12 +209,12 @@ export default function PuntoVenta() {
                       Guardar
                     </button>,
                     <button
-                    key="back"
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleCancel}
-                  >
-                    Cancelar
-                  </button>,
+                      key="back"
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      onClick={handleCancel}
+                    >
+                      Cancelar
+                    </button>,
                   ]}
                 >
                   <div>
@@ -246,16 +250,37 @@ export default function PuntoVenta() {
                   </div>
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                      Seleccionar Opción de Pago:
+                      Seleccionar Forma de Pago:
                     </p>
                     <Select
                       style={{ width: "100%", fontSize: "16px" }}
-                      onChange={(value) => setSelectedPaymentOption(value)}
+                      onChange={(value) => {
+                        setSelectedPaymentOption(value);
+                        if (value === "Anticipado") {
+                          setPaymentMethod(""); // Reinicia la selección de método de pago
+                        }
+                      }}
                       value={selectedPaymentOption}
                     >
                       <Option value="A La Entrega">A la Entrega</Option>
                       <Option value="Anticipado">Anticipado</Option>
                     </Select>
+
+                    {selectedPaymentOption === "Anticipado" && (
+                      <div>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Método de Pago Anticipado:
+                        </p>
+                        <Select
+                          style={{ width: "100%", fontSize: "16px" }}
+                          onChange={(value) => setPaymentMethod(value)}
+                          value={paymentMethod}
+                        >
+                          <Option value="Tarjeta">Tarjeta</Option>
+                          <Option value="Efectivo">Efectivo</Option>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>

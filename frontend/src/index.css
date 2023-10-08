@@ -7,11 +7,11 @@
 @layer base {
 
 	::-webkit-scrollbar {
-		width: 6px;
+		width: 10px;
 	}
 
 	::-webkit-scrollbar-track {
-		background: transparent;
+		background: #f1f5f9;
 	}
 
 	::-webkit-scrollbar-thumb {
@@ -79,6 +79,10 @@
 		@apply flex items-center
 	}
 
+	.fcj {
+		@apply flex items-center justify-center
+	}
+
 	.components-container {
 		@apply bg-neutral-500 h-screen w-screen overflow-hidden flex flex-row
 	}
@@ -97,6 +101,18 @@
 
 	.responsive-bg {
 		@apply bg-oxfordBlue w-screen h-screen grid place-items-center
+	}
+
+	.search-bg {
+		@apply bg-neutral-600 rounded-md min-h-screen p-4
+	}
+
+	.fjus-container{
+		@apply mt-4 flex justify-between text-center 
+	}
+
+	.fcol-container{
+		@apply mt-4 flex flex-col items-center text-center
 	}
 
 	/*-------------------- FORMS	 ---------------*/
@@ -137,9 +153,17 @@
 		@apply active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all py-4 rounded-lg bg-oxfordBlue text-white text-lg font-bold
 	}
 
+	.btn-big {
+		@apply bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none mt-2
+	}
+
+	.btn-generate {
+		@apply bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none
+	}
+
 	/*-------------------- TEXT ---------------*/
 	.title {
-		@apply text-3xl font-semibold
+		@apply text-3xl font-bold
 	}
 
 	.subtitle {
@@ -160,7 +184,7 @@
 
 	/* strongs */
 	.title-strong {
-		@apply pl-5 pr-2 text-xl font-medium text-dodgerBlue
+		@apply pr-2 text-xl font-medium text-dodgerBlue
 	}
 
 	/*-------------------- INPUTS ---------------*/
@@ -176,6 +200,10 @@
 		@apply bg-transparent border-2 border-gray-500 rounded-lg p-8 mt-2 focus:outline-none focus:ring-blue-400 focus:ring-2 w-full
 	}
 
+	.search-ipt {
+		@apply border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-500 border-black
+	}
+
 	/*-------------------- SELECTS ---------------*/
 	.select-prim {
 		@apply appearance-none bg-transparent border-2 border-gray-500 rounded-lg py-3 px-4 pr-8 focus:outline-none focus:border-blue-500 text-base w-1/6
@@ -187,6 +215,10 @@
 
 	.instructions {
 		@apply text-sm text-red-600
+	}
+
+	.warning {
+		@apply mr-2 text-2xl text-red-500
 	}
 
 	.err-icon {
@@ -203,6 +235,16 @@
 
 	.img-pos {
 		@apply h-48 w-full object-cover rounded-t-lg
+	}
+
+	/*-------------------- TABLE PADDING ---------------*/
+
+	.th1 {
+		@apply py-3 px-1 text-center
+	}
+	
+	.th2 {
+		@apply py-3 px-6
 	}
 
 	/*-------------------- HEADER ---------------*/
@@ -288,7 +330,7 @@
 	}
 
 	.side-menu::-webkit-scrollbar {
-		width: 3px;
+		width: 6px;
 	}
 
 	.side-menu::-webkit-scrollbar-track {

@@ -7,6 +7,7 @@ import {
     FcEngineering,
 } from "react-icons/fc";
 import { LuListOrdered } from "react-icons/lu";
+import { GiHandTruck} from "react-icons/gi";
 import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
 import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
 import { useAuth } from '../../hooks/auth/auth'
@@ -22,10 +23,10 @@ function getItem(label, key, icon, children, type) {
 }
 
 const iconStyle = {
-    fontSize: "24px", // Tamaño deseado para los iconos
-    margin: "auto", // Centra horizontalmente
+    fontSize: "24px", 
+    margin: "auto", 
     marginTop: "7px",
-    marginLeft: "-3px", // Espacio vertical opcional
+    marginLeft: "-3px", 
 };
 
 const items1 = [
@@ -51,11 +52,12 @@ const items1 = [
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
-        //getItem("Inicio de caja", "/cajas"),
-        getItem("Corte de caja Turno", "/corteCajaTurno"),
-        getItem("Corte de caja Parcial", "/corteCajaParcial"),
+        getItem("Inicio de caja", "/inicioCaja"),
+        getItem("Corte de caja", "/corteCaja"),
+
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
+        getItem("Historial de cortes", "/historialCaja")
     ]),
     getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
         getItem("Lista de Equipos", "/equipos"),
@@ -64,7 +66,7 @@ const items1 = [
     ]),
 
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
-    getItem("Servicios", "/services", <FcEngineering style={iconStyle} />),
+    getItem("Servicios", "/services", <GiHandTruck style={iconStyle} />),
 
     { type: "divider", style: { margin: "140px " } },
 

@@ -24,6 +24,23 @@ export const getServicesById = async (req, res) =>{
     }
 }
 
+export const getServicesByCategory = async (req, res) =>{
+    try {
+        const response = await prisma.service.findMany({
+            where:{
+
+                fk_category: Number(req.fk_category)
+            }
+
+        });
+        res.status(200).json(response);
+    }catch(e){
+        res.status(404).json({msg:e.message});
+    }
+
+
+}
+
 export const createService = async (req, res) =>{
     const {description, price, time, weight} = req.body;
     try {
@@ -67,10 +84,12 @@ export const deleteService =  async (req, res) =>{
         const service = await prisma.service.delete({
             where:{
                 id_service: Number(req.params.id)
-            }
+            }            
+            
         });
         res.status(200).json(service);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
 }
+

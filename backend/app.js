@@ -8,6 +8,7 @@ import ClientRoute from './routes/ClientRoute.js'
 import ServiceRoute from './routes/ServiceRoute.js'
 import MachineRoute from './routes/MachineRoute.js'
 import OrderRoute from './routes/OrderRoute.js'
+import CategoryRoute from './routes/CategoryRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -21,6 +22,7 @@ app.use(ClientRoute)
 app.use(ServiceRoute)
 app.use(MachineRoute)
 app.use(OrderRoute)
+app.use(CategoryRoute)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

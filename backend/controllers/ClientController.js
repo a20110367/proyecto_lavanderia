@@ -26,18 +26,19 @@ export const getClientsById = async (req, res) =>{
 }
 
 export const createClient = async (req, res) =>{
-    const {userName, name, firstLN, secondLN, email, phone, pass} = req.body;
+    //const {userName, name, firstLN, secondLN, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.create({
-            data:{
-                username: userName,
-                name: name,
-                firstLN: firstLN,
-                secondLN: secondLN,
-                email: email,                
-                phone: phone,            
-                pass: pass
-            }
+            data:req.body
+            // {
+            //     username: userName,
+            //     name: name,
+            //     firstLN: firstLN,
+            //     secondLN: secondLN,
+            //     email: email,                
+            //     phone: phone,            
+            //     pass: pass
+            // }
         });
         res.status(201).json(client);
     }catch(e){

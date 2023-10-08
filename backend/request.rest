@@ -1,3 +1,5 @@
+
+//CRUD DE USERS
 GET http://localhost:5000/users
 
 ###
@@ -5,29 +7,100 @@ GET http://localhost:5000/users
 GET http://localhost:5000/users/1
 
 ###
-
-GET http://localhost:5000/orders
-
-###
-
-GET http://localhost:5000/orders/1
-
-###
-
 POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-    "name": "Juan",
-    "firstName": "Perez",
-    "secondName": "Perez",
-    "email": "a20110367@ceti.mx",
-    "phone": "3332515436",
-    "pass": "1234",
+    "username":"Juan1235",
+    "name": "Juan25",
+    "firstLN": "Perez5",
+    "secondLN": "Perez5",
+    "email": "a2011036725@ceti.mx",
+    "phone": "33325154365",
+    "pass": "122345",
+    "role":  "employee"
+}
+###
+PATCH  http://localhost:5000/users/10
+Content-Type: application/json
+
+{
+    "username":"Juan1234",
+    "name": "Juan24",
+    "firstLN": "Perez4",
+    "secondLN": "Perez4",
+    "email": "a2011036724@ceti.mx",
+    "phone": "33432515436",
+    "pass": "122344",
     "role":  "employee"
 }
 
+###
+DELETE http://localhost:5000/users/7
+
 ### 
+//CRUD DE MACHINES
+GET http://localhost:5000/machines
+###
+GET http://localhost:5000/machines/5
+###
+POST http://localhost:5000/machines
+Content-Type: application/json
+
+{
+    "machineType": "lavadora",
+    "model": "Ni tan Chingona 5000",
+    "cicleTime": 45,
+    "weight": 25,
+    "status": "unavailable",
+    "notes": "La compramos madreada"
+
+}
+###
+PATCH http://localhost:5000/machines/6
+Content-Type: application/json
+
+{
+    "machineType": "lavadora",
+    "model": "Ni tan Chingona 5000",
+    "cicleTime": 45,
+    "weight": 25,
+    "status": "available",
+    "notes": "nomas aguanto 20"
+}
+###
+DELETE http://localhost:5000/machines/6
+
+###
+
+//CRUD DE CATEGORIES
+POST http://localhost:5000/categories
+Content-Type: application/json
+
+{
+    "cateforyDes": "pruebas"
+}
+
+###
+
+GET  http://localhost:5000/categories
+
+###
+GET  http://localhost:5000/categoriesId/2
+
+###
+GET  http://localhost:5000/categoriesName/pruebas
+
+###
+DELETE  http://localhost:5000/categories/5
+
+###
+
+DELETE  http://localhost:5000/categoriesName/pruebas
+
+###
+
+
 
 POST http://localhost:5000/services
 Content-Type: application/json
@@ -40,19 +113,13 @@ Content-Type: application/json
 }
 
 ###
-
-PATCH  http://localhost:5000/users/2
-Content-Type: application/json
-
-{
-    "name": "Pedro",
-    "email": "a20110367@ceti.mx",
-    "accessToken": "64634fdsfy54asdsa",
-    "phone": "3332515436",
-    "rol": "cajero",
-    "pass": "1234"
-}
+GET http://localhost:5000/orders
 
 ###
 
-DELETE  http://localhost:5000/users/2
+GET http://localhost:5000/orders/1
+
+###
+
+
+

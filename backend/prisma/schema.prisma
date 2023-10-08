@@ -25,23 +25,21 @@ enum Role {
 }
 
 model User {
-  id_user           Int                 @id @default(autoincrement())
-  username          String              @unique
-  name              String
-  firstLN           String
-  secondLN          String
-  email             String              @unique
-  phone             String
-  pass              String
-  role              Role                @default(employee)
-  orders            Order[]
-  payment           Payment[]
-  deliveryDetail    DeliveryDetail[]
-  washMachineDetail WashMachineDetail[]
-  dryMachineDetail  DryMachineDetail[]
-
-  created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  id_user        Int              @id @default(autoincrement())
+  username       String           @unique
+  name           String
+  firstLN        String
+  secondLN       String
+  email          String           @unique
+  phone          String
+  pass           String
+  role           Role             @default(employee)
+  orders         Order[]
+  payment        Payment[]
+  deliveryDetail DeliveryDetail[]
+  cashCut        CashCut[]
+  created        DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Client {
@@ -56,7 +54,7 @@ model Client {
   orders    Order[]
 
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 enum MachineType {
@@ -79,15 +77,15 @@ model Machine {
   notes       String
 
   created           DateTime            @default(now())
-  updatedAT         DateTime            @updatedAt
+  updatedAt         DateTime            @updatedAt
   WashMachineDetail WashMachineDetail[]
   DryMachineDetail  DryMachineDetail[]
 }
 
 model Category {
-  id_category Int       @id @default(autoincrement())
-  cateforyDes String
-  service     Service[]
+  id_category         Int       @id @default(autoincrement())
+  categoryDescription String
+  service             Service[]
 }
 
 model Service {
@@ -103,7 +101,7 @@ model Service {
   Orders      OrderServiceDetail[]
 
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 enum PayMethod {
@@ -131,8 +129,10 @@ enum OrderStatus {
 model Order {
   id_order        Int                  @id @default(autoincrement())
   numberOfItems   Int                  @default(1)
-  receptionDate   DateTime             @default(now())
-  deliveryDate    DateTime             @default(now())
+  receptionDate   DateTime             @db.Date() 
+  deliveryDate    DateTime             @db.Date()
+  receptionTime   DateTime             @db.Time()
+  deliveryTime    DateTime?            @db.Time()
   payForm         PayForm              @default(delivery)
   payStatus       PayStatus            @default(unpaid)
   orderStatus     OrderStatus          @default(pending)
@@ -148,7 +148,7 @@ model Order {
   dryMachine      DryMachineDetail[]
 
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 }
 
 model OrderServiceDetail {
@@ -162,33 +162,38 @@ model OrderServiceDetail {
   order     Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   service   Service  @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
   @@id([fk_idOrder, fk_idService])
 }
 
 model WashMachineDetail {
-  fk_idOrder   Int
-  fk_idMachine Int
-  fk_user      Int
-  order        Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  machine      Machine  @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  created      DateTime @default(now())
-  updatedAT    DateTime @updatedAt
+  fk_idOrder     Int
+  fk_idMachine   Int
+  fk_staffMember Int
+  washDate       DateTime?   @db.Date()
+  washTime       DateTime?   @db.Time()
+  order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  machine        Machine     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+  staffMember    StaffMember @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
+  created        DateTime    @default(now()) 
+  updatedAt      DateTime    @updatedAt
 
   @@id([fk_idOrder, fk_idMachine])
 }
 
 model DryMachineDetail {
-  fk_idOrder   Int
-  fk_idMachine Int
-  fk_user      Int
-  order        Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  machine      Machine  @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
-  user         User     @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  created      DateTime @default(now())
-  updatedAT    DateTime @updatedAt
+  fk_idOrder     Int
+  fk_idMachine   Int
+  fk_staffMember Int
+  dryDate        DateTime?   @db.Date()
+  dryTime        DateTime?   @db.Time()
+  order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  machine        Machine     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+  staffMember    StaffMember @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@id([fk_idOrder, fk_idMachine])
 }
@@ -197,28 +202,64 @@ model Payment {
   id_payment     Int       @id @default(autoincrement())
   fk_idOrder     Int       @unique
   fk_userCashier Int
+  payTotal       Float
   payMethod      PayMethod
-  payDate        DateTime  @default(now())
-  cashCut        Int?
+  payDate        DateTime  @db.Date()
+  payTime        DateTime  @db.Time()
+  fk_cashCut     Int?
 
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
+
+  order   Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  user    User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  cashCut CashCut? @relation(fields: [fk_cashCut], references: [id_chashCut], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model DeliveryDetail {
+  id_delivery    Int      @id @default(autoincrement())
+  fk_idOrder     Int      @unique
+  fk_userCashier Int
+  deliveryDate   DateTime @db.Date()
+  deliveryTime   DateTime @db.Time()
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
 }
 
-model DeliveryDetail {
-  id_delivery    Int       @id @default(autoincrement())
-  fk_idOrder     Int       @unique
-  fk_userCashier Int
-  payMethod      PayMethod
-  payDate        DateTime  @default(now())
-  cashCut        Int?
+model StaffMember {
+  id_staffMember Int    @id @default(autoincrement())
+  name           String
+  idToken        Int?
+  email          String @unique
+  phone          String
 
   created   DateTime @default(now())
-  updatedAT DateTime @updatedAt
+  updatedAt DateTime @updatedAt
 
-  order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  washMachineDetail WashMachineDetail[]
+  dryMachineDetail  DryMachineDetail[]
+}
+
+model CashCut {
+  id_chashCut    Int       @id @default(autoincrement())
+  fk_user        Int
+  subtotal       Float?
+  total          Float?
+  subtotal_item1 Float?
+  subtotal_item2 Float?
+  subtotal_item3 Float?
+  subtotal_item4 Float?
+  subtotal_item5 Float?
+  cashCutDate    DateTime  @db.Date()
+  cashCutTime    DateTime  @db.Time()
+  payment        Payment[]
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
 }

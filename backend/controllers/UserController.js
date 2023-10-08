@@ -45,19 +45,20 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    //const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
-            data:{
-                username: userName,
-                name: name,
-                firstLN: firstLN,
-                secondLN: secondLN,
-                email: email,                
-                phone: phone,            
-                pass: pass,
-                role: role
-            }
+            data: req.body
+            // data:{
+            //     username: userName,
+            //     name: name,
+            //     firstLN: firstLN,
+            //     secondLN: secondLN,
+            //     email: email,                
+            //     phone: phone,            
+            //     pass: pass,
+            //     role: role
+            // }
         });
         res.status(201).json(user);
     }catch(e){
@@ -66,22 +67,23 @@ export const createUser = async (req, res) =>{
 }
 
 export const updateUser =  async (req, res) =>{
-    const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    //const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.update({
             where:{
                 id_user: Number(req.params.id)
             },
-            data:{
-                username: userName,
-                name: name,
-                firstLN: firstLN,
-                secondLN: secondLN,
-                email: email,                
-                phone: phone,            
-                pass: pass,
-                role: role
-            }
+            // data:{
+            //     username: userName,
+            //     name: name,
+            //     firstLN: firstLN,
+            //     secondLN: secondLN,
+            //     email: email,                
+            //     phone: phone,            
+            //     pass: pass,
+            //     role: role
+            // }
+            data:req.body
         });
         res.status(200).json(user);
     }catch(e){

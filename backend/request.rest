@@ -11,14 +11,14 @@ POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-    "username":"Juan1235",
-    "name": "Juan25",
-    "firstLN": "Perez5",
-    "secondLN": "Perez5",
-    "email": "a2011036725@ceti.mx",
-    "phone": "33325154365",
-    "pass": "122345",
-    "role":  "employee"
+    "username": "Juan1234",
+    "name": "Juan24",
+    "firstLN": "Perez4",
+    "secondLN": "Perez4",
+    "email": "a2011036724@ceti.mx",
+    "phone": "33432515436",
+    "pass": "122344",
+    "role": "employee"
 }
 ###
 PATCH  http://localhost:5000/users/10
@@ -39,6 +39,79 @@ Content-Type: application/json
 DELETE http://localhost:5000/users/7
 
 ### 
+
+//CRUD DE CATEGORIES
+POST http://localhost:5000/categories
+Content-Type: application/json
+
+{
+    "categoryDescription": "pruebas2"
+}
+
+###
+
+GET  http://localhost:5000/categories
+
+###
+GET  http://localhost:5000/categoriesId/2
+
+###
+GET  http://localhost:5000/categoriesName/pruebas
+
+###
+DELETE  http://localhost:5000/categoriesId/5
+
+###
+
+DELETE  http://localhost:5000/categoriesName/pruebas2
+
+###
+
+//CRUD DE Clientes
+GET http://localhost:5000/clients
+
+###
+
+GET http://localhost:5000/clientsById/6
+
+###
+GET http://localhost:5000/clientsByEmail/uncorreo2@correo.com
+
+###
+GET http://localhost:5000/clientsByPhone/1234567733
+
+###
+POST http://localhost:5000/clients
+Content-Type: application/json
+
+{
+    "username": "Cliente4",
+    "name": "Jose",
+    "firstLN": "Perez",
+    "secondLN": "Lopez",
+    "email": "uncorreo3@correo.com",
+    "phone": "1234567789",
+    "pass": "56453213"
+}
+###
+PATCH  http://localhost:5000/clients/6
+Content-Type: application/json
+
+{
+    "username":"JuanComplicado",
+    "name": "Juan24",
+    "firstLN": "Perez45",
+    "secondLN": "Perez45",
+    "email": "33333333335@ceti.mx",
+    "phone": "55555555557",
+    "pass": "1223445"
+}
+
+###
+DELETE http://localhost:5000/clients/7
+
+### 
+
 //CRUD DE MACHINES
 GET http://localhost:5000/machines
 ###
@@ -48,12 +121,13 @@ POST http://localhost:5000/machines
 Content-Type: application/json
 
 {
+ "id_machine": 4,
     "machineType": "lavadora",
-    "model": "Ni tan Chingona 5000",
+    "model": "Bien Chingona 5000",
     "cicleTime": 45,
     "weight": 25,
-    "status": "unavailable",
-    "notes": "La compramos madreada"
+    "status": "available",
+    "notes": ""
 
 }
 ###
@@ -70,38 +144,8 @@ Content-Type: application/json
 }
 ###
 DELETE http://localhost:5000/machines/6
-
 ###
-
-//CRUD DE CATEGORIES
-POST http://localhost:5000/categories
-Content-Type: application/json
-
-{
-    "cateforyDes": "pruebas"
-}
-
-###
-
-GET  http://localhost:5000/categories
-
-###
-GET  http://localhost:5000/categoriesId/2
-
-###
-GET  http://localhost:5000/categoriesName/pruebas
-
-###
-DELETE  http://localhost:5000/categories/5
-
-###
-
-DELETE  http://localhost:5000/categoriesName/pruebas
-
-###
-
-
-
+//CRUD DE SERVICES
 POST http://localhost:5000/services
 Content-Type: application/json
 

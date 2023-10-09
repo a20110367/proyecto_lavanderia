@@ -44,12 +44,12 @@ model User {
 
 model Client {
   id_client Int     @id @default(autoincrement())
-  username  String?
+  username  String  @unique
   name      String
   firstLN   String
   secondLN  String?
   email     String  @unique
-  phone     String
+  phone     String  @unique
   pass      String?
   orders    Order[]
 
@@ -75,7 +75,7 @@ model Machine {
   weight      Int
   status      Status      @default(available)
   notes       String
-
+//Considerar incluir el numero de serie
   created           DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   WashMachineDetail WashMachineDetail[]
@@ -91,7 +91,7 @@ model Category {
 model Service {
   id_service  Int                  @id @default(autoincrement())
   description String
-  fk_category Int                  @unique
+  fk_category Int                  
   // Precio Unitario
   price       Float
   time        Int?

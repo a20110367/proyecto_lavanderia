@@ -28,7 +28,7 @@ export const getCategoriesByName = async (req, res) =>{
     try {
         const response = await prisma.category.findFirst({
             where:{
-                cateforyDes: req.params.cateforyDes
+                categoryDescription: req.params.categoryDescription
             }
         });
         res.status(200).json(response);
@@ -67,7 +67,7 @@ export const deleteCategoryByName =  async (req, res) =>{
     try {
         const categories = await prisma.category.deleteMany({
             where:{
-                cateforyDes: req.params.cateforyDes
+                categoryDescription: req.params.categoryDescription
             }              
         });
         res.status(200).json(categories);

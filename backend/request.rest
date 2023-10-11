@@ -21,16 +21,16 @@ Content-Type: application/json
     "role": "employee"
 }
 ###
-PATCH  http://localhost:5000/users/10
+PATCH  http://localhost:5000/users/6
 Content-Type: application/json
 
 {
-    "username":"Juan1234",
-    "name": "Juan24",
-    "firstLN": "Perez4",
-    "secondLN": "Perez4",
-    "email": "a2011036724@ceti.mx",
-    "phone": "33432515436",
+    "username":"Juan123456",
+    "name": "Juan2456",
+    //"firstLN": "Perez4",
+    //"secondLN": "Perez4",
+    //"email": "a2011036724@ceti.mx",
+    "phone": "334325154367",
     "pass": "122344",
     "role":  "employee"
 }
@@ -39,6 +39,119 @@ Content-Type: application/json
 DELETE http://localhost:5000/users/7
 
 ### 
+
+
+//CRUD DE STAFF MEMBERS
+GET http://localhost:5000/staffMembers
+
+###
+
+GET http://localhost:5000/staffMembers/2
+
+###
+POST http://localhost:5000/staffMembers
+Content-Type: application/json
+
+{
+    "name": "Pedro",
+    "firstLN": "Perez",
+    "secondLN": "Lopez",
+    "email": "uncorreo@mail.com",
+    "phone": "11223344"
+}
+
+###
+PATCH  http://localhost:5000/staffMembers/3
+Content-Type: application/json
+
+{
+    "id_Token":333
+    //"username":"Juan123456",
+    //"name": "Juan2456",
+    //"firstLN": "Perez4",
+    //"secondLN": "Perez4",
+    //"email": "a2011036724@ceti.mx",
+    //"phone": "334325154367",
+}
+
+###
+DELETE http://localhost:5000/staffMembers/7
+
+### 
+
+
+//CRUD DE CASHCUT
+GET http://localhost:5000/cashCuts
+
+###
+
+GET http://localhost:5000/cashCuts/2
+
+###
+POST http://localhost:5000/cashCuts
+Content-Type: application/json
+
+{
+    "fk_user": 2,
+    "cashCutD": "2023-10-08T00:00:00.000Z",
+    "cashCutT": "1970-01-01T08:12:36.000Z"
+
+}
+
+###
+PATCH  http://localhost:5000/cashCuts/1
+Content-Type: application/json
+
+{
+    "subtotal":1500.50
+}
+
+###
+DELETE http://localhost:5000/cashCuts/7
+
+### 
+
+//CRUD DE PAYMENTS
+GET http://localhost:5000/payments
+
+###
+
+GET http://localhost:5000/payments/2
+
+###
+POST http://localhost:5000/payments
+Content-Type: application/json
+
+{
+  "fk_idOrder":1,     
+  "fk_userCashier":1,
+  "payTotal": 500.30,
+  "payMethod":"cash",      
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z"       
+  //"fk_cashCut":     
+
+}
+
+###
+PATCH  http://localhost:5000/payments/3
+Content-Type: application/json
+
+{
+  "fk_idOrder":1,     
+  "fk_userCashier":1,
+  "payTotal": 14500.30,
+  "payMethod":"cash",      
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z"       
+  //"fk_cashCut":     
+}
+
+###
+DELETE http://localhost:5000/payments/7
+
+### 
+
 
 //CRUD DE CATEGORIES
 POST http://localhost:5000/categories
@@ -145,18 +258,53 @@ Content-Type: application/json
 ###
 DELETE http://localhost:5000/machines/6
 ###
+
+
+
 //CRUD DE SERVICES
+
 POST http://localhost:5000/services
 Content-Type: application/json
 
 {
-    "description": "Lavado 8Kg",
-    "price": 135.0,
+    "description": "Lavado 25Kg",
+    "category_id" : 3,
+    "price": 250.0,
     "time": 45,
-    "weight": 8
+    "weight": 25
 }
 
 ###
+GET  http://localhost:5000/services
+###
+GET  http://localhost:5000/servicesById/1
+
+###
+PATCH  http://localhost:5000/services/8
+Content-Type: application/json
+
+{
+    "description": "Lavado 25Kg",
+    "category_id" : 3,
+    "price": 250.0,
+    "time": 45,
+    "weight": 25
+}
+###
+
+PATCH  http://localhost:5000/servicesCategory/3
+Content-Type: application/json
+
+{
+    "category_id" : 3
+}
+
+###
+
+DELETE   http://localhost:5000/services/8
+
+###
+
 GET http://localhost:5000/orders
 
 ###

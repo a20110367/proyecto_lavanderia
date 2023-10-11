@@ -5,6 +5,15 @@ const prisma = new PrismaClient();
 export const getOrders = async (req, res) =>{
     try {
         const response = await prisma.order.findMany({
+            // include:{
+            //     user:true,
+            //     client:true,
+            //     deliveryDetails:true,
+            //     payment:true,
+            //     orderServices:true,
+            //     serviceTraceDetails:true
+
+            // },
             select: {
                 id_order: true,
                 numberOfItems: true,

@@ -5,11 +5,18 @@ const prisma = new PrismaClient();
 export const getServices = async (req, res) =>{
     try {
         const response = await prisma.service.findMany({
-            include:{
-                category: {
+            select:{
+                id_service:true,
+                description:true,
+                price:true,
+                time:true,
+                weight:true,
+                pieces:true,
+                category_id:true,
+                category:{
                     select:{
-                        cateforyDes: true
-                    }
+                        categoryDescription: true,
+                    },
                 },
             },
         });
@@ -24,7 +31,19 @@ export const getServicesById = async (req, res) =>{
         const response = await prisma.service.findUnique({
             where:{
                 id_service: Number(req.params.id)
-            }
+            },select:{
+                id_service:true,
+                description:true,
+                price:true,
+                time:true,
+                weight:true,
+                pieces:true,
+                category:{
+                    select:{
+                        categoryDescription: true,
+                    },
+                },
+            },
         });
         res.status(200).json(response);
     }catch(e){
@@ -37,7 +56,7 @@ export const getServicesByCategory = async (req, res) =>{
         const response = await prisma.service.findMany({
             where:{
 
-                fk_category: Number(req.fk_category)
+                category_id: Number(req.category_id)
             }
 
         });
@@ -50,13 +69,13 @@ export const getServicesByCategory = async (req, res) =>{
 }
 
 export const createService = async (req, res) =>{
-    const {description, fk_category, price, time, weight, pieces} = req.body;
+    const {description, category_id, price, time, weight, pieces} = req.body;
     try {
         const service = await prisma.service.create({
             data:{
                 description: description,
                 price: price,
-                fk_category: fk_category,
+                category_id: category_id,
                 time: time,
                 weight: weight,
                 pieces: pieces,
@@ -69,7 +88,7 @@ export const createService = async (req, res) =>{
 }
 
 export const updateService =  async (req, res) =>{
-    const {description, price, time, weight} = req.body;
+    const {description, category_id, price, time, weight} = req.body;
     try {
         const service = await prisma.service.update({
             where:{
@@ -77,9 +96,29 @@ export const updateService =  async (req, res) =>{
             },
             data:{
                 description: description,
+                category_id : category_id,
                 price: price,
                 time: time,
                 weight: weight
+            }
+        });
+        res.status(200).json(service);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const updateServiceCategory =  async (req, res) =>{
+    const {category_id} = req.body;
+    try {
+        const service = await prisma.service.update({
+            where:{
+                id_service: Number(req.params.id)
+            },
+            data:{
+                
+                category_id : category_id,
+
             }
         });
         res.status(200).json(service);

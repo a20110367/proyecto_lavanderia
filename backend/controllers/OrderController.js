@@ -126,7 +126,65 @@ export const getOrdersByIdUser = async (req, res) =>{
     try {
         const response = await prisma.order.findMany({
             where:{
-                fk_user: Number(req.params.id)
+                fk_user: Number(req.params.fk_user)
+            },
+            select: {
+                id_order: true,
+                numberOfItems: true,
+                receptionDate: true,
+                receptionTime:true,
+                scheduledDeliveryDate: true,
+                scheduledDeliveryTime:true,
+                payForm: true,
+                payStatus: true,
+                orderStatus: true,
+                totalPrice: true,
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        phone: true,
+                        id_client:true,
+                    },
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN:true,
+                        id_user: true,
+                    },
+                },
+                orderServices: {
+                    select: {
+                        //id_service: true,
+                        service:{
+                            select:{
+                                    description:true,
+                                    price: true,
+                                    time: true,
+                                    weight: true,
+                                    pieces :true
+                                    }
+                            
+                        },
+                        
+                    },
+                },
+            },
+        });
+        res.status(201).json(order);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const getOrdersByIdClient = async (req, res) =>{
+    try {
+        const response = await prisma.order.findMany({
+            where:{
+                fk_client: Number(req.params.fk_client)
             },
             select: {
                 id_order: true,

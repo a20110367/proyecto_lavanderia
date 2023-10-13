@@ -97,6 +97,8 @@ model Service {
   time        Int?
   weight      Int?
   pieces      Int?
+  washCycles  Int?
+  dryCycles   Int?
   category    Category             @relation(fields: [category_id], references: [id_category], onDelete: NoAction, onUpdate: NoAction)
   Orders      OrderServiceDetail[]
 
@@ -155,7 +157,7 @@ model OrderServiceDetail {
   id_OrderServiceDetail Int       @id @default(autoincrement())
   fk_idService          Int       @default(1)
   fk_idOrder            Int       @default(1)
-  units                 Int
+  //units                 Int
   finished              Boolean   @default(false)
   finishDate            DateTime? @db.Date
   token                 Int?
@@ -172,15 +174,15 @@ model ServiceTraceDetail {
   id_ServiceTraceDetail   Int                @id @default(autoincrement())
   //fk_idOrder     Int
   fk_idOrderServiceDetail Int
-  fk_idMachine            Int
-  fk_staffMember          Int
+  fk_idMachine            Int?
+  fk_staffMember          Int?
   serviceDate             DateTime?          @db.Date
   serviceTime             DateTime?          @db.Time
   finished                Boolean            @default(false)
   //order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   orderServiceDetail      OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail], onDelete: NoAction, onUpdate: NoAction)
-  machine                 Machine            @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
-  staffMember             StaffMember        @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
+  machine                 Machine?           @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+  staffMember             StaffMember?       @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt

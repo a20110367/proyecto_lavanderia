@@ -332,6 +332,37 @@ Content-Type: application/json
 }
 
 ###
+DELETE   http://localhost:5000/orders/8
 
+###
 
+//CRUD DE SERVIDE DETAILS
+GET http://localhost:5000/orders
 
+###
+
+GET http://localhost:5000/orders/1
+
+###
+
+POST http://localhost:5000/orders
+Content-Type: application/json
+
+{
+ "numberOfItems":5,
+  "receptionDate":"2023-10-11T00:00:00.000Z",
+  "receptionTime":"1970-01-01T13:15:48.000Z",        
+  "scheduledDeliveryDate":"2023-10-14T00:00:00.000Z",
+  "scheduledDeliveryTime":"1970-01-01T16:00:00.000Z",
+  "payForm":"delivery",             
+  "payStatus":"",             
+  "orderStatus":"pending",          
+  "totalPrice":35.28,           
+  "fk_client":1,             
+  "fk_user":1   
+}
+
+###
+DELETE   http://localhost:5000/orders/8
+
+###

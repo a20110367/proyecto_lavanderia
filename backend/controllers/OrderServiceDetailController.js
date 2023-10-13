@@ -28,11 +28,11 @@ export const getOrderServiceDetailsById = async (req, res) =>{
 export const createOrderServiceDetail = async (req, res) =>{
    
     try {
-        const user = await prisma.orderServiceDetail.create({
+        const serviceDetail = await prisma.orderServiceDetail.create({
             data: req.body
        
         });
-        res.status(201).json(user);
+        res.status(201).json(serviceDetail);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -40,14 +40,14 @@ export const createOrderServiceDetail = async (req, res) =>{
 
 export const updateOrderServiceDetail =  async (req, res) =>{
     try {
-        const user = await prisma.orderServiceDetail.updateMany({
+        const serviceDetail = await prisma.orderServiceDetail.updateMany({
             where:{
                 fk_idOrder: Number(req.params.id)
             },
       
             data:req.body
         });
-        res.status(200).json(user);
+        res.status(200).json(serviceDetail);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -55,12 +55,12 @@ export const updateOrderServiceDetail =  async (req, res) =>{
 
 export const deleteOrderServiceDetail =  async (req, res) =>{
     try {
-        const user = await prisma.orderServiceDetail.deleteMany({
+        const serviceDetail = await prisma.orderServiceDetail.deleteMany({
             where:{
                 id_orderServiceDetail: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(serviceDetail);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

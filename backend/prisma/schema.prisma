@@ -143,10 +143,9 @@ model Order {
   client Client @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
   user   User   @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
 
-  deliveryDetails     DeliveryDetail?
-  payment             Payment?
-  orderServices       OrderServiceDetail[]
-  serviceTraceDetails ServiceTraceDetail[]
+  deliveryDetails DeliveryDetail?
+  payment         Payment?
+  orderServices   OrderServiceDetail[]
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -157,30 +156,36 @@ model OrderServiceDetail {
   fk_idService          Int       @default(1)
   fk_idOrder            Int       @default(1)
   units                 Int
+  finished              Boolean   @default(false)
   finishDate            DateTime? @db.Date
   token                 Int?
 
-  order   Order   @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  service Service @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
+  order               Order                @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  service             Service              @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
+  serviceTraceDetails ServiceTraceDetail[]
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model ServiceTraceDetail {
-  fk_idOrder     Int
-  fk_idMachine   Int
-  fk_staffMember Int
-  serviceDate    DateTime?   @db.Date
-  serviceTime    DateTime?   @db.Time
-  order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  machine        Machine     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
-  staffMember    StaffMember @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
+  id_ServiceTraceDetail   Int                @id @default(autoincrement())
+  //fk_idOrder     Int
+  fk_idOrderServiceDetail Int
+  fk_idMachine            Int
+  fk_staffMember          Int
+  serviceDate             DateTime?          @db.Date
+  serviceTime             DateTime?          @db.Time
+  finished                Boolean            @default(false)
+  //order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  orderServiceDetail      OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail], onDelete: NoAction, onUpdate: NoAction)
+  machine                 Machine            @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
+  staffMember             StaffMember        @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@id([fk_idOrder, fk_idMachine])
+  //@@id([fk_idOrder, fk_idMachine])
 }
 
 model Payment {
@@ -231,7 +236,7 @@ model StaffMember {
 }
 
 model CashCut {
-  id_cashCut    Int       @id @default(autoincrement())
+  id_cashCut     Int       @id @default(autoincrement())
   fk_user        Int
   subtotal       Float?
   total          Float?

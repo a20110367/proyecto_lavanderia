@@ -28,11 +28,11 @@ export const getCashCutsById = async (req, res) =>{
 export const createCashCut = async (req, res) =>{
    
     try {
-        const user = await prisma.cashCut.create({
+        const cashCut = await prisma.cashCut.create({
             data: req.body
        
         });
-        res.status(201).json(user);
+        res.status(201).json(cashCut);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -40,14 +40,14 @@ export const createCashCut = async (req, res) =>{
 
 export const updateCashCut =  async (req, res) =>{
     try {
-        const user = await prisma.cashCut.update({
+        const cashCut = await prisma.cashCut.update({
             where:{
                 id_cashCut: Number(req.params.id)
             },
       
             data:req.body
         });
-        res.status(200).json(user);
+        res.status(200).json(cashCut);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -55,12 +55,12 @@ export const updateCashCut =  async (req, res) =>{
 
 export const deleteCashCut =  async (req, res) =>{
     try {
-        const user = await prisma.cashCut.delete({
+        const cashCut = await prisma.cashCut.delete({
             where:{
                 id_cashCut: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(cashCut);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

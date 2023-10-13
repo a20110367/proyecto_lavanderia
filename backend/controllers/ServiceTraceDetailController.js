@@ -28,11 +28,11 @@ export const getServiceTraceDetailsById = async (req, res) =>{
 export const createServiceTraceDetail = async (req, res) =>{
    
     try {
-        const user = await prisma.serviceTraceDetail.create({
+        const serviceTrace = await prisma.serviceTraceDetail.create({
             data: req.body
        
         });
-        res.status(201).json(user);
+        res.status(201).json(serviceTrace);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -55,12 +55,12 @@ export const updateServiceTraceDetail =  async (req, res) =>{
 
 export const deleteServiceTraceDetail =  async (req, res) =>{
     try {
-        const user = await prisma.serviceTraceDetail.deleteMany({
+        const serviceTrace = await prisma.serviceTraceDetail.deleteMany({
             where:{
                 id_serviceTraceDetail: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(serviceTrace);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

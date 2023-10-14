@@ -35,9 +35,10 @@ model User {
   pass           String
   role           Role             @default(employee)
   orders         Order[]
-  payment        Payment[]
+  //payment        Payment[]
   deliveryDetail DeliveryDetail[]
   cashCut        CashCut[]
+  //clients        Client[]
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -53,9 +54,11 @@ model Client {
   phone     String  @unique
   pass      String?
   orders    Order[]
+  //users     User[]
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
+  //Order     Order[]
 }
 
 enum MachineType {
@@ -69,17 +72,17 @@ enum Status {
 }
 
 model Machine {
-  id_machine          Int                  @id @default(autoincrement())
-  machineType         MachineType          @default(lavadora)
-  model               String
-  cicleTime           Int
-  weight              Int
-  serialNumber        String               @default("N/A")
-  status              Status               @default(available)
-  notes               String
-  created             DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
-  serviceTraceDetails ServiceTraceDetail[]
+  id_machine         Int                  @id @default(autoincrement())
+  machineType        MachineType          @default(lavadora)
+  model              String
+  cicleTime          Int
+  weight             Int
+  serialNumber       String               @default("N/A")
+  status             Status               @default(available)
+  notes              String
+  created            DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  ServiceTraceDetail ServiceTraceDetail[]
 }
 
 model Category {
@@ -89,21 +92,22 @@ model Category {
 }
 
 model Service {
-  id_service  Int                  @id @default(autoincrement())
+  id_service  Int      @id @default(autoincrement())
   description String
-  category_id Int                  @default(1)
+  category_id Int      @default(1)
   // Precio Unitario
   price       Float
   time        Int?
   weight      Int?
   pieces      Int?
+  //Numero de Ciclos permitidos
   washCycles  Int?
   dryCycles   Int?
-  category    Category             @relation(fields: [category_id], references: [id_category], onDelete: NoAction, onUpdate: NoAction)
-  Orders      OrderServiceDetail[]
+  category    Category @relation(fields: [category_id], references: [id_category], onDelete: NoAction, onUpdate: NoAction)
 
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  created            DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  OrderServiceDetail OrderServiceDetail[]
 }
 
 enum PayMethod {
@@ -145,25 +149,27 @@ model Order {
   client Client @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
   user   User   @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
 
-  deliveryDetails DeliveryDetail?
+  //deliveryDetails DeliveryDetail?
   payment         Payment?
-  orderServices   OrderServiceDetail[]
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  OrderServiceDetail OrderServiceDetail[]
 }
 
 model OrderServiceDetail {
   id_OrderServiceDetail Int       @id @default(autoincrement())
-  fk_idService          Int       @default(1)
-  fk_idOrder            Int       @default(1)
+  fk_Service            Int
+  fk_Order              Int
   //units                 Int
-  finished              Boolean   @default(false)
-  finishDate            DateTime? @db.Date
+  started               Boolean   @default(false)
+  //startDate             DateTime? @db.Date
   token                 Int?
 
-  order               Order                @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  service             Service              @relation(fields: [fk_idService], references: [id_service], onDelete: NoAction, onUpdate: NoAction)
+  order   Order   @relation(fields: [fk_Order], references: [id_order], onDelete: NoAction)
+  service Service @relation(fields: [fk_Service], references: [id_service], onDelete: NoAction)
+
   serviceTraceDetails ServiceTraceDetail[]
 
   created   DateTime @default(now())
@@ -171,55 +177,59 @@ model OrderServiceDetail {
 }
 
 model ServiceTraceDetail {
-  id_ServiceTraceDetail   Int                @id @default(autoincrement())
-  //fk_idOrder     Int
+  id_ServiceTraceDetail   Int @id @default(autoincrement())
   fk_idOrderServiceDetail Int
-  fk_idMachine            Int?
-  fk_staffMember          Int?
-  serviceDate             DateTime?          @db.Date
-  serviceTime             DateTime?          @db.Time
-  finished                Boolean            @default(false)
-  //order          Order       @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  orderServiceDetail      OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail], onDelete: NoAction, onUpdate: NoAction)
-  machine                 Machine?           @relation(fields: [fk_idMachine], references: [id_machine], onDelete: NoAction, onUpdate: NoAction)
-  staffMember             StaffMember?       @relation(fields: [fk_staffMember], references: [id_staffMember], onDelete: NoAction, onUpdate: NoAction)
+
+  fk_idMachine   Int?
+  fk_staffMember Int?
+  serviceDate    DateTime? @db.Date
+  serviceTime    DateTime? @db.Time
+  finished       Boolean   @default(false)
+
+  orderServiceDetail OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail])
+  machine            Machine?           @relation(fields: [fk_idMachine], references: [id_machine])
+  staffMember        StaffMember?       @relation(fields: [fk_staffMember], references: [id_staffMember])
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  //@@id([fk_idOrder, fk_idMachine])
+  // @@id([fk_idOrder, id_ServiceTraceDetail])
 }
 
 model Payment {
-  id_payment     Int       @id @default(autoincrement())
-  fk_idOrder     Int       @unique
-  fk_userCashier Int
-  payTotal       Float
-  payMethod      PayMethod
-  payDate        DateTime  @db.Date
-  payTime        DateTime  @db.Time
-  fk_cashCut     Int?
+  id_payment Int       @id @default(autoincrement())
+  fk_idOrder Int       @unique
+  //fk_userCashier Int
+  payTotal   Float
+  payMethod  PayMethod
+  payDate    DateTime  @db.Date
+  payTime    DateTime  @db.Time
+  fk_cashCut Int
+ 
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order   Order    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  user    User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  cashCut CashCut? @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
+  order   Order   @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  //user    User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  cashCut CashCut @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
+  delivery DeliveryDetail?
 }
 
 model DeliveryDetail {
   id_delivery    Int      @id @default(autoincrement())
-  fk_idOrder     Int      @unique
+  //fk_idOrder     Int      @unique
   fk_userCashier Int
+  fk_idPayment  Int @unique  
   deliveryDate   DateTime @db.Date
   deliveryTime   DateTime @db.Time
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  //order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  payment Payment @relation(fields: [fk_idPayment],references: [id_payment],onDelete: NoAction,onUpdate: NoAction)
 }
 
 model StaffMember {
@@ -234,7 +244,7 @@ model StaffMember {
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  serviceTraceDetails ServiceTraceDetail[]
+  ServiceTraceDetail ServiceTraceDetail[]
 }
 
 model CashCut {

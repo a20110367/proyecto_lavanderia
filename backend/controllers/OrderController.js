@@ -4,67 +4,76 @@ const prisma = new PrismaClient();
 
 export const getOrders = async (req, res) =>{
     try {
-        const response = await prisma.order.findMany({
-            // include:{
-            //     user:true,
-            //     client:true,
-            //     deliveryDetails:true,
-            //     payment:true,
-            //     orderServices:true,
-            //     serviceTraceDetails:true
-
-            // },
-            select: {
-                id_order: true,
-                numberOfItems: true,
-                receptionDate: true,
-                receptionTime:true,
-                scheduledDeliveryDate: true,
-                scheduledDeliveryTime:true,
-                payForm: true,
-                payStatus: true,
-                orderStatus: true,
-                totalPrice: true,
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        phone: true,
-                        id_client:true,
-                    },
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN:true,
-                        id_user: true,
-                    },
-                },
-                orderServices: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    price: true,
-                                    time: true,
-                                    weight: true,
-                                    pieces :true
-                                    }
-                            
-                        },
-                        
-                    },
-                },
-            },
-        });
+        const response = await prisma.order.findMany();
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});
     }
 }
+
+// export const getOrders = async (req, res) =>{
+//     try {
+//         const response = await prisma.order.findMany({
+//             // include:{
+//             //     user:true,
+//             //     client:true,
+//             //     deliveryDetails:true,
+//             //     payment:true,
+//             //     orderServices:true,
+//             //     serviceTraceDetails:true
+
+//             // },
+//             select: {
+//                 id_order: true,
+//                 numberOfItems: true,
+//                 receptionDate: true,
+//                 receptionTime:true,
+//                 scheduledDeliveryDate: true,
+//                 scheduledDeliveryTime:true,
+//                 payForm: true,
+//                 payStatus: true,
+//                 orderStatus: true,
+//                 totalPrice: true,
+//                 client: {
+//                     select: {
+//                         name: true,
+//                         firstLN: true,
+//                         secondLN: true,
+//                         phone: true,
+//                         id_client:true,
+//                     },
+//                 },
+//                 user: {
+//                     select: {
+//                         name: true,
+//                         firstLN: true,
+//                         secondLN:true,
+//                         id_user: true,
+//                     },
+//                 },
+//                 orderServices: {
+//                     select: {
+//                         //id_service: true,
+//                         service:{
+//                             select:{
+//                                     description:true,
+//                                     price: true,
+//                                     time: true,
+//                                     weight: true,
+//                                     pieces :true
+//                                     }
+                            
+//                         },
+                        
+//                     },
+//                 },
+//             },
+//         });
+//         res.status(200).json(response);
+//     }catch(e){
+//         res.status(500).json({msg:e.message});
+//     }
+// }
 
 export const getOrdersById = async (req, res) =>{
     try {

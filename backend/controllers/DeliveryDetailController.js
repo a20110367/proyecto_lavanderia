@@ -16,7 +16,7 @@ export const getDeliveryDetailsById = async (req, res) =>{
     try {
         const response = await prisma.deliveryDetail.findUnique({
             where:{
-                id_deliveryDetail: Number(req.params.id)
+                id_delivery: Number(req.params.id)
             }
         });
         res.status(200).json(response);
@@ -42,7 +42,7 @@ export const updateDeliveryDetail =  async (req, res) =>{
     try {
         const deliveryDetail = await prisma.deliveryDetail.update({
             where:{
-                id_deliveryDetail: Number(req.params.id)
+                id_delivery: Number(req.params.id)
             },
       
             data:req.body
@@ -57,7 +57,7 @@ export const deleteDeliveryDetail =  async (req, res) =>{
     try {
         const user = await prisma.deliveryDetail.delete({
             where:{
-                id_deliveryDetail: Number(req.params.id)
+                id_delivery: Number(req.params.id)
             }
         });
         res.status(200).json(user);

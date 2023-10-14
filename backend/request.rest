@@ -11,7 +11,7 @@ POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-    "username": "Juan1234",
+  "username": "Juan1234",
     "name": "Juan24",
     "firstLN": "Perez4",
     "secondLN": "Perez4",
@@ -53,9 +53,10 @@ POST http://localhost:5000/staffMembers
 Content-Type: application/json
 
 {
-    "name": "Pedro",
+   "name": "Pedro",
     "firstLN": "Perez",
     "secondLN": "Lopez",
+    "id_Token": 333,
     "email": "uncorreo@mail.com",
     "phone": "11223344"
 }
@@ -80,85 +81,13 @@ DELETE http://localhost:5000/staffMembers/7
 ### 
 
 
-//CRUD DE CASHCUT
-GET http://localhost:5000/cashCuts
-
-###
-
-GET http://localhost:5000/cashCuts/2
-
-###
-POST http://localhost:5000/cashCuts
-Content-Type: application/json
-
-{
-    "fk_user": 2,
-    "cashCutD": "2023-10-08T00:00:00.000Z",
-    "cashCutT": "1970-01-01T08:12:36.000Z"
-
-}
-
-###
-PATCH  http://localhost:5000/cashCuts/1
-Content-Type: application/json
-
-{
-    "subtotal":1500.50
-}
-
-###
-DELETE http://localhost:5000/cashCuts/7
-
-### 
-
-//CRUD DE PAYMENTS
-GET http://localhost:5000/payments
-
-###
-
-GET http://localhost:5000/payments/2
-
-###
-POST http://localhost:5000/payments
-Content-Type: application/json
-
-{
-  "fk_idOrder":1,     
-  "fk_userCashier":1,
-  "payTotal": 500.30,
-  "payMethod":"cash",      
-  "payDate": "2023-11-11T00:00:00.000Z",         
-  "payTime": "1970-01-01T12:20:20.000Z"       
-  //"fk_cashCut":     
-
-}
-
-###
-PATCH  http://localhost:5000/payments/3
-Content-Type: application/json
-
-{
-  "fk_idOrder":1,     
-  "fk_userCashier":1,
-  "payTotal": 14500.30,
-  "payMethod":"cash",      
-  "payDate": "2023-11-11T00:00:00.000Z",         
-  "payTime": "1970-01-01T12:20:20.000Z"       
-  //"fk_cashCut":     
-}
-
-###
-DELETE http://localhost:5000/payments/7
-
-### 
-
 
 //CRUD DE CATEGORIES
 POST http://localhost:5000/categories
 Content-Type: application/json
 
 {
-    "categoryDescription": "pruebas2"
+    "categoryDescription": "planchado"
 }
 
 ###
@@ -234,7 +163,7 @@ POST http://localhost:5000/machines
 Content-Type: application/json
 
 {
- "id_machine": 4,
+   "id_machine": 4,
     "machineType": "lavadora",
     "model": "Bien Chingona 5000",
     "cicleTime": 45,
@@ -267,11 +196,13 @@ POST http://localhost:5000/services
 Content-Type: application/json
 
 {
-    "description": "Lavado 25Kg",
-    "category_id" : 3,
-    "price": 250.0,
+ 
+      "description": "Lavado 25Kg",
+    "price": 250,
     "time": 45,
-    "weight": 25
+    "weight": 25,
+    "pieces": null,
+    "category_id": 3
 }
 
 ###
@@ -292,11 +223,11 @@ Content-Type: application/json
 }
 ###
 
-PATCH  http://localhost:5000/servicesCategory/3
+PATCH  http://localhost:5000/servicesCategory/1
 Content-Type: application/json
 
 {
-    "category_id" : 3
+    "category_id": 1
 }
 
 ###
@@ -324,45 +255,219 @@ Content-Type: application/json
   "scheduledDeliveryDate":"2023-10-14T00:00:00.000Z",
   "scheduledDeliveryTime":"1970-01-01T16:00:00.000Z",
   "payForm":"delivery",             
-  "payStatus":"",             
+  "payStatus":"unpaid",             
   "orderStatus":"pending",          
   "totalPrice":35.28,           
-  "fk_client":1,             
-  "fk_user":1   
+  "fk_client":2,             
+  "fk_user":3   
 }
 
 ###
-DELETE   http://localhost:5000/orders/8
+DELETE   http://localhost:5000/orders/1
 
 ###
 
 //CRUD DE SERVIDE DETAILS
-GET http://localhost:5000/orders
+GET http://localhost:5000/orderServiceDetails
 
 ###
 
-GET http://localhost:5000/orders/1
+GET http://localhost:5000/orderServiceDetails/20
 
 ###
 
-POST http://localhost:5000/orders
+POST http://localhost:5000/orderServiceDetails
 Content-Type: application/json
 
 {
- "numberOfItems":5,
-  "receptionDate":"2023-10-11T00:00:00.000Z",
-  "receptionTime":"1970-01-01T13:15:48.000Z",        
-  "scheduledDeliveryDate":"2023-10-14T00:00:00.000Z",
-  "scheduledDeliveryTime":"1970-01-01T16:00:00.000Z",
-  "payForm":"delivery",             
-  "payStatus":"",             
-  "orderStatus":"pending",          
-  "totalPrice":35.28,           
-  "fk_client":1,             
-  "fk_user":1   
+  
+    "fk_Order":2,
+  "fk_Service":4
+
 }
 
 ###
-DELETE   http://localhost:5000/orders/8
+PATCH  http://localhost:5000/orderServiceDetails/20
+Content-Type: application/json
+
+{
+    "started":true,
+    "token":22
+}
+###
+DELETE   http://localhost:5000/orderServiceDetails/17
 
 ###
+
+//CRUD DE SERVIDE TRACE DETAILS
+GET http://localhost:5000/serviceTraceDetails
+
+###
+
+GET http://localhost:5000/serviceTraceDetails/20
+
+###
+
+POST http://localhost:5000/serviceTraceDetails
+Content-Type: application/json
+
+{
+  
+    "fk_idOrderServiceDetail":20,
+  
+  "fk_idMachine":  1,
+  "fk_staffMember": 1,
+  "serviceDate":   "2023-10-15T00:00:00.000Z",
+  "serviceTime":    "1970-01-01T16:00:00.000Z"
+
+}
+
+###
+PATCH  http://localhost:5000/serviceTraceDetails/1
+Content-Type: application/json
+
+{
+    "finished":true
+}
+###
+DELETE   http://localhost:5000/serviceTraceDetails/17
+
+###
+
+//CRUD DE PAYMENT
+GET http://localhost:5000/payments
+
+###
+
+GET http://localhost:5000/payments/1
+
+###
+
+POST http://localhost:5000/payments
+Content-Type: application/json
+
+{
+  
+  "fk_idOrder" :4,
+  "payTotal"   :180.00,
+  "payMethod" : "credit",
+  "payDate" :   "2023-10-15T00:00:00.000Z",
+  "payTime":"1970-01-01T16:00:00.000Z",
+  "fk_cashCut": 1
+}
+###
+PATCH  http://localhost:5000/payments/1
+Content-Type: application/json
+
+{
+    "payMethod":"credit"
+}
+###
+DELETE   http://localhost:5000/payments/17
+
+###
+//CRUD DE CASHCUT
+GET http://localhost:5000/cashCuts
+
+###
+
+GET http://localhost:5000/cashCuts/2
+
+###
+POST http://localhost:5000/cashCuts
+Content-Type: application/json
+
+{
+    "fk_user": 2,
+    "cashCutD": "2023-10-08T00:00:00.000Z",
+    "cashCutT": "1970-01-01T08:12:36.000Z"
+
+}
+
+###
+PATCH  http://localhost:5000/cashCuts/1
+Content-Type: application/json
+
+{
+    "subtotal":1500.50
+}
+
+###
+DELETE http://localhost:5000/cashCuts/7
+
+### 
+
+//CRUD DE PAYMENTS
+GET http://localhost:5000/payments
+
+###
+
+GET http://localhost:5000/payments/2
+
+###
+POST http://localhost:5000/payments
+Content-Type: application/json
+
+{
+  "fk_idOrder":1,     
+  "fk_userCashier":1,
+  "payTotal": 500.30,
+  "payMethod":"cash",      
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z"       
+  //"fk_cashCut":     
+
+}
+
+###
+PATCH  http://localhost:5000/payments/3
+Content-Type: application/json
+
+{
+  "fk_idOrder":1,     
+  "fk_userCashier":1,
+  "payTotal": 14500.30,
+  "payMethod":"cash",      
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z"       
+  //"fk_cashCut":     
+}
+
+###
+DELETE http://localhost:5000/payments/7
+
+### 
+
+//CRUD DE DELIVERY DETAIL
+GET http://localhost:5000/deliveryDetails
+
+###
+
+GET http://localhost:5000/deliveryDetails/2
+
+###
+POST http://localhost:5000/deliveryDetails
+Content-Type: application/json
+
+{
+  "fk_userCashier": 1,
+  "fk_idPayment":  1,  
+  "deliveryDate":   "2023-11-15T00:00:00.000Z",
+  "deliveryTime":   "1970-01-01T12:20:20.000Z"
+}
+   
+
+###
+PATCH  http://localhost:5000/deliveryDetails/1
+Content-Type: application/json
+
+{
+       
+  "deliveryTime":   "1970-01-01T13:20:20.000Z"   
+       
+}
+
+###
+DELETE http://localhost:5000/deliveryDetails/7
+
+### 

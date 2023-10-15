@@ -28,11 +28,11 @@ export const getStaffMembersById = async (req, res) =>{
 export const createStaffMember = async (req, res) =>{
    
     try {
-        const user = await prisma.staffMember.create({
+        const staffMember = await prisma.staffMember.create({
             data: req.body
        
         });
-        res.status(201).json(user);
+        res.status(201).json(staffMember);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -40,14 +40,14 @@ export const createStaffMember = async (req, res) =>{
 
 export const updateStaffMember =  async (req, res) =>{
     try {
-        const user = await prisma.staffMember.update({
+        const staffMember = await prisma.staffMember.update({
             where:{
                 id_staffMember: Number(req.params.id)
             },
       
             data:req.body
         });
-        res.status(200).json(user);
+        res.status(200).json(staffMember);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -55,12 +55,12 @@ export const updateStaffMember =  async (req, res) =>{
 
 export const deleteStaffMember =  async (req, res) =>{
     try {
-        const user = await prisma.staffMember.delete({
+        const staffMember = await prisma.staffMember.delete({
             where:{
                 id_staffMember: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(staffMember);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

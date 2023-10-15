@@ -28,11 +28,11 @@ export const getPaymentsById = async (req, res) =>{
 export const createPayment = async (req, res) =>{
    
     try {
-        const user = await prisma.payment.create({
+        const payment = await prisma.payment.create({
             data: req.body
        
         });
-        res.status(201).json(user);
+        res.status(201).json(payment);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -40,14 +40,14 @@ export const createPayment = async (req, res) =>{
 
 export const updatePayment =  async (req, res) =>{
     try {
-        const user = await prisma.payment.update({
+        const payment = await prisma.payment.update({
             where:{
                 id_payment: Number(req.params.id)
             },
       
             data:req.body
         });
-        res.status(200).json(user);
+        res.status(200).json(payment);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -55,12 +55,12 @@ export const updatePayment =  async (req, res) =>{
 
 export const deletePayment =  async (req, res) =>{
     try {
-        const user = await prisma.payment.delete({
+        const payment = await prisma.payment.delete({
             where:{
                 id_payment: Number(req.params.id)
             }
         });
-        res.status(200).json(user);
+        res.status(200).json(payment);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

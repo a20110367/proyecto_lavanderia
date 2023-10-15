@@ -70,46 +70,6 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
           onClick={() => toggleCollapsed()}
           className="text-lg  w-16 h-9"
         />
-        <div className="relative ml-4">
-          <HiOutlineSearch
-            fontSize={20}
-            className="Search"
-          />
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              handleSearch(e.target.value);
-            }}
-            className="Search-input"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          />
-          {showResults && matchingRoutes.length > 0 && (
-            <div className="Search-container">
-              <strong className="Search-result">
-                Rutas coincidentes:
-              </strong>
-              <ul>
-                {matchingRoutes.map((route) => (
-                  <li
-                    key={route.key}
-                    className="Search-text"
-                    onClick={() => {
-                      navigate(route.key);
-                      setSearchTerm("");
-                    }}
-                  >
-                    {route.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
           <p className="user font-bold">{cookies.role === 'admin' ? 'Administrador:' : 'Empleado:'}</p>
           <p className="user text-dodgerBlue">{cookies.username}</p>
       </div>

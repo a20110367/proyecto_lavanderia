@@ -22,26 +22,28 @@ import Services from "./components/Service/Services"
 
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
-import MenuPuntoVenta from "./components/PuntoVenta/MenuPuntoVenta"
+import AutoServicio from "./components/Lavanderia/AutoServicio"
 
 //
-import Pedidos from "./components/Pedidos/Pedidos"
-import PedidosProceso from "./components/Pedidos/PedidosProceso"
-import PedidosFinalizados from "./components/Pedidos/PedidosFinaliazdos"
-import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
 
-import Dashboard from './components/Dashboard'
+import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
+import PedidosGeneral from "./components/Pedidos/PedidosGeneral"
+
+
 import Sidebar from "./components/shared/Sidebar"
 
 //equipos
 import Equipos from "./components//Equipos/Equipos"
 import AddEquipo from './components/Equipos/AddEquipo'
 import EditEquipo from "./components/Equipos/EditEquipo"
+import ActivarEquipos from "./components//Equipos/ActivarEquipos"
+
 
 import Cajas from "./components/Cajas/Cajas"
 import CajaEntregas from "./components/Cajas/CajaEntregas"
 import InicioCaja from "./components/Cajas/InicioCaja"
 import HistorialCaja from "./components/Cajas/HistorialCaja"
+import CajaPedidos from "./components/Cajas/CajaPedidos"
 
 import CajaDevolucion from "./components/Cajas/CajaDevolucion"
 import CajaRetiros from "./components/Cajas/CajaRetiros"
@@ -60,12 +62,14 @@ import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
 import Reembolso from "./components/Cajas/Reembolso"
 
+import Settings from "./components/Settings"
+
 function App() {
     const { cookies } = useAuth();
 
     return (
         <Routes>
-            <Route index element={<Navigate to={'/menuPuntoVenta'} />} />
+            <Route index element={<Navigate to={'/autoServicio'} />} />
             <Route path="/login" element={<Login />} />
 
             {/* Rutas Protegidas */}
@@ -78,13 +82,13 @@ function App() {
 
                     {/*Punto de venta */}
                     <Route path="/puntoVenta" element={<PuntoVenta />} />
-                    <Route path="/menuPuntoVenta" element={<MenuPuntoVenta />} />
+                    <Route path="/autoServicio" element={<AutoServicio />} />
 
-                    <Route path="/dashboard" element={<Dashboard />} />
 
                     <Route path="/equipos" element={<Equipos />} />
                     <Route path="/addEquipo" element={<AddEquipo />} />
                     <Route path="/editEquipo/:id" element={<EditEquipo />} />
+                    <Route path="/activarEquipos" element={<ActivarEquipos />} />
 
                     <Route path="/cajas" element={<Cajas />} />
                     <Route path="/cajaEntregas" element={<CajaEntregas />} />
@@ -95,6 +99,7 @@ function App() {
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/reembolso" element={<Reembolso />} />
+                    <Route path="/cajaPedidos" element={<CajaPedidos />} />
 
                     {/* Services */}
                     <Route path="/addService" element={<AddService />} />
@@ -102,20 +107,19 @@ function App() {
                     <Route path="/services" element={<Services />} />
 
                     {/* Pedidos */}
-                    <Route path="/pedidos" element={<Pedidos />} />
-                    <Route path="/pedidosProceso" element={<PedidosProceso />} />
-                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
 
                     {/*Lavanderia */}
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
+                    <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
 
                     {/*Planchado */}
                     <Route path="/entregaPlanchado" element={<EntregaPlanchado />} />
                     <Route path="/recepcionPlanchado" element={<RecepcionPlanchado />} />
                     <Route path="/addClient" element={<AddClient/>}/>
+                    <Route path="/settings" element={<Settings/>}/>
 
 
                     {/* Clients */}
@@ -128,14 +132,14 @@ function App() {
                     } /> */}
                     <Route path="/editClient/:id" element={
                         <ProtectedRoute
-                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <EditClient />
                         </ProtectedRoute>
                     } />
                     <Route path="/clients" element={
                         <ProtectedRoute
-                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <Clients />
                         </ProtectedRoute>
@@ -144,21 +148,21 @@ function App() {
                     {/* Empleados */}
                     <Route path="/addUser" element={
                         <ProtectedRoute
-                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <AddUser />
                         </ProtectedRoute>
                     } />
                     <Route path="/editUser/:id" element={
                         <ProtectedRoute
-                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <EditUser />
                         </ProtectedRoute>
                     } />
                     <Route path="/users" element={
                         <ProtectedRoute
-                            isAuth={cookies.role === 'admin'} redirectTo='/menuPuntoVenta'
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <Users />
                         </ProtectedRoute>

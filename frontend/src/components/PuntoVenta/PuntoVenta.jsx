@@ -20,6 +20,8 @@ export default function PuntoVenta() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const clientName = queryParams.get("clientName");
+  const serviceType = queryParams.get("serviceType")?.toLowerCase();
+  const shouldShowAllServices = !serviceType || serviceType === "autoservicio";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
@@ -120,6 +122,9 @@ export default function PuntoVenta() {
     doc.save("ticket_compra.pdf");
   };
 
+  const filteredServices = shouldShowAllServices
+  ? data
+  : data.filter((service) => service.description.toLowerCase().includes(serviceType));
   return (
     <div>
       <div className="basic-container w-5/12">
@@ -129,7 +134,7 @@ export default function PuntoVenta() {
         <div className="row">
           <div className="col-md-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {data.map((service) => (
+              {filteredServices.map((service) => (
                 <div
                   key={service.id_service}
                   className="bg-white rounded-lg shadow-lg"

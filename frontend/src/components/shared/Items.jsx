@@ -8,8 +8,10 @@ import {
 } from "react-icons/fc";
 import { LuListOrdered } from "react-icons/lu";
 import { GiHandTruck} from "react-icons/gi";
-import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
+import { SettingFilled, LogoutOutlined } from "@ant-design/icons";
 import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
+import { HiWrenchScrewdriver } from "react-icons/hi2"
+import { RiHandCoinFill } from "react-icons/ri"
 import { useAuth } from '../../hooks/auth/auth'
 
 function getItem(label, key, icon, children, type) {
@@ -35,7 +37,7 @@ const items1 = [
         "/lavanderia",
         <MdLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/menuPuntoVenta",),
+            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
@@ -48,6 +50,7 @@ const items1 = [
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Lavanderia", "/pedidosLavanderia"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("General", "/pedidosGeneral"),
     ]),
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
@@ -57,20 +60,21 @@ const items1 = [
 
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Historial de cortes", "/historialCaja")
+        getItem("Historial de cortes", "/historialCaja"),
+        getItem("Pedidos", "/cajaPedidos"),
+        
     ]),
-    getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
-        getItem("Lista de Equipos", "/equipos"),
+    getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
-        getItem("Administrar Equipos", "/adminEquipos"),
+        getItem("Administrar Equipos", "/equipos"),
     ]),
 
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
-    getItem("Servicios", "/services", <GiHandTruck style={iconStyle} />),
+    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />),
 
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingOutlined style={iconStyle} />), // Agregado: Settings
+    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
     getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
@@ -80,7 +84,7 @@ const items2 = [
         "/lavanderia",
         <MdLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/menuPuntoVenta",),
+            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
@@ -93,6 +97,7 @@ const items2 = [
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Lavanderia", "/pedidosLavanderia"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("General", "/pedidosGeneral"),
     ]),
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),
 
@@ -102,18 +107,18 @@ const items2 = [
         getItem("Corte de caja Parcial", "/corteCajaParcial"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
+        getItem("Pedidos", "/cajaPedidos"),
     ]),
-    getItem("Equipos", "/equipos", <HiTruck style={iconStyle} />, [
-        getItem("Lista de Equipos", "/equipos"),
+    getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
-        getItem("Administrar Equipos", "/adminEquipos"),
+        getItem("Administrar Equipos", "/equipos"),
     ]),
 
-    getItem("Servicios", "/services", <FcEngineering style={iconStyle} />),
+    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />),
 
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingOutlined style={iconStyle} />), // Agregado: Settings
+    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
     getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 

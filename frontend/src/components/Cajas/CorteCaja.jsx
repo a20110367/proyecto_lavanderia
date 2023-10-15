@@ -19,6 +19,8 @@ function CorteCaja() {
     false
   );
   const [mostrarTabla, setMostrarTabla] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCorte, setSelectedCorte] = useState(null);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -85,6 +87,7 @@ function CorteCaja() {
     setDialogVisible(true);
   };
 
+  
   const handleConfirmCorteCaja = () => {
     const now = new Date();
     const horaActual = now.getHours();
@@ -129,7 +132,10 @@ function CorteCaja() {
     setDialogVisible(false);
   };
 
-  const handleDetallesClick = () => {};
+  const handleDetallesClick = (corte) => {
+    setSelectedCorte(corte);
+    setModalVisible(true);
+  };
 
   const handlePartialCorteCaja = () => {
     setPartialCorteDialogVisible(true);
@@ -177,6 +183,29 @@ function CorteCaja() {
     setPartialCorteDialogVisible(false);
   };
 
+  const handleModalPrint = () => {
+    const doc = new jsPDF();
+
+    if (selectedCorte) {
+      doc.text(`Detalles del Corte`, 10, 10);
+      doc.text(`ID: ${selectedCorte.id}`, 10, 20);
+      doc.text(`Fecha: ${selectedCorte.fecha}`, 10, 30);
+      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 40);
+      doc.text(
+        `Ingreso en Efectivo: $ ${selectedCorte.ingresoEfectivo}`,
+        10,
+        50
+      );
+      doc.text(`Ingreso en Tarjeta: $ ${selectedCorte.ingresoTarjeta}`, 10, 60);
+      doc.text(`Dinero en Fondo: $ ${selectedCorte.dineroFondo}`, 10, 70);
+      doc.text(`Ingresos Totales: $ ${selectedCorte.ingresosTotales}`, 10, 80);
+      doc.text(`Retiros Totales: $ ${selectedCorte.retirosTotales}`, 10, 90);
+      doc.text(`Final Total Caja: $ ${selectedCorte.finalTotalCaja}`, 10, 100);
+      doc.text(`Turno: ${selectedCorte.turno}`, 10, 110);
+
+      doc.save("detalle_corte.pdf");
+    }
+  };
   return (
     <div className="text-center mt-4">
       <h1 className="text-4xl">
@@ -292,6 +321,71 @@ function CorteCaja() {
         ]}
       >
         <p>¿Estás seguro de realizar un corte de caja parcial?</p>
+      </Modal>
+      <Modal
+        title="Detalles del Corte"
+        visible={modalVisible}
+        onOk={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        footer={[
+          <Button
+            key="print"
+            onClick={handleModalPrint}
+            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            key="close"
+            onClick={() => setModalVisible(false)}
+            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+          >
+            Cerrar
+          </Button>,
+        ]}
+      >
+        {selectedCorte && (
+          <div>
+            <p className="text-lg">
+              <span className="font-bold">ID:</span> {selectedCorte.id}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Fecha:</span> {selectedCorte.fecha}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Usuario:</span>{" "}
+              {selectedCorte.usuario}
+            </p>
+
+            <p className="text-lg">
+              <span className="font-bold">Ingreso en Efectivo:</span> $
+              {selectedCorte.ingresoEfectivo}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Ingreso en Tarjeta:</span> $
+              {selectedCorte.ingresoTarjeta}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Dinero en Fondo:</span> $
+              {selectedCorte.dineroFondo}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Ingresos Totales:</span> $
+              {selectedCorte.ingresosTotales}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Retiros Totales:</span> $
+              {selectedCorte.retirosTotales}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Final Total Caja:</span> $
+              {selectedCorte.finalTotalCaja}
+            </p>
+            <p className="text-lg">
+              <span className="font-bold">Turno:</span> {selectedCorte.turno}
+            </p>
+          </div>
+        )}
       </Modal>
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import washingsvg from "./../../assets/washing-machine.svg";
 import { Layout, Menu } from "antd";
-import { useNavigate, useLocation, Outlet } from "react-router-dom";
+import { useNavigate, useLocation, Outlet, Link } from "react-router-dom";
 import Items from './Items'
 
 import Header from "./Header";
@@ -32,23 +32,27 @@ export default function Sidebar() {
         collapsible
         collapsed={collapsed}
       >
+         <Link to="/autoservicio"  style={{ textDecoration: 'none' }}> {/* Usar Link para redirigir */}
         <div className="img-container-side">
           <div className="img-side">
             {" "}
             {/* Contenedor flex */}
-            <img
-              src={washingsvg}
-              alt="Lavadora"
-              className={`mx-auto ${collapsed ? "w-11 h-11" : "w-24  h-11"}`}
-            />
-            <span
-              className={`font-semibold text-neutral-200 text-lg pr-6 ${collapsed ? "opacity-0" : "opacity-100"
-                } transition-opacity`}
-            >
-              Laundry System
-            </span>
+           
+              <img
+                src={washingsvg}
+                alt="Lavadora"
+                className={`mx-auto ${collapsed ? "w-11 h-11" : "w-24  h-11"}`}
+              />
+              <span
+                className={`font-semibold text-neutral-200 text-lg pr-6 ${collapsed ? "opacity-0" : "opacity-100"
+                  } transition-opacity`}
+              >
+                Laundry System
+              </span>
+
           </div>
         </div>
+        </Link>
         <div className="side-menu">
           <Menu
             theme="dark"

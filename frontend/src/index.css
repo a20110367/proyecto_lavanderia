@@ -160,7 +160,9 @@
 	.btn-generate {
 		@apply bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none
 	}
-
+	.btn-disabled {
+	@apply bg-gray-500 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg mt-2 ml-3 focus:ring-dodgerBlue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 text-lg
+	}
 	/*-------------------- TEXT ---------------*/
 	.title {
 		@apply text-3xl font-bold

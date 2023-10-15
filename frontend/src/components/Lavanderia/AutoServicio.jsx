@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState  } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
-import { FaSearch, FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import Axios from "axios";
 
-function RecepcionLavanderia() {
+function AutoServicio() {
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
     const response = await Axios.get("http://localhost:5000/clients");
@@ -32,7 +32,7 @@ function RecepcionLavanderia() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Recepción de Lavandería</strong>
+          <strong className="title-strong">Autoservicio</strong>
         </div>
       </div>
       <div className="search-bg">
@@ -77,7 +77,7 @@ function RecepcionLavanderia() {
                   <td className="th2">{client.phone}</td>
                   <td className="th2">{client.email}</td>
                   <td>
-                  <Link to={`/puntoVenta?clientName=${client.name}&serviceType=Lavado`}>
+                  <Link to={`/puntoVenta?clientName=${client.name}`}>
                       <button className="btn-generate">
                         <div className="subtitle m-1">Generar pedido</div>
                       </button>
@@ -118,4 +118,4 @@ function RecepcionLavanderia() {
   );
 }
 
-export default RecepcionLavanderia;
+export default AutoServicio;

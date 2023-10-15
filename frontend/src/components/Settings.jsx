@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import lavanderia from "./../../assets/lavanderia.jpg";
+import lavanderia from "../assets/lavanderia.jpg"
+import { useAuth } from "../hooks/auth/auth";
 
 const customButtonStyle = {
   backgroundColor: "#00386c",
@@ -32,10 +33,11 @@ const textContainerStyle = {
 };
 
 export default function MenuPuntoVenta() {
+  const { cookies } = useAuth();
   return (
     <div className="bg-gray-200 p-8 text-center rounded-md">
       <h1 className="text-4xl font-bold mb-8 text-gray-800">
-        Bienvenido Usuario, ¿qué desea hacer?
+        Bienvenido {cookies.role === "admin" ? "Administrador" : "Empleado"}{" "} {cookies.username}, ¿qué desea hacer?
       </h1>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         <Link

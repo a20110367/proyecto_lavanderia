@@ -20,6 +20,12 @@ import AddService from './components/Service/AddService'
 import EditService from "./components/Service/EditService"
 import Services from "./components/Service/Services"
 
+import ServicesLavanderia from "./components/Service/ServicesLavanderia"
+import AddServiceLavanderia from './components/Service/AddServiceLavanderia'
+import EditServiceLavanderia from './components/Service/EditServiceLavanderia'
+
+
+
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
 import AutoServicio from "./components/Lavanderia/AutoServicio"
@@ -63,6 +69,12 @@ import Retiro from "./components/Cajas/Retiro"
 import Reembolso from "./components/Cajas/Reembolso"
 
 import Settings from "./components/Settings"
+import ServicesPlanchado from "./components/Service/ServicesPlanchado"
+import AddServicePlanchado from "./components/Service/AddServicePlanchado"
+import EditServicePlanchado from "./components/Service/EditServicePlanchado"
+import ServicesAutoservicio from "./components/Service/ServicesAutoservicio"
+import AddServiceAutoservicio from "./components/Service/AddServiceAutoservicio"
+import EditServiceAutoservicio from "./components/Service/EditServiceAutoservicio"
 
 function App() {
     const { cookies } = useAuth();
@@ -105,6 +117,19 @@ function App() {
                     <Route path="/addService" element={<AddService />} />
                     <Route path="/editService/:id" element={<EditService />} />
                     <Route path="/services" element={<Services />} />
+
+                    <Route path="/servicesLavanderia" element={<ServicesLavanderia />} />
+                    <Route path="/addServiceLavanderia" element={<AddServiceLavanderia />} />
+                    <Route path="/editServiceLavanderia/:id" element={<EditServiceLavanderia />} />
+
+                    <Route path="/servicesPlanchado" element={<ServicesPlanchado />} />
+                    <Route path="/addServicePlanchado" element={<AddServicePlanchado />} />
+                    <Route path="/editServicePlanchado/:id" element={<EditServicePlanchado />} />
+
+                    <Route path="/servicesAutoservicio" element={<ServicesAutoservicio />} />
+                    <Route path="/addServiceAutoservicio" element={<AddServiceAutoservicio />} />
+                    <Route path="/editServiceAutoservicio/:id" element={<EditServiceAutoservicio />} />
+
 
                     {/* Pedidos */}
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />

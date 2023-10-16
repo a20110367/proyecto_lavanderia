@@ -70,8 +70,12 @@ const items1 = [
     ]),
 
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
-    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />),
+    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
+        getItem("Lavanderia", "servicesLavanderia"),
+        getItem("Planchado", "servicesPlanchado"),
+        getItem("Autoservicio", "servicesAutoservicio"),
 
+    ]),
     { type: "divider", style: { margin: "140px " } },
 
     getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
@@ -114,7 +118,12 @@ const items2 = [
         getItem("Administrar Equipos", "/equipos"),
     ]),
 
-    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />),
+    getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
+        getItem("Lavanderia", "servicesLavanderia"),
+        getItem("Planchado", "servicesPlanchado"),
+        getItem("Autoservicio", "servicesAutoservicio"),
+
+    ]),
 
     { type: "divider", style: { margin: "140px " } },
 

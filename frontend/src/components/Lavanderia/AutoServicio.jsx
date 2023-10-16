@@ -1,4 +1,4 @@
-import React, { useState  } from "react";
+import React, { useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -77,7 +77,9 @@ function AutoServicio() {
                   <td className="th2">{client.phone}</td>
                   <td className="th2">{client.email}</td>
                   <td>
-                  <Link to={`/puntoVenta?clientName=${client.name}`}>
+                    <Link
+                      to={`/puntoVenta?clientName=${client.name}&serviceType=Autoservicio`}
+                    >
                       <button className="btn-generate">
                         <div className="subtitle m-1">Generar pedido</div>
                       </button>

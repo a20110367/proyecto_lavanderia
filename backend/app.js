@@ -16,6 +16,8 @@ import DeliveryDetailRoute from './routes/DeliveryDetailRoute.js'
 import ServiceTraceDetailRoute from './routes/ServiceTraceDetailRoute.js'
 import OrderServiceDetailRoute from './routes/OrderServiceDetailRoute.js'
 
+import MessageRoute from './routes/MessageRoute.js'
+
 dotenv.config({ path: '.env' });
 const app = express();
 
@@ -35,6 +37,8 @@ app.use(PaymentRoute)
 app.use(DeliveryDetailRoute)
 app.use(ServiceTraceDetailRoute)
 app.use(OrderServiceDetailRoute)
+
+app.use(MessageRoute)
 
 
 app.listen(process.env.APP_PORT, (req, res) => {

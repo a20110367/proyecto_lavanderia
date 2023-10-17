@@ -55,7 +55,7 @@ function Equipos() {
         <button className="btn-primary" onClick={() => navigate('/addEquipo')}>
           Añadir Nueva Maquina
         </button>
-        <div className="shadow-container">
+        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
           <table>
             <thead>
               <tr>

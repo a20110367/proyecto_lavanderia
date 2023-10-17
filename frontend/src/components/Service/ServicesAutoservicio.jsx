@@ -65,7 +65,7 @@ function ServicesAutoservicio() {
         >
           Añadir Nuevo Servicio De Autoservicio
         </button>
-        <div className="shadow-container">
+        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
           <table>
             <thead>
               <tr>

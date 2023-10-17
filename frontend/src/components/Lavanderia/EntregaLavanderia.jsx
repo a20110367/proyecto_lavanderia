@@ -69,6 +69,7 @@ function EntregaLavanderia() {
     setFilteredPedidos(dummyPedidos);
   }, []);
 
+ 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
     filterPedidos(event.target.value);
@@ -140,7 +141,6 @@ function EntregaLavanderia() {
     setSelectedPedido(null);
   };
 
-
   const handleEntregar = (pedido) => {
     if (pedido.orderstatus === "Pagado") {
       setSelectedPedido(pedido);
@@ -170,7 +170,7 @@ function EntregaLavanderia() {
     <div>
       <div className="mb-3">
         <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Entregas Lavanderia</strong>
+          <strong className="text-xl">Entregas Lavanderia</strong>
         </div>
       </div>
       <div className="bg-neutral-600 rounded-md min-h-screen p-4">
@@ -179,79 +179,81 @@ function EntregaLavanderia() {
             <input
               type="text"
               placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+              className="search-ipt"
               value={filtro}
               onChange={handleFiltroChange}
             />
-            <div className="absolute top-2.5 left-1 text-gray-400">
+            <div className="absolute top-2.5 left-3 text-gray-400">
               <HiOutlineSearch fontSize={20} className="text-gray-400" />
             </div>
           </div>
         </div>
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th className="py-3 px-1 text-center">ID</th>
-              <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Empleado que Recibe</th>
-              <th className="py-3 px-6">Detalle del pedido</th>
-              <th className="py-3 px-6">Fecha de Recepción</th>
-              <th className="py-3 px-6">Estatus</th>
-              <th className="py-3 px-6">Fecha de Entrega Estimada</th>
-              <th className="py-3 px-6">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPedidos.map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id_pedido}>
-                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.cliente}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleadoRecibe}
-                </td>
-                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                <td className="py-3 px-6">{pedido.f_recepcion}</td>
-                <td
-                  className={`py-3 px-6 ${
-                    pedido.orderstatus === "Adeudo"
-                      ? "text-red-600"
-                      : "text-green-600"
-                  }`}
-                >
-                  {pedido.orderstatus === "Adeudo" ? (
-                    <span className="text-red-600 pl-1">
-                      <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}{" "}
-                    </span>
-                  ) : (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
-                    </span>
-                  )}
-                </td>
-                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
-                <td>
-                  {pedido.orderstatus === "Pagado" ? (
-                    <button
-                      onClick={() => handleEntregar(pedido)}
-                      className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-                    >
-                      Entregar
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleCobrar(pedido)}
-                      className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-                    >
-                      Cobrar
-                    </button>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+              <tr>
+                <th className="py-3 px-1 text-center">ID</th>
+                <th className="py-3 px-6">Nombre del Cliente</th>
+                <th className="py-3 px-6">Empleado que Recibe</th>
+                <th className="py-3 px-6">Detalle del pedido</th>
+                <th className="py-3 px-6">Fecha de Recepción</th>
+                <th className="py-3 px-6">Estatus</th>
+                <th className="py-3 px-6">Fecha de Entrega Estimada</th>
+                <th className="py-3 px-6">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredPedidos.map((pedido) => (
+                <tr className="bg-white border-b" key={pedido.id_pedido}>
+                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.cliente}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.empleadoRecibe}
+                  </td>
+                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                  <td
+                    className={`py-3 px-6 ${
+                      pedido.orderstatus === "Adeudo"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {pedido.orderstatus === "Adeudo" ? (
+                      <span className="text-red-600 pl-1">
+                        <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
+                      </span>
+                    ) : (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
+                  <td>
+                    {pedido.orderstatus === "Pagado" ? (
+                      <button
+                        onClick={() => handleEntregar(pedido)}
+                        className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                      >
+                        Entregar
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleCobrar(pedido)}
+                        className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                      >
+                        Cobrar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <Link
           to="/menuPuntoVenta"
           className="mt-4 flex text-center text-decoration-none"
@@ -267,7 +269,7 @@ function EntregaLavanderia() {
           title="Pedido Entregado"
           visible={entregando}
           closable={false}
-          footer={null} 
+          footer={null}
         >
           <div className="text-center">
             <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />

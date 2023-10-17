@@ -61,7 +61,7 @@ function Users() {
                 >
                     Añadir Nuevo Usuario
                 </button>
-                <div className="shadow-container">
+                <div className="shadow-container"  style={{ overflowX: 'auto' }}>
                     <table>
                         <thead>
                             <tr className="title-tr">

@@ -7,7 +7,6 @@ import { Modal, Select } from "antd";
 import moment from "moment";
 import "moment/locale/es";
 
-
 const { Option } = Select;
 
 export default function PuntoVenta() {
@@ -21,7 +20,7 @@ export default function PuntoVenta() {
   const queryParams = new URLSearchParams(location.search);
   const clientName = queryParams.get("clientName");
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
-  const shouldShowAllServices = !serviceType || serviceType === "autoservicio";
+  const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
@@ -123,8 +122,31 @@ export default function PuntoVenta() {
   };
 
   const filteredServices = shouldShowAllServices
-  ? data
-  : data.filter((service) => service.description.toLowerCase().includes(serviceType));
+    ? data
+    : data.filter((service) => {
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "lavado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "autoservicio" &&
+          service.description.toLowerCase().includes("autoservicio")
+        ) {
+          return true;
+        }
+        return false;
+      });
   return (
     <div>
       <div className="basic-container w-5/12">

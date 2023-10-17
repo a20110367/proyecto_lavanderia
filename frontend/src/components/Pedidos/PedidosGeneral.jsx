@@ -43,7 +43,7 @@ function PedidosGeneral() {
         fecha_entrega_real: "2023-09-15",
         forma_pago: "A la entrega",
       },
-      
+
       {
         id_pedido: 2,
         empleado_recibio: "Axel",
@@ -110,7 +110,6 @@ function PedidosGeneral() {
         fecha_entrega_real: "2023-09-18",
         forma_pago: "A la entrega",
       },
-      
     ];
 
     setPedidos(dummyPedidos);
@@ -156,46 +155,38 @@ function PedidosGeneral() {
     setNotificationMessage(message);
     setNotificationVisible(true);
 
-    // Ocultará el modal después de 2 segundos
     setTimeout(() => {
       setNotificationVisible(false);
     }, 2000);
   };
 
   const handleSeleccionarPedido = (pedidoId, cliente) => {
-    // Verifica si el pedido está en estado "Pendiente"
     const pedidoSeleccionado = pedidos.find(
       (pedido) => pedido.id_pedido === pedidoId
     );
-  
+
     if (pedidoSeleccionado && pedidoSeleccionado.orderstatus === "Pendiente") {
-      // Verificar si ya hay un pedido seleccionado para la máquina actual
       if (selectedPedidos[machineIdQueryParam]) {
-        // Si ya hay un pedido seleccionado, deselecciónalo
         setSelectedPedidos((prevState) => ({
           ...prevState,
           [machineIdQueryParam]: null,
         }));
       }
-  
-      // Cambiar el estado del pedido solo si está en estado "Pendiente"
+
       const pedidosActualizados = pedidos.map((pedido) => {
         if (pedido.id_pedido === pedidoId) {
           return { ...pedido, orderstatus: "En proceso" };
         }
         return pedido;
       });
-  
-      // Registrar el pedido seleccionado para la máquina actual
+
       setSelectedPedidos((prevState) => ({
         ...prevState,
         [machineIdQueryParam]: pedidoId,
       }));
-  
 
       setPedidos(pedidosActualizados);
 
-      // Mostrar una notificación en un diálogo
       const modal = Modal.info({
         title: "Pedido en Proceso",
         content: (
@@ -211,21 +202,18 @@ function PedidosGeneral() {
         footer: null,
       });
 
-      // Cerrar el Modal automáticamente después de 2 segundos
       setTimeout(() => {
-        modal.destroy(); // Cierra el modal de información
+        modal.destroy();
       }, 1500);
     } else {
-      // No cambies el estado y muestra un mensaje de error
       const modal = Modal.error({
         title: "Error",
         content: "No se puede cambiar el estado de este pedido.",
         onOk() {},
       });
 
-      // Cerrar el Modal de error automáticamente después de 2 segundos
       setTimeout(() => {
-        modal.destroy(); // Cierra el modal de error
+        modal.destroy();
       }, 1500);
     }
   };
@@ -286,101 +274,99 @@ function PedidosGeneral() {
           </select>
         </div>
         <table className="w-full text-sm text-left text-gray-500">
-  <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-    <tr>
-      <th className="py-3 px-1 text-center">ID</th>
-      <th className="py-3 px-6">Empleado que Recibió</th>
-      <th className="py-3 px-6">Empleado que Entregó</th>
-      <th className="py-3 px-6">Nombre del Cliente</th>
-      <th className="py-3 px-6">Detalle del pedido</th>
-      <th className="py-3 px-6">Fecha de Entrega</th>
-      <th className="py-3 px-6">Estatus</th>
-      <th className="py-3 px-6">Forma de Pago</th>
-      {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
-    </tr>
-  </thead>
-  <tbody>
-    {filteredPedidos.map((pedido) => (
-      <tr className="bg-white border-b" key={pedido.id_pedido}>
-        <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-        <td className="py-3 px-6 font-medium text-gray-900">
-          {pedido.empleado_recibio}
-        </td>
-        <td className="py-3 px-6 font-medium text-gray-900">
-          {pedido.empleado_entrego}
-        </td>
-        <td className="py-3 px-6 font-medium text-gray-900">
-          {pedido.cliente}
-        </td>
-        <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-        <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
-        <td className="py-3 px-6">
-          {pedido.orderstatus === "Pendiente" ? (
-            <span className="text-gray-600 pl-1">
-              <MinusCircleOutlined /> Pendiente
-            </span>
-          ) : pedido.orderstatus === "Almacenado" ? (
-            <span className="text-fuchsia-600 pl-1">
-              <DropboxOutlined /> Almacenado
-            </span>
-          ) : pedido.orderstatus === "En proceso" ? (
-            <span className="text-yellow-600 pl-1">
-              <ClockCircleOutlined /> En Proceso
-            </span>
-          ) : pedido.orderstatus === "Finalizado" ? (
-            <span className="text-blue-600 pl-1">
-              <IssuesCloseOutlined /> Finalizado no entregado
-              <button
-                onClick={() => handleNotificarCliente(pedido)}
-                className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
-              >
-                Notificar al Cliente
-              </button>
-            </span>
-          ) : pedido.orderstatus === "Entregado" ? (
-            <span className="text-green-600 pl-1">
-              <CheckCircleOutlined /> Finalizado Entregado
-            </span>
-          ) : (
-            <span className="text-red-600 pl-1">
-              <StopOutlined /> Cancelado
-            </span>
-          )}
-        </td>
-        <td className="py-3 px-6">{pedido.forma_pago}</td>
-        {showCheckbox && (
-          <td className="py-3 px-6">
-            {pedido.orderstatus === "Pendiente" ? (
-              selectedPedidos[machineIdQueryParam] ? (
-                <input
-                  type="checkbox"
-                  className="h-6 w-6"
-                  disabled
-                />
-              ) : (
-                <input
-                  type="checkbox"
-                  className="h-6 w-6"
-                  onChange={() =>
-                    handleSeleccionarPedido(pedido.id_pedido, pedido.cliente)
-                  }
-                />
-              )
-            ) : null}
-          </td>
-        )}
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th className="py-3 px-1 text-center">ID</th>
+              <th className="py-3 px-6">Empleado que Recibió</th>
+              <th className="py-3 px-6">Empleado que Entregó</th>
+              <th className="py-3 px-6">Nombre del Cliente</th>
+              <th className="py-3 px-6">Detalle del pedido</th>
+              <th className="py-3 px-6">Fecha de Entrega</th>
+              <th className="py-3 px-6">Estatus</th>
+              <th className="py-3 px-6">Forma de Pago</th>
+              {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPedidos.map((pedido) => (
+              <tr className="bg-white border-b" key={pedido.id_pedido}>
+                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleado_recibio}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleado_entrego}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.cliente}
+                </td>
+                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
+                <td className="py-3 px-6">
+                  {pedido.orderstatus === "Pendiente" ? (
+                    <span className="text-gray-600 pl-1">
+                      <MinusCircleOutlined /> Pendiente
+                    </span>
+                  ) : pedido.orderstatus === "Almacenado" ? (
+                    <span className="text-fuchsia-600 pl-1">
+                      <DropboxOutlined /> Almacenado
+                    </span>
+                  ) : pedido.orderstatus === "En proceso" ? (
+                    <span className="text-yellow-600 pl-1">
+                      <ClockCircleOutlined /> En Proceso
+                    </span>
+                  ) : pedido.orderstatus === "Finalizado" ? (
+                    <span className="text-blue-600 pl-1">
+                      <IssuesCloseOutlined /> Finalizado no entregado
+                      <button
+                        onClick={() => handleNotificarCliente(pedido)}
+                        className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
+                      >
+                        Notificar al Cliente
+                      </button>
+                    </span>
+                  ) : pedido.orderstatus === "Entregado" ? (
+                    <span className="text-green-600 pl-1">
+                      <CheckCircleOutlined /> Finalizado Entregado
+                    </span>
+                  ) : (
+                    <span className="text-red-600 pl-1">
+                      <StopOutlined /> Cancelado
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 px-6">{pedido.forma_pago}</td>
+                {showCheckbox && (
+                  <td className="py-3 px-6">
+                    {pedido.orderstatus === "Pendiente" ? (
+                      selectedPedidos[machineIdQueryParam] ? (
+                        <input type="checkbox" className="h-6 w-6" disabled />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          className="h-6 w-6"
+                          onChange={() =>
+                            handleSeleccionarPedido(
+                              pedido.id_pedido,
+                              pedido.cliente
+                            )
+                          }
+                        />
+                      )
+                    ) : null}
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
       <Modal
         visible={notificationVisible}
-        footer={null} // Elimina el botón "OK"
+        footer={null}
         onCancel={() => setNotificationVisible(false)}
         destroyOnClose
-        afterClose={() => setNotificationVisible(false)} // Cierra el Modal automáticamente después de cerrar
+        afterClose={() => setNotificationVisible(false)}
       >
         <div className="text-center">
           <div style={{ fontSize: "36px", color: "#52c41a" }}>

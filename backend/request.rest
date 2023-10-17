@@ -223,7 +223,7 @@ Content-Type: application/json
 }
 ###
 
-PATCH  http://localhost:5000/servicesCategory/1
+PATCH  http://localhost:5000/services/1
 Content-Type: application/json
 
 {
@@ -287,12 +287,11 @@ Content-Type: application/json
 }
 
 ###
-PATCH  http://localhost:5000/orderServiceDetails/20
+PATCH  http://localhost:5000/orderServiceDetails/21
 Content-Type: application/json
 
 {
-    "started":true,
-    "token":22
+    "started":true
 }
 ###
 DELETE   http://localhost:5000/orderServiceDetails/17
@@ -374,6 +373,10 @@ GET http://localhost:5000/cashCuts
 GET http://localhost:5000/cashCuts/2
 
 ###
+GET  http://localhost:5000/calculateCashCut/1
+
+###
+
 POST http://localhost:5000/cashCuts
 Content-Type: application/json
 

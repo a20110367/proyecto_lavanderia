@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
-import { FaSearch, FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import Axios from "axios";
@@ -57,38 +56,40 @@ function RecepcionPlanchado() {
           </div>
         </div>
         {shouldShowTable ? (
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="th1">ID</th>
-                <th className="th2">Nombre</th>
-                <th className="th2">Teléfono</th>
-                <th className="th2">Correo</th>
-                <th className="th2">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredClients.map((client, index) => (
-                <tr className="bg-white border-b" key={index}>
-                  <td className="py-3 px-1 text-center">{index + 1}</td>
-                  <td className="th2 font-medium text-gray-900">
-                    {client.name}
-                  </td>
-                  <td className="th2">{client.phone}</td>
-                  <td className="th2">{client.email}</td>
-                  <td>
-                    <Link
-                      to={`/puntoVenta?clientName=${client.name}&serviceType=Planchado`}
-                    >
-                      <button className="btn-generate">
-                        <div className="subtitle m-1">Generar pedido</div>
-                      </button>
-                    </Link>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full table-auto">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                <tr>
+                  <th className="th1">ID</th>
+                  <th className="th2">Nombre</th>
+                  <th className="th2">Teléfono</th>
+                  <th className="th2">Correo</th>
+                  <th className="th2">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredClients.map((client, index) => (
+                  <tr className="bg-white border-b" key={index}>
+                    <td className="py-3 px-1 text-center">{index + 1}</td>
+                    <td className="th2 font-medium text-gray-900">
+                      {client.name}
+                    </td>
+                    <td className="th2">{client.phone}</td>
+                    <td className="th2">{client.email}</td>
+                    <td>
+                      <Link
+                        to={`/puntoVenta?clientName=${client.name}&serviceType=Planchado`}
+                      >
+                        <button className="btn-generate">
+                          <div className="subtitle m-1">Generar pedido</div>
+                        </button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="text-gray-500 text-center bg-white rounded-md p-4">
             {filtro === "" ? (

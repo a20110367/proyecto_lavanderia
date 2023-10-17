@@ -228,7 +228,7 @@ function CorteCaja() {
         Corte de Caja Parcial
       </button>
       {mostrarTabla && (
-        <div className="mt-4">
+  <div className="mt-4" style={{ overflowX: 'auto' }}>
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>

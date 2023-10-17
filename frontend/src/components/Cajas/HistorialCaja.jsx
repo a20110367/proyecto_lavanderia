@@ -157,7 +157,8 @@ function HistorialCaja() {
               </div>
             </div>
           </div>
-          <table className="w-full text-sm text-left text-gray-500">
+          <div className="mt-4" style={{ overflowX: 'auto' }}>
+          <table className="w-full text-sm text-left text-gray-500 ">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
                 <th className="py-3 px-1 text-center">ID</th>
@@ -272,6 +273,7 @@ function HistorialCaja() {
           </div>
         )}
       </Modal>
+    </div>
     </div>
   );
 }

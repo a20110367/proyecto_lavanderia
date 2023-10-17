@@ -72,7 +72,7 @@ function ServicesPlanchado() {
         >
           Añadir Nuevo Servicio De Planchaduria
         </button>
-        <div className="shadow-container">
+        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
           <table>
             <thead>
               <tr>

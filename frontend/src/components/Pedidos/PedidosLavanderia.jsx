@@ -92,13 +92,10 @@ function PedidosLavanderia() {
   }, []);
 
   useEffect(() => {
-
     const filtered = pedidos.filter((pedido) => {
       if (filtroEstatus === "") {
-
         return true;
       } else {
-
         return pedido.orderstatus.toLowerCase() === filtroEstatus.toLowerCase();
       }
     });
@@ -122,23 +119,21 @@ function PedidosLavanderia() {
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
   };
-  
+
   const handleNotificarCliente = (pedido) => {
     console.log(`Notifying the client for pedido ID: ${pedido.id_pedido}`);
     showNotification("NOTIFICACIÓN ENVIADA...");
   };
-  
 
   const showNotification = (message) => {
     setNotificationMessage(message);
     setNotificationVisible(true);
-  
 
     setTimeout(() => {
       setNotificationVisible(false);
     }, 2000);
   };
-  
+
   return (
     <div>
       <div className="mb-3">
@@ -165,91 +160,103 @@ function PedidosLavanderia() {
             value={filtroEstatus}
             onChange={handleFiltroEstatusChange}
           >
-            <option className="text-base font-semibold" value="">Todos</option>
-            <option value="Pendiente" className="text-gray-600 font-semibold text-base">Pendientes</option>
-            <option value="En proceso" className="text-yellow-600 font-semibold text-base">En Proceso</option>
-            <option value="Finalizado" className="text-blue-600 font-semibold text-base">Finalizados</option>
-            <option value="Entregado" className="text-green-600 font-semibold text-base">Entregados</option>
+            <option className="text-base font-semibold" value="">
+              Todos
+            </option>
+            <option value="Pendiente" className="text-gray-600 font-semibold text-base">
+              Pendientes
+            </option>
+            <option value="En proceso" className="text-yellow-600 font-semibold text-base">
+              En Proceso
+            </option>
+            <option value="Finalizado" className="text-blue-600 font-semibold text-base">
+              Finalizados
+            </option>
+            <option value="Entregado" className="text-green-600 font-semibold text-base">
+              Entregados
+            </option>
           </select>
         </div>
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th className="py-3 px-1 text-center">ID</th>
-              <th className="py-3 px-6 ">Empleado que Recibió</th>
-              <th className="py-3 px-6">Empleado que Entregó</th>
-              <th className="py-3 px-6">Nombre del Cliente</th>
-              <th className="py-3 px-6">Detalle del pedido</th>
-              <th className="py-3 px-6">Fecha de Entrega</th>
-              <th className="py-3 px-6">Estatus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPedidos.map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id_pedido}>
-                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleado_recibio}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleado_entrego}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.cliente}
-                </td>
-                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
-                <td className="py-3 px-6">
-                  {pedido.orderstatus === "Pendiente" ? (
-                    <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined /> Pendiente
-                    </span>
-                  ) : pedido.orderstatus === "Almacenado" ? (
-                    <span className="text-fuchsia-600 pl-1">
-                      <DropboxOutlined /> Almacenado
-                    </span>
-                  ) : pedido.orderstatus === "En proceso" ? (
-                    <span className="text-yellow-600 pl-1">
-                      <ClockCircleOutlined /> En Proceso
-                    </span>
-                  ) : pedido.orderstatus === "Finalizado" ? (
-                    <span className="text-blue-600 pl-1">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left text-gray-500">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+              <tr>
+                <th className="py-3 px-1 text-center">ID</th>
+                <th className="py-3 px-6">Empleado que Recibió</th>
+                <th className="py-3 px-6">Empleado que Entregó</th>
+                <th className="py-3 px-6">Nombre del Cliente</th>
+                <th className="py-3 px-6">Detalle del pedido</th>
+                <th className="py-3 px-6">Fecha de Entrega</th>
+                <th className="py-3 px-6">Estatus</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPedidos.map((pedido) => (
+                <tr className="bg-white border-b" key={pedido.id_pedido}>
+                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.empleado_recibio}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.empleado_entrego}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.cliente}
+                  </td>
+                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                  <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
+                  <td className="py-3 px-6">
+                    {pedido.orderstatus === "Pendiente" ? (
+                      <span className="text-gray-600 pl-1">
+                        <MinusCircleOutlined /> Pendiente
+                      </span>
+                    ) : pedido.orderstatus === "Almacenado" ? (
+                      <span className="text-fuchsia-600 pl-1">
+                        <DropboxOutlined /> Almacenado
+                      </span>
+                    ) : pedido.orderstatus === "En proceso" ? (
+                      <span className="text-yellow-600 pl-1">
+                        <ClockCircleOutlined /> En Proceso
+                      </span>
+                    ) : pedido.orderstatus === "Finalizado" ? (
+                      <span className="text-blue-600 pl-1">
                         <IssuesCloseOutlined /> Finalizado no entregado
                         <button
-                            onClick={() => handleNotificarCliente(pedido)}
-                            className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
-  >
-                            Notificar al Cliente
+                          onClick={() => handleNotificarCliente(pedido)}
+                          className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
+                        >
+                          Notificar al Cliente
                         </button>
-                    </span>
-                ) : pedido.orderstatus === "Entregado" ? (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Finalizado Entregado
-                    </span>
-                  ) : (
-                    <span className="text-red-600 pl-1">
-                      <StopOutlined /> Cancelado
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                      </span>
+                    ) : pedido.orderstatus === "Entregado" ? (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Finalizado Entregado
+                      </span>
+                    ) : (
+                      <span className="text-red-600 pl-1">
+                        <StopOutlined /> Cancelado
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       <Modal
-  visible={notificationVisible}
-  footer={null}
-  onCancel={() => setNotificationVisible(false)}
-  destroyOnClose
->
-  <div className="text-center">
-    <div style={{ fontSize: "36px", color: "#52c41a" }}>
-      <CheckCircleOutlined />
-    </div>
-    <p>{notificationMessage}</p>
-  </div>
-</Modal>
+        visible={notificationVisible}
+        footer={null}
+        onCancel={() => setNotificationVisible(false)}
+        destroyOnClose
+      >
+        <div className="text-center">
+          <div style={{ fontSize: "36px", color: "#52c41a" }}>
+            <CheckCircleOutlined />
+          </div>
+          <p>{notificationMessage}</p>
+        </div>
+      </Modal>
     </div>
   );
 }

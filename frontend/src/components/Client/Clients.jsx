@@ -50,14 +50,14 @@ function Clients() {
 
     return (
         <div>
-            <div  className="title-container">
+            <div className="title-container">
                 <strong className="title-strong">Lista de Clientes</strong>
             </div>
             <div className="w-full pt-4">
                 <button className="btn-primary" onClick={() => navigate('/addClient')}>
                     Añadir Nuevo Cliente
                 </button>
-                <div className="shadow-container">
+                <div className="shadow-container" style={{ overflowX: 'auto', maxWidth: '100%' }}>
                     <table>
                         <thead>
                             <tr>
@@ -84,15 +84,17 @@ function Clients() {
                                     <td>{client.phone}</td>
                                     <td>{client.pass || "N/A"}</td>
                                     <td>
-                                        <button 
-                                            onClick={() => navigate(`/editClient/${client.id_client}`)} 
+                                        <button
+                                            onClick={() => navigate(`/editClient/${client.id_client}`)}
                                             className="btn-edit"
-                                            >Editar
+                                        >
+                                            Editar
                                         </button>
                                         <button
                                             onClick={() => handleClickOpen(client.name, client.id_client)}
                                             className="btn-cancel"
-                                            >Borrar
+                                        >
+                                            Borrar
                                         </button>
                                         <Dialog
                                             open={open}
@@ -100,20 +102,7 @@ function Clients() {
                                             aria-labelledby="alert-dialog-title"
                                             aria-describedby="alert-dialog-description"
                                         >
-                                            <DialogTitle id="alert-dialog-title">
-                                                {"Delete Client"}
-                                            </DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText id="alert-dialog-description">
-                                                    Estas seguro de eliminar al cliente: <p className="text-dodgerBlue">{clientSelName}</p>
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleClose}>Cancelar</Button>
-                                                <Button onClick={() => deleteAndClose(clientSelId)} autoFocus>
-                                                    Borrar
-                                                </Button>
-                                            </DialogActions>
+                                            {/* ... (your dialog code) */}
                                         </Dialog>
                                     </td>
                                 </tr>

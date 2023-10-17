@@ -30,7 +30,7 @@ function ActivarEquipos() {
         <strong className="title-strong">Activar Equipos</strong>
       </div>
       <div className="w-full pt-4">
-        <div className="shadow-container">
+      <div className="shadow-container"  style={{ overflowX: 'auto' }}>
           <table>
             <thead>
               <tr>

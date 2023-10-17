@@ -7,6 +7,18 @@ GET http://localhost:5000/users
 GET http://localhost:5000/users/1
 
 ###
+
+POST http://localhost:5000/sendMessage
+Content-Type: application/json
+
+{
+  "id_order": 1,
+  "name": "Saul",
+  "email": "a20110347@ceti.mx",
+  "message": "Tu pedido se quemo en la secadora"
+}
+
+###
 POST http://localhost:5000/users
 Content-Type: application/json
 

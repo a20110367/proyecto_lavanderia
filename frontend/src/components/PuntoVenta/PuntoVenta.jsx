@@ -45,8 +45,7 @@ export default function PuntoVenta() {
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
-    if (selectedServiceId === null) {
-      // Comprueba si no se ha seleccionado un servicio previamente
+    if (serviceType === "autoservicio") {
       const serviceToAdd = service;
       if (serviceToAdd) {
         const existingService = cart.find(
@@ -62,8 +61,15 @@ export default function PuntoVenta() {
         } else {
           setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
         }
-        setSelectedServiceId(serviceId); 
-        setIsAddButtonDisabled(true); 
+      }
+    } else {
+      if (cart.length === 0) {
+        const serviceToAdd = service;
+        if (serviceToAdd) {
+          setCart([serviceToAdd]);
+          setSelectedServiceId(serviceId);
+          setIsAddButtonDisabled(true);
+        }
       }
     }
   };
@@ -86,9 +92,8 @@ export default function PuntoVenta() {
     setCart(updatedCart);
 
     if (serviceId === selectedServiceId) {
-    
       setSelectedServiceId(null);
-      setIsAddButtonDisabled(false); 
+      setIsAddButtonDisabled(false);
     }
   };
 
@@ -364,11 +369,7 @@ export default function PuntoVenta() {
             <Link
               to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
-            >
-              <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-                <div className="text-lg font-semibold">Volver</div>
-              </button>
-            </Link>
+            ></Link>
           </div>
         </div>
       </div>

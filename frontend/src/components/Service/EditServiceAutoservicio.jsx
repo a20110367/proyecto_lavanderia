@@ -25,7 +25,7 @@ function EditServiceAutoservicio() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await Axios.get(`http://localhost:5000/services/${id}`);
+      const response = await Axios.get(`http://localhost:5000/servicesById/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");

@@ -131,6 +131,7 @@ function AddEquipo() {
                 onChange={(e) => setMachineType(e.target.value)}
               >
                 <option value="lavadora">Lavadora</option>
+                <option value="plancha">Plancha</option>
                 <option value="secadora">Secadora</option>
               </select>
 

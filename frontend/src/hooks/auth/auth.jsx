@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
         setCookies('username', res.data.username, { path: '/' }); // optional data
         setCookies('role', res.data.role, { path: '/' }); // optional data
 
-        navigate('/menuPuntoVenta');
+        navigate('/autoServicio');
     };
 
     const logout = () => {

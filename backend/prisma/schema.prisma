@@ -64,6 +64,7 @@ model Client {
 enum MachineType {
   lavadora
   secadora
+  plancha
 }
 
 enum Status {
@@ -94,7 +95,7 @@ model Category {
 model Service {
   id_service  Int      @id @default(autoincrement())
   description String
-  category_id Int      @default(1)
+  category_id Int //@default(1)
   // Precio Unitario
   price       Float
   time        Int?
@@ -103,7 +104,7 @@ model Service {
   //Numero de Ciclos permitidos
   washCycles  Int?
   dryCycles   Int?
-  category    Category @relation(fields: [category_id], references: [id_category], onDelete: NoAction, onUpdate: NoAction)
+  category    Category @relation(fields: [category_id], references: [id_category])
 
   created            DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
@@ -150,7 +151,7 @@ model Order {
   user   User   @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
 
   //deliveryDetails DeliveryDetail?
-  payment         Payment?
+  payment Payment?
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -159,11 +160,11 @@ model Order {
 }
 
 model OrderServiceDetail {
-  id_OrderServiceDetail Int       @id @default(autoincrement())
+  id_OrderServiceDetail Int     @id @default(autoincrement())
   fk_Service            Int
   fk_Order              Int
   //units                 Int
-  started               Boolean   @default(false)
+  started               Boolean @default(false)
   //startDate             DateTime? @db.Date
   token                 Int?
 
@@ -205,14 +206,13 @@ model Payment {
   payDate    DateTime  @db.Date
   payTime    DateTime  @db.Time
   fk_cashCut Int
- 
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order   Order   @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  order    Order           @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
   //user    User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  cashCut CashCut @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
+  cashCut  CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
   delivery DeliveryDetail?
 }
 
@@ -220,7 +220,7 @@ model DeliveryDetail {
   id_delivery    Int      @id @default(autoincrement())
   //fk_idOrder     Int      @unique
   fk_userCashier Int
-  fk_idPayment  Int @unique  
+  fk_idPayment   Int      @unique
   deliveryDate   DateTime @db.Date
   deliveryTime   DateTime @db.Time
 
@@ -228,8 +228,8 @@ model DeliveryDetail {
   updatedAt DateTime @updatedAt
 
   //order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  user  User  @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  payment Payment @relation(fields: [fk_idPayment],references: [id_payment],onDelete: NoAction,onUpdate: NoAction)
+  user    User    @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  payment Payment @relation(fields: [fk_idPayment], references: [id_payment], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model StaffMember {

@@ -150,6 +150,8 @@ export default function PuntoVenta() {
     }
 
     doc.save("ticket_compra.pdf");
+
+    // window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
@@ -369,7 +371,8 @@ export default function PuntoVenta() {
             <Link
               to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
-            ></Link>
+            >
+            </Link>
           </div>
         </div>
       </div>

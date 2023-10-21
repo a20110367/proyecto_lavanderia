@@ -107,13 +107,29 @@ function AutoServicio() {
         )}
 
         <div className="fcol-container">
-          <Link to="/addClient">
-            <button className="btn-big">
-              <div className="subtitle m-1">Añadir Cliente</div>
-            </button>
-          </Link>
-          <div className="text-blue-200 font-semibold mt-2">
-            ¿El cliente no está registrado? ¡Regístralo!
+          <div className="flex justify-between items-center">
+            <div>
+              <Link to="/addClient">
+                <button className="btn-big">
+                  <div className="subtitle m-1">Añadir Cliente</div>
+                </button>
+              </Link>
+              <div className="text-blue-200 font-semibold mt-2">
+                ¿El cliente no está registrado? ¡Regístralo!
+              </div>
+            </div>
+            <div className="text-center ml-96">
+              <Link
+                to={`/puntoVenta?clientName=Público en General&serviceType=Autoservicio`}
+              >
+                <button className="btn-big">
+                  <div className="subtitle m-1">Público en General</div>
+                </button>
+              </Link>
+              <div className="text-blue-200 font-semibold mt-2">
+                Generar servicio para clientes sin cuenta
+              </div>
+            </div>
           </div>
         </div>
       </div>

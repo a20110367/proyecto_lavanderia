@@ -147,6 +147,7 @@ function EditEquipo() {
                 id="machineType"
               >
                 <option value="lavadora">Lavadora</option>
+                <option value="plancha">Plancha</option>
                 <option value="secadora">Secadora</option>
               </select>
 

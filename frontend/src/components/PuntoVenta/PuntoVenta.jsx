@@ -6,11 +6,16 @@ import { Link, useLocation } from "react-router-dom";
 import { Modal, Select } from "antd";
 import moment from "moment";
 import "moment/locale/es";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import es from "date-fns/locale/es";
 
 const { Option } = Select;
 
 export default function PuntoVenta() {
   const [cart, setCart] = useState([]);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
+  const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [img, setImg] = useState([
     "https://www.asociacionaden.com/wp-content/uploads/2021/09/lavar-la-ropa-de-deporte.jpg",
     "https://www.ocu.org/-/media/ocu/images/home/electrodomesticos/secadora/secadora-eficiencia-tiempo-programa.jpg?rev=ceb8727f-ccca-46dc-a0d1-f4d3e83d8031&hash=D0C547A95C98B9C4704FA36A6B136090",
@@ -28,6 +33,8 @@ export default function PuntoVenta() {
   const [paymentMethod, setPaymentMethod] = useState("");
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
+  const [deliveryDate, setDeliveryDate] = useState(moment());
+  const customDateFormat = "yyyy-MM-dd HH:mm:ss";
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -38,20 +45,31 @@ export default function PuntoVenta() {
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
-    const serviceToAdd = service;
-    if (serviceToAdd) {
-      const existingService = cart.find(
-        (item) => item.id_service === serviceId
-      );
-      if (existingService) {
-        const updatedCart = cart.map((item) =>
-          item.id_service === serviceId
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+    if (serviceType === "autoservicio") {
+      const serviceToAdd = service;
+      if (serviceToAdd) {
+        const existingService = cart.find(
+          (item) => item.id_service === serviceId
         );
-        setCart(updatedCart);
-      } else {
-        setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
+        if (existingService) {
+          const updatedCart = cart.map((item) =>
+            item.id_service === serviceId
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+          setCart(updatedCart);
+        } else {
+          setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
+        }
+      }
+    } else {
+      if (cart.length === 0) {
+        const serviceToAdd = service;
+        if (serviceToAdd) {
+          setCart([serviceToAdd]);
+          setSelectedServiceId(serviceId);
+          setIsAddButtonDisabled(true);
+        }
       }
     }
   };
@@ -72,6 +90,11 @@ export default function PuntoVenta() {
       .filter(Boolean);
 
     setCart(updatedCart);
+
+    if (serviceId === selectedServiceId) {
+      setSelectedServiceId(null);
+      setIsAddButtonDisabled(false);
+    }
   };
 
   const calculateSubtotal = () => {
@@ -108,14 +131,22 @@ export default function PuntoVenta() {
 
     doc.text(`Subtotal: $${calculateSubtotal()}`, 10, y + 10);
     doc.text(
-      `Fecha de Compra: ${purchaseDate.format("YYYY-MM-DD HH:mm:ss")}`,
+      `Fecha de Recepcion: ${purchaseDate.format("YYYY-MM-DD HH:mm:ss")}`,
       10,
       y + 20
     );
-    doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 30);
+
+    // Agregar el campo "Fecha de Entrega" al ticket
+    doc.text(
+      `Fecha de Entrega: ${deliveryDate.format("YYYY-MM-DD HH:mm:ss")}`,
+      10,
+      y + 30
+    );
+
+    doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 40);
 
     if (selectedPaymentOption === "Anticipado") {
-      doc.text(`Método de Pago Anticipado: ${paymentMethod}`, 10, y + 40);
+      doc.text(`Método de Pago Anticipado: ${paymentMethod}`, 10, y + 50);
     }
 
     doc.save("ticket_compra.pdf");
@@ -172,8 +203,13 @@ export default function PuntoVenta() {
                     </h3>
                     <h5 className="text-gray-600">${service.price}</h5>
                     <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
+                      className={`${
+                        isAddButtonDisabled
+                          ? "bg-gray-400"
+                          : "bg-blue-500 hover:bg-blue-700"
+                      } text-white font-bold py-2 px-4 rounded mt-2`}
                       onClick={() => addToCart(service.id_service, service)}
+                      disabled={isAddButtonDisabled}
                     >
                       Agregar
                     </button>
@@ -262,12 +298,28 @@ export default function PuntoVenta() {
                   <div>
                     <div>
                       <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                        Fecha de Compra:
+                        Fecha de Recepcion:
                       </p>
                       <div style={{ fontSize: "16px" }}>
                         {purchaseDate.format("YYYY-MM-DD HH:mm:ss")}
                       </div>
                     </div>{" "}
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Fecha de Entrega:
+                    </p>
+                    <DatePicker
+                      selected={deliveryDate.toDate()}
+                      showTimeSelect
+                      timeFormat="HH:mm"
+                      timeIntervals={15}
+                      dateFormat={customDateFormat}
+                      onChange={(date) => setDeliveryDate(moment(date))}
+                      locale={es}
+                      timeCaption="Hora"
+                      className="form-control border-black"
+                    />
                   </div>
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
@@ -284,7 +336,9 @@ export default function PuntoVenta() {
                       onChange={(value) => {
                         setSelectedPaymentOption(value);
                         if (value === "Anticipado") {
-                          setPaymentMethod(""); // Reinicia la selección de método de pago
+                          setPaymentMethod("Efectivo");
+                        } else {
+                          setPaymentMethod("");
                         }
                       }}
                       value={selectedPaymentOption}
@@ -315,11 +369,7 @@ export default function PuntoVenta() {
             <Link
               to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
-            >
-              <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-                <div className="text-lg font-semibold">Volver</div>
-              </button>
-            </Link>
+            ></Link>
           </div>
         </div>
       </div>

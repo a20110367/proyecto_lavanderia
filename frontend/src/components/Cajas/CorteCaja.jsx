@@ -4,6 +4,7 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
+import { format } from "date-fns";
 
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -15,9 +16,8 @@ function CorteCaja() {
   const [fechaHora, setFechaHora] = useState("");
   const { cookies } = useAuth();
   const [nombreEmpleado, setNombreEmpleado] = useState(cookies.username || "");
-  const [partialCorteDialogVisible, setPartialCorteDialogVisible] = useState(
-    false
-  );
+  const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
+    useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
@@ -38,13 +38,18 @@ function CorteCaja() {
         id: 1,
         fecha: "2023-09-20",
         dineroFondo: 20000,
-        retirosTotales: 0,
+        retirosTotales: 1200,
         ingresosTotales: 20000,
         ingresoEfectivo: 10000,
         ingresoTarjeta: 10000,
         finalTotalCaja: 0,
         usuario: "Usuario1",
         turno: "Matutino",
+        tipoServicio: "Autoservicio",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 10000,
+        ingresoLavadoEncargo: 16000,
+        ingresoPlanchado: 15000,
       },
       {
         id: 2,
@@ -57,6 +62,11 @@ function CorteCaja() {
         finalTotalCaja: 0,
         usuario: "Usuario2",
         turno: "Vespertino",
+        tipoServicio: "Lavado por encargo",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 5000,
+        ingresoLavadoEncargo: 15000,
+        ingresoPlanchado: 10000,
       },
       {
         id: 3,
@@ -69,6 +79,11 @@ function CorteCaja() {
         finalTotalCaja: 0,
         usuario: "Usuario3",
         turno: "Matutino",
+        tipoServicio: "Planchado",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 3000,
+        ingresoLavadoEncargo: 4000,
+        ingresoPlanchado: 16000,
       },
     ];
 
@@ -87,7 +102,6 @@ function CorteCaja() {
     setDialogVisible(true);
   };
 
-  
   const handleConfirmCorteCaja = () => {
     const now = new Date();
     const horaActual = now.getHours();
@@ -97,34 +111,67 @@ function CorteCaja() {
     const nuevoCorte = {
       id: Cortes.length + 1,
       fecha: moment().format("YYYY-MM-DD"),
-      dineroFondo: 15000,
-      retirosTotales: 500,
-      ingresosTotales: 16000,
-      ingresoEfectivo: 10000,
-      ingresoTarjeta: 6000,
+      dineroFondo: 20000,
+      retirosTotales: 1200,
+      ingresoEfectivo: 61000,
+      ingresoTarjeta: 10000,
+      ingresosTotales:20000, 
       finalTotalCaja: 0,
+      ingresoAutoservicio: 10000,
+      ingresoLavadoEncargo: 16000,
+      ingresoPlanchado: 15000,
       usuario: nombreEmpleado,
       turno: turno,
     };
-
+    
     nuevoCorte.finalTotalCaja =
       nuevoCorte.dineroFondo +
-      nuevoCorte.ingresosTotales -
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado -
+      nuevoCorte.ingresoTarjeta -
       nuevoCorte.retirosTotales;
+    
+    nuevoCorte.ingresoTotalServicios =
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
+    
+    nuevoCorte.ingresoEfectivo =
+      nuevoCorte.dineroFondo +
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
+    
 
-    const pdf = new jsPDF();
-    pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    pdf.text(`Usuario: ${nombreEmpleado}`, 10, 20);
-    pdf.text(`Fecha y Hora: ${fechaHora}`, 10, 30);
-    pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
-    pdf.text(`Dinero en Fondo: ${nuevoCorte.dineroFondo}`, 10, 50);
-    pdf.text(`Retiros Totales: ${nuevoCorte.retirosTotales}`, 10, 60);
-    pdf.text(`Ingresos Totales: ${nuevoCorte.ingresosTotales}`, 10, 70);
-    pdf.text(`Ingreso en Efectivo: ${nuevoCorte.ingresoEfectivo}`, 10, 80);
-    pdf.text(`Ingreso en Tarjeta: ${nuevoCorte.ingresoTarjeta}`, 10, 90);
-    pdf.text(`Final Total Caja: ${nuevoCorte.finalTotalCaja}`, 10, 100);
+      const pdf = new jsPDF();
 
-    pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
+      pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
+      pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
+      pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
+      pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
+      
+      // Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
+      pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
+      pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
+      pdf.text(
+        `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
+        10,
+       120
+      );
+      pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
+      
+      // Separación
+      pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
+      pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
+      pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
+      
+      pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
+      
 
     setCortes([nuevoCorte]);
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte
@@ -150,34 +197,65 @@ function CorteCaja() {
     const nuevoCorte = {
       id: Cortes.length + 1,
       fecha: moment().format("YYYY-MM-DD"),
-      dineroFondo: 15000,
-      retirosTotales: 500,
-      ingresosTotales: 16000,
-      ingresoEfectivo: 10000,
-      ingresoTarjeta: 6000,
+      dineroFondo: 20000,
+      retirosTotales: 1200,
+      ingresoEfectivo: 61000,
+      ingresoTarjeta: 10000,
+      ingresosTotales:20000, 
       finalTotalCaja: 0,
+      ingresoAutoservicio: 10000,
+      ingresoLavadoEncargo: 16000,
+      ingresoPlanchado: 15000,
       usuario: nombreEmpleado,
       turno: turno,
     };
 
     nuevoCorte.finalTotalCaja =
       nuevoCorte.dineroFondo +
-      nuevoCorte.ingresosTotales -
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado -
+      nuevoCorte.ingresoTarjeta -
       nuevoCorte.retirosTotales;
-
+    
+    nuevoCorte.ingresoTotalServicios =
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
+    
+    nuevoCorte.ingresoEfectivo =
+      nuevoCorte.dineroFondo +
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
+      
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`Usuario: ${nombreEmpleado}`, 10, 20);
-    pdf.text(`Fecha y Hora: ${fechaHora}`, 10, 30);
-    pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
-    pdf.text(`Dinero en Fondo: ${nuevoCorte.dineroFondo}`, 10, 50);
-    pdf.text(`Retiros Totales: ${nuevoCorte.retirosTotales}`, 10, 60);
-    pdf.text(`Ingresos Totales: ${nuevoCorte.ingresosTotales}`, 10, 70);
-    pdf.text(`Ingreso en Efectivo: ${nuevoCorte.ingresoEfectivo}`, 10, 80);
-    pdf.text(`Ingreso en Tarjeta: ${nuevoCorte.ingresoTarjeta}`, 10, 90);
-    pdf.text(`Final Total Caja: ${nuevoCorte.finalTotalCaja}`, 10, 100);
-
-    pdf.save(`corte_de_caja_Parcial_${nombreEmpleado}.pdf`);
+    pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
+      pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
+      pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
+      
+      // Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
+      pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
+      pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
+      pdf.text(
+        `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
+        10,
+       120
+      );
+      pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
+      
+      // Separación
+      pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
+      pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
+      pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
+      
+      pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
+      
 
     setCortes([nuevoCorte]);
     setPartialCorteDialogVisible(false);
@@ -189,23 +267,48 @@ function CorteCaja() {
     if (selectedCorte) {
       doc.text(`Detalles del Corte`, 10, 10);
       doc.text(`ID: ${selectedCorte.id}`, 10, 20);
-      doc.text(`Fecha: ${selectedCorte.fecha}`, 10, 30);
-      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 40);
+      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
+      doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
       doc.text(
-        `Ingreso en Efectivo: $ ${selectedCorte.ingresoEfectivo}`,
+        `Fecha: ${format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}`,
         10,
         50
       );
-      doc.text(`Ingreso en Tarjeta: $ ${selectedCorte.ingresoTarjeta}`, 10, 60);
-      doc.text(`Dinero en Fondo: $ ${selectedCorte.dineroFondo}`, 10, 70);
-      doc.text(`Ingresos Totales: $ ${selectedCorte.ingresosTotales}`, 10, 80);
-      doc.text(`Retiros Totales: $ ${selectedCorte.retirosTotales}`, 10, 90);
-      doc.text(`Final Total Caja: $ ${selectedCorte.finalTotalCaja}`, 10, 100);
-      doc.text(`Turno: ${selectedCorte.turno}`, 10, 110);
+      doc.text(`Dinero en Fondo: $${selectedCorte.dineroFondo}`, 10, 60);
+
+      // Separación
+      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      doc.text(`Autoservicio: $${selectedCorte.ingresoAutoservicio}`, 10, 90);
+      doc.text(
+        `Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`,
+        10,
+        100
+      );
+      doc.text(`Planchado: $${selectedCorte.ingresoPlanchado}`, 10, 110);
+      doc.text(
+        `Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`,
+        10,
+        120
+      );
+      doc.text(
+        `Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`,
+        10,
+        130
+      );
+
+      // Separación
+      doc.text(`Ingreso en Tarjeta: $${selectedCorte.ingresoTarjeta}`, 10, 150);
+      doc.text(`Retiros Totales: $${selectedCorte.retirosTotales}`, 10, 160);
+      doc.text(
+        `Final Total en Caja: $${selectedCorte.finalTotalCaja}`,
+        10,
+        170
+      );
 
       doc.save("detalle_corte.pdf");
     }
   };
+
   return (
     <div className="text-center mt-4">
       <h1 className="text-4xl">
@@ -228,7 +331,7 @@ function CorteCaja() {
         Corte de Caja Parcial
       </button>
       {mostrarTabla && (
-  <div className="mt-4" style={{ overflowX: 'auto' }}>
+        <div className="mt-4" style={{ overflowX: "auto" }}>
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
@@ -242,20 +345,22 @@ function CorteCaja() {
                 <th className="py-3 px-6">FINAL TOTAL CAJA</th>
                 <th className="py-3 px-6">USUARIO</th>
                 <th className="py-3 px-6">TURNO</th>
-                <th className="py-3 px-6">ACCIONES</th>{" "}
+                <th className="py-3 px-6"></th>{" "}
               </tr>
             </thead>
             <tbody>
               {Cortes.map((corte) => (
                 <tr className="bg-white border-b" key={corte.id}>
-                  <td className="py-3 px-1 text-center">{corte.id}</td>
-                  <td className="py-3 px-6">{corte.fecha}</td>
-                  <td className="py-3 px-6">{corte.dineroFondo}</td>
-                  <td className="py-3 px-6">{corte.retirosTotales}</td>
-                  <td className="py-3 px-6">{corte.ingresosTotales}</td>
-                  <td className="py-3 px-6">{corte.ingresoEfectivo}</td>
-                  <td className="py-3 px-6">{corte.ingresoTarjeta}</td>
-                  <td className="py-3 px-6">{corte.finalTotalCaja}</td>
+                <td className="py-3 px-1 text-center">{corte.id}</td>
+                <td className="py-3 px-6">
+                  {format(new Date(corte.fecha), "dd/MM/yyyy")}
+                </td>
+                <td className="py-3 px-6">${corte.dineroFondo}</td>
+                <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
+                <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
+                <td className="py-3 px-6">${corte.ingresosTotales}</td>
+                <td className="py-3 px-6">${corte.retirosTotales}</td>
+                <td className="py-3 px-6">${corte.finalTotalCaja}</td>
                   <td className="py-3 px-6">{corte.usuario}</td>
                   <td className="py-3 px-6">{corte.turno}</td>
                   <td className="py-3 px-6">
@@ -322,71 +427,98 @@ function CorteCaja() {
       >
         <p>¿Estás seguro de realizar un corte de caja parcial?</p>
       </Modal>
-      <Modal
-        title="Detalles del Corte"
-        visible={modalVisible}
-        onOk={() => setModalVisible(false)}
-        onCancel={() => setModalVisible(false)}
-        footer={[
-          <Button
-            key="print"
-            onClick={handleModalPrint}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-          >
-            Imprimir
-          </Button>,
-          <Button
-            key="close"
-            onClick={() => setModalVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-          >
-            Cerrar
-          </Button>,
-        ]}
-      >
-        {selectedCorte && (
-          <div>
-            <p className="text-lg">
-              <span className="font-bold">ID:</span> {selectedCorte.id}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Fecha:</span> {selectedCorte.fecha}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Usuario:</span>{" "}
-              {selectedCorte.usuario}
-            </p>
-
-            <p className="text-lg">
-              <span className="font-bold">Ingreso en Efectivo:</span> $
-              {selectedCorte.ingresoEfectivo}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Ingreso en Tarjeta:</span> $
-              {selectedCorte.ingresoTarjeta}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Dinero en Fondo:</span> $
-              {selectedCorte.dineroFondo}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Ingresos Totales:</span> $
-              {selectedCorte.ingresosTotales}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Retiros Totales:</span> $
-              {selectedCorte.retirosTotales}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Final Total Caja:</span> $
-              {selectedCorte.finalTotalCaja}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Turno:</span> {selectedCorte.turno}
-            </p>
-          </div>
-        )}
-      </Modal>
+              <Modal
+          title="Detalles del Corte"
+          visible={modalVisible}
+          onOk={() => setModalVisible(false)}
+          onCancel={() => setModalVisible(false)}
+          width={600}
+          footer={[
+            <Button
+              key="print"
+              onClick={handleModalPrint}
+              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            >
+              Imprimir
+            </Button>,
+            <Button
+              key="close"
+              onClick={() => setModalVisible(false)}
+              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            >
+              Cerrar
+            </Button>,
+          ]}
+        >
+          {selectedCorte && (
+            <div>
+              <div className="flex">
+                <div className="w-1/2">
+                  <p className="text-lg">
+                    <span className="font-bold">ID:</span> {selectedCorte.id}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Usuario:</span>{" "}
+                    {selectedCorte.usuario}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Turno:</span>{" "}
+                    {selectedCorte.turno}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Fecha:</span>{" "}
+                    {format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Dinero en Fondo:</span> $
+                    {selectedCorte.dineroFondo}
+                  </p>
+                </div>
+                <div className="w-1/2">
+                  <p className="text-lg">
+                    <span className="font-bold">Ingreso en Efectivo:</span> $
+                    {selectedCorte.ingresoEfectivo}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Ingreso en Tarjeta:</span> $
+                    {selectedCorte.ingresoTarjeta}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Retiros Totales:</span> $
+                    {selectedCorte.retirosTotales}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Final Total en Caja:</span> $
+                    {selectedCorte.finalTotalCaja}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mt-4">
+                  Detalles de Ingresos por Servicio:
+                </h3>
+                <p className="text-lg">
+                  <span className="font-bold">Autoservicio:</span> $
+                  {selectedCorte.ingresoAutoservicio}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Lavado por Encargo:</span> $
+                  {selectedCorte.ingresoLavadoEncargo}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Planchado:</span> $
+                  {selectedCorte.ingresoPlanchado}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">
+                    Total (Suma de los Servicios):
+                  </span>{" "}
+                  ${selectedCorte.ingresoTotalServicios}
+                </p>
+              </div>
+            </div>
+          )}
+        </Modal>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 
+
 function ActivarEquipos() {
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
@@ -23,6 +24,9 @@ function ActivarEquipos() {
     setOpen(true);
   };
 
+  const availableMachines = data.filter((machine) => machine.status === "available");
+
+  
 
   return (
     <div>
@@ -45,7 +49,7 @@ function ActivarEquipos() {
               </tr>
             </thead>
             <tbody>
-              {data.map((machine, index) => (
+            {availableMachines.map((machine, index) => (
                 <tr key={machine.id_machine}>
                   <td>{index + 1}</td>
                   <td

@@ -16,6 +16,7 @@ function Equipos() {
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate()
+  const [filtroTipo, setFiltroTipo] = useState("");
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
@@ -26,6 +27,11 @@ function Equipos() {
   const { data } = useSWR("machines", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
+  const filteredMachines = filtroTipo
+  ? data.filter((machine) => machine.machineType === filtroTipo)
+  : data;
+
+  
   const deleteMachine = async (machineId) => {
     await Axios.delete(`http://localhost:5000/machines/${machineId}`);
     mutate("machines");
@@ -46,6 +52,10 @@ function Equipos() {
     deleteMachine(machineId);
   };
 
+  const handleFiltroTipoChange = (event) => {
+    setFiltroTipo(event.target.value);
+  };
+
   return (
     <div>
       <div className="title-container">
@@ -55,6 +65,24 @@ function Equipos() {
         <button className="btn-primary" onClick={() => navigate('/addEquipo')}>
           Añadir Nueva Maquina
         </button>
+        <select
+          className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+          value={filtroTipo}
+          onChange={handleFiltroTipoChange}
+        >
+          <option className="text-base font-semibold" value="">
+            Todos
+          </option>
+          <option value="lavadora" className="text-dodgerBlue font-semibold text-base">
+            Lavadoras
+          </option>
+          <option value="secadora" className="text-green-500 font-semibold text-base">
+            Secadoras
+          </option>
+          <option value="plancha" className="text-yellow-500 font-semibold text-base">
+            Planchas
+          </option>
+        </select>
         <div className="shadow-container"  style={{ overflowX: 'auto' }}>
           <table>
             <thead>
@@ -70,16 +98,26 @@ function Equipos() {
               </tr>
             </thead>
             <tbody>
-              {data.map((machine, index) => (
+            {data
+                .filter((machine) => !filtroTipo || machine.machineType === filtroTipo)
+                .map((machine, index) => (
                 <tr key={machine.id_machine}>
                   <td>{index + 1}</td>
                   <td className={`font-semibold ${
-                      machine.machineType === "lavadora"
-                        ? "text-dodgerBlue"
-                        : "text-green-500"
-                    }`}>
-                    {machine.machineType === 'lavadora' ? 'Lavadora' : 'Secadora'}
-                  </td>
+  machine.machineType === "lavadora"
+    ? "text-dodgerBlue"
+    : machine.machineType === "plancha"
+    ? "text-yellow-500"
+    : "text-green-500"
+}`}>
+  {machine.machineType === "lavadora"
+    ? "Lavadora"
+    : machine.machineType === "plancha"
+    ? "Plancha"
+    : "Secadora"
+}
+</td>
+
                   <td>{machine.model}</td>
                   <td>{machine.cicleTime}</td>
                   <td>{machine.weight}</td>

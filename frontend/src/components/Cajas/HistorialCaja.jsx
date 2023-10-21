@@ -17,7 +17,7 @@ function HistorialCaja() {
         id: 1,
         fecha: "2023-09-20",
         dineroFondo: 20000,
-        retirosTotales: 0,
+        retirosTotales: 1200,
         ingresosTotales: 20000,
         ingresoEfectivo: 10000,
         ingresoTarjeta: 10000,
@@ -25,6 +25,10 @@ function HistorialCaja() {
         usuario: "Usuario1",
         turno: "Matutino",
         tipoServicio: "Autoservicio",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 10000,
+        ingresoLavadoEncargo: 16000,
+        ingresoPlanchado: 15000,
       },
       {
         id: 2,
@@ -38,6 +42,10 @@ function HistorialCaja() {
         usuario: "Usuario2",
         turno: "Vespertino",
         tipoServicio: "Lavado por encargo",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 5000,
+        ingresoLavadoEncargo: 15000,
+        ingresoPlanchado: 10000,
       },
       {
         id: 3,
@@ -51,15 +59,31 @@ function HistorialCaja() {
         usuario: "Usuario3",
         turno: "Matutino",
         tipoServicio: "Planchado",
+        // Añade los campos de ingresos por servicio
+        ingresoAutoservicio: 3000,
+        ingresoLavadoEncargo: 4000,
+        ingresoPlanchado: 16000,
       },
     ];
-
     const cortesConFinalTotalCaja = dummyCortes.map((corte) => ({
       ...corte,
       finalTotalCaja:
-        corte.dineroFondo + corte.ingresosTotales - corte.retirosTotales,
+        corte.dineroFondo +
+        corte.ingresoAutoservicio +
+        corte.ingresoLavadoEncargo +
+        corte.ingresoPlanchado -
+        corte.ingresoTarjeta -
+        corte.retirosTotales,
+      ingresoTotalServicios:
+        corte.ingresoAutoservicio +
+        corte.ingresoLavadoEncargo +
+        corte.ingresoPlanchado,
+      ingresoEfectivo:
+        corte.dineroFondo +
+        corte.ingresoAutoservicio +
+        corte.ingresoLavadoEncargo +
+        corte.ingresoPlanchado,
     }));
-
     setCortes(cortesConFinalTotalCaja);
     setFilteredCortes(cortesConFinalTotalCaja);
   }, []);
@@ -75,20 +99,43 @@ function HistorialCaja() {
     if (selectedCorte) {
       doc.text(`Detalles del Corte`, 10, 10);
       doc.text(`ID: ${selectedCorte.id}`, 10, 20);
-      doc.text(`Fecha: ${selectedCorte.fecha}`, 10, 30);
-      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 40);
-      doc.text(`Tipo de Servicio: ${selectedCorte.tipoServicio}`, 10, 50);
+      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
+      doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
       doc.text(
-        `Ingreso en Efectivo: $ ${selectedCorte.ingresoEfectivo}`,
+        `Fecha: ${format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}`,
         10,
-        60
+        50
       );
-      doc.text(`Ingreso en Tarjeta: $ ${selectedCorte.ingresoTarjeta}`, 10, 70);
-      doc.text(`Dinero en Fondo: $ ${selectedCorte.dineroFondo}`, 10, 80);
-      doc.text(`Ingresos Totales: $ ${selectedCorte.ingresosTotales}`, 10, 90);
-      doc.text(`Retiros Totales: $ ${selectedCorte.retirosTotales}`, 10, 100);
-      doc.text(`Final Total Caja: $ ${selectedCorte.finalTotalCaja}`, 10, 110);
-      doc.text(`Turno: ${selectedCorte.turno}`, 10, 120);
+      doc.text(`Dinero en Fondo: $${selectedCorte.dineroFondo}`, 10, 60);
+
+      // Separación
+      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      doc.text(`Autoservicio: $${selectedCorte.ingresoAutoservicio}`, 10, 90);
+      doc.text(
+        `Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`,
+        10,
+        100
+      );
+      doc.text(`Planchado: $${selectedCorte.ingresoPlanchado}`, 10, 110);
+      doc.text(
+        `Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`,
+        10,
+        120
+      );
+      doc.text(
+        `Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`,
+        10,
+        130
+      );
+
+      // Separación
+      doc.text(`Ingreso en Tarjeta: $${selectedCorte.ingresoTarjeta}`, 10, 150);
+      doc.text(`Retiros Totales: $${selectedCorte.retirosTotales}`, 10, 160);
+      doc.text(
+        `Final Total en Caja: $${selectedCorte.finalTotalCaja}`,
+        10,
+        170
+      );
 
       doc.save("detalle_corte.pdf");
     }
@@ -146,6 +193,7 @@ function HistorialCaja() {
                     }
                   }}
                   value={dateRange}
+                  format="DD/MM/YYYY" // Formato de fecha dd/mm/yyyy
                   className="border-2 rounded-md py-2  pl-10  border-black mt-2"
                 />
                 <button
@@ -157,123 +205,147 @@ function HistorialCaja() {
               </div>
             </div>
           </div>
-          <div className="mt-4" style={{ overflowX: 'auto' }}>
-          <table className="w-full text-sm text-left text-gray-500 ">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">FECHA</th>
-                <th className="py-3 px-6">DINERO EN FONDO</th>
-                <th className="py-3 px-6">INGRESO EN EFECTIVO</th>
-                <th className="py-3 px-6">INGRESO EN TARJETA</th>
-                <th className="py-3 px-6">INGRESOS TOTALES</th>
-                <th className="py-3 px-6">RETIROS TOTALES</th>
-                <th className="py-3 px-6">FINAL TOTAL CAJA</th>
-                <th className="py-3 px-6">USUARIO</th>
-                <th className="py-3 px-6">TURNO</th>
-                <th className="py-3 px-6">TIPO SERVICIO</th>
-                <th className="py-3 px-6">ACCIONES</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCortes.map((corte) => (
-                <tr className="bg-white border-b" key={corte.id}>
-                  <td className="py-3 px-1 text-center">{corte.id}</td>
-                  <td className="py-3 px-6">{corte.fecha}</td>
-                  <td className="py-3 px-6">{corte.dineroFondo}</td>
-                  <td className="py-3 px-6">{corte.ingresoEfectivo}</td>
-                  <td className="py-3 px-6">{corte.ingresoTarjeta}</td>
-                  <td className="py-3 px-6">{corte.ingresosTotales}</td>
-                  <td className="py-3 px-6">{corte.retirosTotales}</td>
-                  <td className="py-3 px-6">{corte.finalTotalCaja}</td>
-                  <td className="py-3 px-6">{corte.usuario}</td>
-                  <td className="py-3 px-6">{corte.turno}</td>
-                  <td className="py-3 px-6">{corte.tipoServicio}</td>
-                  <td className="py-3 px-6">
-                    <button
-                      className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
-                      onClick={() => handleDetallesClick(corte)}
-                    >
-                      Detalles
-                    </button>
-                  </td>
+          <div className="mt-4" style={{ overflowX: "auto" }}>
+            <table className="w-full text-sm text-left text-gray-500 ">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+                <tr>
+                  <th className="py-3 px-1 text-center">ID</th>
+                  <th className="py-3 px-6">FECHA</th>
+                  <th className="py-3 px-6">DINERO EN FONDO</th>
+                  <th className="py-3 px-6">INGRESO EN EFECTIVO</th>
+                  <th className="py-3 px-6">INGRESO EN TARJETA</th>
+                  <th className="py-3 px-6">INGRESOS TOTALES</th>
+                  <th className="py-3 px-6">RETIROS TOTALES</th>
+                  <th className="py-3 px-6">FINAL TOTAL CAJA</th>
+                  <th className="py-3 px-6">USUARIO</th>
+                  <th className="py-3 px-6">TURNO</th>
+                  <th className="py-3 px-6"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modal para mostrar detalles */}
-      <Modal
-        title="Detalles del Corte"
-        visible={modalVisible}
-        onOk={() => setModalVisible(false)}
-        onCancel={() => setModalVisible(false)}
-        footer={[
-          <Button
-            key="print"
-            onClick={handleModalPrint}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-          >
-            Imprimir
-          </Button>,
-          <Button
-            key="close"
-            onClick={() => setModalVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-          >
-            Cerrar
-          </Button>,
-        ]}
-      >
-        {selectedCorte && (
-          <div>
-            <p className="text-lg">
-              <span className="font-bold">ID:</span> {selectedCorte.id}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Fecha:</span> {selectedCorte.fecha}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Usuario:</span>{" "}
-              {selectedCorte.usuario}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Tipo de Servicio:</span>{" "}
-              {selectedCorte.tipoServicio}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Ingreso en Efectivo:</span> $
-              {selectedCorte.ingresoEfectivo}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Ingreso en Tarjeta:</span> $
-              {selectedCorte.ingresoTarjeta}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Dinero en Fondo:</span> $
-              {selectedCorte.dineroFondo}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Ingresos Totales:</span> $
-              {selectedCorte.ingresosTotales}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Retiros Totales:</span> $
-              {selectedCorte.retirosTotales}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Final Total Caja:</span> $
-              {selectedCorte.finalTotalCaja}
-            </p>
-            <p className="text-lg">
-              <span className="font-bold">Turno:</span> {selectedCorte.turno}
-            </p>
+              </thead>
+              <tbody>
+                {filteredCortes.map((corte) => (
+                  <tr className="bg-white border-b" key={corte.id}>
+                    <td className="py-3 px-1 text-center">{corte.id}</td>
+                    <td className="py-3 px-6">
+                      {format(new Date(corte.fecha), "dd/MM/yyyy")}
+                    </td>
+                    <td className="py-3 px-6">${corte.dineroFondo}</td>
+                    <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
+                    <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
+                    <td className="py-3 px-6">${corte.ingresosTotales}</td>
+                    <td className="py-3 px-6">${corte.retirosTotales}</td>
+                    <td className="py-3 px-6">${corte.finalTotalCaja}</td>
+                    <td className="py-3 px-6">{corte.usuario}</td>
+                    <td className="py-3 px-6">{corte.turno}</td>
+                    <td className="py-3 px-6">
+                      <button
+                        className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+                        onClick={() => handleDetallesClick(corte)}
+                      >
+                        Detalles
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </Modal>
-    </div>
+        </div>
+
+        {/* Modal para mostrar detalles */}
+        <Modal
+          title="Detalles del Corte"
+          visible={modalVisible}
+          onOk={() => setModalVisible(false)}
+          onCancel={() => setModalVisible(false)}
+          width={600}
+          footer={[
+            <Button
+              key="print"
+              onClick={handleModalPrint}
+              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            >
+              Imprimir
+            </Button>,
+            <Button
+              key="close"
+              onClick={() => setModalVisible(false)}
+              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            >
+              Cerrar
+            </Button>,
+          ]}
+        >
+          {selectedCorte && (
+            <div>
+              <div className="flex">
+                <div className="w-1/2">
+                  <p className="text-lg">
+                    <span className="font-bold">ID:</span> {selectedCorte.id}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Usuario:</span>{" "}
+                    {selectedCorte.usuario}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Turno:</span>{" "}
+                    {selectedCorte.turno}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Fecha:</span>{" "}
+                    {format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Dinero en Fondo:</span> $
+                    {selectedCorte.dineroFondo}
+                  </p>
+                </div>
+                <div className="w-1/2">
+                  <p className="text-lg">
+                    <span className="font-bold">Ingreso en Efectivo:</span> $
+                    {selectedCorte.ingresoEfectivo}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Ingreso en Tarjeta:</span> $
+                    {selectedCorte.ingresoTarjeta}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Retiros Totales:</span> $
+                    {selectedCorte.retirosTotales}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Final Total en Caja:</span> $
+                    {selectedCorte.finalTotalCaja}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold mt-4">
+                  Detalles de Ingresos por Servicio:
+                </h3>
+                <p className="text-lg">
+                  <span className="font-bold">Autoservicio:</span> $
+                  {selectedCorte.ingresoAutoservicio}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Lavado por Encargo:</span> $
+                  {selectedCorte.ingresoLavadoEncargo}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Planchado:</span> $
+                  {selectedCorte.ingresoPlanchado}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">
+                    Total (Suma de los Servicios):
+                  </span>{" "}
+                  ${selectedCorte.ingresoTotalServicios}
+                </p>
+              </div>
+            </div>
+          )}
+        </Modal>
+      </div>
     </div>
   );
 }

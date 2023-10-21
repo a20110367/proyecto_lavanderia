@@ -9,10 +9,13 @@ import "moment/locale/es";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
+import { useAuth } from "../../hooks/auth/auth";
 
 const { Option } = Select;
 
 export default function PuntoVenta() {
+  const { cookies } = useAuth();
+
   const [cart, setCart] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -115,8 +118,11 @@ export default function PuntoVenta() {
     const doc = new jsPDF();
 
     doc.text(`Ticket de Compra de: ${clientName}`, 10, 10);
-    doc.text("Productos:", 10, 20);
-    let y = 30;
+
+    doc.text(`Le atendió:  ${cookies.username}`, 10, 20);
+
+    doc.text("Productos:", 10, 30);
+    let y = 40;
 
     cart.forEach((service) => {
       doc.text(
@@ -150,7 +156,6 @@ export default function PuntoVenta() {
     }
 
     doc.save("ticket_compra.pdf");
-
     // window.history.back();
   };
 
@@ -284,6 +289,13 @@ export default function PuntoVenta() {
                 >
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Le atiende:
+                    </p>
+                    <p style={{ fontSize: "16px" }}>{cookies.username}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Detalles del Servicio:
                     </p>
                     {cart.map((service) => (
@@ -371,8 +383,7 @@ export default function PuntoVenta() {
             <Link
               to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
-            >
-            </Link>
+            ></Link>
           </div>
         </div>
       </div>

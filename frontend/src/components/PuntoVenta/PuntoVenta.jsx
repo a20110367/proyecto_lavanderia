@@ -9,10 +9,13 @@ import "moment/locale/es";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
+import { useAuth } from "../../hooks/auth/auth";
 
 const { Option } = Select;
 
 export default function PuntoVenta() {
+  const { cookies } = useAuth();
+
   const [cart, setCart] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -45,8 +48,7 @@ export default function PuntoVenta() {
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
-    if (selectedServiceId === null) {
-      // Comprueba si no se ha seleccionado un servicio previamente
+    if (serviceType === "autoservicio") {
       const serviceToAdd = service;
       if (serviceToAdd) {
         const existingService = cart.find(
@@ -62,8 +64,15 @@ export default function PuntoVenta() {
         } else {
           setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
         }
-        setSelectedServiceId(serviceId); 
-        setIsAddButtonDisabled(true); 
+      }
+    } else {
+      if (cart.length === 0) {
+        const serviceToAdd = service;
+        if (serviceToAdd) {
+          setCart([serviceToAdd]);
+          setSelectedServiceId(serviceId);
+          setIsAddButtonDisabled(true);
+        }
       }
     }
   };
@@ -86,9 +95,8 @@ export default function PuntoVenta() {
     setCart(updatedCart);
 
     if (serviceId === selectedServiceId) {
-    
       setSelectedServiceId(null);
-      setIsAddButtonDisabled(false); 
+      setIsAddButtonDisabled(false);
     }
   };
 
@@ -110,8 +118,11 @@ export default function PuntoVenta() {
     const doc = new jsPDF();
 
     doc.text(`Ticket de Compra de: ${clientName}`, 10, 10);
-    doc.text("Productos:", 10, 20);
-    let y = 30;
+
+    doc.text(`Le atendió:  ${cookies.username}`, 10, 20);
+
+    doc.text("Productos:", 10, 30);
+    let y = 40;
 
     cart.forEach((service) => {
       doc.text(
@@ -145,6 +156,7 @@ export default function PuntoVenta() {
     }
 
     doc.save("ticket_compra.pdf");
+    // window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
@@ -277,6 +289,13 @@ export default function PuntoVenta() {
                 >
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Le atiende:
+                    </p>
+                    <p style={{ fontSize: "16px" }}>{cookies.username}</p>
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Detalles del Servicio:
                     </p>
                     {cart.map((service) => (
@@ -364,11 +383,7 @@ export default function PuntoVenta() {
             <Link
               to="/recepcionLavanderia"
               className="mt-4 flex text-center text-decoration-none"
-            >
-              <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-                <div className="text-lg font-semibold">Volver</div>
-              </button>
-            </Link>
+            ></Link>
           </div>
         </div>
       </div>

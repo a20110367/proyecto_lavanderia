@@ -134,9 +134,68 @@ export const calculateCashCut = async (req, res) =>{
         });       
 
         
+        
         //const ordersIds = ordersPayed.values();
         //const ordersIdsMap = new Map(Object.entries(JSON.parse(ordersPayed)));
         //console.log(ordersIdsMap);
+        
+
+
+       const orders=Object.values(ordersPayed).map(ord => ord.order.id_order);
+
+       //console.log(orders);
+       const servicePayed = await prisma.orderServiceDetail.findMany({
+        
+    
+            where:{
+                fk_Order:{
+                    in:orders,
+                },
+            },
+                
+            select:{
+                service:{
+                    select:{
+                        description:true,
+                        price:true,
+                        category_id:true,
+                    },
+                },
+            }, 
+        }); 
+
+        const categoriesPayed = await prisma.service.findMany({
+           
+                
+            where:{
+                category:{
+                   is:{
+                    categoryDescription: "pruebas",
+                   }, 
+                },
+            },
+
+            select:{
+                    id_service:true,
+                    price:true,
+            },
+            
+        });
+
+       
+
+       console.log(servicePayed);
+       const categoriesList=Object.values(servicePayed).map(ord => ord.service.category_id);
+       const categoriesSet = new Set(categoriesList);
+       const categoriesExist = [...categoriesSet];
+       console.log(categoriesExist);
+       const categoriesTotal=(categoriesExist).map(ord => "category"+ ord.toString() + "Total");
+       console.log(categoriesTotal);
+
+       
+
+       //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
+       
 
         const response=
             {
@@ -147,6 +206,11 @@ export const calculateCashCut = async (req, res) =>{
                 //"selfService":selfService
                 //"ordersIds":ordersIds
             }
+
+             
+            // console.log(total);
+            // console.log(cash);
+            // console.log(credit);
         res.status(200).json(response);
     }catch(e){
         res.status(404).json({msg:e.message});

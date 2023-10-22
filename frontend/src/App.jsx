@@ -16,10 +16,6 @@ import EditClient from './components/Client/EditClient'
 import Clients from './components/Client/Clients'
 
 //Servicios
-import AddService from './components/Service/AddService'
-import EditService from "./components/Service/EditService"
-import Services from "./components/Service/Services"
-
 import ServicesLavanderia from "./components/Service/ServicesLavanderia"
 import AddServiceLavanderia from './components/Service/AddServiceLavanderia'
 import EditServiceLavanderia from './components/Service/EditServiceLavanderia'
@@ -114,9 +110,7 @@ function App() {
                     <Route path="/cajaPedidos" element={<CajaPedidos />} />
 
                     {/* Services */}
-                    <Route path="/addService" element={<AddService />} />
-                    <Route path="/editService/:id" element={<EditService />} />
-                    <Route path="/services" element={<Services />} />
+
 
                     <Route path="/servicesLavanderia" element={<ServicesLavanderia />} />
                     <Route path="/addServiceLavanderia" element={<AddServiceLavanderia />} />

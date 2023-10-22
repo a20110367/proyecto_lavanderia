@@ -41,14 +41,14 @@ import EditEquipo from "./components/Equipos/EditEquipo"
 import ActivarEquipos from "./components//Equipos/ActivarEquipos"
 
 
-import Cajas from "./components/Cajas/Cajas"
-import CajaEntregas from "./components/Cajas/CajaEntregas"
+
+
 import InicioCaja from "./components/Cajas/InicioCaja"
 import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 
-import CajaDevolucion from "./components/Cajas/CajaDevolucion"
-import CajaRetiros from "./components/Cajas/CajaRetiros"
+
+
 
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/auth/auth';
@@ -98,10 +98,6 @@ function App() {
                     <Route path="/editEquipo/:id" element={<EditEquipo />} />
                     <Route path="/activarEquipos" element={<ActivarEquipos />} />
 
-                    <Route path="/cajas" element={<Cajas />} />
-                    <Route path="/cajaEntregas" element={<CajaEntregas />} />
-                    <Route path="/cajaDevolucion" element={<CajaDevolucion />} />
-                    <Route path="/cajaRetiros" element={<CajaRetiros />} />
                     <Route path="/corteCaja" element={<CorteCaja />} />
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />

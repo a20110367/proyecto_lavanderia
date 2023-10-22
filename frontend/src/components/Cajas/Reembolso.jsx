@@ -13,6 +13,9 @@ function Reembolso() {
   const [monto, setMonto] = useState("");
   const [motivo, setMotivo] = useState("");
   const [fecha, setFecha] = useState("");
+  const [numeroPedidoError, setNumeroPedidoError] = useState("");
+  const [montoError, setMontoError] = useState("");
+  const [motivoError, setMotivoError] = useState("");
 
   useEffect(() => {
     const dummyReembolsos = [
@@ -21,21 +24,21 @@ function Reembolso() {
         numeroPedido: "1001",
         monto: 500,
         motivo: "Decoloracion de ropa",
-        fecha: "2023-09-20",
+        fecha: "20/09/2023",
       },
       {
         id: 2,
         numeroPedido: "1002",
         monto: 300,
         motivo: "Quemado por plancha",
-        fecha: "2023-09-21",
+        fecha: "21/09/2023",
       },
       {
         id: 3,
         numeroPedido: "1003",
         monto: 1000,
         motivo: "Rasgado por lavadora",
-        fecha: "2023-09-22",
+        fecha: "23/09/2023",
       },
     ];
 
@@ -61,21 +64,47 @@ function Reembolso() {
   };
 
   const handleConfirmReembolso = () => {
-    const currentDate = moment(); 
-    const formattedDate = currentDate.format("YYYY-MM-DD"); 
+    // Validación de campos obligatorios
+    let isValid = true;
 
-    const nuevoReembolso = {
-      id: reembolsos.length + 1,
-      numeroPedido: numeroPedido,
-      monto: parseInt(monto),
-      motivo: motivo,
-      fecha: formattedDate,
-    };
+    if (!numeroPedido) {
+      setNumeroPedidoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setNumeroPedidoError("");
+    }
 
-    setReembolsos([...reembolsos, nuevoReembolso]);
-    setFilteredReembolsos([...reembolsos, nuevoReembolso]);
+    if (!monto) {
+      setMontoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMontoError("");
+    }
 
-    setVisible(false);
+    if (!motivo) {
+      setMotivoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
+    if (isValid) {
+      const currentDate = moment(); 
+      const formattedDate = currentDate.format("DD/MM/YYYY"); 
+
+      const nuevoReembolso = {
+        id: reembolsos.length + 1,
+        numeroPedido: numeroPedido,
+        monto: parseInt(monto),
+        motivo: motivo,
+        fecha: formattedDate,
+      };
+
+      setReembolsos([...reembolsos, nuevoReembolso]);
+      setFilteredReembolsos([...reembolsos, nuevoReembolso]);
+
+      setVisible(false);
+    }
   };
 
   const handleClose = () => {
@@ -119,7 +148,7 @@ function Reembolso() {
               <tr className="bg-white border-b" key={reembolso.id}>
                 <td className="py-3 px-1 text-center">{reembolso.id}</td>
                 <td className="py-3 px-6">{reembolso.numeroPedido}</td>
-                <td className="py-3 px-6">{reembolso.monto}</td>
+                <td className="py-3 px-6">{"$" + reembolso.monto}</td>
                 <td className="py-3 px-6">{reembolso.motivo}</td>
                 <td className="py-3 px-6">{reembolso.fecha}</td>
               </tr>
@@ -133,14 +162,7 @@ function Reembolso() {
           >
             Registrar Reembolso
           </button>
-          <Link
-            to="/menuPuntoVenta"
-            className="mt-4 flex text-center text-decoration-none"
-          >
-            <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-              <div className="text-lg font-semibold">Volver</div>
-            </button>
-          </Link>
+        
         </div>
       </div>
       <Modal
@@ -166,7 +188,7 @@ function Reembolso() {
           </Button>,
         ]}
       >
-        <form>
+       <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Número de Pedido:
@@ -177,6 +199,7 @@ function Reembolso() {
               onChange={(e) => setNumeroPedido(e.target.value)}
               placeholder="Ingrese el número de pedido"
             />
+            <p className="text-red-500">{numeroPedidoError}</p>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -187,7 +210,9 @@ function Reembolso() {
               value={monto}
               onChange={(e) => setMonto(e.target.value)}
               placeholder="Ingrese el monto"
+              addonBefore="$"
             />
+            <p className="text-red-500">{montoError}</p>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -198,6 +223,7 @@ function Reembolso() {
               onChange={(e) => setMotivo(e.target.value)}
               placeholder="Ingrese el motivo"
             />
+            <p className="text-red-500">{motivoError}</p>
           </div>
         </form>
       </Modal>

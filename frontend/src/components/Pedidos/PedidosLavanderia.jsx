@@ -31,7 +31,7 @@ function PedidosLavanderia() {
         id_cobro: 1,
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pendiente",
-        fecha_entrega_real: "2023-09-15",
+        fecha_entrega_real: "15/09/2023",
       },
       {
         id_pedido: 2,
@@ -41,7 +41,7 @@ function PedidosLavanderia() {
         id_cobro: 2,
         pedidoDetalle: "Monas Chinas",
         orderstatus: "En proceso",
-        fecha_entrega_real: "2023-09-16",
+        fecha_entrega_real: "16/09/2023",
       },
       {
         id_pedido: 3,
@@ -51,7 +51,7 @@ function PedidosLavanderia() {
         id_cobro: 3,
         pedidoDetalle: "Lavado",
         orderstatus: "Finalizado",
-        fecha_entrega_real: "2023-09-17",
+        fecha_entrega_real: "17/09/2023",
       },
       {
         id_pedido: 4,
@@ -61,7 +61,7 @@ function PedidosLavanderia() {
         id_cobro: 4,
         pedidoDetalle: "Lavado delicado",
         orderstatus: "Entregado",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "18/09/2023",
       },
       {
         id_pedido: 5,
@@ -71,7 +71,7 @@ function PedidosLavanderia() {
         id_cobro: 5,
         pedidoDetalle: "Lavado basico",
         orderstatus: "CANCELADO",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "18/09/2023",
         
       },
       {
@@ -82,7 +82,7 @@ function PedidosLavanderia() {
         id_cobro: 6,
         pedidoDetalle: "Lavado basico",
         orderstatus: "Almacenado",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "19/09/2023",
         
       },
     ];

@@ -37,7 +37,7 @@ export default function PuntoVenta() {
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
   const [deliveryDate, setDeliveryDate] = useState(moment());
-  const customDateFormat = "yyyy-MM-dd HH:mm:ss";
+  const customDateFormat = "dd/MM/yyyy HH:mm:ss";
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -137,14 +137,14 @@ export default function PuntoVenta() {
 
     doc.text(`Subtotal: $${calculateSubtotal()}`, 10, y + 10);
     doc.text(
-      `Fecha de Recepcion: ${purchaseDate.format("YYYY-MM-DD HH:mm:ss")}`,
+      `Fecha de Recepcion: ${purchaseDate.format("DD/MM/YYYY HH:mm:ss")}`,
       10,
       y + 20
     );
 
     // Agregar el campo "Fecha de Entrega" al ticket
     doc.text(
-      `Fecha de Entrega: ${deliveryDate.format("YYYY-MM-DD HH:mm:ss")}`,
+      `Fecha de Entrega: ${deliveryDate.format("DD/MM/YYYY HH:mm:ss")}`,
       10,
       y + 30
     );
@@ -315,7 +315,7 @@ export default function PuntoVenta() {
                         Fecha de Recepcion:
                       </p>
                       <div style={{ fontSize: "16px" }}>
-                        {purchaseDate.format("YYYY-MM-DD HH:mm:ss")}
+                        {purchaseDate.format("DD/MM/YYYY HH:mm:ss")}
                       </div>
                     </div>{" "}
                   </div>

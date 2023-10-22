@@ -14,7 +14,7 @@ function InicioCaja() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = moment();
-      const formattedDate = now.format("YYYY-MM-DD HH:mm:ss");
+      const formattedDate = now.format("DD/MM/yyyy HH:mm:ss");
       setFechaHora(formattedDate);
     }, 1000);
 

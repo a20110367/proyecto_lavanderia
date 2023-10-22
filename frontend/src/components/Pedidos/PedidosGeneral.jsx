@@ -40,7 +40,7 @@ function PedidosGeneral() {
         id_cobro: 1,
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pendiente",
-        fecha_entrega_real: "2023-09-15",
+        fecha_entrega_real: "15/09/2023",
         forma_pago: "A la entrega",
       },
 
@@ -52,7 +52,7 @@ function PedidosGeneral() {
         id_cobro: 2,
         pedidoDetalle: "Monas Chinas Planchadas",
         orderstatus: "En proceso",
-        fecha_entrega_real: "2023-09-16",
+        fecha_entrega_real: "16/09/2023",
         forma_pago: "Anticipado",
       },
       {
@@ -63,7 +63,7 @@ function PedidosGeneral() {
         id_cobro: 3,
         pedidoDetalle: "Lavado",
         orderstatus: "Finalizado",
-        fecha_entrega_real: "2023-09-17",
+        fecha_entrega_real: "17/09/2023",
         forma_pago: "A la entrega",
       },
       {
@@ -74,7 +74,7 @@ function PedidosGeneral() {
         id_cobro: 4,
         pedidoDetalle: "Planchado Basico",
         orderstatus: "Entregado",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "18/09/2023",
         forma_pago: "Anticipado",
       },
       {
@@ -85,7 +85,7 @@ function PedidosGeneral() {
         id_cobro: 6,
         pedidoDetalle: "Planchado basico",
         orderstatus: "Almacenado",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "15/09/2023",
         forma_pago: "A la entrega",
       },
       {
@@ -96,7 +96,7 @@ function PedidosGeneral() {
         id_cobro: 7,
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pendiente",
-        fecha_entrega_real: "2023-09-15",
+        fecha_entrega_real: "17/09/2023",
         forma_pago: "A la entrega",
       },
       {
@@ -107,7 +107,7 @@ function PedidosGeneral() {
         id_cobro: 8,
         pedidoDetalle: "Planchado basico",
         orderstatus: "Almacenado",
-        fecha_entrega_real: "2023-09-18",
+        fecha_entrega_real: "17/09/2023",
         forma_pago: "A la entrega",
       },
     ];

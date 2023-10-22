@@ -32,8 +32,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pagado",
         totalPrice: 100,
-        fentregaEstimada: "2023-09-15",
-        f_recepcion: "2023-09-12",
+        fentregaEstimada: "15/09/2023",
+        f_recepcion: "17/09/2023",
         empleadoRecibe: "Saul",
         metodoPago: "Tarjeta",
       },
@@ -45,8 +45,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Monas Chinas",
         orderstatus: "Adeudo",
         totalPrice: 150,
-        fentregaEstimada: "2023-09-16",
-        f_recepcion: "2023-09-13",
+        fentregaEstimada: "16/09/2023",
+        f_recepcion: "18/09/2023",
         empleadoRecibe: "Maria",
         metodoPago: "Efectivo",
       },
@@ -58,8 +58,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado",
         orderstatus: "Adeudo",
         totalPrice: 80,
-        fentregaEstimada: "2023-09-17",
-        f_recepcion: "2023-09-14",
+        fentregaEstimada: "17/09/2023",
+        f_recepcion: "19/09/2023",
         empleadoRecibe: "Luis",
         metodoPago: "Tarjeta",
       },
@@ -336,6 +336,7 @@ function EntregaLavanderia() {
                 value={cobroInfo.fechaPago}
                 onChange={handleCobroInfoChange}
                 className="bg-gray-200 rounded-md p-1"
+                readOnly
               />
             </div>
           </div>

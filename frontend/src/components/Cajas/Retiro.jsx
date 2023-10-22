@@ -12,26 +12,29 @@ function Retiro() {
   const [monto, setMonto] = useState("");
   const [motivo, setMotivo] = useState("");
   const [usuario, setUsuario] = useState("");
+  const [montoError, setMontoError] = useState("");
+  const [motivoError, setMotivoError] = useState("");
+  const [usuarioError, setUsuarioError] = useState("");
 
   useEffect(() => {
     const dummyRetiros = [
       {
         id: 1,
-        fecha: "2023-09-20",
+        fecha: "20/09/2023",
         monto: 500,
         motivo: "Gastos varios",
         usuario: "Usuario1",
       },
       {
         id: 2,
-        fecha: "2023-09-21",
+        fecha: "21/09/2023",
         monto: 300,
         motivo: "Retiro personal",
         usuario: "Usuario2",
       },
       {
         id: 3,
-        fecha: "2023-09-22",
+        fecha: "22/09/2023",
         monto: 1000,
         motivo: "Pago a proveedor",
         usuario: "Usuario3",
@@ -59,21 +62,46 @@ function Retiro() {
   };
 
   const handleConfirmRetiro = () => {
-    const currentDate = moment(); 
-    const formattedDate = currentDate.format("YYYY-MM-DD"); 
+    let isValid = true;
 
-    const nuevoRetiro = {
-      id: retiros.length + 1,
-      fecha: formattedDate,
-      monto: parseInt(monto),
-      motivo: motivo,
-      usuario: usuario,
-    };
+    if (!monto) {
+      setMontoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMontoError("");
+    }
 
-    setRetiros([...retiros, nuevoRetiro]);
-    setFilteredRetiros([...retiros, nuevoRetiro]);
+    if (!motivo) {
+      setMotivoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
 
-    setVisible(false);
+    if (!usuario) {
+      setUsuarioError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setUsuarioError("");
+    }
+
+    if (isValid) {
+      const currentDate = moment(); 
+      const formattedDate = currentDate.format("DD/MM/YYYY"); 
+
+      const nuevoRetiro = {
+        id: retiros.length + 1,
+        fecha: formattedDate,
+        monto: parseInt(monto),
+        motivo: motivo,
+        usuario: usuario,
+      };
+
+      setRetiros([...retiros, nuevoRetiro]);
+      setFilteredRetiros([...retiros, nuevoRetiro]);
+
+      setVisible(false);
+    }
   };
 
   const handleClose = () => {
@@ -117,7 +145,7 @@ function Retiro() {
               <tr className="bg-white border-b" key={retiro.id}>
                 <td className="py-3 px-1 text-center">{retiro.id}</td>
                 <td className="py-3 px-6">{retiro.fecha}</td>
-                <td className="py-3 px-6">{retiro.monto}</td>
+                <td className="py-3 px-6">{"$" + retiro.monto}</td>
                 <td className="py-3 px-6">{retiro.motivo}</td>
                 <td className="py-3 px-6">{retiro.usuario}</td>
               </tr>
@@ -131,14 +159,7 @@ function Retiro() {
           >
             Registrar Retiro
           </button>
-          <Link
-            to="/menuPuntoVenta"
-            className="mt-4 flex text-center text-decoration-none"
-          >
-            <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-              <div className="text-lg font-semibold">Volver</div>
-            </button>
-          </Link>
+        
         </div>
       </div>
       <Modal
@@ -164,7 +185,7 @@ function Retiro() {
           </Button>,
         ]}
       >
-        <form>
+       <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Monto:
@@ -174,7 +195,9 @@ function Retiro() {
               value={monto}
               onChange={(e) => setMonto(e.target.value)}
               placeholder="Ingrese el monto"
+              addonBefore="$"
             />
+            <p className="text-red-500">{montoError}</p>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -185,6 +208,7 @@ function Retiro() {
               onChange={(e) => setMotivo(e.target.value)}
               placeholder="Ingrese el motivo"
             />
+            <p className="text-red-500">{motivoError}</p>
           </div>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -195,6 +219,7 @@ function Retiro() {
               onChange={(e) => setUsuario(e.target.value)}
               placeholder="Ingrese el nombre de usuario"
             />
+            <p className="text-red-500">{usuarioError}</p>
           </div>
         </form>
       </Modal>

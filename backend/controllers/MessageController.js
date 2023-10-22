@@ -4,15 +4,16 @@ import { transporter } from "./utils/mailer.js";
 const prisma = new PrismaClient();
 
 export const sendMessage = async (req, res) => {
+    const {id_order, name, email, message} = req.body
     const output = `
         <h3>Detalles del Pedido:</h3>
         <ul>  
-            <li>Folio: ${req.body.id_order}</li> 
-            <li>Nombre: ${req.body.name}</li>
-            <li>Correo Electronico: ${req.body.email}</li>            
+            <li>Folio: ${id_order}</li> 
+            <li>Nombre: ${name}</li>
+            <li>Correo Electronico: ${email}</li>            
         </ul>
-        <h3>Message</h3>
-        <p>${req.body.message}</p>
+        <h3>Cuerpo</h3>
+        <p>${message}</p>
     `;
 
     try {

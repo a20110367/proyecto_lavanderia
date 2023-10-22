@@ -96,139 +96,143 @@ function AddEquipo() {
   };
 
   return (
-    <div className="add-equipo-form">
-      <div className="basic-container w-5/12">
-        <strong className="subtitle">Por favor, complete los datos del equipo</strong>
-      </div>
-      {success ? (
-        <section>
-          <h1>¡Éxito!</h1>
-          <p>
-            <a href="/equipos">Ver Equipos</a>
-          </p>
-        </section>
-      ) : (
-        <section className="basic-container">
-          <p
-            ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
-            aria-live="assertive"
-          >
-            {errMsg}
-          </p>
-          <form onSubmit={handleSubmit}>
-            {/** Tipo de Máquina */}
-            <label className="subtitle mt-0" htmlFor="machineType">
-              Tipo de Máquina:
-            </label>
-            <select
-              className="select-2ry"
-              id="machineType"
-              value={machineType}
-              onChange={(e) => setMachineType(e.target.value)}
+    <div className="signup-form">
+      <div className="form-container">
+        <div className="HeadContent">
+          <h2 className="title text-white"><em>Añadir un Equipo</em></h2>
+          <p className="form-lbl text-white">Ingrese los detalle del equipo.</p>
+          <div className="clearBoth"></div>
+        </div>
+        {success ? (
+          <section>
+            <h1>¡Éxito!</h1>
+            <p>
+              <a href="/equipos">Ver Equipos</a>
+            </p>
+          </section>
+        ) : (
+          <section>
+            <p
+              ref={errRef}
+              className={errMsg ? "errmsg" : "offscreen"}
+              aria-live="assertive"
             >
-              <option value="lavadora">Lavadora</option>
-              <option value="secadora">Secadora</option>
-            </select>
+              {errMsg}
+            </p>
+            <form onSubmit={handleSubmit}>
+              {/** Tipo de Máquina */}
+              <label className="form-lbl" htmlFor="machineType">
+                Tipo de Máquina:
+              </label>
+              <select
+                className="form-input"
+                id="machineType"
+                value={machineType}
+                onChange={(e) => setMachineType(e.target.value)}
+              >
+                <option value="lavadora">Lavadora</option>
+                <option value="plancha">Plancha</option>
+                <option value="secadora">Secadora</option>
+              </select>
 
-            {/** Modelo */}
-            <label className="subtitle" htmlFor="model">
-              Modelo:
-              {validModel ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="text"
-              id="model"
-              ref={modelRef}
-              autoComplete="off"
-              onChange={(e) => setModel(e.target.value)}
-              value={model}
-              required
-              aria-invalid={validModel ? "false" : "true"}
-              onFocus={() => setModelFocus(true)}
-              onBlur={() => setModelFocus(false)}
-            />
+              {/** Modelo */}
+              <label className="form-lbl" htmlFor="model">
+                Modelo:
+                {validModel ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="model"
+                ref={modelRef}
+                autoComplete="off"
+                onChange={(e) => setModel(e.target.value)}
+                value={model}
+                required
+                aria-invalid={validModel ? "false" : "true"}
+                onFocus={() => setModelFocus(true)}
+                onBlur={() => setModelFocus(false)}
+              />
 
-            {/** Tiempo de Ciclo */}
-            <label className="subtitle" htmlFor="cicleTime">Tiempo de Ciclo (Minutos):
-              {validCicleTime ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="number"
-              id="cicleTime"
-              onChange={(e) => setCicleTime(e.target.value)}
-              value={cicleTime}
-              required
-              aria-invalid={validCicleTime ? "false" : "true"}
-              onFocus={() => setCicleTimeFocus(true)}
-              onBlur={() => setCicleTimeFocus(false)}
-            />
+              {/** Tiempo de Ciclo */}
+              <label className="form-lbl" htmlFor="cicleTime">Tiempo de Ciclo (Minutos):
+                {validCicleTime ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="cicleTime"
+                onChange={(e) => setCicleTime(e.target.value)}
+                value={cicleTime}
+                required
+                aria-invalid={validCicleTime ? "false" : "true"}
+                onFocus={() => setCicleTimeFocus(true)}
+                onBlur={() => setCicleTimeFocus(false)}
+              />
 
-            {/** Peso */}
-            <label className="subtitle" htmlFor="weight">
-              Peso (kg):
-              {validWeight ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="number"
-              id="weight"
-              onChange={(e) => setWeight(e.target.value)}
-              value={weight}
-              required
-              aria-invalid={validWeight ? "false" : "true"}
-              onFocus={() => setWeightFocus(true)}
-              onBlur={() => setWeightFocus(false)}
-            />
+              {/** Peso */}
+              <label className="form-lbl" htmlFor="weight">
+                Peso (kg):
+                {validWeight ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="weight"
+                onChange={(e) => setWeight(e.target.value)}
+                value={weight}
+                required
+                aria-invalid={validWeight ? "false" : "true"}
+                onFocus={() => setWeightFocus(true)}
+                onBlur={() => setWeightFocus(false)}
+              />
 
-            {/** Estado */}
-            <label className="subtitle" htmlFor="status">
-              Estado:
-            </label>
-            <select
-              className="select-2ry"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              name="status"
-              id="status"
-            >
-              <option value="available">Disponible</option>
-              <option value="unavailable">No disponible</option>
-            </select>
+              {/** Estado */}
+              <label className="form-lbl" htmlFor="status">
+                Estado:
+              </label>
+              <select
+                className="form-input"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                name="status"
+                id="status"
+              >
+                <option value="available">Disponible</option>
+                <option value="unavailable">No disponible</option>
+              </select>
 
-            {/** Notas */}
-            <label className="subtitle" htmlFor="notes">
-              Notas:
-            </label>
-            <textarea
-              className="input-lg"
-              id="notes"
-              onChange={(e) => setNotes(e.target.value)}
-              value={notes}
-            />
+              {/** Notas */}
+              <label className="form-lbl" htmlFor="notes">
+                Notas:
+              </label>
+              <textarea
+                className="form-input"
+                id="notes"
+                onChange={(e) => setNotes(e.target.value)}
+                value={notes}
+              />
               <button
                 className="btn-primary"
                 disabled={!validModel || !validCicleTime || !validWeight}
@@ -241,9 +245,10 @@ function AddEquipo() {
               >
                 Cancelar
               </button>
-          </form>
-        </section>
-      )}
+            </form>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

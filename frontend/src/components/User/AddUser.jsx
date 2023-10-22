@@ -1,4 +1,3 @@
-import Navbar from "../../routes/Navbar";
 import { useRef, useState, useEffect } from "react";
 import {
   faCheck,
@@ -24,11 +23,11 @@ function Signup() {
   const [validName, setValidName] = useState(false);
   const [nameFocus, setNameFocus] = useState(false);
 
-  const [firstName, setFirstName] = useState("");
+  const [firstLN, setFirstLN] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [firstNameFocus, setFirstNameFocus] = useState(false);
 
-  const [secondName, setSecondName] = useState("");
+  const [secondLN, setSecondLN] = useState("");
   const [validSecondName, setValidSecondName] = useState(false);
   const [secondNameFocus, setSecondNameFocus] = useState(false);
 
@@ -71,12 +70,12 @@ function Signup() {
   }, [name]);
 
   useEffect(() => {
-    setValidFirstName(firstName.trim().length > 0);
-  }, [firstName]);
+    setValidFirstName(firstLN.trim().length > 0);
+  }, [firstLN]);
 
   useEffect(() => {
-    setValidSecondName(secondName.trim().length > 0);
-  }, [secondName]);
+    setValidSecondName(secondLN.trim().length > 0);
+  }, [secondLN]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -89,11 +88,10 @@ function Signup() {
     }
     try {
       await Axios.post("http://localhost:5000/users", {
-        username: userName,
         name: name,
         userName: userName,
-        firstName: firstName,
-        secondName: secondName,
+        firstLN: firstLN,
+        secondLN: secondLN,
         email: email,
         phone: phone,
         rol: rol,
@@ -105,7 +103,7 @@ function Signup() {
       setUserName("");
       setPwd("");
       setMatchPwd("");
-      navigate("/dashboard");
+      navigate("/menuPuntoVenta");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
@@ -120,226 +118,239 @@ function Signup() {
 
   return (
     <div className="signup-form">
-      <div className=" basic-container w-5/12">
-        <strong className="subtitle">Favor de rellenar los campos solicitados
-          para añadir el usuario</strong>
-      </div>
-      {success ? (
-        <section>
-          <h1>Success!</h1>
-          <p>
-            <a href="/users">Usuarios</a>
-          </p>
-        </section>
-      ) : (
-        <section className="basic-container">
-          <p
-            ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
-            aria-live="assertive"
-          >
-            {errMsg}
-          </p>
-          <form onSubmit={handleSubmit}>
-            {/**Nombre empleado */}
-            <label className="subtitle mt-0" htmlFor="name">
-              Nombre del empleado:
-              {validName ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="text"
-              id="name"
-              ref={userRef}
-              autoComplete="off"
-              onChange={(e) => setName(e.target.value)}
-              value={name}
-              required
-              aria-invalid={validName ? "false" : "true"}
-              onFocus={() => setNameFocus(true)}
-              onBlur={() => setNameFocus(false)}
-            />
-            <label className="subtitle" htmlFor="username">
-              Nombre de usuario:
-              {validUserName ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="text"
-              id="username"
-              ref={userRef}
-              autoComplete="off"
-              onChange={(e) => setUserName(e.target.value)}
-              value={userName}
-              required
-              aria-invalid={validUserName ? "false" : "true"}
-              aria-describedby="uidnote"
-              onFocus={() => setUserNameFocus(true)}
-              onBlur={() => setUserNameFocus(false)}
-            />
+      <div className="form-container">
+        <div className="HeadContent">
+          <h2 className="title text-white"><em>Añadir un Empleado</em></h2>
+          <p className="form-lbl text-white">Ingrese los detalle del empleado.</p>
+          <div className="clearBoth"></div>
+        </div>
+        {success ? (
+          <section >
+            <h1>Success!</h1>
+            <p>
+              <a href="/users">Usuarios</a>
+            </p>
+          </section>
+        ) : (
+          <section>
+            <p
+              ref={errRef}
+              className={errMsg ? "errmsg" : "offscreen"}
+              aria-live="assertive"
+            >
+              {errMsg}
+            </p>
+            <form onSubmit={handleSubmit}>
+              {/**Nombre empleado */}
+              <label className="form-lbl" htmlFor="name">
+                Nombre del empleado:
+                {validName ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="name"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                required
+                aria-invalid={validName ? "false" : "true"}
+                onFocus={() => setNameFocus(true)}
+                onBlur={() => setNameFocus(false)}
+              />
+              <label className="form-lbl" htmlFor="username">
+                Nombre de usuario:
+                {validUserName ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="username"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUserName(e.target.value)}
+                value={userName}
+                required
+                aria-invalid={validUserName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={() => setUserNameFocus(true)}
+                onBlur={() => setUserNameFocus(false)}
+              />
 
-            <div className="group">
-              <p
-                id="uidnote"
-                className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
-                  }`}
-              >
-                <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
-                <br />
-                Debera iniciar con una letra.
-                <br />
-                Letras, numeros, guiones y guiones bajos estan permitidos.
-              </p>
-            </div>
+              <div className="group">
+                <p
+                  id="uidnote"
+                  className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
+                    }`}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
+                  <br />
+                  Debera iniciar con una letra.
+                  <br />
+                  Caracteres Permitidos:
+                  <br />
+                  Letras, p. ej. L
+                  <br />
+                  Números, p. ej. 4
+                  <br />
+                  Guiones, p. ej. -
+                  <br />
+                  Guiones Bajos p. ej. _
+                  <br />
+                </p>
+              </div>
 
-            {/* First Name */}
-            <label className="subtitle" htmlFor="firstName">
-              Apellido Paterno:
-              {validFirstName ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="text"
-              id="firstName"
-              autoComplete="off"
-              onChange={(e) => setFirstName(e.target.value)}
-              value={firstName}
-              required
-              aria-invalid={validFirstName ? "false" : "true"}
-              onFocus={() => setFirstNameFocus(true)}
-              onBlur={() => setFirstNameFocus(false)}
-            />
-            {/* Second Name */}
-            <label className="subtitle" htmlFor="secondName">
-              Apellido Materno:
-              {validSecondName ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="text"
-              id="secondName"
-              autoComplete="off"
-              onChange={(e) => setSecondName(e.target.value)}
-              value={secondName}
-              required
-              aria-invalid={validSecondName ? "false" : "true"}
-              onFocus={() => setSecondNameFocus(true)}
-              onBlur={() => setSecondNameFocus(false)}
-            />
-            <label className="subtitle" htmlFor="password">
-              Contraseña:
-              {validPwd ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="password"
-              id="password"
-              onChange={(e) => setPwd(e.target.value)}
-              value={pwd}
-              required
-              aria-invalid={validPwd ? "false" : "true"}
-              aria-describedby="pwdnote"
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
-            />
+              {/* First Name */}
+              <label className="form-lbl" htmlFor="firstName">
+                Apellido Paterno:
+                {validFirstName ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="firstName"
+                autoComplete="off"
+                onChange={(e) => setFirstLN(e.target.value)}
+                value={firstLN}
+                required
+                aria-invalid={validFirstName ? "false" : "true"}
+                onFocus={() => setFirstNameFocus(true)}
+                onBlur={() => setFirstNameFocus(false)}
+              />
+              {/* Second Name */}
+              <label className="form-lbl" htmlFor="secondName">
+                Apellido Materno:
+                {validSecondName ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="secondName"
+                autoComplete="off"
+                onChange={(e) => setSecondLN(e.target.value)}
+                value={secondLN}
+                required
+                aria-invalid={validSecondName ? "false" : "true"}
+                onFocus={() => setSecondNameFocus(true)}
+                onBlur={() => setSecondNameFocus(false)}
+              />
+              <label className="form-lbl" htmlFor="password">
+                Contraseña:
+                {validPwd ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="password"
+                id="password"
+                onChange={(e) => setPwd(e.target.value)}
+                value={pwd}
+                required
+                aria-invalid={validPwd ? "false" : "true"}
+                aria-describedby="pwdnote"
+                onFocus={() => setPwdFocus(true)}
+                onBlur={() => setPwdFocus(false)}
+              />
 
-            <div className="group">
-              <p
-                id="pwdnote"
-                className={`instructions ${pwdFocus && !validPwd ? "block" : "hidden"
-                  }`}
-              >
-                <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
-                <br />
-                Debera incluir al menos una Mayuscula, Minuscula,
-                un Número y un caracter Especial
-                <br />
-                Caracteres Especiale Permitidos:{" "}
-                <span aria-label="exclamation mark">!</span>{" "}
-                <span aria-label="at symbol">@</span>{" "}
-                <span aria-label="hashtag">#</span>{" "}
-                <span aria-label="dollar sign">$</span>{" "}
-                <span aria-label="percent">%</span>
-                <span aria-label="percent">?</span>
-                <span aria-label="percent">=</span>
-                <span aria-label="percent">*</span>
-              </p>
-            </div>
+              <div className="group">
+                <p
+                  id="pwdnote"
+                  className={`instructions ${pwdFocus && !validPwd ? "block" : "hidden"
+                    }`}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />De 8 a 24 caracteres.
+                  <br />
+                  Debera incluir al menos una 
+                  <br />
+                  Mayuscula, Minuscula,
+                  <br />
+                  un Número y un caracter Especial
+                  <br />
+                  Caracteres Especiales Permitidos:{" "}
+                  <span aria-label="exclamation mark">!</span>{" "}
+                  <span aria-label="at symbol">@</span>{" "}
+                  <span aria-label="hashtag">#</span>{" "}
+                  <span aria-label="dollar sign">$</span>{" "}
+                  <span aria-label="percent">%</span>
+                  <span aria-label="percent">?</span>
+                  <span aria-label="percent">=</span>
+                  <span aria-label="percent">*</span>
+                </p>
+              </div>
 
-            <label className="subtitle" htmlFor="confirm_pwd">
-              Confirmar Contraseña:
-              {validMatch && matchPwd ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  className="ml-3 text-green-500"
-                />
-              ) : (
-                <FontAwesomeIcon icon={faTimes} className="err-icon" />
-              )}
-            </label>
-            <input
-              className="input-prim"
-              type="password"
-              id="confirm_pwd"
-              onChange={(e) => setMatchPwd(e.target.value)}
-              value={matchPwd}
-              required
-              aria-invalid={validMatch ? "false" : "true"}
-              aria-describedby="confirmnote"
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
-            <div className="group">
-              <p
-                id="confirmnote"
-                className={`instructions ${matchFocus && !validMatch ? "block" : "hidden"
-                  }`}
-              >
-                <FontAwesomeIcon icon={faInfoCircle} />
-                Debe coindicir con el primer campo de la contraseña.
-              </p>
-            </div>
-            <div className="mt-3">
-              <label className="subtitle mx-2" htmlFor="email">
+              <label className="form-lbl" htmlFor="confirm_pwd">
+                Confirmar Contraseña:
+                {validMatch && matchPwd ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="password"
+                id="confirm_pwd"
+                onChange={(e) => setMatchPwd(e.target.value)}
+                value={matchPwd}
+                required
+                aria-invalid={validMatch ? "false" : "true"}
+                aria-describedby="confirmnote"
+                onFocus={() => setMatchFocus(true)}
+                onBlur={() => setMatchFocus(false)}
+              />
+              <div className="group">
+                <p
+                  id="confirmnote"
+                  className={`instructions ${matchFocus && !validMatch ? "block" : "hidden"
+                    }`}
+                >
+                  <FontAwesomeIcon icon={faInfoCircle} />
+                  Debe coindicir con el primer campo de la contraseña.
+                </p>
+              </div>
+              <label className="form-lbl" htmlFor="email">
                 Email:
               </label>
               <input
-                className="input-2ry"
+                className="form-input"
                 type="email"
                 id="email"
                 onChange={(e) => setEmail(e.target.value)}
@@ -348,13 +359,13 @@ function Signup() {
               />
 
               <label
-                className="subtitle mx-2"
+                className="form-lbl"
                 htmlFor="phone"
               >
                 Telefono:
               </label>
               <input
-                className="input-2ry"
+                className="form-input"
                 type="tel"
                 id="phone"
                 onChange={(e) => setPhone(e.target.value)}
@@ -363,12 +374,12 @@ function Signup() {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
               />
 
-              <label className="subtitle mx-2" htmlFor="rol">
+              <label className="form-lbl" htmlFor="rol">
                 Rol:
               </label>
 
               <select
-                className="select-prim"
+                className="form-input"
                 value={rol}
                 onChange={(e) => setRol(e.target.value)}
                 name="rol"
@@ -393,10 +404,10 @@ function Signup() {
                   Cancelar
                 </button>
               </div>
-            </div>
-          </form>
-        </section>
-      )}
+            </form>
+          </section>
+        )}
+      </div>
     </div>
   );
 }

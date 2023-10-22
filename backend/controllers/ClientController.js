@@ -25,19 +25,46 @@ export const getClientsById = async (req, res) =>{
     }
 }
 
+export const getClientsByEmail = async (req, res) =>{
+    try {
+        const response = await prisma.client.findUnique({
+            where:{
+                email: req.params.email
+            }
+        });
+        res.status(200).json(response);
+    }catch(e){
+        res.status(404).json({msg:e.message});
+    }
+}
+
+export const getClientsByPhone = async (req, res) =>{
+    try {
+        const response = await prisma.client.findFirst({
+            where:{
+                phone: req.params.phone
+            }
+        });
+        res.status(200).json(response);
+    }catch(e){
+        res.status(404).json({msg:e.message});
+    }
+}
+
 export const createClient = async (req, res) =>{
-    const {username, name, firstName, secondName, email, phone, pass} = req.body;
+    //const {userName, name, firstLN, secondLN, email, phone, pass} = req.body;
     try {
         const client = await prisma.client.create({
-            data:{
-                username: username,
-                name: name,
-                firstName: firstName,
-                secondName: secondName,
-                email: email,                
-                phone: phone,            
-                pass: pass
-            }
+            data:req.body
+            // {
+            //     username: userName,
+            //     name: name,
+            //     firstLN: firstLN,
+            //     secondLN: secondLN,
+            //     email: email,                
+            //     phone: phone,            
+            //     pass: pass
+            // }
         });
         res.status(201).json(client);
     }catch(e){
@@ -46,7 +73,8 @@ export const createClient = async (req, res) =>{
 }
 
 export const updateClient =  async (req, res) =>{
-    const {username, name, firstName, secondName, email, phone, pass} = req.body;
+    const {username, name, firstLN, secondLN, email, phone, pass} = req.body;
+
     try {
         const client = await prisma.client.update({
             where:{
@@ -55,8 +83,8 @@ export const updateClient =  async (req, res) =>{
             data:{
                 username: username,
                 name: name,
-                firstName: firstName,
-                secondName: secondName,
+                firstLN: firstLN,
+                secondLN: secondLN,
                 email: email,                
                 phone: phone,            
                 pass: pass

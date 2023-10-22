@@ -25,16 +25,18 @@ export const getMachinesById = async (req, res) =>{
 }
 
 export const createMachine = async (req, res) =>{
-    const {machineType, model, cicleTime, weight, notes} = req.body;
+    //const {machineType, model, cicleTime, weight, status, notes} = req.body;
     try {
         const machine = await prisma.machine.create({
-            data:{
-                machineType: machineType,
-                model: model,
-                cicleTime: cicleTime,
-                weight: weight,
-                notes: notes,
-            }
+           data:req.body
+            // data:{
+            //     machineType: machineType,
+            //     model: model,
+            //     cicleTime: cicleTime,
+            //     weight: weight,
+            //     status: status,
+            //     notes: notes,
+            // }
         });
         res.status(201).json(machine);
     }catch(e){
@@ -49,14 +51,15 @@ export const updateMachine =  async (req, res) =>{
             where:{
                 id_machine: Number(req.params.id)
             },
-            data:{
-                machineType: machineType,
-                model: model,
-                cicleTime: cicleTime,
-                weight: weight,
-                status: status,
-                notes: notes,
-            }
+            data:req.body
+            // data:{
+            //     machineType: machineType,
+            //     model: model,
+            //     cicleTime: cicleTime,
+            //     weight: weight,
+            //     status: status,
+            //     notes: notes,
+            // }
         });
         res.status(200).json(machine);
     }catch(e){

@@ -133,11 +133,11 @@ function Retiro() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th className="py-3 px-1 text-center">ID</th>
-              <th className="py-3 px-6">Fecha</th>
-              <th className="py-3 px-6">Monto</th>
-              <th className="py-3 px-6">Motivo</th>
-              <th className="py-3 px-6">Usuario</th>
+              <th>ID</th>
+              <th >Fecha</th>
+              <th >Monto</th>
+              <th >Motivo</th>
+              <th>Usuario</th>
             </tr>
           </thead>
           <tbody>

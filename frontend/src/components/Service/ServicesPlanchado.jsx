@@ -109,7 +109,7 @@ function ServicesPlanchado() {
                       onClick={() =>
                         navigate(`/editServicePlanchado/${service.id_service}`)
                       }
-                      className="btn-edit"
+                      className="btn-edit m-1"
                     >
                       Editar
                     </button>
@@ -117,7 +117,7 @@ function ServicesPlanchado() {
                       onClick={() =>
                         handleClickOpen(service.description, service.id_service)
                       }
-                      className="btn-cancel"
+                      className="btn-cancel mt-1"
                     >
                       Eliminar
                     </button>

@@ -209,17 +209,17 @@ function HistorialCaja() {
             <table className="w-full text-sm text-left text-gray-500 ">
               <thead className="text-xs text-gray-700 uppercase bg-gray-200">
                 <tr>
-                  <th className="py-3 px-1 text-center">ID</th>
-                  <th className="py-3 px-6">FECHA</th>
-                  <th className="py-3 px-6">DINERO EN FONDO</th>
-                  <th className="py-3 px-6">INGRESO EN EFECTIVO</th>
-                  <th className="py-3 px-6">INGRESO EN TARJETA</th>
-                  <th className="py-3 px-6">INGRESOS TOTALES</th>
-                  <th className="py-3 px-6">RETIROS TOTALES</th>
-                  <th className="py-3 px-6">FINAL TOTAL CAJA</th>
-                  <th className="py-3 px-6">USUARIO</th>
-                  <th className="py-3 px-6">TURNO</th>
-                  <th className="py-3 px-6"></th>
+                  <th >ID</th>
+                  <th>FECHA</th>
+                  <th>DINERO EN FONDO</th>
+                  <th >INGRESO EN EFECTIVO</th>
+                  <th >INGRESO EN TARJETA</th>
+                  <th>INGRESOS TOTALES</th>
+                  <th >RETIROS TOTALES</th>
+                  <th >FINAL TOTAL CAJA</th>
+                  <th >USUARIO</th>
+                  <th >TURNO</th>
+                  <th ></th>
                 </tr>
               </thead>
               <tbody>
@@ -239,7 +239,7 @@ function HistorialCaja() {
                     <td className="py-3 px-6">{corte.turno}</td>
                     <td className="py-3 px-6">
                       <button
-                        className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+                        className="btn-edit"
                         onClick={() => handleDetallesClick(corte)}
                       >
                         Detalles

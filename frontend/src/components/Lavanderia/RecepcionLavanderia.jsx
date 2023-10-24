@@ -60,11 +60,11 @@ function RecepcionLavanderia() {
             <table className="w-full table-auto">
               <thead className="text-xs text-gray-700 uppercase bg-gray-200">
                 <tr>
-                  <th className="th1">ID</th>
-                  <th className="th2">Nombre</th>
-                  <th className="th2">Teléfono</th>
-                  <th className="th2">Correo</th>
-                  <th className="th2">Acciones</th>
+                <th className="">ID</th>
+                  <th className="">Nombre</th>
+                  <th className="">Teléfono</th>
+                  <th className="">Correo</th>
+                  <th className="">Acciones</th>
                 </tr>
               </thead>
               <tbody>

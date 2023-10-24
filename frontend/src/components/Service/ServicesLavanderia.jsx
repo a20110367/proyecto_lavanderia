@@ -100,14 +100,14 @@ function ServicesLavanderia() {
                   <td>{service.created}</td>
                   <td>{service.updatedAT}</td>
                   <td>
-                    <button onClick={() => navigate(`/editServiceLavanderia/${service.id_service}`)} className="btn-edit">
+                    <button onClick={() => navigate(`/editServiceLavanderia/${service.id_service}`)} className=" btn-edit m-1">
                       Editar
                     </button>
                     <button
                       onClick={() =>
                         handleClickOpen(service.description, service.id_service)
                       }
-                      className="btn-cancel"
+                      className="btn-cancel mt-1"
                     >
                       Eliminar
                     </button>

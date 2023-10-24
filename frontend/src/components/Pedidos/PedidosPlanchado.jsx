@@ -176,13 +176,13 @@ function PedidosPlanchado() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6 ">Empleado que Recibió</th>
-                <th className="py-3 px-6">Empleado que Entregó</th>
-                <th className="py-3 px-6">Nombre del Cliente</th>
-                <th className="py-3 px-6">Detalle del pedido</th>
-                <th className="py-3 px-6">Fecha de Entrega</th>
-                <th className="py-3 px-6">Estatus</th>
+                <th>ID</th>
+                <th>Empleado que Recibió</th>
+                <th>Empleado que Entregó</th>
+                <th>Nombre del Cliente</th>
+                <th>Detalle del pedido</th>
+                <th>Fecha de Entrega</th>
+                <th>Estatus</th>
               </tr>
             </thead>
             <tbody>

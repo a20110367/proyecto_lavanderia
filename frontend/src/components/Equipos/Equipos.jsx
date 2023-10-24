@@ -15,7 +15,7 @@ function Equipos() {
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [filtroTipo, setFiltroTipo] = useState("");
 
   const { mutate } = useSWRConfig();
@@ -28,10 +28,9 @@ function Equipos() {
   if (!data) return <h2>Loading...</h2>;
 
   const filteredMachines = filtroTipo
-  ? data.filter((machine) => machine.machineType === filtroTipo)
-  : data;
+    ? data.filter((machine) => machine.machineType === filtroTipo)
+    : data;
 
-  
   const deleteMachine = async (machineId) => {
     await Axios.delete(`http://localhost:5000/machines/${machineId}`);
     mutate("machines");
@@ -62,28 +61,37 @@ function Equipos() {
         <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
-        <button className="btn-primary" onClick={() => navigate('/addEquipo')}>
+        <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
           Añadir Nueva Maquina
         </button>
         <select
-          className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+          className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black mt-2"
           value={filtroTipo}
           onChange={handleFiltroTipoChange}
         >
           <option className="text-base font-semibold" value="">
             Todos
           </option>
-          <option value="lavadora" className="text-dodgerBlue font-semibold text-base">
+          <option
+            value="lavadora"
+            className="text-dodgerBlue font-semibold text-base"
+          >
             Lavadoras
           </option>
-          <option value="secadora" className="text-green-500 font-semibold text-base">
+          <option
+            value="secadora"
+            className="text-green-500 font-semibold text-base"
+          >
             Secadoras
           </option>
-          <option value="plancha" className="text-yellow-500 font-semibold text-base">
+          <option
+            value="plancha"
+            className="text-yellow-500 font-semibold text-base"
+          >
             Planchas
           </option>
         </select>
-        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
+        <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
@@ -98,80 +106,89 @@ function Equipos() {
               </tr>
             </thead>
             <tbody>
-            {data
-                .filter((machine) => !filtroTipo || machine.machineType === filtroTipo)
+              {data
+                .filter(
+                  (machine) => !filtroTipo || machine.machineType === filtroTipo
+                )
                 .map((machine, index) => (
-                <tr key={machine.id_machine}>
-                  <td>{index + 1}</td>
-                  <td className={`font-semibold ${
-  machine.machineType === "lavadora"
-    ? "text-dodgerBlue"
-    : machine.machineType === "plancha"
-    ? "text-yellow-500"
-    : "text-green-500"
-}`}>
-  {machine.machineType === "lavadora"
-    ? "Lavadora"
-    : machine.machineType === "plancha"
-    ? "Plancha"
-    : "Secadora"
-}
-</td>
+                  <tr key={machine.id_machine}>
+                    <td>{index + 1}</td>
+                    <td
+                      className={`font-semibold ${
+                        machine.machineType === "lavadora"
+                          ? "text-dodgerBlue"
+                          : machine.machineType === "plancha"
+                          ? "text-yellow-500"
+                          : "text-green-500"
+                      }`}
+                    >
+                      {machine.machineType === "lavadora"
+                        ? "Lavadora"
+                        : machine.machineType === "plancha"
+                        ? "Plancha"
+                        : "Secadora"}
+                    </td>
 
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
-                  <td
-                    className={`${
-                      machine.status === "available"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {machine.status === 'available' ? 'Disponible' : 'No Disponible'}
-                  </td>
-                  <td>{machine.notes}</td>
-                  <td>
-                    <button
-                      onClick={() => navigate(`/editEquipo/${machine.id_machine}`)}
-                      className="btn-edit"
+                    <td>{machine.model}</td>
+                    <td>{machine.cicleTime}</td>
+                    <td>{machine.weight}</td>
+                    <td
+                      className={`${
+                        machine.status === "available"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
                     >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => handleClickOpen(machine.model, machine.id_machine)}
-                      className="btn-cancel"
-                    >
-                      Borrar
-                    </button>
+                      {machine.status === "available"
+                        ? "Disponible"
+                        : "No Disponible"}
+                    </td>
+                    <td>{machine.notes}</td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          navigate(`/editEquipo/${machine.id_machine}`)
+                        }
+                        className="btn-edit m-1"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleClickOpen(machine.model, machine.id_machine)
+                        }
+                        className="btn-cancel mt-1"
+                      >
+                        Borrar
+                      </button>
 
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Eliminación de la máquina"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          ¿Deseas eliminar la máquina: {machineSelModel}?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Cancelar</Button>
-                        <Button
-                          onClick={() => deleteAndClose(machineSelId)}
-                          autoFocus
-                        >
-                          Eliminar
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </td>
-                </tr>
-              ))}
+                      <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Eliminación de la máquina"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            ¿Deseas eliminar la máquina: {machineSelModel}?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancelar</Button>
+                          <Button
+                            onClick={() => deleteAndClose(machineSelId)}
+                            autoFocus
+                          >
+                            Eliminar
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

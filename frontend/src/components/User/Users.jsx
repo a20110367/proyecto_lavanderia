@@ -95,12 +95,12 @@ function Users() {
 
                                     <td>
                                         <button onClick={() => navigate(`/editUser/${user.id_user}`)}
-                                            className="btn-edit">
+                                            className="btn-edit m-1">
                                             Editar
                                         </button>
                                         <button
                                             onClick={() => handleClickOpen(user.name, user.id_user)}
-                                            className="btn-cancel"
+                                            className="btn-cancel mt-1"
                                         >
                                             Borrar
                                         </button>

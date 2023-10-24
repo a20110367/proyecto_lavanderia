@@ -117,13 +117,13 @@ function Clients() {
                                     <td>
                                         <button
                                             onClick={() => navigate(`/editClient/${client.id_client}`)}
-                                            className="btn-edit"
+                                            className="btn-edit m-1"
                                         >
                                             Editar
                                         </button>
                                         <button
                                             onClick={() => handleClickOpen(client.name, client.id_client)}
-                                            className="btn-cancel"
+                                            className="btn-cancel mt-1"
                                         >
                                             Borrar
                                         </button>

@@ -152,13 +152,13 @@ function CajaPedidos() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th className="py-3 px-1 text-center">ID Pedido</th>
-              <th className="py-3 px-6 ">Cliente</th>
-              <th className="py-3 px-6">Detalle del Pedido</th>
-              <th className="py-3 px-6">Estatus</th>
-              <th className="py-3 px-6">Forma de Pago</th>
-              <th className="py-3 px-6">Método de Pago</th>
-              <th className="py-3 px-6">Monto</th>
+              <th >ID Pedido</th>
+              <th >Cliente</th>
+              <th >Detalle del Pedido</th>
+              <th >Estatus</th>
+              <th >Forma de Pago</th>
+              <th >Método de Pago</th>
+              <th>Monto</th>
             </tr>
           </thead>
           <tbody>

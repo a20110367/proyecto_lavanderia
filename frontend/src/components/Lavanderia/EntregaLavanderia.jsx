@@ -192,14 +192,14 @@ function EntregaLavanderia() {
           <table className="w-full table-auto">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">Nombre del Cliente</th>
-                <th className="py-3 px-6">Empleado que Recibe</th>
-                <th className="py-3 px-6">Detalle del pedido</th>
-                <th className="py-3 px-6">Fecha de Recepción</th>
-                <th className="py-3 px-6">Estatus</th>
-                <th className="py-3 px-6">Fecha de Entrega Estimada</th>
-                <th className="py-3 px-6">Acciones</th>
+                <th className="">ID</th>
+                <th className="">Nombre del Cliente</th>
+                <th className="">Empleado que Recibe</th>
+                <th className="">Detalle del pedido</th>
+                <th className="">Fecha de Recepción</th>
+                <th className="">Estatus</th>
+                <th className="">Fecha de Entrega Estimada</th>
+                <th className="">Acciones</th>
               </tr>
             </thead>
             <tbody>

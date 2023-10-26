@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// FOR DOESN'T LOSE INFO OF THE DB USE 
-// npx prisma db push
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,52 +7,229 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model UserType{
-//   id_userType Int @id @default(autoincrement())
-//   descripcion String
-//   user User?
-// }
+model User {
+  id_user         Int               @id @default(autoincrement())
+  name            String
+  email           String            @unique
+  phone           String            @unique
+  pass            String
+  role            Role              @default(employee)
+  created         DateTime          @default(now())
+  firstLN         String
+  secondLN        String
+  username        String            @unique
+  updatedAt       DateTime          @updatedAt
+  cashCut         CashCut[]
+  cashWhithdrawal CashWhithdrawal[]
+  deliveryDetail  DeliveryDetail[]
+  orders          Order[]
+}
+
+model Client {
+  id_client Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  pass      String?
+  created   DateTime @default(now())
+  firstLN   String
+  secondLN  String?
+  username  String   @unique
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Machine {
+  id_machine         Int                  @id @default(autoincrement())
+  machineType        MachineType          @default(lavadora)
+  model              String
+  cicleTime          Int
+  weight             Int
+  status             Status               @default(available)
+  notes              String
+  created            DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  serialNumber       String               @default("N/A")
+  ServiceTraceDetail ServiceTraceDetail[]
+}
+
+model Category {
+  id_category         Int       @id @default(autoincrement())
+  categoryDescription String    @unique
+  orders              Order[]
+  services            Service[]
+}
+
+model Service {
+  id_service         Int                  @id @default(autoincrement())
+  description        String
+  price              Float
+  time               Int?
+  weight             Int?
+  created            DateTime             @default(now())
+  pieces             Int?
+  updatedAt          DateTime             @updatedAt
+  category_id        Int
+  dryCycles          Int?
+  washCycles         Int?
+  OrderServiceDetail OrderServiceDetail[]
+  category           Category             @relation(fields: [category_id], references: [id_category])
+
+  @@index([category_id], map: "Service_category_id_fkey")
+}
+
+model Order {
+  id_order               Int                  @id @default(autoincrement())
+  receptionDate          DateTime             @db.Date
+  orderStatus            OrderStatus          @default(pending)
+  totalPrice             Float
+  fk_client              Int
+  created                DateTime             @default(now())
+  numberOfItems          Int                  @default(1)
+  payForm                PayForm              @default(delivery)
+  payStatus              PayStatus            @default(unpaid)
+  receptionTime          DateTime             @db.Time(0)
+  updatedAt              DateTime             @updatedAt
+  fk_user                Int
+  scheduledDeliveryDate  DateTime             @db.Date
+  scheduledDeliveryTime  DateTime?            @db.Time(0)
+  fk_categoryDescription String
+  category               Category             @relation(fields: [fk_categoryDescription], references: [categoryDescription])
+  client                 Client               @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
+  user                   User                 @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
+  OrderServiceDetail     OrderServiceDetail[]
+  payment                Payment?
+
+  @@index([fk_categoryDescription], map: "Order_fk_categoryDescription_fkey")
+  @@index([fk_client], map: "Order_fk_client_fkey")
+  @@index([fk_user], map: "Order_fk_user_fkey")
+}
+
+model OrderServiceDetail {
+  token                 Int?
+  created               DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  id_OrderServiceDetail Int                  @id @default(autoincrement())
+  fk_Order              Int
+  fk_Service            Int
+  started               Boolean              @default(false)
+  order                 Order                @relation(fields: [fk_Order], references: [id_order], onDelete: NoAction)
+  service               Service              @relation(fields: [fk_Service], references: [id_service], onDelete: NoAction)
+  serviceTraceDetails   ServiceTraceDetail[]
+
+  @@index([fk_Order], map: "OrderServiceDetail_fk_Order_fkey")
+  @@index([fk_Service], map: "OrderServiceDetail_fk_Service_fkey")
+}
+
+model ServiceTraceDetail {
+  fk_idMachine            Int?
+  fk_staffMember          Int?
+  serviceDate             DateTime?          @db.Date
+  serviceTime             DateTime?          @db.Time(0)
+  created                 DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+  finished                Boolean            @default(false)
+  id_ServiceTraceDetail   Int                @id @default(autoincrement())
+  fk_idOrderServiceDetail Int
+  machine                 Machine?           @relation(fields: [fk_idMachine], references: [id_machine])
+  orderServiceDetail      OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail])
+  staffMember             StaffMember?       @relation(fields: [fk_staffMember], references: [id_staffMember])
+
+  @@index([fk_idMachine], map: "ServiceTraceDetail_fk_idMachine_fkey")
+  @@index([fk_idOrderServiceDetail], map: "ServiceTraceDetail_fk_idOrderServiceDetail_fkey")
+  @@index([fk_staffMember], map: "ServiceTraceDetail_fk_staffMember_fkey")
+}
+
+model Payment {
+  id_payment Int             @id @default(autoincrement())
+  fk_idOrder Int             @unique
+  payMethod  PayMethod
+  payDate    DateTime        @db.Date
+  created    DateTime        @default(now())
+  fk_cashCut Int
+  payTime    DateTime        @db.Time(0)
+  payTotal   Float
+  updatedAt  DateTime        @updatedAt
+  delivery   DeliveryDetail?
+  cashCut    CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
+  order      Order           @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([fk_cashCut], map: "Payment_fk_cashCut_fkey")
+}
+
+model DeliveryDetail {
+  id_delivery    Int      @id @default(autoincrement())
+  fk_userCashier Int
+  created        DateTime @default(now())
+  deliveryDate   DateTime @db.Date
+  deliveryTime   DateTime @db.Time(0)
+  updatedAt      DateTime @updatedAt
+  fk_idPayment   Int      @unique
+  payment        Payment  @relation(fields: [fk_idPayment], references: [id_payment], onDelete: NoAction, onUpdate: NoAction)
+  user           User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([fk_userCashier], map: "DeliveryDetail_fk_userCashier_fkey")
+}
+
+model StaffMember {
+  id_staffMember     Int                  @id @default(autoincrement())
+  name               String
+  email              String               @unique
+  phone              String               @unique
+  created            DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  firstLN            String
+  id_Token           Int?
+  secondLN           String
+  ServiceTraceDetail ServiceTraceDetail[]
+}
+
+model CashCut {
+  fk_user             Int
+  total               Float?
+  created             DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  cashCutD            DateTime?         @db.Date
+  cashCutT            DateTime?         @db.Time(0)
+  id_cashCut          Int               @id @default(autoincrement())
+  cashCutStatus       CashCutStatus     @default(open)
+  inicialCash         Float?            @default(0)
+  ordersPayed         Int?
+  toalAutoservicio    Float?
+  totalCash           Float?
+  totalCashWithdrawal Float?
+  totalCredit         Float?
+  totalEncargo        Float?
+  totalOtros          Float?            @default(0)
+  totalPlanchado      Float?
+  totalIncome         Float?
+  user                User              @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  cashWhithdrawal     CashWhithdrawal[]
+  payment             Payment[]
+
+  @@index([fk_user], map: "CashCut_fk_user_fkey")
+}
+
+model CashWhithdrawal {
+  id_cashWhihdrawal   Int                @id @default(autoincrement())
+  fk_cashCut          Int
+  fk_user             Int
+  cashWhithdrawalType CashWithdrawalType @default(withdrawal)
+  amount              Float
+  cause               String
+  date                DateTime?          @db.Date
+  created             DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  cashCut             CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
+  user                User               @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([fk_cashCut], map: "CashWhithdrawal_fk_cashCut_fkey")
+  @@index([fk_user], map: "CashWhithdrawal_fk_user_fkey")
+}
 
 enum Role {
   admin
   employee
-}
-
-model User {
-  id_user        Int              @id @default(autoincrement())
-  username       String           @unique
-  name           String
-  firstLN        String
-  secondLN       String
-  email          String           @unique
-  phone          String           @unique
-  pass           String
-  role           Role             @default(employee)
-  orders         Order[]
-  //payment        Payment[]
-  deliveryDetail DeliveryDetail[]
-  cashCut        CashCut[]
-  //clients        Client[]
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Client {
-  id_client Int     @id @default(autoincrement())
-  username  String  @unique
-  name      String
-  firstLN   String
-  secondLN  String?
-  email     String  @unique
-  phone     String  @unique
-  pass      String?
-  orders    Order[]
-  //users     User[]
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  //Order     Order[]
 }
 
 enum MachineType {
@@ -70,45 +241,6 @@ enum MachineType {
 enum Status {
   available
   unavailable
-}
-
-model Machine {
-  id_machine         Int                  @id @default(autoincrement())
-  machineType        MachineType          @default(lavadora)
-  model              String
-  cicleTime          Int
-  weight             Int
-  serialNumber       String               @default("N/A")
-  status             Status               @default(available)
-  notes              String
-  created            DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  ServiceTraceDetail ServiceTraceDetail[]
-}
-
-model Category {
-  id_category         Int       @id @default(autoincrement())
-  categoryDescription String
-  services            Service[]
-}
-
-model Service {
-  id_service  Int      @id @default(autoincrement())
-  description String
-  category_id Int //@default(1)
-  // Precio Unitario
-  price       Float
-  time        Int?
-  weight      Int?
-  pieces      Int?
-  //Numero de Ciclos permitidos
-  washCycles  Int?
-  dryCycles   Int?
-  category    Category @relation(fields: [category_id], references: [id_category])
-
-  created            DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  OrderServiceDetail OrderServiceDetail[]
 }
 
 enum PayMethod {
@@ -131,138 +263,15 @@ enum OrderStatus {
   inProgress
   finished
   delivered
+  stored
 }
 
-model Order {
-  id_order              Int         @id @default(autoincrement())
-  numberOfItems         Int         @default(1)
-  receptionDate         DateTime    @db.Date
-  receptionTime         DateTime    @db.Time
-  scheduledDeliveryDate DateTime    @db.Date
-  scheduledDeliveryTime DateTime?   @db.Time
-  payForm               PayForm     @default(delivery)
-  payStatus             PayStatus   @default(unpaid)
-  orderStatus           OrderStatus @default(pending)
-  totalPrice            Float
-  fk_client             Int
-  fk_user               Int
-
-  client Client @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
-  user   User   @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
-
-  //deliveryDetails DeliveryDetail?
-  payment Payment?
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  OrderServiceDetail OrderServiceDetail[]
+enum CashCutStatus {
+  open
+  closed
 }
 
-model OrderServiceDetail {
-  id_OrderServiceDetail Int     @id @default(autoincrement())
-  fk_Service            Int
-  fk_Order              Int
-  //units                 Int
-  started               Boolean @default(false)
-  //startDate             DateTime? @db.Date
-  token                 Int?
-
-  order   Order   @relation(fields: [fk_Order], references: [id_order], onDelete: NoAction)
-  service Service @relation(fields: [fk_Service], references: [id_service], onDelete: NoAction)
-
-  serviceTraceDetails ServiceTraceDetail[]
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model ServiceTraceDetail {
-  id_ServiceTraceDetail   Int @id @default(autoincrement())
-  fk_idOrderServiceDetail Int
-
-  fk_idMachine   Int?
-  fk_staffMember Int?
-  serviceDate    DateTime? @db.Date
-  serviceTime    DateTime? @db.Time
-  finished       Boolean   @default(false)
-
-  orderServiceDetail OrderServiceDetail @relation(fields: [fk_idOrderServiceDetail], references: [id_OrderServiceDetail])
-  machine            Machine?           @relation(fields: [fk_idMachine], references: [id_machine])
-  staffMember        StaffMember?       @relation(fields: [fk_staffMember], references: [id_staffMember])
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // @@id([fk_idOrder, id_ServiceTraceDetail])
-}
-
-model Payment {
-  id_payment Int       @id @default(autoincrement())
-  fk_idOrder Int       @unique
-  //fk_userCashier Int
-  payTotal   Float
-  payMethod  PayMethod
-  payDate    DateTime  @db.Date
-  payTime    DateTime  @db.Time
-  fk_cashCut Int
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  order    Order           @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  //user    User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  cashCut  CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
-  delivery DeliveryDetail?
-}
-
-model DeliveryDetail {
-  id_delivery    Int      @id @default(autoincrement())
-  //fk_idOrder     Int      @unique
-  fk_userCashier Int
-  fk_idPayment   Int      @unique
-  deliveryDate   DateTime @db.Date
-  deliveryTime   DateTime @db.Time
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  //order Order @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
-  user    User    @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
-  payment Payment @relation(fields: [fk_idPayment], references: [id_payment], onDelete: NoAction, onUpdate: NoAction)
-}
-
-model StaffMember {
-  id_staffMember Int    @id @default(autoincrement())
-  name           String
-  firstLN        String
-  secondLN       String
-  id_Token       Int?
-  email          String @unique
-  phone          String @unique
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  ServiceTraceDetail ServiceTraceDetail[]
-}
-
-model CashCut {
-  id_cashCut     Int       @id @default(autoincrement())
-  fk_user        Int
-  subtotal       Float?
-  total          Float?
-  subtotal_item1 Float?
-  subtotal_item2 Float?
-  subtotal_item3 Float?
-  subtotal_item4 Float?
-  subtotal_item5 Float?
-  cashCutD       DateTime? @db.Date
-  cashCutT       DateTime? @db.Time(0)
-  payment        Payment[]
-
-  created   DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+enum CashWithdrawalType {
+  withdrawal
+  refound
 }

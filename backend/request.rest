@@ -23,14 +23,14 @@ POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-  "username": "Juan1234",
-    "name": "Juan24",
-    "firstLN": "Perez4",
-    "secondLN": "Perez4",
-    "email": "a2011036724@ceti.mx",
-    "phone": "33432515436",
-    "pass": "122344",
-    "role": "employee"
+"username": "isra",
+    "name": "Israel",
+    "firstLN": "Ramirez",
+    "secondLN": "Quintero",
+    "email": "a20110367@ceti.mx",
+    "phone": "3324654",
+    "pass": "1010",
+    "role": "admin"
 }
 ###
 PATCH  http://localhost:5000/users/6
@@ -99,7 +99,7 @@ POST http://localhost:5000/categories
 Content-Type: application/json
 
 {
-    "categoryDescription": "planchado"
+   "categoryDescription": "pruebas"
 }
 
 ###
@@ -139,13 +139,13 @@ POST http://localhost:5000/clients
 Content-Type: application/json
 
 {
-    "username": "Cliente4",
-    "name": "Jose",
-    "firstLN": "Perez",
-    "secondLN": "Lopez",
-    "email": "uncorreo3@correo.com",
-    "phone": "1234567789",
-    "pass": "56453213"
+ "username": "Cliente3",
+    "name": "Janito",
+    "firstLN": "Lopez",
+    "secondLN": "Perez",
+    "email": "uncorreo2@correo.com",
+    "phone": "1234567733",
+    "pass": "1122334455"
 }
 ###
 PATCH  http://localhost:5000/clients/6
@@ -175,8 +175,7 @@ POST http://localhost:5000/machines
 Content-Type: application/json
 
 {
-   "id_machine": 4,
-    "machineType": "lavadora",
+       "machineType": "lavadora",
     "model": "Bien Chingona 5000",
     "cicleTime": 45,
     "weight": 25,
@@ -261,17 +260,19 @@ POST http://localhost:5000/orders
 Content-Type: application/json
 
 {
- "numberOfItems":5,
-  "receptionDate":"2023-10-11T00:00:00.000Z",
-  "receptionTime":"1970-01-01T13:15:48.000Z",        
-  "scheduledDeliveryDate":"2023-10-14T00:00:00.000Z",
-  "scheduledDeliveryTime":"1970-01-01T16:00:00.000Z",
-  "payForm":"delivery",             
-  "payStatus":"unpaid",             
-  "orderStatus":"pending",          
-  "totalPrice":35.28,           
-  "fk_client":2,             
-  "fk_user":3   
+  
+  "numberOfItems": 5,
+    "receptionDate": "2023-10-11T00:00:00.000Z",
+    "receptionTime": "1970-01-01T13:15:48.000Z",
+    "scheduledDeliveryDate": "2023-10-14T00:00:00.000Z",
+    "scheduledDeliveryTime": "1970-01-01T16:00:00.000Z",
+    "payForm": "delivery",
+    "payStatus": "unpaid",
+    "orderStatus": "pending",
+    "totalPrice": 35.28,
+    "fk_client": 2,
+    "fk_user": 3,
+    "fk_categoryDescription":"encargo"
 }
 
 ###
@@ -359,8 +360,8 @@ Content-Type: application/json
 
 {
   
-  "fk_idOrder" :4,
-  "payTotal"   :180.00,
+  "fk_idOrder" :13,
+  "payTotal"   :35.28,
   "payMethod" : "credit",
   "payDate" :   "2023-10-15T00:00:00.000Z",
   "payTime":"1970-01-01T16:00:00.000Z",
@@ -374,7 +375,7 @@ Content-Type: application/json
     "payMethod":"credit"
 }
 ###
-DELETE   http://localhost:5000/payments/17
+DELETE   http://localhost:5000/payments/19
 
 ###
 //CRUD DE CASHCUT
@@ -382,10 +383,21 @@ GET http://localhost:5000/cashCuts
 
 ###
 
-GET http://localhost:5000/cashCuts/2
+GET http://localhost:5000/cashCutStatus
+
+###
+GET http://localhost:5000/lastCashCut
+
+###
+
+GET http://localhost:5000/cashCuts/1
 
 ###
 GET  http://localhost:5000/calculateCashCut/1
+
+###
+
+GET  http://localhost:5000/closeCashCut/1
 
 ###
 

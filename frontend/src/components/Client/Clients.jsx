@@ -19,6 +19,11 @@ function Clients() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate()
     const [a, setA] = useState('Me gusta la letra A');
+    const fecha = new Date();
+    const diaActual = fecha.getDate();
+    const mesActual = fecha.getMonth() + 1; 
+    const añoActual = fecha.getFullYear();
+
 
     const { mutate } = useSWRConfig();
     const fetcher = async () => {
@@ -52,32 +57,65 @@ function Clients() {
     }
 
     const html = `
-
-<form class="form-container" id="container">
-  <div class="PrintOnly">
-    <div style="display: flex; align-items: center;" id="mainHeaders"> 
-      <img src="${IMAGES.pdfIcon}" width="150" height="150" alt="logo" class="logo">  
-      <hr class="hr-hor">
-      <h2 class="main-color" style="margin-top: 20px;">  information  </h2> 
-    </div>
-    <hr class="hr-header">
-    <div>
-      <div style="display: flex; align-items: center; padding-top: 0px">
-        <p class="main-color">  ID:</p> 
-        <p class="secondary-color" style="margin-left: 8px">${a}</p>
-        <p class="main-color" style="margin-left: 61px">Date of birth:</p> 
-        <p class="secondary-color" style="margin-left: 8px">${a}</p>
-      </div>
-      <div class="p-n-personal" style=" margin-top: 5px"> 
-        <p class="main-color600">
-          <img src="${IMAGES.pdfIcon}" width="150" height="150" alt="icon" style="float:left;margin-right: 18.5px;" class="icon">
-          Address
-        </p>
-      </div>
-    </div>
-  </div>
-</form>
-`;
+        <form class="form-container" id="container" style="font-size:small">
+            <div class="PrintOnly">
+                <div class="info" style="text-align: center;"> 
+                    <img src="${IMAGES.caprelogo}" width="150" height="100" alt="logo" class="logo">
+                    <p>**CAPREL**</p>
+                    <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
+                    <p>TLAQUEPAQUE, JALISCO</p>
+                    <p>TEL. (33) 30001789 RFC: ZAFR6</p>
+                </div>
+                <hr class="hr-header">
+                <div style=" padding-top: 0px">
+                    <div style="display:flex; justify-content: space-around;">
+                        <h3>FOLIO No.: 87668</h3>
+                        <h3>PAGADO</h3>
+                    </div>
+                    <hr class="hr-header">  
+                    <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
+                        <p>Color</p>
+                        <p>Estampado</p>
+                        <p>Fibra</p>
+                        <p>Cantidad</p>
+                        <p>Producto</p>
+                        <p>Precio</p>           
+                        <p>1</p>
+                        <p>EDREDON MATRIMONIAL</p>
+                        <p>95.00</p>
+                    </div>
+                    <hr class="hr-header">       
+                    <h4 style="text-align:center;">Total Pagado: $95.00</h4>
+                    <p style="text-align:center;">(NOVENTA Y CINCO Pesos 00/100 M.N.)</p>
+                    <div style="display:flex; justify-content: space-around;">
+                        <p>  Pago recibido: $ 100.00</p>
+                        <p>Cambio devuelto: $ 5.00</p>
+                    </div>
+                    <hr class="hr-header">
+                    <div style="display:flex; justify-content: space-around;">
+                        <p>Cajero: YADIRA</p> 
+                        <p>Cliente: biagai</p>
+                    </div>
+                    <div style="display:flex; justify-content: space-around;">
+                        <p>Tipo Pago: CONTADO</p>
+                        <p>F. Pago: EFECTIVO</p>
+                    </div>
+                    <div style="display:flex; justify-content: space-around;">
+                        <p>F. Recepción: 20/07/2023 JUEVES 09:35:44</p>
+                        <p>F. Entrega: 22/07/2023 SABADO</p>
+                    </div>
+                    <p>Observaciones Generales: </p>
+                    <hr class="hr-header">
+                    <div style="text-align:center;">
+                        <p>PROFECO N. REGISTRO: 4390/2013</p>
+                        <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
+                        <p>FECHA: ${diaActual}/${mesActual}/${añoActual}</p>
+                        <p>GRACIAS POR SU VISITA</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    `;
 
     return (
         <div>
@@ -148,7 +186,7 @@ function Clients() {
             <button className="btn-cancel" type="button" onClick={() => printJS({ printable: 'client-table', type: 'html', header: 'PrintJS - Form Element Selection' })}>
                 Print Data ID HTML
             </button>
-            <button className="btn-cancel" type="button" onClick={() => printJS({ printable: html, type: 'raw-html', header: 'PrintJS - Form Element Selection' })}>
+            <button className="btn-cancel" type="button" onClick={() => printJS({ printable: html, type: 'raw-html', header: 'PrintJS - Form Element Selection', css: '../../ticket.css' })}>
                 Print Data Raw HTML
             </button>
         </div>

@@ -28,11 +28,25 @@ export const getPaymentsById = async (req, res) =>{
 export const createPayment = async (req, res) =>{
    
     try {
-        const payment = await prisma.payment.create({
+        const payment =  prisma.payment.create({
             data: req.body
        
         });
-        res.status(201).json(payment);
+
+        
+        const orderPayment = prisma.order.update({
+            where:{
+                id_order:Number(req.body.fk_idOrder),
+            },
+            data:{
+                payStatus:'paid',
+            },
+
+        });
+
+        const result= await prisma.$transaction([payment,orderPayment]);
+
+        res.status(201).json(result);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -58,7 +72,7 @@ export const deletePayment =  async (req, res) =>{
         const payment = await prisma.payment.delete({
             where:{
                 id_payment: Number(req.params.id)
-            }
+            },
         });
         res.status(200).json(payment);
     }catch(e){

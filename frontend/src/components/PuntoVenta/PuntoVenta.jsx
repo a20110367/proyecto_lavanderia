@@ -156,7 +156,12 @@ export default function PuntoVenta() {
     }
 
     doc.save("ticket_compra.pdf");
-    // window.history.back();
+
+    localStorage.setItem("lastSelectedClient", clientName);
+    localStorage.setItem("returningFromPuntoVenta", "true");
+
+    // Regresar a la página anterior
+    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices

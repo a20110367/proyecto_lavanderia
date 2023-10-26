@@ -3,6 +3,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { Modal, Button, Input, DatePicker } from "antd";
 import moment from "moment";
+import { useAuth } from "../../hooks/auth/auth";
 
 function Retiro() {
   const [retiros, setRetiros] = useState([]);
@@ -15,6 +16,7 @@ function Retiro() {
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
   const [usuarioError, setUsuarioError] = useState("");
+  const { cookies } = useAuth();
 
   useEffect(() => {
     const dummyRetiros = [
@@ -215,9 +217,8 @@ function Retiro() {
               Usuario:
             </label>
             <Input
-              value={usuario}
-              onChange={(e) => setUsuario(e.target.value)}
-              placeholder="Ingrese el nombre de usuario"
+              value={cookies.username} // Utiliza el nombre de usuario desde las cookies
+              readOnly // Hacer el campo solo de lectura
             />
             <p className="text-red-500">{usuarioError}</p>
           </div>

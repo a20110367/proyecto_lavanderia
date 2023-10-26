@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
 import { FaExclamationCircle } from "react-icons/fa";
@@ -26,6 +26,24 @@ function AutoServicio() {
     : [];
 
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
+
+  useEffect(() => {
+    // Verificar si estamos regresando desde PuntoVenta
+    const isReturningFromPuntoVenta = localStorage.getItem(
+      "returningFromPuntoVenta"
+    );
+
+    if (isReturningFromPuntoVenta === "true") {
+      // Recuperar el nombre del cliente desde localStorage
+      const lastSelectedClient = localStorage.getItem("lastSelectedClient");
+
+      // Asignar el nombre del cliente al campo de búsqueda
+      setFiltro(lastSelectedClient || "");
+
+      // Eliminar la bandera de returningFromPuntoVenta de localStorage
+      localStorage.removeItem("returningFromPuntoVenta");
+    }
+  }, []);
 
   return (
     <div>

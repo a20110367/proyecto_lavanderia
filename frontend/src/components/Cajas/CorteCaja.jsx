@@ -4,7 +4,7 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
-import { format } from "date-fns";
+
 
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -36,24 +36,24 @@ function CorteCaja() {
     const dummyCortes = [
       {
         id: 1,
-        fecha: "2023-09-20",
-        dineroFondo: 20000,
-        retirosTotales: 1200,
-        ingresosTotales: 20000,
-        ingresoEfectivo: 10000,
-        ingresoTarjeta: 10000,
+        fecha: "15/09/2023", // Mantén el formato dd/mm/yyyy aquí
+        dineroFondo: 18000,
+        retirosTotales: 600,
+        ingresosTotales: 16000,
+        ingresoEfectivo: 9000,
+        ingresoTarjeta: 7000,
         finalTotalCaja: 0,
-        usuario: "Usuario1",
+        usuario: "Usuario3",
         turno: "Matutino",
-        tipoServicio: "Autoservicio",
+        tipoServicio: "Planchado",
         // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 10000,
-        ingresoLavadoEncargo: 16000,
-        ingresoPlanchado: 15000,
+        ingresoAutoservicio: 3000,
+        ingresoLavadoEncargo: 4000,
+        ingresoPlanchado: 16000,
       },
       {
         id: 2,
-        fecha: "2023-09-18",
+        fecha: "18/09/2023", // Mantén el formato dd/mm/yyyy aquí
         dineroFondo: 15000,
         retirosTotales: 300,
         ingresosTotales: 15000,
@@ -70,20 +70,20 @@ function CorteCaja() {
       },
       {
         id: 3,
-        fecha: "2023-09-15",
-        dineroFondo: 18000,
-        retirosTotales: 600,
-        ingresosTotales: 16000,
-        ingresoEfectivo: 9000,
-        ingresoTarjeta: 7000,
+        fecha: "20/09/2023", // Mantén el formato dd/mm/yyyy aquí
+        dineroFondo: 20000,
+        retirosTotales: 1200,
+        ingresosTotales: 20000,
+        ingresoEfectivo: 10000,
+        ingresoTarjeta: 10000,
         finalTotalCaja: 0,
-        usuario: "Usuario3",
+        usuario: "Usuario1",
         turno: "Matutino",
-        tipoServicio: "Planchado",
+        tipoServicio: "Autoservicio",
         // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 3000,
-        ingresoLavadoEncargo: 4000,
-        ingresoPlanchado: 16000,
+        ingresoAutoservicio: 10000,
+        ingresoLavadoEncargo: 16000,
+        ingresoPlanchado: 15000,
       },
     ];
 
@@ -110,7 +110,7 @@ function CorteCaja() {
 
     const nuevoCorte = {
       id: Cortes.length + 1,
-      fecha: moment().format("YYYY-MM-DD"),
+      fecha: moment().format("DD/MM/YYYY"),
       dineroFondo: 20000,
       retirosTotales: 1200,
       ingresoEfectivo: 61000,
@@ -196,7 +196,7 @@ function CorteCaja() {
 
     const nuevoCorte = {
       id: Cortes.length + 1,
-      fecha: moment().format("YYYY-MM-DD"),
+      fecha: moment().format("DD-MM-YYY"),
       dineroFondo: 20000,
       retirosTotales: 1200,
       ingresoEfectivo: 61000,
@@ -270,7 +270,7 @@ function CorteCaja() {
       doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
       doc.text(
-        `Fecha: ${format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}`,
+        `Fecha: ${selectedCorte.fecha}`,
         10,
         50
       );
@@ -352,9 +352,7 @@ function CorteCaja() {
               {Cortes.map((corte) => (
                 <tr className="bg-white border-b" key={corte.id}>
                 <td className="py-3 px-1 text-center">{corte.id}</td>
-                <td className="py-3 px-6">
-                  {format(new Date(corte.fecha), "dd/MM/yyyy")}
-                </td>
+                <td className="py-3 px-6">{corte.fecha}</td>
                 <td className="py-3 px-6">${corte.dineroFondo}</td>
                 <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
                 <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
@@ -467,7 +465,7 @@ function CorteCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}
-                    {format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}
+                    {selectedCorte.fecha}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Dinero en Fondo:</span> $

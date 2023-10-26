@@ -211,7 +211,7 @@ model CashCut {
 }
 
 model CashWhithdrawal {
-  id_cashWhihdrawal   Int                @id @default(autoincrement())
+  id_cashWhithdrawal  Int                @id @default(autoincrement())
   fk_cashCut          Int
   fk_user             Int
   cashWhithdrawalType CashWithdrawalType @default(withdrawal)

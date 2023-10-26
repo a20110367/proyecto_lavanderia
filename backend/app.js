@@ -15,8 +15,9 @@ import PaymentRoute from './routes/PaymentRoute.js'
 import DeliveryDetailRoute from './routes/DeliveryDetailRoute.js'
 import ServiceTraceDetailRoute from './routes/ServiceTraceDetailRoute.js'
 import OrderServiceDetailRoute from './routes/OrderServiceDetailRoute.js'
-
+import CashWhithdrawalRoute from './routes/CashWithdrawalRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
+
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -37,6 +38,7 @@ app.use(PaymentRoute)
 app.use(DeliveryDetailRoute)
 app.use(ServiceTraceDetailRoute)
 app.use(OrderServiceDetailRoute)
+app.use(CashWhithdrawalRoute)
 
 app.use(MessageRoute)
 

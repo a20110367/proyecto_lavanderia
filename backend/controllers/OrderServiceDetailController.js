@@ -25,10 +25,23 @@ export const getOrderServiceDetailsById = async (req, res) =>{
     }
 }
 
+export const getOrderServiceDetailsByOrderId = async (req, res) =>{
+    try {
+        const response = await prisma.orderServiceDetail.findMany({
+            where:{
+                fk_Order: Number(req.params.id)
+            }
+        });
+        res.status(200).json(response);
+    }catch(e){
+        res.status(404).json({msg:e.message});
+    }
+}
+
 export const createOrderServiceDetail = async (req, res) =>{
    
     try {
-        const serviceDetail = await prisma.orderServiceDetail.create({
+        const serviceDetail = await prisma.orderServiceDetail.createMany({
             data: req.body
        
         });

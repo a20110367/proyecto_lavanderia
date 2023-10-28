@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import { Modal, Button, Input, DatePicker } from "antd";
+import { Modal, Button, Input } from "antd";
 import moment from "moment";
+import ReactPaginate from "react-paginate";
 
 function Reembolso() {
   const [reembolsos, setReembolsos] = useState([]);
@@ -16,6 +16,12 @@ function Reembolso() {
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyReembolsos = [
@@ -114,11 +120,10 @@ function Reembolso() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Registro de Reembolsos</strong>
+      <div className="title-container">
+          <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
         <div className="flex items-center mb-4">
           <div className="relative w-full">
             <input
@@ -144,7 +149,9 @@ function Reembolso() {
             </tr>
           </thead>
           <tbody>
-            {filteredReembolsos.map((reembolso) => (
+          {filteredReembolsos
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((reembolso) => (
               <tr className="bg-white border-b" key={reembolso.id}>
                 <td className="py-3 px-1 text-center">{reembolso.id}</td>
                 <td className="py-3 px-6">{reembolso.numeroPedido}</td>
@@ -164,7 +171,6 @@ function Reembolso() {
           </button>
         
         </div>
-      </div>
       <Modal
         title="Registrar Reembolso"
         visible={visible}
@@ -227,6 +233,23 @@ function Reembolso() {
           </div>
         </form>
       </Modal>
+      <div className="flex justify-center mt-4">
+    <ReactPaginate
+      previousLabel={"Anterior"}
+      nextLabel={"Siguiente"}
+      breakLabel={"..."}
+      pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
+      marginPagesDisplayed={2}
+      pageRangeDisplayed={5}
+      onPageChange={handlePageChange}
+      containerClassName={"pagination flex"}
+      pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+      previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+      nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+      breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+      activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+    />
+  </div>
     </div>
   );
 }

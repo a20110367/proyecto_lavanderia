@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
+import ReactPaginate from "react-paginate";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -9,6 +10,12 @@ function HistorialCaja() {
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [dateRange, setDateRange] = useState([null]);
   const [datesSelected, setDatesSelected] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyCortes = [
@@ -63,6 +70,7 @@ function HistorialCaja() {
         ingresoLavadoEncargo: 16000,
         ingresoPlanchado: 15000,
       },
+      
     ];
     const cortesConFinalTotalCaja = dummyCortes.map((corte) => ({
       ...corte,
@@ -106,15 +114,31 @@ function HistorialCaja() {
       // Separación
       doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
       doc.text(`Autoservicio: $${selectedCorte.ingresoAutoservicio}`, 10, 90);
-      doc.text(`Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`, 10, 100);
+      doc.text(
+        `Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`,
+        10,
+        100
+      );
       doc.text(`Planchado: $${selectedCorte.ingresoPlanchado}`, 10, 110);
-      doc.text(`Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`, 10, 120);
-      doc.text(`Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`, 10, 130);
+      doc.text(
+        `Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`,
+        10,
+        120
+      );
+      doc.text(
+        `Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`,
+        10,
+        130
+      );
 
       // Separación
       doc.text(`Ingreso en Tarjeta: $${selectedCorte.ingresoTarjeta}`, 10, 150);
       doc.text(`Retiros Totales: $${selectedCorte.retirosTotales}`, 10, 160);
-      doc.text(`Final Total en Caja: $${selectedCorte.finalTotalCaja}`, 10, 170);
+      doc.text(
+        `Final Total en Caja: $${selectedCorte.finalTotalCaja}`,
+        10,
+        170
+      );
 
       doc.save("detalle_corte.pdf");
     }
@@ -155,54 +179,58 @@ function HistorialCaja() {
     <div className="text-center mt-4">
       <div>
         <div className="mb-3">
-          <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1 mt-4">
-            <strong>Historial de cortes</strong>
+          <div className="title-container">
+            <strong className="title-strong">Historial de Cortes</strong>
           </div>
         </div>
-        <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-          <div className="flex items-center mb-4">
-            <div className="relative w-full">
-              <div className="relative w-full flex items-center">
-                <DatePicker.RangePicker
-                  onChange={(dates) => {
-                    setDateRange(dates);
-                    if (!dates || dates.length === 0) {
-                      setDatesSelected(false);
-                      setFilteredCortes(Cortes);
-                    }
-                  }}
-                  value={dateRange}
-                  format="DD/MM/YYYY"
-                  className="border-2 rounded-md py-2  pl-10  border-black mt-2"
-                />
-                <button
-                  className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm ml-2"
-                  onClick={handleFiltroPorFecha}
-                >
-                  Buscar
-                </button>
-              </div>
+        <div className="flex items-center mb-4">
+          <div className="relative w-full">
+            <div className="relative w-full flex items-center">
+              <DatePicker.RangePicker
+                onChange={(dates) => {
+                  setDateRange(dates);
+                  if (!dates || dates.length === 0) {
+                    setDatesSelected(false);
+                    setFilteredCortes(Cortes);
+                  }
+                }}
+                value={dateRange}
+                format="DD/MM/YYYY"
+                className="border-2 rounded-md py-2  pl-10  border-black mt-2"
+              />
+              <button
+                className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm ml-2"
+                onClick={handleFiltroPorFecha}
+              >
+                Buscar
+              </button>
             </div>
           </div>
-          <div className="mt-4" style={{ overflowX: "auto" }}>
-            <table className="w-full text-sm text-left text-gray-500 ">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-                <tr>
-                  <th>ID</th>
-                  <th>FECHA</th>
-                  <th>DINERO EN FONDO</th>
-                  <th>INGRESO EN EFECTIVO</th>
-                  <th>INGRESO EN TARJETA</th>
-                  <th>INGRESOS TOTALES</th>
-                  <th>RETIROS TOTALES</th>
-                  <th>FINAL TOTAL CAJA</th>
-                  <th>USUARIO</th>
-                  <th>TURNO</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCortes.map((corte) => (
+        </div>
+        <div className="mt-4" style={{ overflowX: "auto" }}>
+          <table className="w-full text-sm text-left text-gray-500 ">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+              <tr>
+                <th>ID</th>
+                <th>FECHA</th>
+                <th>DINERO EN FONDO</th>
+                <th>INGRESO EN EFECTIVO</th>
+                <th>INGRESO EN TARJETA</th>
+                <th>INGRESOS TOTALES</th>
+                <th>RETIROS TOTALES</th>
+                <th>FINAL TOTAL CAJA</th>
+                <th>USUARIO</th>
+                <th>TURNO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCortes
+                .slice(
+                  currentPage * itemsPerPage,
+                  (currentPage + 1) * itemsPerPage
+                )
+                .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id}>
                     <td className="py-3 px-1 text-center">{corte.id}</td>
                     <td className="py-3 px-6">{corte.fecha}</td>
@@ -224,9 +252,8 @@ function HistorialCaja() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         </div>
 
         {/* Modal para mostrar detalles */}
@@ -322,6 +349,23 @@ function HistorialCaja() {
             </div>
           )}
         </Modal>
+      </div>
+      <div className="flex justify-center mt-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredCortes.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+        />
       </div>
     </div>
   );

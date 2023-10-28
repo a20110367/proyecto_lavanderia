@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import ReactPaginate from "react-paginate";
 
 function EntregaLavanderia() {
   const [pedidos, setPedidos] = useState([]);
@@ -21,6 +22,12 @@ function EntregaLavanderia() {
   });
 
   const [entregando, setEntregando] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyPedidos = [
@@ -169,11 +176,10 @@ function EntregaLavanderia() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong className="text-xl">Entregas Lavanderia</strong>
+      <div className="title-container">
+          <strong className="title-strong">Entregas Lavanderia</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
         <div className="flex items-center mb-4">
           <div className="relative w-full">
             <input
@@ -203,7 +209,9 @@ function EntregaLavanderia() {
               </tr>
             </thead>
             <tbody>
-              {filteredPedidos.map((pedido) => (
+            {filteredPedidos
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_pedido}>
                   <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
@@ -254,15 +262,23 @@ function EntregaLavanderia() {
             </tbody>
           </table>
         </div>
-        <Link
-          to="/menuPuntoVenta"
-          className="mt-4 flex text-center text-decoration-none"
-        >
-          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-            <div className="text-lg font-semibold">Volver</div>
-          </button>
-        </Link>
-      </div>
+        <div className="flex justify-center mt-4">
+  <ReactPaginate
+    previousLabel={"Anterior"}
+    nextLabel={"Siguiente"}
+    breakLabel={"..."}
+    pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={5}
+    onPageChange={handlePageChange}
+    containerClassName={"pagination flex"}
+    pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+    activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+  />
+</div>
 
       {selectedPedido && entregando && selectedPedido.orderstatus === "Pagado" && (
         <Modal
@@ -303,6 +319,7 @@ function EntregaLavanderia() {
           </Button>,
         ]}
       >
+
         {selectedPedido?.orderstatus === "Adeudo" && (
           <div>
             <p className="text-lg font-semibold">Detalles del Pedido</p>

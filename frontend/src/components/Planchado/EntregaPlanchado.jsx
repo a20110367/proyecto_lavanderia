@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import ReactPaginate from "react-paginate";
 
 function EntregaPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -21,6 +22,13 @@ function EntregaPlanchado() {
   });
 
   const [entregando, setEntregando] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+  
 
   useEffect(() => {
     const dummyPedidos = [
@@ -125,7 +133,9 @@ function EntregaPlanchado() {
     doc.text(`Estatus: Adeudo`, 10, 40);
     doc.text(`Método de Pago: ${updatedPedido.metodoPago}`, 10, 50);
     doc.text(
-      `Fecha de Pago: ${moment(updatedPedido.f_recepcion).format("DD/MM/YYYY")}`,
+      `Fecha de Pago: ${moment(updatedPedido.f_recepcion).format(
+        "DD/MM/YYYY"
+      )}`,
       10,
       60
     );
@@ -166,116 +176,128 @@ function EntregaPlanchado() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong className="text-xl">Entregas Planchado</strong>
+        <div className="title-container">
+          <strong className="title-strong">Entregas Planchado</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."             
-              className="search-ipt"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-3 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="search-ipt"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-3 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="">ID</th>
-                <th className="">Nombre del Cliente</th>
-                <th className="">Empleado que Recibe</th>
-                <th className="">Detalle del pedido</th>
-                <th className="">Fecha de Recepción</th>
-                <th className="">Estatus</th>
-                <th className="">Fecha de Entrega Estimada</th>
-                <th className="">Acciones</th>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th className="">ID</th>
+              <th className="">Nombre del Cliente</th>
+              <th className="">Empleado que Recibe</th>
+              <th className="">Detalle del pedido</th>
+              <th className="">Fecha de Recepción</th>
+              <th className="">Estatus</th>
+              <th className="">Fecha de Entrega Estimada</th>
+              <th className="">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+          {filteredPedidos
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((pedido) => (
+              <tr className="bg-white border-b" key={pedido.id_pedido}>
+                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.cliente}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleadoRecibe}
+                </td>
+                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                <td
+                  className={`py-3 px-6 ${
+                    pedido.orderstatus === "Adeudo"
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {pedido.orderstatus === "Adeudo" ? (
+                    <span className="text-red-600 pl-1">
+                      <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
+                    </span>
+                  ) : (
+                    <span className="text-green-600 pl-1">
+                      <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
+                <td>
+                  {pedido.orderstatus === "Pagado" ? (
+                    <button
+                      onClick={() => handleEntregar(pedido)}
+                      className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                    >
+                      Entregar
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleCobrar(pedido)}
+                      className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                    >
+                      Cobrar
+                    </button>
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredPedidos.map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleadoRecibe}
-                  </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
-                  <td
-                    className={`py-3 px-6 ${
-                      pedido.orderstatus === "Adeudo"
-                        ? "text-red-600"
-                        : "text-green-600"
-                    }`}
-                  >
-                    {pedido.orderstatus === "Adeudo" ? (
-                      <span className="text-red-600 pl-1">
-                        <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
-                      </span>
-                    ) : (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
-                  <td>
-                    {pedido.orderstatus === "Pagado" ? (
-                      <button
-                        onClick={() => handleEntregar(pedido)}
-                        className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-                      >
-                        Entregar
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleCobrar(pedido)}
-                        className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-                      >
-                        Cobrar
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Link
-          to="/menuPuntoVenta"
-          className="mt-4 flex text-center text-decoration-none"
-        >
-          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-            <div className="text-lg font-semibold">Volver</div>
-          </button>
-        </Link>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      {selectedPedido && entregando && selectedPedido.orderstatus === "Pagado" && (
-        <Modal
-          title="Pedido Entregado"
-          visible={entregando}
-          closable={false}
-          footer={null}
-        >
-          <div className="text-center">
-            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
-            <p className="text-green-600 font-bold text-lg mt-2">
-              Pedido Entregado...
-            </p>
-          </div>
-        </Modal>
-      )}
+      <div className="flex justify-center mt-4">
+  <ReactPaginate
+    previousLabel={"Anterior"}
+    nextLabel={"Siguiente"}
+    breakLabel={"..."}
+    pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+    marginPagesDisplayed={2}
+    pageRangeDisplayed={5}
+    onPageChange={handlePageChange}
+    containerClassName={"pagination flex"}
+    pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+    breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+    activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+  />
+</div>
+      {selectedPedido &&
+        entregando &&
+        selectedPedido.orderstatus === "Pagado" && (
+          <Modal
+            title="Pedido Entregado"
+            visible={entregando}
+            closable={false}
+            footer={null}
+          >
+            <div className="text-center">
+              <CheckCircleOutlined
+                style={{ fontSize: "64px", color: "green" }}
+              />
+              <p className="text-green-600 font-bold text-lg mt-2">
+                Pedido Entregado...
+              </p>
+            </div>
+          </Modal>
+        )}
 
       <Modal
         title="Detalles del Pedido"
@@ -334,7 +356,6 @@ function EntregaPlanchado() {
                 onChange={handleCobroInfoChange}
                 className="bg-gray-200 rounded-md p-1"
                 readOnly
-                
               />
             </div>
           </div>

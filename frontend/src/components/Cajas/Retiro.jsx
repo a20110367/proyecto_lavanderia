@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import { Modal, Button, Input, DatePicker } from "antd";
+import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
+import ReactPaginate from "react-paginate";
 
 function Retiro() {
   const [retiros, setRetiros] = useState([]);
@@ -17,6 +17,12 @@ function Retiro() {
   const [motivoError, setMotivoError] = useState("");
   const [usuarioError, setUsuarioError] = useState("");
   const { cookies } = useAuth();
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyRetiros = [
@@ -80,23 +86,16 @@ function Retiro() {
       setMotivoError("");
     }
 
-    if (!usuario) {
-      setUsuarioError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setUsuarioError("");
-    }
-
     if (isValid) {
-      const currentDate = moment(); 
-      const formattedDate = currentDate.format("DD/MM/YYYY"); 
+      const currentDate = moment();
+      const formattedDate = currentDate.format("DD/MM/YYYY");
 
       const nuevoRetiro = {
         id: retiros.length + 1,
         fecha: formattedDate,
         monto: parseInt(monto),
         motivo: motivo,
-        usuario: usuario,
+        usuario: cookies.username,
       };
 
       setRetiros([...retiros, nuevoRetiro]);
@@ -113,37 +112,38 @@ function Retiro() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Registro de Retiros</strong>
+        <div className="title-container">
+          <strong className="title-strong">Registro de Retiros</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-1 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th>ID</th>
-              <th >Fecha</th>
-              <th >Monto</th>
-              <th >Motivo</th>
-              <th>Usuario</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRetiros.map((retiro) => (
+      </div>
+      <table className="w-full text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Motivo</th>
+            <th>Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredRetiros
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .map((retiro) => (
               <tr className="bg-white border-b" key={retiro.id}>
                 <td className="py-3 px-1 text-center">{retiro.id}</td>
                 <td className="py-3 px-6">{retiro.fecha}</td>
@@ -152,17 +152,15 @@ function Retiro() {
                 <td className="py-3 px-6">{retiro.usuario}</td>
               </tr>
             ))}
-          </tbody>
-        </table>
-        <div className="mt-4">
-          <button
-            onClick={handleRetiro}
-            className="bg-red-500 text-white p-3 rounded-md shadow-lg hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
-          >
-            Registrar Retiro
-          </button>
-        
-        </div>
+        </tbody>
+      </table>
+      <div className="mt-4">
+        <button
+          onClick={handleRetiro}
+          className="bg-red-500 text-white p-3 rounded-md shadow-lg hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        >
+          Registrar Retiro
+        </button>
       </div>
       <Modal
         title="Registrar Retiro de Caja"
@@ -187,7 +185,7 @@ function Retiro() {
           </Button>,
         ]}
       >
-       <form>
+        <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Monto:
@@ -224,6 +222,23 @@ function Retiro() {
           </div>
         </form>
       </Modal>
+      <div className="flex justify-center mt-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredRetiros.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+        />
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
+import ReactPaginate from "react-paginate";
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -17,6 +18,12 @@ function ServicesPlanchado() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -28,15 +35,20 @@ function ServicesPlanchado() {
 
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();
-    const exclusionKeywords = ["autoservicio", "auto servicio", "autoservicios", "auto servicios"];
+    const exclusionKeywords = [
+      "autoservicio",
+      "auto servicio",
+      "autoservicios",
+      "auto servicios",
+    ];
     const excludeService = exclusionKeywords.some((keyword) =>
-      new RegExp(keyword, 'i').test(description)
+      new RegExp(keyword, "i").test(description)
     );
     return (
       (description.includes("planchado") ||
         description.includes("planchados") ||
         description.includes("planchaduria")) &&
-        !excludeService
+      !excludeService
     );
   });
 
@@ -72,7 +84,7 @@ function ServicesPlanchado() {
         >
           Añadir Nuevo Servicio De Planchaduria
         </button>
-        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
+        <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
@@ -89,68 +101,95 @@ function ServicesPlanchado() {
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((service, index) => (
-                <tr key={service.id_service}>
-                  <td>{index + 1}</td>
-                  <td>{service.description}</td>
-                  <td>{service.category.cateforyDes}</td>
-                  <td>${service.price}</td>
-                  <td>{service.time} minutos</td>
-                  <td>
-                    {service.weight} {service.weight ? "kg" : ""}
-                  </td>
-                  <td>
-                    {service.pieces} {service.pieces ? "pz" : ""}
-                  </td>
-                  <td>{service.created}</td>
-                  <td>{service.updatedAT}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        navigate(`/editServicePlanchado/${service.id_service}`)
-                      }
-                      className="btn-edit m-1"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleClickOpen(service.description, service.id_service)
-                      }
-                      className="btn-cancel mt-1"
-                    >
-                      Eliminar
-                    </button>
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Eliminar el servicio"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          ¿Deseas eliminar el servicio: {serviceSelDesc}?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Cancelar</Button>
-                        <Button
-                          onClick={() => deleteAndClose(serviceSelId)}
-                          autoFocus
-                        >
-                          Eliminar
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </td>
-                </tr>
-              ))}
+              {filteredData
+                .slice(
+                  currentPage * itemsPerPage,
+                  (currentPage + 1) * itemsPerPage
+                )
+                .map((service, index) => (
+                  <tr key={service.id_service}>
+                    <td>{index + 1}</td>
+                    <td>{service.description}</td>
+                    <td>{service.category.cateforyDes}</td>
+                    <td>${service.price}</td>
+                    <td>{service.time} minutos</td>
+                    <td>
+                      {service.weight} {service.weight ? "kg" : ""}
+                    </td>
+                    <td>
+                      {service.pieces} {service.pieces ? "pz" : ""}
+                    </td>
+                    <td>{service.created}</td>
+                    <td>{service.updatedAT}</td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/editServicePlanchado/${service.id_service}`
+                          )
+                        }
+                        className="btn-edit m-1"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleClickOpen(
+                            service.description,
+                            service.id_service
+                          )
+                        }
+                        className="btn-cancel mt-1"
+                      >
+                        Eliminar
+                      </button>
+                      <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Eliminar el servicio"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            ¿Deseas eliminar el servicio: {serviceSelDesc}?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancelar</Button>
+                          <Button
+                            onClick={() => deleteAndClose(serviceSelId)}
+                            autoFocus
+                          >
+                            Eliminar
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="flex justify-center mt-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+        />
       </div>
     </div>
   );

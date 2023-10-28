@@ -9,6 +9,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import ReactPaginate from "react-paginate";
 
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -17,6 +18,16 @@ function PedidosPlanchado() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyPedidos = [
@@ -132,11 +143,10 @@ function PedidosPlanchado() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Pedidos Planchado</strong>
+      <div className="title-container">
+          <strong className="title-strong">Pedidos de Planchado</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
         <div className="flex items-center mb-4">
           <div className="relative w-full">
             <input
@@ -186,7 +196,7 @@ function PedidosPlanchado() {
               </tr>
             </thead>
             <tbody>
-              {filteredPedidos.map((pedido) => (
+            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_pedido}>
                   <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
@@ -238,6 +248,22 @@ function PedidosPlanchado() {
             </tbody>
           </table>
         </div>
+        <div className="flex justify-center items-center my-8">
+        <ReactPaginate
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          breakLabel="..."
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName="pagination flex"
+          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
+          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
+          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+        />
       </div>
       <Modal visible={notificationVisible} footer={null} onCancel={() => setNotificationVisible(false)} destroyOnClose>
         <div className="text-center">

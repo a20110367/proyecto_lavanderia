@@ -94,9 +94,11 @@ model Order {
   scheduledDeliveryDate  DateTime             @db.Date
   scheduledDeliveryTime  DateTime?            @db.Time(0)
   fk_categoryDescription String
+  fk_deliveryDetail      Int? 
   category               Category             @relation(fields: [fk_categoryDescription], references: [categoryDescription])
   client                 Client               @relation(fields: [fk_client], references: [id_client], onDelete: NoAction)
   user                   User                 @relation(fields: [fk_user], references: [id_user], onDelete: NoAction)
+  deliveryDetail         DeliveryDetail?
   OrderServiceDetail     OrderServiceDetail[]
   payment                Payment?
 
@@ -150,7 +152,7 @@ model Payment {
   payTime    DateTime        @db.Time(0)
   payTotal   Float
   updatedAt  DateTime        @updatedAt
-  delivery   DeliveryDetail?
+  delivery   DeliveryDetail? 
   cashCut    CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
   order      Order           @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
 
@@ -164,9 +166,11 @@ model DeliveryDetail {
   deliveryDate   DateTime @db.Date
   deliveryTime   DateTime @db.Time(0)
   updatedAt      DateTime @updatedAt
+  fk_idOrder     Int  @unique
   fk_idPayment   Int      @unique
   payment        Payment  @relation(fields: [fk_idPayment], references: [id_payment], onDelete: NoAction, onUpdate: NoAction)
   user           User     @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  order          Order    @relation(fields: [fk_idOrder], references: [id_order])
 
   @@index([fk_userCashier], map: "DeliveryDetail_fk_userCashier_fkey")
 }
@@ -211,7 +215,7 @@ model CashCut {
 }
 
 model CashWhithdrawal {
-  id_cashWhihdrawal   Int                @id @default(autoincrement())
+  id_cashWhithdrawal  Int                @id @default(autoincrement())
   fk_cashCut          Int
   fk_user             Int
   cashWhithdrawalType CashWithdrawalType @default(withdrawal)

@@ -240,33 +240,32 @@ export const calculateCashCut = async (req, res) =>{
         });
 
         
+         
         const otherCategorys=(parseFloat(total._sum.payTotal.toFixed(2))-totalAutoservicio._sum.totalPrice-totalPlanchado._sum.totalPrice);
         
         if(totalCashWhithdrawal._sum.amount===null)
             totalCashWhithdrawal._sum.amount=parseFloat(0.00);
-        const totalCash=cash._sum.payTotal+credit._sum.payTotal-totalCashWhithdrawal;
+        const totalC=cash._sum.payTotal+credit._sum.payTotal-totalCashWhithdrawal._sum.amount;
 
        console.log(totalEncargo._sum.totalPrice,totalAutoservicio._sum.totalPrice,totalPlanchado._sum.totalPrice);
        //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
         
-       var today = new Date().toJSON();
-       var time = new Date().toJSON();
-        console.log(today);
-        console.log(time);
+        const today = new Date().toJSON();
+        const time = new Date().toJSON();
+        const totalIncome=parseFloat(total._sum.payTotal.toFixed(2));
+
         const response=
             {
                 "totalCash":cash._sum.payTotal,
                 "totalCredit":credit._sum.payTotal,
-                "totalIncome":parseFloat(total._sum.payTotal.toFixed(2)),
+                "totalIncome":totalIncome,
                 "totalCashWithdrawal":totalCashWhithdrawal._sum.amount,
-                "total":totalCash,
+                "total":totalC,
                 "totalEncargo":totalEncargo._sum.totalPrice,
                 "toalAutoservicio":totalAutoservicio._sum.totalPrice,
                 "totalPlanchado":totalPlanchado._sum.totalPrice,
                 "totalOtros":otherCategorys,
-                "ordersPayed":orders.length,
-                "cashCutStatus":closed
-
+                "ordersPayed":orders.length
                 //"selfService":selfService
                 //"ordersIds":ordersIds
             }

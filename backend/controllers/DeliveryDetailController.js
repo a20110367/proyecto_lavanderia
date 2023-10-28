@@ -28,15 +28,28 @@ export const getDeliveryDetailsById = async (req, res) =>{
 export const createDeliveryDetail = async (req, res) =>{
    
     try {
-        const deliveryDetail = await prisma.deliveryDetail.create({
+        const deliveryDetail =  prisma.deliveryDetail.create({
             data: req.body
        
         });
-        res.status(201).json(deliveryDetail);
+
+        const orderUpdate =  prisma.order.update({
+            where:{
+                id_order: Number(req.body.fk_idOrder)
+            },
+             data:
+             { 
+                orderStatus: delivered 
+            }
+        });
+
+        response = await prisma.$transaction([deliveryDetail,orderUpdate]);
+        res.status(201).json(response);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
 }
+
 
 export const updateDeliveryDetail =  async (req, res) =>{
     try {

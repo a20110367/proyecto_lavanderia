@@ -393,7 +393,7 @@ GET http://localhost:5000/lastCashCut
 GET http://localhost:5000/cashCuts/1
 
 ###
-GET  http://localhost:5000/calculateCashCut/1
+GET  http://localhost:5000/calculateCashCut/2
 
 ###
 
@@ -498,3 +498,33 @@ Content-Type: application/json
 DELETE http://localhost:5000/deliveryDetails/7
 
 ### 
+
+//CRUD DE CASH WHITHDRAWALS
+
+GET http://localhost:5000/cashWhithdrawals
+
+###
+
+GET http://localhost:5000/cashWhithdrawals/1
+
+###
+
+POST http://localhost:5000/cashWhithdrawals
+Content-Type: application/json
+
+{
+  "fk_cashCut" :2,
+  "fk_user":2,
+  "amount" : 300.00,
+  "cause":"Pago renta",
+  "date" :"2023-10-15T00:00:00.000Z"
+}
+###
+PATCH  http://localhost:5000/cashWhithdrawals/1
+Content-Type: application/json
+
+{
+    "amount":400.00
+}
+###
+DELETE   http://localhost:5000/cashWhithdrawals/19

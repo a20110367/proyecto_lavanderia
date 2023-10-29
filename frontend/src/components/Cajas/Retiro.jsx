@@ -229,7 +229,7 @@ function Retiro() {
           breakLabel={"..."}
           pageCount={Math.ceil(filteredRetiros.length / itemsPerPage)}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
           pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"

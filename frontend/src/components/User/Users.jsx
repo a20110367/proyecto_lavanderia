@@ -156,14 +156,14 @@ function Users() {
           </table>
         </div>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
           pageCount={Math.ceil(data.length / itemsPerPage)}
           marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
           pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"

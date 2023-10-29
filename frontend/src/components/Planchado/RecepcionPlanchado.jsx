@@ -80,7 +80,7 @@ function RecepcionPlanchado() {
         </div>
       </div>
       {shouldShowTable ? (
-        <div className="overflow-x-auto">
+        <div className="">
           <table className="w-full table-auto">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
@@ -125,7 +125,7 @@ function RecepcionPlanchado() {
               breakLabel={"..."}
               pageCount={Math.ceil(filteredClients.length / itemsPerPage)}
               marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
+              pageRangeDisplayed={2}
               onPageChange={handlePageChange}
               containerClassName={"pagination flex"}
               pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
@@ -158,7 +158,7 @@ function RecepcionPlanchado() {
             <div className="subtitle m-1">Añadir Cliente</div>
           </button>
         </Link>
-        <div className="text-blue-400 font-semibold mt-2">
+        <div className="btn-big">
           ¿El cliente no está registrado? ¡Regístralo!
         </div>
       </div>

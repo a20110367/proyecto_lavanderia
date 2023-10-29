@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
+import moment from "moment";
+import 'moment/locale/es'
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
 
@@ -19,12 +21,12 @@ function Clients() {
   const [clientSelId, setClientSelId] = useState();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [a, setA] = useState("Me gusta la letra A");
-  const fecha = new Date();
-  const diaActual = fecha.getDate();
-  const mesActual = fecha.getMonth() + 1;
-  const añoActual = fecha.getFullYear();
-
+  const [a, setA] = useState("Me gusta la letra A");  
+  moment.locale('es-mx')
+  const date = moment().format('L');
+  const hour = moment().format('LT')
+  const [paid, setPaid] = useState(true);
+  
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
@@ -62,6 +64,10 @@ function Clients() {
     deleteClient(clientId);
   };
 
+  // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
+  /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
+  folio folio, fecha */
+
   const html = `
         <form class="form-container" id="container" style="font-size:small">
             <div class="PrintOnly">
@@ -70,20 +76,20 @@ function Clients() {
                     <p>**CAPREL**</p>
                     <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
                     <p>TLAQUEPAQUE, JALISCO</p>
-                    <p>TEL. (33) 30001789 RFC: ZAFR6</p>
+                    <p>TEL. (33) 30001789</p>
+                    <p>RFC: RORS010912QZ6</p>
                 </div>
                 <hr class="hr-header">
-                <div style=" padding-top: 0px">
-                    <div style="display:flex; justify-content: space-around;">
-                        <h3>FOLIO No.: 87668</h3>
-                        <h3>PAGADO</h3>
-                    </div>
+                <div style=" padding-top: 0px">                    
+                    <h2>FOLIO No.: 87668</h2>
+                    <h2>TIPO PAGO: ANTICIPADO</h2>                     
+                    ${paid ? '<h2>PAGADO</h2>' : '<h2>NO PAGADO</h2>'}                    
                     <hr class="hr-header">  
                     <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
                         <p>Color</p>
                         <p>Estampado</p>
                         <p>Fibra</p>
-                        <p>Cantidad</p>
+                        <p>Cant.</p>
                         <p>Producto</p>
                         <p>Precio</p>           
                         <p>1</p>
@@ -92,30 +98,23 @@ function Clients() {
                     </div>
                     <hr class="hr-header">       
                     <h4 style="text-align:center;">Total Pagado: $95.00</h4>
-                    <p style="text-align:center;">(NOVENTA Y CINCO Pesos 00/100 M.N.)</p>
-                    <div style="display:flex; justify-content: space-around;">
-                        <p>  Pago recibido: $ 100.00</p>
-                        <p>Cambio devuelto: $ 5.00</p>
-                    </div>
-                    <hr class="hr-header">
-                    <div style="display:flex; justify-content: space-around;">
+                    <p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>                  
+                        <p>F. PAGO: EFECTIVO</p>
+                        <p>Pago recibido: $100.00</p>
+                        <p>Cambio devuelto: $5.00</p> 
                         <p>Cajero: YADIRA</p> 
-                        <p>Cliente: biagai</p>
-                    </div>
-                    <div style="display:flex; justify-content: space-around;">
-                        <p>Tipo Pago: CONTADO</p>
-                        <p>F. Pago: EFECTIVO</p>
-                    </div>
-                    <div style="display:flex; justify-content: space-around;">
-                        <p>F. Recepción: 20/07/2023 JUEVES 09:35:44</p>
-                        <p>F. Entrega: 22/07/2023 SABADO</p>
-                    </div>
+                    <hr class="hr-header">   
+                        <p>Cliente: biagai</p>         
+                        <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
+                        <h4>F. Entrega: 22/07/2023 SABADO 12:00 PM</h4>        
+                        <hr class="hr-header">
                     <p>Observaciones Generales: </p>
                     <hr class="hr-header">
                     <div style="text-align:center;">
                         <p>PROFECO N. REGISTRO: 4390/2013</p>
                         <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
-                        <p>FECHA: ${diaActual}/${mesActual}/${añoActual}</p>
+                        <p>FECHA: ${date}</p>
+                        <p>HORA: ${hour}</p>                    
                         <p>GRACIAS POR SU VISITA</p>
                     </div>
                 </div>

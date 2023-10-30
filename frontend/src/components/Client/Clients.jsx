@@ -262,12 +262,7 @@ function Clients() {
       >
         Print Data Raw HTML
       </button>
-<<<<<<< HEAD
       <div className="flex justify-center mt-4 mb-4">
-=======
-      {/* -----------------------------PAGINADOR -----------------------------*/}
-      <div className="flex justify-center mt-4">
->>>>>>> 397c55457bf800e6c1b5a5a5d51d96d8f120421c
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}

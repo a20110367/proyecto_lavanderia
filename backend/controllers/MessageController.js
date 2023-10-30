@@ -1,7 +1,18 @@
 import { PrismaClient } from "@prisma/client";
 import { transporter } from "./utils/mailer.js";
+import { NumerosALetras } from 'numero-a-letras'
 
 const prisma = new PrismaClient();
+
+export const n2word = async (req, res) => {
+    const {number} = req.body
+    try {
+        const word = NumerosALetras(number);    
+        res.status(200).json(word);
+    }catch(err){
+        res.status(400).json({msg:err.message});
+    }
+}
 
 export const sendMessage = async (req, res) => {
     const {id_order, name, email, message} = req.body

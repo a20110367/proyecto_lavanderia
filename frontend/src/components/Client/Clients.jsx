@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
+import 'moment/locale/es-mx';
 import moment from "moment";
-import 'moment/locale/es'
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
@@ -21,13 +21,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 function Clients() {
   const [clientSelName, setClientSelName] = useState();
   const [clientSelId, setClientSelId] = useState();
+  const [word, setWord] = useState('');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [a, setA] = useState("Me gusta la letra A");  
   moment.locale('es-mx')
+  console.log(moment.locale())
   const date = moment().format('L');
   const hour = moment().format('LT')
-  const [paid, setPaid] = useState(true);
+  const [paid, setPaid] = useState(true); 1
   
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
@@ -40,7 +41,7 @@ function Clients() {
     const response = await Axios.get("http://localhost:5000/clients");
     return response.data;
   };
-
+  
   const { data } = useSWR("clients", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
@@ -66,6 +67,13 @@ function Clients() {
     deleteClient(clientId);
   };
 
+  const n2word = async () => {
+    const res = await Axios.post("http://localhost:5000/numberToWord", {
+        number: 95.00,
+    });
+
+    setWord(res.data)
+  };
   // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
   /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
   folio folio, fecha */
@@ -100,7 +108,8 @@ function Clients() {
                     </div>
                     <hr class="hr-header">       
                     <h4 style="text-align:center;">Total Pagado: $95.00</h4>
-                    <p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>                  
+                    <!--*<p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>-->
+                    <p style="text-align:center;">${word}</p>            
                         <p>F. PAGO: EFECTIVO</p>
                         <p>Pago recibido: $100.00</p>
                         <p>Cambio devuelto: $5.00</p> 
@@ -129,6 +138,7 @@ function Clients() {
       <div className="title-container">
         <strong className="title-strong">Lista de Clientes</strong>
       </div>
+      <button onClick={n2word}>n2word</button>
       <div className="w-full pt-4">
         <button className="btn-primary" onClick={() => navigate("/addClient")}>
           Añadir Nuevo Cliente
@@ -241,7 +251,7 @@ function Clients() {
       <button
         className="btn-cancel"
         type="button"
-        onClick={() =>
+        onClick={() =>          
           printJS({
             printable: html,
             type: "raw-html",
@@ -252,7 +262,12 @@ function Clients() {
       >
         Print Data Raw HTML
       </button>
+<<<<<<< HEAD
       <div className="flex justify-center mt-4 mb-4">
+=======
+      {/* -----------------------------PAGINADOR -----------------------------*/}
+      <div className="flex justify-center mt-4">
+>>>>>>> 397c55457bf800e6c1b5a5a5d51d96d8f120421c
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}

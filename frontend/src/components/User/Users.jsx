@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
+import { BsFillTrashFill } from "react-icons/bs"
+import { AiFillEdit } from "react-icons/ai"
 
 //Dialogs
 import Button from "@mui/material/Button";
@@ -112,15 +114,15 @@ function Users() {
                     <td>
                       <button
                         onClick={() => navigate(`/editUser/${user.id_user}`)}
-                        className="btn-edit m-1"
+                        className="btn-edit"
                       >
-                        Editar
+                        <AiFillEdit/>
                       </button>
                       <button
                         onClick={() => handleClickOpen(user.name, user.id_user)}
-                        className="btn-cancel mt-1"
+                        className="btn-cancel"
                       >
-                        Borrar
+                        <BsFillTrashFill/>
                       </button>
                       <Dialog
                         open={open}

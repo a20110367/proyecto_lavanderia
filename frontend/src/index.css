@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -23,48 +24,42 @@
     background: #999;
   }
 
+  /* Global HTML styling */
   html {
     font-family: "Inter", sans-serif;
     line-height: 1.3;
     background-color: rgb(243, 243, 243);
   }
 
-  /* CSS para hacer la tabla adaptable */
-  /* CSS para hacer la tabla adaptable */
+  /* Table styling */
   table {
+    @apply w-full; /* This is a custom utility class that defines width: 100% */
+    @apply mx-auto; /* This is a custom utility class that centers the element horizontally */
     border-collapse: collapse;
-    width: 100%;
-    margin: 0 auto; /* Centrar la tabla en la pantalla */
   }
 
-  th,
-  td {
-      padding: 0.3rem; /* Reducir el relleno para adaptar la tabla */
-    word-wrap: break-word; /* Permitir el salto de palabra para evitar desbordamientos */
-    text-align: center; /* Centrar el texto en las celdas */
-    font-size: 0.875rem; /* Reducir el tamaño de fuente para el texto en pantallas pequeñas */
-    max-width: 0; /* Evitar que el contenido se desborde */
-    white-space: pre-line; /* Permitir saltos de línea */
-    overflow: hidden; /* Ocultar el contenido que no cabe */
-    text-align: center;
-    .btn-primary,
-    .btn-cancel,
-    .btn-edit,
-    .btn-login,
-    .btn-big,
-    .btn-generate,
-    .btn-disabled {
-      margin: 0 auto; /* Esto centrará horizontalmente los botones en su contenedor */
-    }
+  th, td {
+    @apply p-1; /* Padding */
+    @apply break-words; /* Word wrap */
+    @apply text-center; /* Text alignment */
+    @apply text-sm; /* Font size (0.875rem) */
+    @apply max-w-0; /* Max width (prevents overflow) */
+    @apply whitespace-pre-line; /* Allow line breaks */
+    @apply overflow-hidden; /* Hide overflow */
+    @apply text-center;
   }
 
+  .btn-primary, .btn-cancel, .btn-edit, .btn-login, .btn-big, .btn-generate, .btn-disabled {
+    @apply mx-auto; /* Center horizontally */
+  }
+}
 
 thead th {
-  font-size: 0.875rem; /* Reducir el tamaño de fuente para el encabezado en pantallas pequeñas */
-  max-height: 2.5rem; /* Altura máxima de dos líneas (ajusta según tus necesidades) */
-  white-space: nowrap; /* Evitar saltos de línea */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Mostrar puntos suspensivos cuando el contenido se recorta */
+  @apply text-sm; /* Font size (0.875rem) */
+  @apply h-10; /* Maximum height (customize as needed) */
+  @apply whitespace-nowrap; /* Prevent line breaks */
+  @apply overflow-hidden;
+  @apply overflow-ellipsis; /* Show ellipsis when content overflows */
 }
 
 
@@ -95,7 +90,7 @@ thead th {
   tr:last-child td:last-child {
     @apply rounded-br-lg;
   }
-}
+
 
 @layer components {
   /*-------------------- CONTAINERS ---------------*/

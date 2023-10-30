@@ -118,7 +118,7 @@ function RecepcionLavanderia() {
                 ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 mb-4">
             <ReactPaginate
               previousLabel={"Anterior"}
               nextLabel={"Siguiente"}

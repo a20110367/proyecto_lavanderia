@@ -7,6 +7,8 @@ import moment from "moment";
 import 'moment/locale/es'
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
+import { BsFillTrashFill } from "react-icons/bs"
+import { AiFillEdit } from "react-icons/ai"
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -173,17 +175,17 @@ function Clients() {
                         onClick={() =>
                           navigate(`/editClient/${client.id_client}`)
                         }
-                        className="btn-edit m-1"
+                        className="btn-edit"
                       >
-                        Editar
+                        <AiFillEdit/>
                       </button>
                       <button
                         onClick={() =>
                           handleClickOpen(client.name, client.id_client)
                         }
-                        className="btn-cancel mt-1"
+                        className="btn-cancel"
                       >
-                        Borrar
+                        <BsFillTrashFill/>
                       </button>
                       <Dialog
                         open={open}
@@ -250,7 +252,7 @@ function Clients() {
       >
         Print Data Raw HTML
       </button>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}

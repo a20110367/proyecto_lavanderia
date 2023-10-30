@@ -118,7 +118,7 @@ function RecepcionPlanchado() {
                 ))}
             </tbody>
           </table>
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 mb-4">
             <ReactPaginate
               previousLabel={"Anterior"}
               nextLabel={"Siguiente"}
@@ -158,7 +158,7 @@ function RecepcionPlanchado() {
             <div className="subtitle m-1">Añadir Cliente</div>
           </button>
         </Link>
-        <div className="btn-big">
+        <div className="text-blue-400 font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!
         </div>
       </div>

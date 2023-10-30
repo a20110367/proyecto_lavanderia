@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
+import { BsFillTrashFill } from "react-icons/bs"
+import { AiFillEdit } from "react-icons/ai"
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -129,9 +131,9 @@ function ServicesLavanderia() {
                             `/editServiceLavanderia/${service.id_service}`
                           )
                         }
-                        className=" btn-edit m-1"
+                        className=" btn-edit"
                       >
-                        Editar
+                        <AiFillEdit/>
                       </button>
                       <button
                         onClick={() =>
@@ -140,9 +142,9 @@ function ServicesLavanderia() {
                             service.id_service
                           )
                         }
-                        className="btn-cancel mt-1"
+                        className="btn-cancel"
                       >
-                        Eliminar
+                        <BsFillTrashFill/>
                       </button>
                       <Dialog
                         open={open}
@@ -175,7 +177,7 @@ function ServicesLavanderia() {
           </table>
         </div>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}

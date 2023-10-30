@@ -232,19 +232,19 @@ function HistorialCaja() {
                 )
                 .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id}>
-                    <td className="py-3 px-1 text-center">{corte.id}</td>
-                    <td className="py-3 px-6">{corte.fecha}</td>
-                    <td className="py-3 px-6">${corte.dineroFondo}</td>
-                    <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
-                    <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
-                    <td className="py-3 px-6">${corte.ingresosTotales}</td>
-                    <td className="py-3 px-6">${corte.retirosTotales}</td>
-                    <td className="py-3 px-6">${corte.finalTotalCaja}</td>
-                    <td className="py-3 px-6">{corte.usuario}</td>
-                    <td className="py-3 px-6">{corte.turno}</td>
-                    <td className="py-3 px-6">
+                    <td className="">{corte.id}</td>
+                    <td className="">{corte.fecha}</td>
+                    <td className="">${corte.dineroFondo}</td>
+                    <td className="">${corte.ingresoEfectivo}</td>
+                    <td className="">${corte.ingresoTarjeta}</td>
+                    <td className="">${corte.ingresosTotales}</td>
+                    <td className="">${corte.retirosTotales}</td>
+                    <td className="">${corte.finalTotalCaja}</td>
+                    <td className="">{corte.usuario}</td>
+                    <td className="">{corte.turno}</td>
+                    <td className="min-w-[60px]">
                       <button
-                        className="btn-edit"
+                        className="btn-primary"
                         onClick={() => handleDetallesClick(corte)}
                       >
                         Detalles
@@ -350,7 +350,7 @@ function HistorialCaja() {
           )}
         </Modal>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}

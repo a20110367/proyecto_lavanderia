@@ -20,8 +20,6 @@ export default {
         display: ["group-hover", "group-focus"],
       },
     colors: {
-      ba: '#134157',
-      ab: '#02182B',
       dodgerBlue: '#0197F6',
       sapphire: '#0055B6',
       blush: '#E15B7F',

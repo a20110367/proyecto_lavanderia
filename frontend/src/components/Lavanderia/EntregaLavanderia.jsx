@@ -244,14 +244,14 @@ function EntregaLavanderia() {
                     {pedido.orderstatus === "Pagado" ? (
                       <button
                         onClick={() => handleEntregar(pedido)}
-                        className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                        className="btn-delivery"
                       >
                         Entregar
                       </button>
                     ) : (
                       <button
                         onClick={() => handleCobrar(pedido)}
-                        className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                        className="btn-payment"
                       >
                         Cobrar
                       </button>
@@ -306,14 +306,14 @@ function EntregaLavanderia() {
           <Button
             key="guardarCobro"
             onClick={() => handleGuardarCobro(selectedPedido)}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-print text-white"
           >
             Guardar Cobro
           </Button>,
           <Button
             key="cerrar"
             onClick={handleClose}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-cancel-modal text-white"
           >
             Cerrar
           </Button>,

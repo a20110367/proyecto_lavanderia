@@ -68,7 +68,7 @@ function RecepcionLavanderia() {
             value={filtro}
             onChange={(event) => setFiltro(event.target.value)}
           />
-          <div className="absolute top-2.5 left-1 text-gray-400">
+          <div className="absolute top-2.5 left-3 text-gray-400">
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
           <div className="mt-3 flex items-center">
@@ -154,11 +154,11 @@ function RecepcionLavanderia() {
 
       <div className="fcol-container">
         <Link to="/addClient">
-          <button className="btn-big">
+          <button className="btn-big-light">
             <div className="subtitle m-1">Añadir Cliente</div>
           </button>
         </Link>
-        <div className="text-blue-400 font-semibold mt-2">
+        <div className="text-IndigoDye font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!
         </div>
       </div>

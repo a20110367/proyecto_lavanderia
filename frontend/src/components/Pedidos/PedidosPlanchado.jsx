@@ -198,7 +198,7 @@ function PedidosPlanchado() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th>ID</th>
+              <th>No. Folio</th>
               <th>Empleado que Recibió</th>
               <th>Empleado que Entregó</th>
               <th>Nombre del Cliente</th>

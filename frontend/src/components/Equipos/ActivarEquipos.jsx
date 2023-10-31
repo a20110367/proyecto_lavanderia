@@ -96,7 +96,7 @@ function ActivarEquipos() {
                           onClick={() =>
                             handleClickOpen(machine.model, machine.id_machine)
                           }
-                          className={`btn-edit ${
+                          className={`btn-primary mt-1 mb-1 ${
                             machine.status === "available" ? "" : "btn-disabled"
                           }`}
                           disabled={machine.status !== "available"}

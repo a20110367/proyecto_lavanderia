@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
-import 'moment/locale/es-mx';
+import "moment/locale/es-mx";
 import moment from "moment";
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
-import { BsFillTrashFill } from "react-icons/bs"
-import { AiFillEdit } from "react-icons/ai"
+import { BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -21,15 +21,16 @@ import DialogTitle from "@mui/material/DialogTitle";
 function Clients() {
   const [clientSelName, setClientSelName] = useState();
   const [clientSelId, setClientSelId] = useState();
-  const [word, setWord] = useState('');
+  const [word, setWord] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  moment.locale('es-mx')
-  console.log(moment.locale())
-  const date = moment().format('L');
-  const hour = moment().format('LT')
-  const [paid, setPaid] = useState(true); 1
-  
+  moment.locale("es-mx");
+  console.log(moment.locale());
+  const date = moment().format("L");
+  const hour = moment().format("LT");
+  const [paid, setPaid] = useState(true);
+  1;
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
@@ -41,7 +42,7 @@ function Clients() {
     const response = await Axios.get("http://localhost:5000/clients");
     return response.data;
   };
-  
+
   const { data } = useSWR("clients", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
@@ -69,10 +70,10 @@ function Clients() {
 
   const n2word = async () => {
     const res = await Axios.post("http://localhost:5000/numberToWord", {
-        number: 95.00,
+      number: 95.0,
     });
 
-    setWord(res.data)
+    setWord(res.data);
   };
   // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
   /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
@@ -82,7 +83,9 @@ function Clients() {
         <form class="form-container" id="container" style="font-size:small">
             <div class="PrintOnly">
                 <div class="info" style="text-align: center;"> 
-                    <img src="${IMAGES.caprelogo}" width="150" height="100" alt="logo" class="logo">
+                    <img src="${
+                      IMAGES.caprelogo
+                    }" width="150" height="100" alt="logo" class="logo">
                     <p>**CAPREL**</p>
                     <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
                     <p>TLAQUEPAQUE, JALISCO</p>
@@ -93,7 +96,9 @@ function Clients() {
                 <div style=" padding-top: 0px">                    
                     <h2>FOLIO No.: 87668</h2>
                     <h2>TIPO PAGO: ANTICIPADO</h2>                     
-                    ${paid ? '<h2>PAGADO</h2>' : '<h2>NO PAGADO</h2>'}                    
+                    ${
+                      paid ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"
+                    }                    
                     <hr class="hr-header">  
                     <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
                         <p>Color</p>
@@ -187,7 +192,7 @@ function Clients() {
                         }
                         className="btn-edit"
                       >
-                        <AiFillEdit/>
+                        <AiFillEdit />
                       </button>
                       <button
                         onClick={() =>
@@ -195,7 +200,7 @@ function Clients() {
                         }
                         className="btn-cancel"
                       >
-                        <BsFillTrashFill/>
+                        <BsFillTrashFill />
                       </button>
                       <Dialog
                         open={open}
@@ -203,7 +208,26 @@ function Clients() {
                         aria-labelledby="alert-dialog-title"
                         aria-describedby="alert-dialog-description"
                       >
-                        {/* ... (your dialog code) */}
+                        <DialogTitle id="alert-dialog-title">
+                          {"Eliminación del cliente"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            <p>
+                              Se desea eliminar al Empleado:{" "}
+                              <p className="text-dodgerBlue">{clientSelName}</p>
+                            </p>
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancelar</Button>
+                          <Button
+                            onClick={() => deleteAndClose(clientSelId)}
+                            autoFocus
+                          >
+                            Eliminar
+                          </Button>
+                        </DialogActions>
                       </Dialog>
                     </td>
                   </tr>
@@ -251,7 +275,7 @@ function Clients() {
       <button
         className="btn-cancel"
         type="button"
-        onClick={() =>          
+        onClick={() =>
           printJS({
             printable: html,
             type: "raw-html",

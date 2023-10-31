@@ -15,7 +15,8 @@ Content-Type: application/json
   "id_order": 1,
   "name": "Israel",
   "email": "a20110367@ceti.mx",
-  "message": "Tu suscripcion a brazzers ha caducado"
+  "tel": "5213313839768",
+  "message": "IG de la minita es para probar el uso de las .env"
 }
 
 ###

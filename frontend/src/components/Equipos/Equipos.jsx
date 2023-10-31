@@ -70,7 +70,7 @@ function Equipos() {
         <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
-        <div className="flex justify-between items-center w-full pt-4">
+         <div className="flex justify-between items-center w-full pt-4">
           <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
             Añadir Nueva Maquina
           </button>

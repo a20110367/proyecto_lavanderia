@@ -49,9 +49,7 @@
     @apply text-center;
   }
 
-  .btn-primary, .btn-cancel, .btn-edit, .btn-login, .btn-big, .btn-generate, .btn-disabled {
-    @apply mx-auto; /* Center horizontally */
-  }
+
 }
 
 thead th {

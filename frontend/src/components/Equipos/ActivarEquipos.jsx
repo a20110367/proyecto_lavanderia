@@ -43,7 +43,7 @@ function ActivarEquipos() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No. Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>

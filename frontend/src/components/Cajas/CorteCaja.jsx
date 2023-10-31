@@ -335,7 +335,7 @@ function CorteCaja() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th>ID</th>
+                <th>No. Corte</th>
                 <th >FECHA</th>
                 <th >DINERO EN FONDO</th>
                 <th >INGRESO EN EFECTIVO</th>

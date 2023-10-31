@@ -71,7 +71,7 @@ function Users() {
           <table>
             <thead>
               <tr className="title-tr">
-                <th>ID</th>
+                <th>ID de Usuario</th>
                 <th>Nombre de usuario</th>
                 <th>Nombre</th>
                 <th>Apellido Paterno</th>

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
-import { BsFillTrashFill } from "react-icons/bs"
-import { AiFillEdit } from "react-icons/ai"
+import { BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -84,7 +84,9 @@ function ServicesPlanchado() {
           onClick={() => navigate("/addServicePlanchado")}
           className="btn-primary"
         >
-          Añadir Nuevo Servicio De Planchaduria
+          Añadir Nuevo Servicio
+          <br />
+          de Planchado
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
@@ -132,7 +134,7 @@ function ServicesPlanchado() {
                         }
                         className="btn-edit"
                       >
-                        <AiFillEdit/>
+                        <AiFillEdit />
                       </button>
                       <button
                         onClick={() =>
@@ -143,7 +145,7 @@ function ServicesPlanchado() {
                         }
                         className="btn-cancel"
                       >
-                        <BsFillTrashFill/>
+                        <BsFillTrashFill />
                       </button>
                       <Dialog
                         open={open}

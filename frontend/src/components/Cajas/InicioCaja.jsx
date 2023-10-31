@@ -76,7 +76,7 @@ function InicioCaja() {
           <Button
             key="iniciar"
             onClick={handleIniciarCaja}
-            className="bg-blue-500 text-white hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Iniciar
           </Button>,

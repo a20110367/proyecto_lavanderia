@@ -124,7 +124,7 @@ function Reembolso() {
           <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-        <div className="flex items-center mb-4">
+        <div className="flex items-center -4">
           <div className="relative w-full">
             <input
               type="text"
@@ -137,6 +137,15 @@ function Reembolso() {
               <HiOutlineSearch fontSize={20} className="text-gray-400" />
             </div>
           </div>
+        </div>
+        <div className="mt-3 mb-3">
+          <button
+            onClick={handleReembolso}
+            className="btn-primary"
+          >
+            Registrar Reembolso
+          </button>
+        
         </div>
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
@@ -162,15 +171,6 @@ function Reembolso() {
             ))}
           </tbody>
         </table>
-        <div className="mt-4">
-          <button
-            onClick={handleReembolso}
-            className="bg-red-500 text-white p-3 rounded-md shadow-lg hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
-          >
-            Registrar Reembolso
-          </button>
-        
-        </div>
       <Modal
         title="Registrar Reembolso"
         visible={visible}
@@ -181,14 +181,14 @@ function Reembolso() {
           <Button
             key="confirmar"
             onClick={handleConfirmReembolso}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-print text-white"
           >
             Confirmar Reembolso
           </Button>,
           <Button
             key="cancelar"
             onClick={handleClose}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-cancel-modal"
           >
             Cancelar
           </Button>,

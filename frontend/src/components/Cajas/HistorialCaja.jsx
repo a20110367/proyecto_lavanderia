@@ -276,7 +276,7 @@ function HistorialCaja() {
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="bg-RedPantone text-white hover:bg-FireBrick hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-cancel-modal"
             >
               Cerrar
             </Button>,

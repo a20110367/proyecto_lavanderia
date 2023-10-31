@@ -153,16 +153,16 @@ function PedidosLavanderia() {
           <input
             type="text"
             placeholder="Buscar..."
-            className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+            className="input-search"
             value={filtro}
             onChange={handleFiltroChange}
           />
-          <div className="absolute top-2.5 left-1 text-gray-400">
+          <div className="absolute top-2.5 left-2.5 text-gray-400">
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
         <select
-          className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+          className="select-category"
           value={filtroEstatus}
           onChange={handleFiltroEstatusChange}
         >
@@ -241,7 +241,7 @@ function PedidosLavanderia() {
                       <IssuesCloseOutlined /> Finalizado no entregado
                       <button
                         onClick={() => handleNotificarCliente(pedido)}
-                        className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
+                        className="btn-primary mt-1"
                       >
                         Notificar al Cliente
                       </button>

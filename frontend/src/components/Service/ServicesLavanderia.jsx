@@ -85,7 +85,9 @@ function ServicesLavanderia() {
           onClick={() => navigate("/addServiceLavanderia")}
           className="btn-primary"
         >
-          Añadir Nuevo Servicio De Lavanderia
+          Añadir Nuevo Servicio
+          <br />
+          de Lavandería
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>

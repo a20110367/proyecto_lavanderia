@@ -75,7 +75,7 @@ function Equipos() {
             Añadir Nueva Maquina
           </button>
           <select
-            className="border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+            className="select-category"
             value={filtroTipo}
             onChange={handleFiltroTipoChange}
           >

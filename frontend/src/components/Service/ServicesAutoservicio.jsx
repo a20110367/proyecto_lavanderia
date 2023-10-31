@@ -70,7 +70,9 @@ function ServicesAutoservicio() {
           onClick={() => navigate("/addServiceAutoServicio")}
           className="btn-primary"
         >
-          Añadir Nuevo Servicio De Autoservicio
+          Añadir Nuevo Servicio
+          <br />
+          de Autoservicio
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>

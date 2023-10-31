@@ -366,7 +366,7 @@ function CorteCaja() {
                       className="btn-primary"
                       onClick={() => handleDetallesClick(corte)}
                     >
-                      Detalles
+                      
                     </button>
                   </td>
                 </tr>
@@ -392,7 +392,7 @@ function CorteCaja() {
           <Button
             key="cancelar"
             onClick={() => setDialogVisible(false)}
-            className="btn-cancel-modal"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -417,7 +417,7 @@ function CorteCaja() {
           <Button
             key="cancelar"
             onClick={() => setPartialCorteDialogVisible(false)}
-            className="btn-cancel-modal"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,

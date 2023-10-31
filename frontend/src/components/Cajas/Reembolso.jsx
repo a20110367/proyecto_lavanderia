@@ -188,7 +188,7 @@ function Reembolso() {
           <Button
             key="cancelar"
             onClick={handleClose}
-            className="btn-cancel-modal"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,

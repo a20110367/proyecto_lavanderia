@@ -276,7 +276,7 @@ function HistorialCaja() {
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="btn-cancel-modal"
+              className="btn-cancel-modal text-white"
             >
               Cerrar
             </Button>,

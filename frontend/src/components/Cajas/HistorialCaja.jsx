@@ -246,7 +246,7 @@ function HistorialCaja() {
                     <td className="">{corte.turno}</td>
                     <td className="min-w-[60px]">
                       <button
-                        className="btn-primary"
+                        className="btn-primary mt-1 mb-1"
                         onClick={() => handleDetallesClick(corte)}
                       >
                         Detalles
@@ -276,7 +276,7 @@ function HistorialCaja() {
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="btn-cancel-modal"
+              className="btn-cancel-modal text-white"
             >
               Cerrar
             </Button>,

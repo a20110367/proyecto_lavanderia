@@ -70,38 +70,38 @@ function Equipos() {
         <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
-      <div className="flex justify-between items-center w-full pt-4">
-  <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
-    Añadir Nueva Maquina
-  </button>
-  <select
-    className="border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
-    value={filtroTipo}
-    onChange={handleFiltroTipoChange}
-  >
-    <option className="text-base font-semibold" value="">
-      Todos
-    </option>
-    <option
-      value="lavadora"
-      className="text-dodgerBlue font-semibold text-base"
-    >
-      Lavadoras
-    </option>
-    <option
-      value="secadora"
-      className="text-green-500 font-semibold text-base"
-    >
-      Secadoras
-    </option>
-    <option
-      value="plancha"
-      className="text-yellow-500 font-semibold text-base"
-    >
-      Planchas
-    </option>
-  </select>
-</div>
+        <div className="flex justify-between items-center w-full pt-4">
+          <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
+            Añadir Nueva Maquina
+          </button>
+          <select
+            className="border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+            value={filtroTipo}
+            onChange={handleFiltroTipoChange}
+          >
+            <option className="text-base font-semibold" value="">
+              Todos
+            </option>
+            <option
+              value="lavadora"
+              className="text-dodgerBlue font-semibold text-base"
+            >
+              Lavadoras
+            </option>
+            <option
+              value="secadora"
+              className="text-green-500 font-semibold text-base"
+            >
+              Secadoras
+            </option>
+            <option
+              value="plancha"
+              className="text-yellow-500 font-semibold text-base"
+            >
+              Planchas
+            </option>
+          </select>
+        </div>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
@@ -129,30 +129,28 @@ function Equipos() {
                   <tr key={machine.id_machine}>
                     <td>{index + 1}</td>
                     <td
-                      className={`font-semibold ${
-                        machine.machineType === "lavadora"
+                      className={`font-semibold ${machine.machineType === "lavadora"
                           ? "text-dodgerBlue"
                           : machine.machineType === "plancha"
-                          ? "text-yellow-500"
-                          : "text-green-500"
-                      }`}
+                            ? "text-yellow-500"
+                            : "text-green-500"
+                        }`}
                     >
                       {machine.machineType === "lavadora"
                         ? "Lavadora"
                         : machine.machineType === "plancha"
-                        ? "Plancha"
-                        : "Secadora"}
+                          ? "Plancha"
+                          : "Secadora"}
                     </td>
 
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.status === "available"
+                      className={`${machine.status === "available"
                           ? "text-green-500"
                           : "text-red-500"
-                      }`}
+                        }`}
                     >
                       {machine.status === "available"
                         ? "Disponible"
@@ -166,7 +164,7 @@ function Equipos() {
                         }
                         className="btn-edit"
                       >
-                        <AiFillEdit/>
+                        <AiFillEdit />
                       </button>
                       <button
                         onClick={() =>
@@ -174,7 +172,7 @@ function Equipos() {
                         }
                         className="btn-cancel"
                       >
-                        <BsFillTrashFill/>
+                        <BsFillTrashFill />
                       </button>
 
                       <Dialog
@@ -222,11 +220,11 @@ function Equipos() {
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
-          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
-          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
         />
       </div>
     </div>

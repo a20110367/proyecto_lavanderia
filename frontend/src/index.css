@@ -119,7 +119,7 @@ thead th {
   }
 
   .responsive-bg {
-    @apply bg-DarkOxfordBlue w-screen h-screen grid place-items-center;
+    @apply bg-OxfordBlue w-screen h-screen grid place-items-center;
   }
 
   .search-bg {
@@ -157,19 +157,27 @@ thead th {
 
   /*-------------------- BUTTONS ---------------*/
   .btn-primary {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 ;
+    @apply text-xl md:text-base py-1 md:py-2 px-1 md:px-2 bg-IndigoDye text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-opacity-75 ;
+  }
+
+  .btn-print {
+    @apply bg-Cerulean hover:bg-Moonstone hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2 text-white hover:text-white;
   }
 
   .btn-cancel {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-blush hover:bg-raspberry text-white font-bold rounded-lg mt-2 ml-3 focus:ring-red-400 shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-RedPantone hover:bg-FireBrick text-white font-bold rounded-lg mt-2 ml-3 focus:ring-red-400 shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+  }
+
+  .btn-search{
+    @apply bg-Moonstone font-semibold text-white p-2 rounded-md shadow-md hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none ml-2 mt-2 text-base px-4
   }
 
   .btn-edit {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-dodgerBlue hover:bg-sapphire text-white font-bold rounded-lg mt-2 ml-3 focus:ring-dodgerBlue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-Cerulean hover:bg-IndigoDye text-white font-bold rounded-lg mt-2 ml-3 focus:ring-NonPhotoblue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
   }
 
   .btn-login {
-    @apply active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 rounded-lg bg-DarkOxfordBlue text-white font-bold;
+    @apply active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all text-2xl w-1/2 h-14 rounded-lg bg-OxfordBlue text-white font-bold;
   }
 
   .btn-big {
@@ -181,7 +189,7 @@ thead th {
   }
 
   .btn-disabled {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-gray-500 hover:bg-gray-500 text-white font-bold rounded-lg mt-2 ml-3 focus:ring-dodgerBlue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-gray-500 hover:bg-gray-500 text-white font-bold rounded-lg mt-2 ml-3 focus:ring-NonPhotoblue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
   }
 
   /*-------------------- TEXT ---------------*/
@@ -198,16 +206,16 @@ thead th {
   }
 
   .link {
-    @apply font-medium text-base text-DarkOxfordBlue hover:text-dodgerBlue;
+    @apply font-medium text-base text-OxfordBlue hover:text-Cerulean;
   }
 
   .user {
-    @apply font-semibold text-2xl ml-3 text-DarkOxfordBlue;
+    @apply font-semibold text-2xl ml-3 text-OxfordBlue;
   }
 
   /* strongs */
   .title-strong {
-    @apply pr-2 text-xl font-medium text-dodgerBlue;
+    @apply pr-2 text-2xl font-semibold text-Cerulean;
   }
 
   /*-------------------- INPUTS ---------------*/
@@ -223,8 +231,8 @@ thead th {
     @apply bg-transparent border-2 border-gray-500 rounded-lg p-8 mt-2 focus:outline-none focus:ring-blue-400 focus:ring-2 w-full;
   }
 
-  .search-ipt {
-    @apply border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-500 border-black;
+  .input-search {
+    @apply border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:ring-NonPhotoblue focus:border-NonPhotoblue border-Cerulean
   }
 
   /*-------------------- SELECTS ---------------*/
@@ -234,6 +242,10 @@ thead th {
 
   .select-2ry {
     @apply appearance-none bg-transparent border-2 border-gray-500 rounded-lg py-3 px-4 pr-8 focus:outline-none focus:border-blue-500 w-full text-base;
+  }
+
+  .select-category {
+    @apply ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:ring-NonPhotoblue focus:border-NonPhotoblue border-Cerulean
   }
 
   .instructions {
@@ -361,12 +373,25 @@ thead th {
   }
 
   .side-menu::-webkit-scrollbar-thumb {
-    background: #1677ff;
-    border-radius: 3px;
-    border: 1px solid #1677ff;
+    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue
   }
 
-  .side-menu::-webkit-scrollbar-thumb:hover {
-    background: #0056b3;
+  /*-------------------------------------------- PAGINATOR ----------------------------------------*/
+
+  .pageLinkClassName {
+    @apply bg-IndigoDye text-white font-semibold py-2 px-4 rounded-full mx-1 hover:bg-Cerulean hover:no-underline hover:text-white
   }
+
+  .prevOrNextLinkClassName {
+    @apply bg-IndigoDye text-white font-semibold py-2 px-4 rounded-full mx-1 hover:bg-Cerulean hover:no-underline hover:text-white 
+  }
+
+  .breakLinkClassName {
+    @apply text-gray-600 py-2 px-4 rounded-full mx-1
+  }
+
+  .activeLinkClassName {
+    @apply bg-PennBlue text-white py-2 px-4 rounded-full mx-1
+  }
+  
 }

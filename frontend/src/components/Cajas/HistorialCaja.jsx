@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import locale from 'antd/es/date-picker/locale/es_ES';
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
@@ -187,6 +188,7 @@ function HistorialCaja() {
           <div className="relative w-full">
             <div className="relative w-full flex items-center">
               <DatePicker.RangePicker
+                locale={locale}
                 onChange={(dates) => {
                   setDateRange(dates);
                   if (!dates || dates.length === 0) {
@@ -196,10 +198,10 @@ function HistorialCaja() {
                 }}
                 value={dateRange}
                 format="DD/MM/YYYY"
-                className="border-2 rounded-md py-2  pl-10  border-black mt-2"
+                className="border-2 rounded-md py-2  pl-10  border-Cerulean mt-2"
               />
               <button
-                className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm ml-2"
+                className="btn-search"
                 onClick={handleFiltroPorFecha}
               >
                 Buscar
@@ -267,14 +269,14 @@ function HistorialCaja() {
             <Button
               key="print"
               onClick={handleModalPrint}
-              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-print text-white"
             >
               Imprimir
             </Button>,
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="bg-RedPantone text-white hover:bg-FireBrick hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
             >
               Cerrar
             </Button>,
@@ -360,11 +362,11 @@ function HistorialCaja() {
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
-          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
-          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
         />
       </div>
     </div>

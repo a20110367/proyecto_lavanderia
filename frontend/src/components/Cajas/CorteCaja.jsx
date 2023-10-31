@@ -320,13 +320,13 @@ function CorteCaja() {
       <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
       <button
         onClick={handleCorteCaja}
-        className="mt-4 mr-2 bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Turno
       </button>
       <button
         onClick={handlePartialCorteCaja}
-        className="mt-4 bg-yellow-500 text-white p-3 rounded-md shadow-lg hover:bg-yellow-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 bg-NonPhotoblue font-bold hover:text-white p-3 rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Parcial
       </button>

@@ -20,22 +20,27 @@ export default {
         display: ["group-hover", "group-focus"],
       },
     colors: {
-      dodgerBlue: '#0197F6',
-      sapphire: '#0055B6',
-      blush: '#E15B7F',
-      raspberry: '#DA2B5A',
-
-      DarkOxfordBlue: '#0a1128',
+      //* BLUE
+      // Oscuro
       OxfordBlue: '#001529',
+      // Claro
       PennBlue: '#001f54',
       IndigoDye: '#034078',
+      //* Verde Azulado
+      // Oscuro
       Cerulean: '#1282a2',
+      // Claro
+      Moonstone: '#3898B1',  
       NonPhotoblue: '#a8dadc',
-      Honeydew: '#f1faee',
-      NonPhotoblue: '#a8dadc',
-      Honeydew: '#f1faee',
-      White: '#fefcfb',
-      RedPantone: '#e63946'
+      
+      // ROJOS
+      // Claro
+      RedPantone: '#e63946',
+      //Oscuro
+      FireBrick: '#BC1E2C',
+
+      //GREEN
+      Malachite: '#33C944',
     }, 
   },
   plugins: [],

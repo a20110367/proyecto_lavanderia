@@ -121,7 +121,7 @@ function Retiro() {
           <input
             type="text"
             placeholder="Buscar..."
-            className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+            className="input-search"
             value={filtro}
             onChange={handleFiltroChange}
           />
@@ -232,11 +232,11 @@ function Retiro() {
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
-          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
-          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
         />
       </div>
     </div>

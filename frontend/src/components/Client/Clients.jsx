@@ -236,7 +236,7 @@ function Clients() {
           </table>
         </div>
       </div>
-      <button
+      {/* <button
         className="btn-cancel"
         type="button"
         onClick={() =>
@@ -285,7 +285,8 @@ function Clients() {
         }
       >
         Print Data Raw HTML
-      </button>
+      </button> */}
+      {/* -----------------------------PAGINADOR -----------------------------*/}
       <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
@@ -296,11 +297,11 @@ function Clients() {
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
           containerClassName={"pagination flex"}
-          pageLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          previousLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          nextLinkClassName="bg-blue-500 text-white py-2 px-4 rounded-full mx-1 hover:bg-blue-600 hover:no-underline"
-          breakLinkClassName="text-gray-600 py-2 px-4 rounded-full mx-1"
-          activeLinkClassName="bg-blue-700 text-white py-2 px-4 rounded-full mx-1"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
         />
       </div>
     </div>

@@ -19,18 +19,24 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:5000/usersMany
+Content-Type: application/json
+
+###
 POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-"username": "isra",
-    "name": "Israel",
-    "firstLN": "Ramirez",
-    "secondLN": "Quintero",
-    "email": "a20110367@ceti.mx",
-    "phone": "3324654",
-    "pass": "1010",
-    "role": "admin"
+   
+  "id_user": 3,
+    "username": "Juan1234",
+    "name": "Juan24",
+    "firstLN": "Perez4",
+    "secondLN": "Perez4",
+    "email": "a2011036724@ceti.mx",
+    "phone": "33432515436",
+    "pass": "122344",
+    "role": "employee"
 }
 ###
 PATCH  http://localhost:5000/users/6
@@ -61,16 +67,20 @@ GET http://localhost:5000/staffMembers
 GET http://localhost:5000/staffMembers/2
 
 ###
+POST http://localhost:5000/staffMembersMany
+Content-Type: application/json
+
+###
 POST http://localhost:5000/staffMembers
 Content-Type: application/json
 
 {
-   "name": "Pedro",
-    "firstLN": "Perez",
-    "secondLN": "Lopez",
-    "id_Token": 333,
-    "email": "uncorreo@mail.com",
-    "phone": "11223344"
+    "name": "Juan24",
+      "email": "a2011036724@ceti.mx",
+      "phone": "33432515436",
+      "firstLN": "Perez4",
+      "id_Token": 222,
+      "secondLN": "Perez4"
 }
 
 ###
@@ -95,6 +105,13 @@ DELETE http://localhost:5000/staffMembers/7
 
 
 //CRUD DE CATEGORIES
+
+
+POST http://localhost:5000/categoriesMany
+Content-Type: application/json
+
+
+###
 POST http://localhost:5000/categories
 Content-Type: application/json
 
@@ -133,6 +150,11 @@ GET http://localhost:5000/clientsByEmail/uncorreo2@correo.com
 
 ###
 GET http://localhost:5000/clientsByPhone/1234567733
+
+###
+POST http://localhost:5000/clientsMany
+Content-Type: application/json
+
 
 ###
 POST http://localhost:5000/clients
@@ -175,31 +197,57 @@ POST http://localhost:5000/machines
 Content-Type: application/json
 
 {
-       "machineType": "lavadora",
+    "machineType": "secadora",
     "model": "Bien Chingona 5000",
     "cicleTime": 45,
-    "weight": 25,
+    "weight": 20,
     "status": "available",
     "notes": ""
-
 }
+###
+POST http://localhost:5000/machinesMany
+Content-Type: application/json
+
+
 ###
 PATCH http://localhost:5000/machines/6
 Content-Type: application/json
 
 {
     "machineType": "lavadora",
-    "model": "Ni tan Chingona 5000",
-    "cicleTime": 45,
-    "weight": 25,
-    "status": "available",
-    "notes": "nomas aguanto 20"
+    "model": "LG",
+    "cicleTime": 35,
+    "weight": 10,
+    "status": "unavailable",
+    "notes": "Se madreo"
 }
 ###
 DELETE http://localhost:5000/machines/6
 ###
 
+//CRUD DE MACHINES
+GET http://localhost:5000/ironStations
+###
+GET http://localhost:5000/ironStations/5
+###
+POST http://localhost:5000/ironStation
+Content-Type: application/json
 
+{
+    "status": "available",
+    "notes": "estacion 1"
+}
+###
+PATCH http://localhost:5000/ironStations/6
+Content-Type: application/json
+
+{
+    "status": "available",
+    "notes": "estacion 1"
+}
+###
+DELETE http://localhost:5000/ironStations/6
+###
 
 //CRUD DE SERVICES
 
@@ -207,16 +255,18 @@ POST http://localhost:5000/services
 Content-Type: application/json
 
 {
- 
-      "description": "Lavado 25Kg",
-    "price": 250,
-    "time": 45,
-    "weight": 25,
-    "pieces": null,
+    "description": "Planchado 1 piezas",
+    "price": 135,
+    "pieces": 1,
     "category_id": 3
 }
 
 ###
+POST http://localhost:5000/servicesMany
+Content-Type: application/json
+
+###
+
 GET  http://localhost:5000/services
 ###
 GET  http://localhost:5000/servicesById/1
@@ -254,8 +304,20 @@ GET http://localhost:5000/orders
 
 GET http://localhost:5000/orders/1
 
+####
+
+GET http://localhost:5000/ordersByUser/1
+
 ###
 
+GET http://localhost:5000/ordersByClient/1
+
+###
+
+POST http://localhost:5000/ordersMany
+Content-Type: application/json
+
+###
 POST http://localhost:5000/orders
 Content-Type: application/json
 
@@ -280,69 +342,7 @@ DELETE   http://localhost:5000/orders/1
 
 ###
 
-//CRUD DE SERVIDE DETAILS
-GET http://localhost:5000/orderServiceDetails
-
-###
-
-GET http://localhost:5000/orderServiceDetails/20
-
-###
-
-POST http://localhost:5000/orderServiceDetails
-Content-Type: application/json
-
-{
-  
-    "fk_Order":2,
-  "fk_Service":4
-
-}
-
-###
-PATCH  http://localhost:5000/orderServiceDetails/21
-Content-Type: application/json
-
-{
-    "started":true
-}
-###
-DELETE   http://localhost:5000/orderServiceDetails/17
-
-###
-
-//CRUD DE SERVIDE TRACE DETAILS
-GET http://localhost:5000/serviceTraceDetails
-
-###
-
-GET http://localhost:5000/serviceTraceDetails/20
-
-###
-
-POST http://localhost:5000/serviceTraceDetails
-Content-Type: application/json
-
-{
-  
-    "fk_idOrderServiceDetail":20,
-  
-  "fk_idMachine":  1,
-  "fk_staffMember": 1,
-  "serviceDate":   "2023-10-15T00:00:00.000Z",
-  "serviceTime":    "1970-01-01T16:00:00.000Z"
-
-}
-
-###
-PATCH  http://localhost:5000/serviceTraceDetails/1
-Content-Type: application/json
-
-{
-    "finished":true
-}
-###
-DELETE   http://localhost:5000/serviceTraceDetails/17
+DELETE   http://localhost:5000/ordersAll
 
 ###
 
@@ -528,3 +528,69 @@ Content-Type: application/json
 }
 ###
 DELETE   http://localhost:5000/cashWhithdrawals/19
+
+//CRUD DE LAUNDRY SERVICE DETAILS
+GET http://localhost:5000/orderLaundryServiceDetails
+
+###
+
+GET http://localhost:5000/orderLaundryServiceDetails/20
+
+###
+
+POST http://localhost:5000/orderLaundryServiceDetails
+Content-Type: application/json
+
+{
+  
+    "fk_Order":2,
+  "fk_Service":4
+
+}
+
+###
+PATCH  http://localhost:5000/orderLaundryServiceDetails/21
+Content-Type: application/json
+
+{
+    "started":true
+}
+###
+DELETE   http://localhost:5000/orderLaundryServiceDetails/17
+
+###
+
+//CRUD DE IRON SERVICE DETAILS
+GET http://localhost:5000/orderIronServiceDetails
+
+###
+
+GET http://localhost:5000/orderIronServiceDetails/20
+
+###
+
+POST http://localhost:5000/orderIronServiceDetails
+Content-Type: application/json
+
+{
+  
+    "fk_idOrderServiceDetail":20,
+  
+  "fk_idMachine":  1,
+  "fk_staffMember": 1,
+  "serviceDate":   "2023-10-15T00:00:00.000Z",
+  "serviceTime":    "1970-01-01T16:00:00.000Z"
+
+}
+
+###
+PATCH  http://localhost:5000/orderIronServiceDetails/1
+Content-Type: application/json
+
+{
+    "finished":true
+}
+###
+DELETE   http://localhost:5000/orderIronServiceDetails/17
+
+###

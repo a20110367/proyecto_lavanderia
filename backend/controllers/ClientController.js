@@ -52,21 +52,26 @@ export const getClientsByPhone = async (req, res) =>{
 }
 
 export const createClient = async (req, res) =>{
-    //const {userName, name, firstLN, secondLN, email, phone, pass} = req.body;
+
     try {
         const client = await prisma.client.create({
             data:req.body
-            // {
-            //     username: userName,
-            //     name: name,
-            //     firstLN: firstLN,
-            //     secondLN: secondLN,
-            //     email: email,                
-            //     phone: phone,            
-            //     pass: pass
-            // }
+          
         });
         res.status(201).json(client);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const createClientMany = async (req, res) =>{
+
+    try {
+        const clientMany = await prisma.client.createMany({
+            data:req.body
+          
+        });
+        res.status(201).json(clientMany);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -80,15 +85,7 @@ export const updateClient =  async (req, res) =>{
             where:{
                 id_client: Number(req.params.id)
             },
-            data:{
-                username: username,
-                name: name,
-                firstLN: firstLN,
-                secondLN: secondLN,
-                email: email,                
-                phone: phone,            
-                pass: pass
-            }
+            data:req.body
         });
         res.status(200).json(client);
     }catch(e){

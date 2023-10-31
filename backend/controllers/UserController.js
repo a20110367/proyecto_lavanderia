@@ -66,6 +66,29 @@ export const createUser = async (req, res) =>{
     }
 }
 
+export const createUserMany = async (req, res) =>{
+    //const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    try {
+        const user = await prisma.user.createMany({
+            data: req.body
+            // data:{
+            //     username: userName,
+            //     name: name,
+            //     firstLN: firstLN,
+            //     secondLN: secondLN,
+            //     email: email,                
+            //     phone: phone,            
+            //     pass: pass,
+            //     role: role
+            // }
+        });
+        res.status(201).json(user);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
 export const updateUser =  async (req, res) =>{
     //const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {

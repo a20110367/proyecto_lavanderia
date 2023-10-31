@@ -38,6 +38,19 @@ export const createStaffMember = async (req, res) =>{
     }
 }
 
+export const createStaffMemberMany = async (req, res) =>{
+   
+    try {
+        const staffMemberMany = await prisma.staffMember.createMany({
+            data: req.body
+       
+        });
+        res.status(201).json(staffMemberMany);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
 export const updateStaffMember =  async (req, res) =>{
     try {
         const staffMember = await prisma.staffMember.update({

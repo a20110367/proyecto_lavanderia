@@ -4,6 +4,7 @@ import {
     getCategoriesById,
     getCategoriesByName,
     createCategory,
+    createCategoryMany,
     deleteCategoryById,
     deleteCategoryByName,
 
@@ -15,6 +16,7 @@ router.get('/categories', getCategories);
 router.get('/categoriesId/:id', getCategoriesById);
 router.get('/categoriesName/:categoryDescription', getCategoriesByName);
 router.post('/categories', createCategory);
+router.post('/categoriesMany', createCategoryMany);
 router.delete('/categoriesId/:id', deleteCategoryById);
 router.delete('/categoriesName/:categoryDescription', deleteCategoryByName);
 

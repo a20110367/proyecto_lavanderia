@@ -48,6 +48,17 @@ export const createCategory = async (req, res) =>{
     }
 }
 
+export const createCategoryMany = async (req, res) =>{
+    try {
+        const categoriesMany = await prisma.category.createMany({
+          data: req.body
+        });
+        res.status(201).json(categoriesMany);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
 export const deleteCategoryById =  async (req, res) =>{
 
     try {

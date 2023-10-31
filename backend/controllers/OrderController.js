@@ -4,80 +4,16 @@ const prisma = new PrismaClient();
 
 export const getOrders = async (req, res) =>{
     try {
-        const response = await prisma.order.findMany();
+        const response = await prisma.serviceOrder.findMany();
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});
     }
 }
 
-// export const getOrders = async (req, res) =>{
-//     try {
-//         const response = await prisma.order.findMany({
-//             // include:{
-//             //     user:true,
-//             //     client:true,
-//             //     deliveryDetails:true,
-//             //     payment:true,
-//             //     orderServices:true,
-//             //     serviceTraceDetails:true
-
-//             // },
-//             select: {
-//                 id_order: true,
-//                 numberOfItems: true,
-//                 receptionDate: true,
-//                 receptionTime:true,
-//                 scheduledDeliveryDate: true,
-//                 scheduledDeliveryTime:true,
-//                 payForm: true,
-//                 payStatus: true,
-//                 orderStatus: true,
-//                 totalPrice: true,
-//                 client: {
-//                     select: {
-//                         name: true,
-//                         firstLN: true,
-//                         secondLN: true,
-//                         phone: true,
-//                         id_client:true,
-//                     },
-//                 },
-//                 user: {
-//                     select: {
-//                         name: true,
-//                         firstLN: true,
-//                         secondLN:true,
-//                         id_user: true,
-//                     },
-//                 },
-//                 orderServices: {
-//                     select: {
-//                         //id_service: true,
-//                         service:{
-//                             select:{
-//                                     description:true,
-//                                     price: true,
-//                                     time: true,
-//                                     weight: true,
-//                                     pieces :true
-//                                     }
-                            
-//                         },
-                        
-//                     },
-//                 },
-//             },
-//         });
-//         res.status(200).json(response);
-//     }catch(e){
-//         res.status(500).json({msg:e.message});
-//     }
-// }
-
 export const getOrdersById = async (req, res) =>{
     try {
-        const response = await prisma.order.findFirst({
+        const response = await prisma.serviceOrder.findFirst({
         
             select: {
                 id_order: true,
@@ -107,24 +43,27 @@ export const getOrdersById = async (req, res) =>{
                         id_user: true,
                     },
                 },
-                orderServices: {
+                include:{
+                    ServiceOrderDetail:true,
+                    
+                },
+                
+
+                OrderIronServiceDetail: {
                     select: {
                         //id_service: true,
                         service:{
                             select:{
                                     description:true,
-                                    price: true,
-                                    time: true,
-                                    weight: true,
-                                    pieces :true
                                     }
                             
                         },
                         
                     },
                 },
-            },
+            }
         });
+    
         res.status(200).json(response);
     }catch(e){
         res.status(404).json({msg:e.message});
@@ -133,7 +72,7 @@ export const getOrdersById = async (req, res) =>{
 
 export const getOrdersByIdUser = async (req, res) =>{
     try {
-        const response = await prisma.order.findMany({
+        const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_user: Number(req.params.fk_user)
             },
@@ -165,16 +104,25 @@ export const getOrdersByIdUser = async (req, res) =>{
                         id_user: true,
                     },
                 },
-                orderServices: {
+                orderLaundryServiceDetail: {
                     select: {
                         //id_service: true,
                         service:{
                             select:{
                                     description:true,
-                                    price: true,
-                                    time: true,
-                                    weight: true,
-                                    pieces :true
+                                    }
+                            
+                        },
+                        
+                    },
+                },
+
+                OrderIronServiceDetail: {
+                    select: {
+                        //id_service: true,
+                        service:{
+                            select:{
+                                    description:true,
                                     }
                             
                         },
@@ -183,7 +131,7 @@ export const getOrdersByIdUser = async (req, res) =>{
                 },
             },
         });
-        res.status(201).json(order);
+        res.status(201).json(response);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -191,7 +139,7 @@ export const getOrdersByIdUser = async (req, res) =>{
 
 export const getOrdersByIdClient = async (req, res) =>{
     try {
-        const response = await prisma.order.findMany({
+        const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_client: Number(req.params.fk_client)
             },
@@ -223,16 +171,25 @@ export const getOrdersByIdClient = async (req, res) =>{
                         id_user: true,
                     },
                 },
-                orderServices: {
+                orderLaundryServiceDetail: {
                     select: {
                         //id_service: true,
                         service:{
                             select:{
                                     description:true,
-                                    price: true,
-                                    time: true,
-                                    weight: true,
-                                    pieces :true
+                                    }
+                            
+                        },
+                        
+                    },
+                },
+
+                OrderIronServiceDetail: {
+                    select: {
+                        //id_service: true,
+                        service:{
+                            select:{
+                                    description:true,
                                     }
                             
                         },
@@ -241,7 +198,7 @@ export const getOrdersByIdClient = async (req, res) =>{
                 },
             },
         });
-        res.status(201).json(order);
+        res.status(201).json(response);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -250,11 +207,24 @@ export const getOrdersByIdClient = async (req, res) =>{
 export const createOrder = async (req, res) =>{
    
     try {
-        const order = await prisma.order.create({
+        const serviceOrder = await prisma.serviceOrder.create({
             data: req.body
        
         });
-        res.status(201).json(order);
+        res.status(201).json(serviceOrder);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const createOrderMany = async (req, res) =>{
+   
+    try {
+        const orderMany = await prisma.serviceOrder.createMany({
+            data: req.body
+       
+        });
+        res.status(201).json(orderMany);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -263,24 +233,13 @@ export const createOrder = async (req, res) =>{
 export const updateOrder =  async (req, res) =>{
  
     try {
-        const order = await prisma.order.update({
+        const serviceOrder = await prisma.serviceOrder.update({
             where:{
                 id_order: Number(req.params.id)
             },
              data:req.body
-             //{
-            //     units: units,
-            //     deliveryDate: deliveryDate,
-            //     payMethod: payMethod,
-            //     payStatus: payStatus,
-            //     orderStatus: orderStatus,
-            //     totalPrice: totalPrice,
-            //     fk_client: id_client,
-            //     fk_employee: id_user,
-            //     fk_service: id_service,
-            // }
         });
-        res.status(200).json(order);
+        res.status(200).json(serviceOrder);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
@@ -288,12 +247,21 @@ export const updateOrder =  async (req, res) =>{
 
 export const deleteOrder =  async (req, res) =>{
     try {
-        const order = await prisma.order.delete({
+        const serviceOrder = await prisma.serviceOrder.delete({
             where:{
                 id_order: Number(req.params.id)
             }
         });
-        res.status(200).json(order);
+        res.status(200).json(serviceOrder);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const deleteOrderAll =  async (req, res) =>{
+    try {
+        const serviceOrder = await prisma.serviceOrder.deleteMany({});
+        res.status(200).json(serviceOrder);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

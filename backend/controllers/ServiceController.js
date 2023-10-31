@@ -87,6 +87,18 @@ export const createService = async (req, res) =>{
     }
 }
 
+export const createServiceMany = async (req, res) =>{
+    try {
+        const serviceMany = await prisma.service.createMany({
+            data:req.body
+        });
+        res.status(201).json(serviceMany);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
 export const updateService =  async (req, res) =>{
     const {description, category_id, price, time, weight} = req.body;
     try {

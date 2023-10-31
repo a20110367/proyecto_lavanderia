@@ -64,7 +64,7 @@ function AutoServicio() {
           <input
             type="text"
             placeholder="Buscar..."
-            className="search-ipt"
+            className="input-search"
             value={filtro}
             onChange={(event) => setFiltro(event.target.value)}
           />

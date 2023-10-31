@@ -159,7 +159,7 @@ function CajaPedidos() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th >ID Pedido</th>
+              <th >No. Folio</th>
               <th >Cliente</th>
               <th >Detalle del Pedido</th>
               <th >Estatus</th>

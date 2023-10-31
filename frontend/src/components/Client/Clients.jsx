@@ -156,7 +156,7 @@ function Clients() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No. Cliente</th>
                 <th>Nombre de usuario</th>
                 <th>Nombre del cliente</th>
                 <th>Apellido Paterno</th>

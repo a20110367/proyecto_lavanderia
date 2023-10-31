@@ -142,7 +142,7 @@ function Retiro() {
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
-            <th>ID</th>
+            <th>No. Retiro</th>
             <th>Fecha</th>
             <th>Monto</th>
             <th>Motivo</th>

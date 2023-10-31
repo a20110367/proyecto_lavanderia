@@ -60,7 +60,7 @@ function InicioCaja() {
           <p className="text-xl mt-4">¿Desea inicializar la caja    ?</p>
           <button
             onClick={handleAbrirFormulario}
-            className="mt-4 bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
             >
             Iniciar Caja
           </button>

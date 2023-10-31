@@ -84,7 +84,7 @@ function RecepcionPlanchado() {
           <table className="w-full table-auto">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th className="">Numero de cliente</th>
+                <th className="">No. Cliente</th>
                 <th className="">Nombre</th>
                 <th className="">Teléfono</th>
                 <th className="">Correo</th>

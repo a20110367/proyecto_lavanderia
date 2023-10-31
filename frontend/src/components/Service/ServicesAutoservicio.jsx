@@ -78,7 +78,7 @@ function ServicesAutoservicio() {
           <table>
             <thead>
               <tr>
-              <th>Numero de servicio</th>
+              <th>No. servicio</th>
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>

@@ -320,13 +320,13 @@ function CorteCaja() {
       <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
       <button
         onClick={handleCorteCaja}
-        className="mt-4 mr-2 bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Turno
       </button>
       <button
         onClick={handlePartialCorteCaja}
-        className="mt-4 bg-yellow-500 text-white p-3 rounded-md shadow-lg hover:bg-yellow-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 bg-NonPhotoblue font-bold hover:text-white p-3 rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Parcial
       </button>
@@ -335,7 +335,7 @@ function CorteCaja() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th>ID</th>
+                <th>No. Corte</th>
                 <th >FECHA</th>
                 <th >DINERO EN FONDO</th>
                 <th >INGRESO EN EFECTIVO</th>
@@ -363,10 +363,10 @@ function CorteCaja() {
                   <td className="py-3 px-6">{corte.turno}</td>
                   <td className="py-3 px-6">
                     <button
-                      className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+                      className="btn-primary"
                       onClick={() => handleDetallesClick(corte)}
                     >
-                      Detalles
+                      
                     </button>
                   </td>
                 </tr>
@@ -385,14 +385,14 @@ function CorteCaja() {
           <Button
             key="confirmar"
             onClick={handleConfirmCorteCaja}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Confirmar
           </Button>,
           <Button
             key="cancelar"
             onClick={() => setDialogVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -410,14 +410,14 @@ function CorteCaja() {
           <Button
             key="confirmar"
             onClick={handlePartialCorteConfirm}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Confirmar
           </Button>,
           <Button
             key="cancelar"
             onClick={() => setPartialCorteDialogVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -435,14 +435,14 @@ function CorteCaja() {
             <Button
               key="print"
               onClick={handleModalPrint}
-              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-print"
             >
               Imprimir
             </Button>,
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-cancel-modal"
             >
               Cerrar
             </Button>,

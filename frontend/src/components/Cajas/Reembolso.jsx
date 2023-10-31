@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
-import { Modal, Button, Input, DatePicker } from "antd";
+import { Modal, Button, Input } from "antd";
 import moment from "moment";
+import ReactPaginate from "react-paginate";
 
 function Reembolso() {
   const [reembolsos, setReembolsos] = useState([]);
@@ -16,6 +16,12 @@ function Reembolso() {
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyReembolsos = [
@@ -114,17 +120,16 @@ function Reembolso() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Registro de Reembolsos</strong>
+      <div className="title-container">
+          <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
+        <div className="flex items-center -4">
           <div className="relative w-full">
             <input
               type="text"
               placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+              className="input-search"
               value={filtro}
               onChange={handleFiltroChange}
             />
@@ -133,10 +138,19 @@ function Reembolso() {
             </div>
           </div>
         </div>
+        <div className="mt-3 mb-3">
+          <button
+            onClick={handleReembolso}
+            className="btn-primary"
+          >
+            Registrar Reembolso
+          </button>
+        
+        </div>
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th >ID</th>
+              <th >No. Reembolso</th>
               <th >Número de Pedido</th>
               <th>Monto</th>
               <th >Motivo</th>
@@ -144,7 +158,9 @@ function Reembolso() {
             </tr>
           </thead>
           <tbody>
-            {filteredReembolsos.map((reembolso) => (
+          {filteredReembolsos
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((reembolso) => (
               <tr className="bg-white border-b" key={reembolso.id}>
                 <td className="py-3 px-1 text-center">{reembolso.id}</td>
                 <td className="py-3 px-6">{reembolso.numeroPedido}</td>
@@ -155,16 +171,6 @@ function Reembolso() {
             ))}
           </tbody>
         </table>
-        <div className="mt-4">
-          <button
-            onClick={handleReembolso}
-            className="bg-red-500 text-white p-3 rounded-md shadow-lg hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
-          >
-            Registrar Reembolso
-          </button>
-        
-        </div>
-      </div>
       <Modal
         title="Registrar Reembolso"
         visible={visible}
@@ -175,14 +181,14 @@ function Reembolso() {
           <Button
             key="confirmar"
             onClick={handleConfirmReembolso}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-print text-white"
           >
             Confirmar Reembolso
           </Button>,
           <Button
             key="cancelar"
             onClick={handleClose}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -227,6 +233,23 @@ function Reembolso() {
           </div>
         </form>
       </Modal>
+      <div className="flex justify-center mt-4 mb-4">
+    <ReactPaginate
+      previousLabel={"Anterior"}
+      nextLabel={"Siguiente"}
+      breakLabel={"..."}
+      pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
+      marginPagesDisplayed={2}
+      pageRangeDisplayed={2}
+      onPageChange={handlePageChange}
+      containerClassName={"pagination flex"}
+      pageLinkClassName="pageLinkClassName"
+      previousLinkClassName="prevOrNextLinkClassName"
+      nextLinkClassName="prevOrNextLinkClassName"
+      breakLinkClassName="breakLinkClassName"
+      activeLinkClassName="activeLinkClassName"
+    />
+  </div>
     </div>
   );
 }

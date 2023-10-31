@@ -9,6 +9,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import ReactPaginate from "react-paginate";
 
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -17,6 +18,16 @@ function PedidosPlanchado() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   useEffect(() => {
     const dummyPedidos = [
@@ -132,114 +143,146 @@ function PedidosPlanchado() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Pedidos Planchado</strong>
+        <div className="title-container">
+          <strong className="title-strong">Pedidos de Planchado</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-2.5 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
-          <select
-            className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
-            value={filtroEstatus}
-            onChange={handleFiltroEstatusChange}
+        </div>
+        <select
+          className="select-category"
+          value={filtroEstatus}
+          onChange={handleFiltroEstatusChange}
+        >
+          <option className="text-base font-semibold" value="">
+            Todos
+          </option>
+          <option
+            value="Pendiente"
+            className="text-gray-600 font-semibold text-base"
           >
-            <option className="text-base font-semibold" value="">
-              Todos
-            </option>
-            <option value="Pendiente" className="text-gray-600 font-semibold text-base">
-              Pendientes
-            </option>
-            <option value="En proceso" className="text-yellow-600 font-semibold text-base">
-              En Proceso
-            </option>
-            <option value="Finalizado" className="text-blue-600 font-semibold text-base">
-              Finalizados
-            </option>
-            <option value="Entregado" className="text-green-600 font-semibold text-base">
-              Entregados
-            </option>
-          </select>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th>ID</th>
-                <th>Empleado que Recibió</th>
-                <th>Empleado que Entregó</th>
-                <th>Nombre del Cliente</th>
-                <th>Detalle del pedido</th>
-                <th>Fecha de Entrega</th>
-                <th>Estatus</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPedidos.map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleado_recibio}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleado_entrego}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
-                  </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
-                  <td className="py-3 px-6">
-                    {pedido.orderstatus === "Pendiente" ? (
-                      <span className="text-gray-600 pl-1">
-                        <MinusCircleOutlined /> Pendiente
-                      </span>
-                    ) : pedido.orderstatus === "Almacenado" ? (
-                      <span className="text-fuchsia-600 pl-1">
-                        <DropboxOutlined /> Almacenado
-                      </span>
-                    ) : pedido.orderstatus === "En proceso" ? (
-                      <span className="text-yellow-600 pl-1">
-                        <ClockCircleOutlined /> En Proceso
-                      </span>
-                    ) : pedido.orderstatus === "Finalizado" ? (
-                      <span className="text-blue-600 pl-1">
-                        <IssuesCloseOutlined /> Finalizado no entregado
-                        <button
-                          onClick={() => handleNotificarCliente(pedido)}
-                          className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
-                        >
-                          Notificar al Cliente
-                        </button>
-                      </span>
-                    ) : pedido.orderstatus === "Entregado" ? (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Finalizado Entregado
-                      </span>
-                    ) : (
-                      <span className="text-red-600 pl-1">
-                        <StopOutlined /> Cancelado
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            Pendientes
+          </option>
+          <option
+            value="En proceso"
+            className="text-yellow-600 font-semibold text-base"
+          >
+            En Proceso
+          </option>
+          <option
+            value="Finalizado"
+            className="text-blue-600 font-semibold text-base"
+          >
+            Finalizados
+          </option>
+          <option
+            value="Entregado"
+            className="text-green-600 font-semibold text-base"
+          >
+            Entregados
+          </option>
+        </select>
       </div>
-      <Modal visible={notificationVisible} footer={null} onCancel={() => setNotificationVisible(false)} destroyOnClose>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th>No. Folio</th>
+              <th>Empleado que Recibió</th>
+              <th>Empleado que Entregó</th>
+              <th>Nombre del Cliente</th>
+              <th>Detalle del pedido</th>
+              <th>Fecha de Entrega</th>
+              <th>Estatus</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
+              <tr className="bg-white border-b" key={pedido.id_pedido}>
+                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleado_recibio}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.empleado_entrego}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.cliente}
+                </td>
+                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
+                <td className="py-3 px-6">
+                  {pedido.orderstatus === "Pendiente" ? (
+                    <span className="text-gray-600 pl-1">
+                      <MinusCircleOutlined /> Pendiente
+                    </span>
+                  ) : pedido.orderstatus === "Almacenado" ? (
+                    <span className="text-fuchsia-600 pl-1">
+                      <DropboxOutlined /> Almacenado
+                    </span>
+                  ) : pedido.orderstatus === "En proceso" ? (
+                    <span className="text-yellow-600 pl-1">
+                      <ClockCircleOutlined /> En Proceso
+                    </span>
+                  ) : pedido.orderstatus === "Finalizado" ? (
+                    <span className="text-blue-600 pl-1">
+                      <IssuesCloseOutlined /> Finalizado no entregado
+                      <button
+                        onClick={() => handleNotificarCliente(pedido)}
+                        className="btn-primary mt-1"
+                      >
+                        Notificar al Cliente
+                      </button>
+                    </span>
+                  ) : pedido.orderstatus === "Entregado" ? (
+                    <span className="text-green-600 pl-1">
+                      <CheckCircleOutlined /> Finalizado Entregado
+                    </span>
+                  ) : (
+                    <span className="text-red-600 pl-1">
+                      <StopOutlined /> Cancelado
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center items-center my-8">
+        <ReactPaginate
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          breakLabel="..."
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName="pagination flex"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
+      <Modal
+        visible={notificationVisible}
+        footer={null}
+        onCancel={() => setNotificationVisible(false)}
+        destroyOnClose
+      >
         <div className="text-center">
           <div style={{ fontSize: "36px", color: "#52c41a" }}>
             <CheckCircleOutlined />

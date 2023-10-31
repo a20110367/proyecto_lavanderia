@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal } from "antd";
 import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+
 
 import {
   IssuesCloseOutlined,
@@ -19,8 +21,14 @@ function CajaPedidos() {
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+  
+
   useEffect(() => {
-    // Simula la obtención de los pedidos desde una fuente de datos (por ejemplo, una API)
     const dummyPedidos = [
         {
             id_pedido: 1,
@@ -108,17 +116,16 @@ function CajaPedidos() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Lista de Pedidos</strong>
+      <div className="title-container">
+          <strong className="title-strong">Lista de Pedidos</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
         <div className="flex items-center mb-4">
           <div className="relative w-full">
             <input
               type="text"
               placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+              className="input-search"
               value={filtro}
               onChange={handleFiltroChange}
             />
@@ -127,7 +134,7 @@ function CajaPedidos() {
             </div>
           </div>
           <select
-            className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
+            className="select-category"
             value={filtroEstatus}
             onChange={handleFiltroEstatusChange}
           >
@@ -152,7 +159,7 @@ function CajaPedidos() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th >ID Pedido</th>
+              <th >No. Folio</th>
               <th >Cliente</th>
               <th >Detalle del Pedido</th>
               <th >Estatus</th>
@@ -162,7 +169,9 @@ function CajaPedidos() {
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.map((pedido) => (
+          {filteredPedidos
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((pedido) => (
               <tr className="bg-white border-b" key={pedido.id_pedido}>
                 <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
                 <td className="py-3 px-6 font-medium text-gray-900">
@@ -198,8 +207,7 @@ function CajaPedidos() {
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
+        </table>        
       <Modal
         visible={notificationVisible}
         footer={null}
@@ -214,6 +222,23 @@ function CajaPedidos() {
         </div>
       </Modal>
     </div>
+    <div className="flex justify-center mt-4 mb-4">
+    <ReactPaginate
+      previousLabel="Anterior"
+      nextLabel="Siguiente"
+      breakLabel="..."
+      pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+      marginPagesDisplayed={2}
+      pageRangeDisplayed={2}
+      onPageChange={handlePageChange}
+      containerClassName="pagination flex"
+      pageLinkClassName="pageLinkClassName"
+      previousLinkClassName="prevOrNextLinkClassName"
+      nextLinkClassName="prevOrNextLinkClassName"
+      breakLinkClassName="breakLinkClassName"
+      activeLinkClassName="activeLinkClassName"
+    />
+  </div>
     </div>
   );
 }

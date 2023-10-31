@@ -74,7 +74,7 @@ function EditClient() {
 
   useEffect(() => {
     const getClientById = async () => {
-      const response = await Axios.get(`http://localhost:5000/clients/${id}`);
+      const response = await Axios.get(`http://localhost:5000/clientsById/${id}`);
       setUserName(response.data.username);
       setName(response.data.name);
       setFirstLN(response.data.firstLN);

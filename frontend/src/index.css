@@ -5,6 +5,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* Scrollbar styling */
   ::-webkit-scrollbar {
     width: 10px;
   }
@@ -23,48 +24,40 @@
     background: #999;
   }
 
+  /* Global HTML styling */
   html {
     font-family: "Inter", sans-serif;
     line-height: 1.3;
     background-color: rgb(243, 243, 243);
   }
 
-  /* CSS para hacer la tabla adaptable */
-  /* CSS para hacer la tabla adaptable */
+  /* Table styling */
   table {
+    @apply w-full; /* This is a custom utility class that defines width: 100% */
+    @apply mx-auto; /* This is a custom utility class that centers the element horizontally */
     border-collapse: collapse;
-    width: 100%;
-    margin: 0 auto; /* Centrar la tabla en la pantalla */
   }
 
-  th,
-  td {
-      padding: 0.3rem; /* Reducir el relleno para adaptar la tabla */
-    word-wrap: break-word; /* Permitir el salto de palabra para evitar desbordamientos */
-    text-align: center; /* Centrar el texto en las celdas */
-    font-size: 0.875rem; /* Reducir el tamaño de fuente para el texto en pantallas pequeñas */
-    max-width: 0; /* Evitar que el contenido se desborde */
-    white-space: pre-line; /* Permitir saltos de línea */
-    overflow: hidden; /* Ocultar el contenido que no cabe */
-    text-align: center;
-    .btn-primary,
-    .btn-cancel,
-    .btn-edit,
-    .btn-login,
-    .btn-big,
-    .btn-generate,
-    .btn-disabled {
-      margin: 0 auto; /* Esto centrará horizontalmente los botones en su contenedor */
-    }
+  th, td {
+    @apply p-1; /* Padding */
+    @apply break-words; /* Word wrap */
+    @apply text-center; /* Text alignment */
+    @apply text-sm; /* Font size (0.875rem) */
+    @apply max-w-0; /* Max width (prevents overflow) */
+    @apply whitespace-pre-line; /* Allow line breaks */
+    @apply overflow-hidden; /* Hide overflow */
+    @apply text-center;
   }
 
+
+}
 
 thead th {
-  font-size: 0.875rem; /* Reducir el tamaño de fuente para el encabezado en pantallas pequeñas */
-  max-height: 2.5rem; /* Altura máxima de dos líneas (ajusta según tus necesidades) */
-  white-space: nowrap; /* Evitar saltos de línea */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Mostrar puntos suspensivos cuando el contenido se recorta */
+  @apply text-sm; /* Font size (0.875rem) */
+  @apply h-10; /* Maximum height (customize as needed) */
+  @apply whitespace-nowrap; /* Prevent line breaks */
+  @apply overflow-hidden;
+  @apply overflow-ellipsis; /* Show ellipsis when content overflows */
 }
 
 
@@ -95,7 +88,7 @@ thead th {
   tr:last-child td:last-child {
     @apply rounded-br-lg;
   }
-}
+
 
 @layer components {
   /*-------------------- CONTAINERS ---------------*/
@@ -124,7 +117,7 @@ thead th {
   }
 
   .responsive-bg {
-    @apply bg-oxfordBlue w-screen h-screen grid place-items-center;
+    @apply bg-OxfordBlue w-screen h-screen grid place-items-center;
   }
 
   .search-bg {
@@ -162,31 +155,55 @@ thead th {
 
   /*-------------------- BUTTONS ---------------*/
   .btn-primary {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 ;
+    @apply text-xl md:text-base py-1 md:py-2 px-1 md:px-2 bg-IndigoDye text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-opacity-75 ;
+  }
+
+  .btn-print {
+    @apply bg-Cerulean hover:bg-Moonstone hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2 text-white hover:text-white;
+  }
+
+  .btn-cancel-modal{
+    @apply bg-RedPantone text-white hover:bg-FireBrick hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2
   }
 
   .btn-cancel {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-blush hover:bg-raspberry text-white font-bold rounded-lg mt-2 ml-3 focus:ring-red-400 shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-RedPantone hover:bg-FireBrick text-white font-bold rounded-lg mt-2 ml-3 focus:ring-red-400 shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+  }
+
+  .btn-search{
+    @apply bg-Moonstone font-semibold text-white p-2 rounded-md shadow-md hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none ml-2 mt-2 text-base px-4
   }
 
   .btn-edit {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-dodgerBlue hover:bg-sapphire text-white font-bold rounded-lg mt-2 ml-3 focus:ring-dodgerBlue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-Cerulean hover:bg-IndigoDye text-white font-bold rounded-lg mt-2 ml-3 focus:ring-NonPhotoblue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
   }
 
   .btn-login {
-    @apply active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 rounded-lg bg-oxfordBlue text-white font-bold;
+    @apply active:scale-[.98] active:duration-75 hover:scale-[1.01] ease-in-out transition-all text-2xl w-1/2 h-14 rounded-lg bg-OxfordBlue text-white font-bold;
   }
 
-  .btn-big {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-blue-500 text-white rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none mt-2;
+  .btn-big-dark {
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-IndigoDye text-white rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none mt-2;
+  }
+
+  .btn-big-light {
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-NonPhotoblue text-black hover:text-white rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none mt-2;
   }
 
   .btn-generate {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-green-500 text-white rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-Cerulean text-white rounded-md shadow-lg hover:bg-IndigoDye hover:scale-105 transition-transform transform active:scale-95 focus:outline-none;
   }
 
   .btn-disabled {
-    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-gray-500 hover:bg-gray-500 text-white font-bold rounded-lg mt-2 ml-3 focus:ring-dodgerBlue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+    @apply text-xs md:text-sm py-1 md:py-2 px-1 md:px-2 bg-gray-500 hover:bg-gray-500 text-white font-bold rounded-lg mt-2 ml-3 focus:ring-NonPhotoblue shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75;
+  }
+
+  .btn-delivery {
+    @apply bg-green-500 font-semibold text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2 px-2
+  }
+
+  .btn-payment {
+    @apply bg-NonPhotoblue font-semibold hover:text-white p-2 rounded-md shadow-lg hover:bg-Moonstone hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2 px-3
   }
 
   /*-------------------- TEXT ---------------*/
@@ -203,16 +220,16 @@ thead th {
   }
 
   .link {
-    @apply font-medium text-base text-oxfordBlue hover:text-dodgerBlue;
+    @apply font-medium text-base text-OxfordBlue hover:text-Cerulean;
   }
 
   .user {
-    @apply font-semibold text-2xl ml-3 text-oxfordBlue;
+    @apply font-semibold text-2xl ml-3 text-OxfordBlue;
   }
 
   /* strongs */
   .title-strong {
-    @apply pr-2 text-xl font-medium text-dodgerBlue;
+    @apply pr-2 text-2xl font-semibold text-Cerulean;
   }
 
   /*-------------------- INPUTS ---------------*/
@@ -228,8 +245,8 @@ thead th {
     @apply bg-transparent border-2 border-gray-500 rounded-lg p-8 mt-2 focus:outline-none focus:ring-blue-400 focus:ring-2 w-full;
   }
 
-  .search-ipt {
-    @apply border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-500 border-black;
+  .input-search {
+    @apply border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:ring-NonPhotoblue focus:border-NonPhotoblue border-Cerulean
   }
 
   /*-------------------- SELECTS ---------------*/
@@ -239,6 +256,10 @@ thead th {
 
   .select-2ry {
     @apply appearance-none bg-transparent border-2 border-gray-500 rounded-lg py-3 px-4 pr-8 focus:outline-none focus:border-blue-500 w-full text-base;
+  }
+
+  .select-category {
+    @apply ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:ring-NonPhotoblue focus:border-NonPhotoblue border-Cerulean
   }
 
   .instructions {
@@ -366,12 +387,25 @@ thead th {
   }
 
   .side-menu::-webkit-scrollbar-thumb {
-    background: #1677ff;
-    border-radius: 3px;
-    border: 1px solid #1677ff;
+    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue
   }
 
-  .side-menu::-webkit-scrollbar-thumb:hover {
-    background: #0056b3;
+  /*-------------------------------------------- PAGINATOR ----------------------------------------*/
+
+  .pageLinkClassName {
+    @apply bg-IndigoDye text-white font-semibold py-2 px-4 rounded-full mx-1 hover:bg-Cerulean hover:no-underline hover:text-white
   }
+
+  .prevOrNextLinkClassName {
+    @apply bg-IndigoDye text-white font-semibold py-2 px-4 rounded-full mx-1 hover:bg-Cerulean hover:no-underline hover:text-white 
+  }
+
+  .breakLinkClassName {
+    @apply text-gray-600 py-2 px-4 rounded-full mx-1
+  }
+
+  .activeLinkClassName {
+    @apply bg-PennBlue text-white py-2 px-4 rounded-full mx-1
+  }
+  
 }

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
+import ReactPaginate from "react-paginate";
+import { BsFillTrashFill } from "react-icons/bs"
+import { AiFillEdit } from "react-icons/ai"
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -17,6 +20,12 @@ function Equipos() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [filtroTipo, setFiltroTipo] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
@@ -61,41 +70,43 @@ function Equipos() {
         <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
-        <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
-          Añadir Nueva Maquina
-        </button>
-        <select
-          className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black mt-2"
-          value={filtroTipo}
-          onChange={handleFiltroTipoChange}
-        >
-          <option className="text-base font-semibold" value="">
-            Todos
-          </option>
-          <option
-            value="lavadora"
-            className="text-dodgerBlue font-semibold text-base"
+         <div className="flex justify-between items-center w-full pt-4">
+          <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
+            Añadir Nueva Maquina
+          </button>
+          <select
+            className="select-category"
+            value={filtroTipo}
+            onChange={handleFiltroTipoChange}
           >
-            Lavadoras
-          </option>
-          <option
-            value="secadora"
-            className="text-green-500 font-semibold text-base"
-          >
-            Secadoras
-          </option>
-          <option
-            value="plancha"
-            className="text-yellow-500 font-semibold text-base"
-          >
-            Planchas
-          </option>
-        </select>
+            <option className="text-base font-semibold" value="">
+              Todos
+            </option>
+            <option
+              value="lavadora"
+              className="text-dodgerBlue font-semibold text-base"
+            >
+              Lavadoras
+            </option>
+            <option
+              value="secadora"
+              className="text-green-500 font-semibold text-base"
+            >
+              Secadoras
+            </option>
+            <option
+              value="plancha"
+              className="text-yellow-500 font-semibold text-base"
+            >
+              Planchas
+            </option>
+          </select>
+        </div>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No. Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
@@ -110,34 +121,36 @@ function Equipos() {
                 .filter(
                   (machine) => !filtroTipo || machine.machineType === filtroTipo
                 )
+                .slice(
+                  currentPage * itemsPerPage,
+                  (currentPage + 1) * itemsPerPage
+                )
                 .map((machine, index) => (
                   <tr key={machine.id_machine}>
                     <td>{index + 1}</td>
                     <td
-                      className={`font-semibold ${
-                        machine.machineType === "lavadora"
+                      className={`font-semibold ${machine.machineType === "lavadora"
                           ? "text-dodgerBlue"
                           : machine.machineType === "plancha"
-                          ? "text-yellow-500"
-                          : "text-green-500"
-                      }`}
+                            ? "text-yellow-500"
+                            : "text-green-500"
+                        }`}
                     >
                       {machine.machineType === "lavadora"
                         ? "Lavadora"
                         : machine.machineType === "plancha"
-                        ? "Plancha"
-                        : "Secadora"}
+                          ? "Plancha"
+                          : "Secadora"}
                     </td>
 
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.status === "available"
+                      className={`${machine.status === "available"
                           ? "text-green-500"
                           : "text-red-500"
-                      }`}
+                        }`}
                     >
                       {machine.status === "available"
                         ? "Disponible"
@@ -149,17 +162,17 @@ function Equipos() {
                         onClick={() =>
                           navigate(`/editEquipo/${machine.id_machine}`)
                         }
-                        className="btn-edit m-1"
+                        className="btn-edit"
                       >
-                        Editar
+                        <AiFillEdit />
                       </button>
                       <button
                         onClick={() =>
                           handleClickOpen(machine.model, machine.id_machine)
                         }
-                        className="btn-cancel mt-1"
+                        className="btn-cancel"
                       >
-                        Borrar
+                        <BsFillTrashFill />
                       </button>
 
                       <Dialog
@@ -192,6 +205,27 @@ function Equipos() {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="flex justify-center mt-4 mb-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(
+            data.filter(
+              (machine) => !filtroTipo || machine.machineType === filtroTipo
+            ).length / itemsPerPage
+          )}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
       </div>
     </div>
   );

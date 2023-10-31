@@ -28,7 +28,6 @@ function EntregaPlanchado() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
-  
 
   useEffect(() => {
     const dummyPedidos = [
@@ -198,7 +197,7 @@ function EntregaPlanchado() {
         <table className="w-full table-auto">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th className="">ID</th>
+              <th className="">No. Folio</th>
               <th className="">Nombre del Cliente</th>
               <th className="">Empleado que Recibe</th>
               <th className="">Detalle del pedido</th>
@@ -209,76 +208,80 @@ function EntregaPlanchado() {
             </tr>
           </thead>
           <tbody>
-          {filteredPedidos
-        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-        .map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id_pedido}>
-                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.cliente}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleadoRecibe}
-                </td>
-                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                <td className="py-3 px-6">{pedido.f_recepcion}</td>
-                <td
-                  className={`py-3 px-6 ${
-                    pedido.orderstatus === "Adeudo"
-                      ? "text-red-600"
-                      : "text-green-600"
-                  }`}
-                >
-                  {pedido.orderstatus === "Adeudo" ? (
-                    <span className="text-red-600 pl-1">
-                      <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
-                    </span>
-                  ) : (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
-                    </span>
-                  )}
-                </td>
-                <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
-                <td>
-                  {pedido.orderstatus === "Pagado" ? (
-                    <button
-                      onClick={() => handleEntregar(pedido)}
-                      className="btn-delivery"
-                    >
-                      Entregar
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleCobrar(pedido)}
-                      className="btn-payment"
-                    >
-                      Cobrar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {filteredPedidos
+              .slice(
+                currentPage * itemsPerPage,
+                (currentPage + 1) * itemsPerPage
+              )
+              .map((pedido) => (
+                <tr className="bg-white border-b" key={pedido.id_pedido}>
+                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.cliente}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.empleadoRecibe}
+                  </td>
+                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
+                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                  <td
+                    className={`py-3 px-6 ${
+                      pedido.orderstatus === "Adeudo"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {pedido.orderstatus === "Adeudo" ? (
+                      <span className="text-red-600 pl-1">
+                        <ExclamationCircleOutlined /> Adeudo $
+                        {pedido.totalPrice}
+                      </span>
+                    ) : (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Pagado ${pedido.totalPrice}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
+                  <td>
+                    {pedido.orderstatus === "Pagado" ? (
+                      <button
+                        onClick={() => handleEntregar(pedido)}
+                        className="btn-delivery"
+                      >
+                        Entregar
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleCobrar(pedido)}
+                        className="btn-payment"
+                      >
+                        Cobrar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
       <div className="flex justify-center mt-4 mb-4">
-  <ReactPaginate
-    previousLabel={"Anterior"}
-    nextLabel={"Siguiente"}
-    breakLabel={"..."}
-    pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
-    marginPagesDisplayed={2}
-    pageRangeDisplayed={2}
-    onPageChange={handlePageChange}
-    containerClassName={"pagination flex"}
-    pageLinkClassName="pageLinkClassName"
-    previousLinkClassName="prevOrNextLinkClassName"
-    nextLinkClassName="prevOrNextLinkClassName"
-    breakLinkClassName="breakLinkClassName"
-    activeLinkClassName="activeLinkClassName"
-  />
-</div>
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
       {selectedPedido &&
         entregando &&
         selectedPedido.orderstatus === "Pagado" && (

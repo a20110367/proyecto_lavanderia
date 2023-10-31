@@ -76,7 +76,6 @@ function EntregaLavanderia() {
     setFilteredPedidos(dummyPedidos);
   }, []);
 
- 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
     filterPedidos(event.target.value);
@@ -176,42 +175,45 @@ function EntregaLavanderia() {
   return (
     <div>
       <div className="mb-3">
-      <div className="title-container">
+        <div className="title-container">
           <strong className="title-strong">Entregas Lavanderia</strong>
         </div>
       </div>
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="input-search"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-3 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-3 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="">ID</th>
-                <th className="">Nombre del Cliente</th>
-                <th className="">Empleado que Recibe</th>
-                <th className="">Detalle del pedido</th>
-                <th className="">Fecha de Recepción</th>
-                <th className="">Estatus</th>
-                <th className="">Fecha de Entrega Estimada</th>
-                <th className="">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th className="">No. folio</th>
+              <th className="">Nombre del Cliente</th>
+              <th className="">Empleado que Recibe</th>
+              <th className="">Detalle del pedido</th>
+              <th className="">Fecha de Recepción</th>
+              <th className="">Estatus</th>
+              <th className="">Fecha de Entrega Estimada</th>
+              <th className="">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
             {filteredPedidos
-        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-        .map((pedido) => (
+              .slice(
+                currentPage * itemsPerPage,
+                (currentPage + 1) * itemsPerPage
+              )
+              .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_pedido}>
                   <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
@@ -231,7 +233,8 @@ function EntregaLavanderia() {
                   >
                     {pedido.orderstatus === "Adeudo" ? (
                       <span className="text-red-600 pl-1">
-                        <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
+                        <ExclamationCircleOutlined /> Adeudo $
+                        {pedido.totalPrice}
                       </span>
                     ) : (
                       <span className="text-green-600 pl-1">
@@ -259,42 +262,46 @@ function EntregaLavanderia() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-center mt-4 mb-4">
-  <ReactPaginate
-    previousLabel={"Anterior"}
-    nextLabel={"Siguiente"}
-    breakLabel={"..."}
-    pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
-    marginPagesDisplayed={2}
-    pageRangeDisplayed={2}
-    onPageChange={handlePageChange}
-    containerClassName={"pagination flex"}
-    pageLinkClassName="pageLinkClassName"
-    previousLinkClassName="prevOrNextLinkClassName"
-    nextLinkClassName="prevOrNextLinkClassName"
-    breakLinkClassName="breakLinkClassName"
-    activeLinkClassName="activeLinkClassName"
-  />
-</div>
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center mt-4 mb-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
 
-      {selectedPedido && entregando && selectedPedido.orderstatus === "Pagado" && (
-        <Modal
-          title="Pedido Entregado"
-          visible={entregando}
-          closable={false}
-          footer={null}
-        >
-          <div className="text-center">
-            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
-            <p className="text-green-600 font-bold text-lg mt-2">
-              Pedido Entregado...
-            </p>
-          </div>
-        </Modal>
-      )}
+      {selectedPedido &&
+        entregando &&
+        selectedPedido.orderstatus === "Pagado" && (
+          <Modal
+            title="Pedido Entregado"
+            visible={entregando}
+            closable={false}
+            footer={null}
+          >
+            <div className="text-center">
+              <CheckCircleOutlined
+                style={{ fontSize: "64px", color: "green" }}
+              />
+              <p className="text-green-600 font-bold text-lg mt-2">
+                Pedido Entregado...
+              </p>
+            </div>
+          </Modal>
+        )}
 
       <Modal
         title="Detalles del Pedido"
@@ -319,7 +326,6 @@ function EntregaLavanderia() {
           </Button>,
         ]}
       >
-
         {selectedPedido?.orderstatus === "Adeudo" && (
           <div>
             <p className="text-lg font-semibold">Detalles del Pedido</p>

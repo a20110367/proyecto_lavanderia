@@ -93,7 +93,7 @@ function ServicesLavanderia() {
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+              <th>Numero de servicio</th>
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>

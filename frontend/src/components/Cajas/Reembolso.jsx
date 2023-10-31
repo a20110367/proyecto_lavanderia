@@ -129,7 +129,7 @@ function Reembolso() {
             <input
               type="text"
               placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
+              className="input-search"
               value={filtro}
               onChange={handleFiltroChange}
             />

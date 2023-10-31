@@ -30,7 +30,7 @@ export default {
       // Oscuro
       Cerulean: '#1282a2',
       // Claro
-      NonPhotoblue: '#a8dadc',  
+      Moonstone: '#3898B1',  
       NonPhotoblue: '#a8dadc',
       
       // ROJOS
@@ -38,6 +38,9 @@ export default {
       RedPantone: '#e63946',
       //Oscuro
       FireBrick: '#BC1E2C',
+
+      //GREEN
+      Malachite: '#33C944',
     }, 
   },
   plugins: [],

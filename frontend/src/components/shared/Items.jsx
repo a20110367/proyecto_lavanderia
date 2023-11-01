@@ -64,16 +64,17 @@ const items1 = [
         getItem("Pedidos", "/cajaPedidos"),
         
     ]),
-    getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
+    getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
         getItem("Administrar Equipos", "/equipos"),
     ]),
 
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
+    
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "servicesLavanderia"),
-        getItem("Planchado", "servicesPlanchado"),
-        getItem("Autoservicio", "servicesAutoservicio"),
+        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Planchado", "/servicesPlanchado"),
+        getItem("Autoservicio", "/servicesAutoservicio"),
 
     ]),
     { type: "divider", style: { margin: "140px " } },
@@ -119,9 +120,9 @@ const items2 = [
     ]),
 
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "servicesLavanderia"),
-        getItem("Planchado", "servicesPlanchado"),
-        getItem("Autoservicio", "servicesAutoservicio"),
+        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Planchado", "/servicesPlanchado"),
+        getItem("Autoservicio", "/servicesAutoservicio"),
 
     ]),
 

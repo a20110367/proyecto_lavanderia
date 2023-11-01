@@ -69,6 +69,14 @@ function Retiro() {
     setVisible(true);
   };
 
+  const handleMotivoInput = () => {
+    setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };  
+  
+  const handleMontoInput = () => {
+    setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };
+
   const handleConfirmRetiro = () => {
     let isValid = true;
 
@@ -197,6 +205,7 @@ function Retiro() {
               onChange={(e) => setMonto(e.target.value)}
               placeholder="Ingrese el monto"
               addonBefore="$"
+              onInput={handleMontoInput}
             />
             <p className="text-red-500">{montoError}</p>
           </div>
@@ -208,6 +217,7 @@ function Retiro() {
               value={motivo}
               onChange={(e) => setMotivo(e.target.value)}
               placeholder="Ingrese el motivo"
+              onInput={handleMotivoInput}
             />
             <p className="text-red-500">{motivoError}</p>
           </div>

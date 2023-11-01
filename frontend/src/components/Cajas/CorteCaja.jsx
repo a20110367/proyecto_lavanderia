@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
+import useSWR from "swr";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
+import Axios from "axios";
+import { AiOutlinePlusCircle } from "react-icons/ai"
 
 
 function CorteCaja() {
@@ -16,80 +19,28 @@ function CorteCaja() {
   const [fechaHora, setFechaHora] = useState("");
   const { cookies } = useAuth();
   const [nombreEmpleado, setNombreEmpleado] = useState(cookies.username || "");
-  const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
-    useState(false);
+  const [partialCorteDialogVisible, setPartialCorteDialogVisible] = useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
 
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/cashCuts");
+    return response.data;
+  };
+  
+  const { data } = useSWR("cashCuts", fetcher);
+
   useEffect(() => {
-    const intervalId = setInterval(() => {
       const now = new Date();
       const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
       setFechaHora(formattedDate);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
-    const dummyCortes = [
-      {
-        id: 1,
-        fecha: "15/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 18000,
-        retirosTotales: 600,
-        ingresosTotales: 16000,
-        ingresoEfectivo: 9000,
-        ingresoTarjeta: 7000,
-        finalTotalCaja: 0,
-        usuario: "Usuario3",
-        turno: "Matutino",
-        tipoServicio: "Planchado",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 3000,
-        ingresoLavadoEncargo: 4000,
-        ingresoPlanchado: 16000,
-      },
-      {
-        id: 2,
-        fecha: "18/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 15000,
-        retirosTotales: 300,
-        ingresosTotales: 15000,
-        ingresoEfectivo: 7000,
-        ingresoTarjeta: 8000,
-        finalTotalCaja: 0,
-        usuario: "Usuario2",
-        turno: "Vespertino",
-        tipoServicio: "Lavado por encargo",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 5000,
-        ingresoLavadoEncargo: 15000,
-        ingresoPlanchado: 10000,
-      },
-      {
-        id: 3,
-        fecha: "20/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 20000,
-        retirosTotales: 1200,
-        ingresosTotales: 20000,
-        ingresoEfectivo: 10000,
-        ingresoTarjeta: 10000,
-        finalTotalCaja: 0,
-        usuario: "Usuario1",
-        turno: "Matutino",
-        tipoServicio: "Autoservicio",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 10000,
-        ingresoLavadoEncargo: 16000,
-        ingresoPlanchado: 15000,
-      },
-    ];
-
     const now = moment();
-    const currentCorte = dummyCortes.find((corte) =>
-      moment(corte.fecha).isSame(now, "day")
+    const currentCorte = data.find((corte) =>
+      moment(corte.cashCutD).isSame(now, "day")
     );
 
     if (currentCorte) {
@@ -108,41 +59,42 @@ function CorteCaja() {
 
     const turno = horaActual < 12 ? "Matutino" : "Vespertino";
 
-    const nuevoCorte = {
-      id: Cortes.length + 1,
-      fecha: moment().format("DD/MM/YYYY"),
-      dineroFondo: 20000,
-      retirosTotales: 1200,
-      ingresoEfectivo: 61000,
-      ingresoTarjeta: 10000,
-      ingresosTotales:20000, 
-      finalTotalCaja: 0,
-      ingresoAutoservicio: 10000,
-      ingresoLavadoEncargo: 16000,
-      ingresoPlanchado: 15000,
-      usuario: nombreEmpleado,
-      turno: turno,
-    };
+    // const nuevoCorte = {
+    //   id: Cortes.length + 1,
+    //   fecha: moment().format("DD/MM/YYYY"),
+    //   dineroFondo: 20000,
+    //   retirosTotales: 1200,
+    //   ingresoEfectivo: 61000,
+    //   ingresoTarjeta: 10000,
+    //   ingresosTotales:20000, 
+    //   finalTotalCaja: 0,
+    //   ingresoAutoservicio: 10000,
+    //   ingresoLavadoEncargo: 16000,
+    //   ingresoPlanchado: 15000,
+    //   usuario: nombreEmpleado,
+    //   turno: turno,
+    // };
     
-    nuevoCorte.finalTotalCaja =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado -
-      nuevoCorte.ingresoTarjeta -
-      nuevoCorte.retirosTotales;
+    // nuevoCorte.finalTotalCaja =
+    //   nuevoCorte.dineroFondo +
+    //   nuevoCorte.ingresoAutoservicio +
+    //   nuevoCorte.ingresoLavadoEncargo +
+    //   nuevoCorte.ingresoPlanchado -
+    //   nuevoCorte.ingresoTarjeta -
+    //   nuevoCorte.retirosTotales;
     
-    nuevoCorte.ingresoTotalServicios =
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
+    // nuevoCorte.ingresoTotalServicios =
+    //   nuevoCorte.ingresoAutoservicio +
+    //   nuevoCorte.ingresoLavadoEncargo +
+    //   nuevoCorte.ingresoPlanchado;
     
-    nuevoCorte.ingresoEfectivo =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-    
+    // nuevoCorte.ingresoEfectivo =
+    //   nuevoCorte.dineroFondo +
+    //   nuevoCorte.ingresoAutoservicio +
+    //   nuevoCorte.ingresoLavadoEncargo +
+    //   nuevoCorte.ingresoPlanchado;
+      const response = Axios.get(`http://localhost:5000/closeCashCut/${5}`);
+      console.log(response.data)
 
       const pdf = new jsPDF();
 
@@ -366,7 +318,7 @@ function CorteCaja() {
                       className="btn-primary"
                       onClick={() => handleDetallesClick(corte)}
                     >
-                      
+                      <AiOutlinePlusCircle size={20}/>
                     </button>
                   </td>
                 </tr>

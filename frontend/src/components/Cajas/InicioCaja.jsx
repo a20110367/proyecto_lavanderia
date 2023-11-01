@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
+import Axios from 'axios'
+import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
 
 function InicioCaja() {
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
-  const [dineroInicio, setDineroInicio] = useState("");
+  const [dineroInicio, setDineroInicio] = useState(0);
   const [cajaIniciada, setCajaIniciada] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
-  const [errorVisible, setErrorVisible] = useState(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -21,12 +22,24 @@ function InicioCaja() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleIniciarCaja = () => {
-    if (nombreUsuario && dineroInicio) {
+  const handleIniciarCaja = async (e) => {
+    e.preventDefault();
+    if (!nombreUsuario && !dineroInicio) {
+      setErrMsg("Algun campo vacio");
+      return
+    }
+    try {
+      await Axios.post("http://localhost:5000/cashCuts", {
+        inicialCash: parseFloat(dineroInicio),
+        fk_user: parseInt(cookies.token),
+        cashCutD: dateD.toJSON(),
+        cashCutT: dateT.toJSON()
+      });
       setCajaIniciada(true);
       setVisible(false);
     } else {
-      setErrorVisible(true);
+      // Mostrar un mensaje de error si los campos no están completos.
+      // Puedes implementar esto utilizando el componente Modal de Ant Design.
     }
   };
   const handleDineroInicioInput = () => {
@@ -43,6 +56,7 @@ function InicioCaja() {
 
   return (
     <div className="text-center mt-4">
+      <p>{errMsg}</p>
       {cajaIniciada ? (
         <div>
           <h1 className="text-4xl">

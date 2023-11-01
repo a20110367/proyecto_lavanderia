@@ -14,54 +14,10 @@ export const getOrders = async (req, res) =>{
 export const getOrdersById = async (req, res) =>{
     try {
         const response = await prisma.serviceOrder.findFirst({
-        
-            select: {
-                id_order: true,
-                numberOfItems: true,
-                receptionDate: true,
-                receptionTime:true,
-                scheduledDeliveryDate: true,
-                scheduledDeliveryTime:true,
-                payForm: true,
-                payStatus: true,
-                orderStatus: true,
-                totalPrice: true,
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        phone: true,
-                        id_client:true,
-                    },
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN:true,
-                        id_user: true,
-                    },
-                },
-                include:{
-                    ServiceOrderDetail:true,
-                    
-                },
-                
-
-                OrderIronServiceDetail: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    }
-                            
-                        },
-                        
-                    },
-                },
+            where:{
+                id_order : Number(req.body.id)
             }
+
         });
     
         res.status(200).json(response);
@@ -75,61 +31,7 @@ export const getOrdersByIdUser = async (req, res) =>{
         const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_user: Number(req.params.fk_user)
-            },
-            select: {
-                id_order: true,
-                numberOfItems: true,
-                receptionDate: true,
-                receptionTime:true,
-                scheduledDeliveryDate: true,
-                scheduledDeliveryTime:true,
-                payForm: true,
-                payStatus: true,
-                orderStatus: true,
-                totalPrice: true,
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        phone: true,
-                        id_client:true,
-                    },
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN:true,
-                        id_user: true,
-                    },
-                },
-                orderLaundryServiceDetail: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    }
-                            
-                        },
-                        
-                    },
-                },
-
-                OrderIronServiceDetail: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    }
-                            
-                        },
-                        
-                    },
-                },
-            },
+            }
         });
         res.status(201).json(response);
     }catch(e){
@@ -142,61 +44,7 @@ export const getOrdersByIdClient = async (req, res) =>{
         const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_client: Number(req.params.fk_client)
-            },
-            select: {
-                id_order: true,
-                numberOfItems: true,
-                receptionDate: true,
-                receptionTime:true,
-                scheduledDeliveryDate: true,
-                scheduledDeliveryTime:true,
-                payForm: true,
-                payStatus: true,
-                orderStatus: true,
-                totalPrice: true,
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        phone: true,
-                        id_client:true,
-                    },
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN:true,
-                        id_user: true,
-                    },
-                },
-                orderLaundryServiceDetail: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    }
-                            
-                        },
-                        
-                    },
-                },
-
-                OrderIronServiceDetail: {
-                    select: {
-                        //id_service: true,
-                        service:{
-                            select:{
-                                    description:true,
-                                    }
-                            
-                        },
-                        
-                    },
-                },
-            },
+            }            
         });
         res.status(201).json(response);
     }catch(e){

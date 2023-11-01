@@ -56,7 +56,7 @@ export const getServicesByCategory = async (req, res) =>{
         const response = await prisma.service.findMany({
             where:{
 
-                category_id: Number(req.category_id)
+                category_id: Number(req.params.id)
             }
 
         });
@@ -69,17 +69,10 @@ export const getServicesByCategory = async (req, res) =>{
 }
 
 export const createService = async (req, res) =>{
-    const {description, category_id, price, time, weight, pieces} = req.body;
+
     try {
         const service = await prisma.service.create({
-            data:{
-                description: description,
-                price: price,
-                category_id: category_id,
-                time: time,
-                weight: weight,
-                pieces: pieces,
-            }
+            data:req.b
         });
         res.status(201).json(service);
     }catch(e){
@@ -100,19 +93,13 @@ export const createServiceMany = async (req, res) =>{
 
 
 export const updateService =  async (req, res) =>{
-    const {description, category_id, price, time, weight} = req.body;
+
     try {
         const service = await prisma.service.update({
             where:{
                 id_service: Number(req.params.id)
             },
-            data:{
-                description: description,
-                category_id : category_id,
-                price: price,
-                time: time,
-                weight: weight
-            }
+            data:req.body
         });
         res.status(200).json(service);
     }catch(e){
@@ -120,24 +107,6 @@ export const updateService =  async (req, res) =>{
     }
 }
 
-export const updateServiceCategory =  async (req, res) =>{
-    const {category_id} = req.body;
-    try {
-        const service = await prisma.service.update({
-            where:{
-                id_service: Number(req.params.id)
-            },
-            data:{
-                
-                category_id : category_id,
-
-            }
-        });
-        res.status(200).json(service);
-    }catch(e){
-        res.status(400).json({msg:e.message});
-    }
-}
 
 export const deleteService =  async (req, res) =>{
 

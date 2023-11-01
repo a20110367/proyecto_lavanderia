@@ -5,14 +5,16 @@ import { useAuth } from "../../hooks/auth/auth";
 import Axios from 'axios'
 import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
 
+
 function InicioCaja() {
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
   const [dineroInicio, setDineroInicio] = useState(0);
-  const [cajaIniciada, setCajaIniciada] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
   const [errMsg, setErrMsg] = useState("");
+  const [errorVisible, setErrorVisible] = useState(false);
+  const [cajaIniciada, setCajaIniciada] = useState(false);
   const dateD = new Date()
   const dateT = new Date()
 
@@ -25,19 +27,35 @@ function InicioCaja() {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    // Verificar si la caja ya ha sido inicializada
+    const cashCutId = localStorage.getItem("cashCutId");
+    if (cashCutId) {
+      setCajaIniciada(true);
+    }
+  }, []);
+
   const handleIniciarCaja = async (e) => {
     e.preventDefault();
+
+    if (cajaIniciada) {
+      setErrMsg("La caja ya ha sido inicializada.");
+      return;
+    }
+
     if (!nombreUsuario && !dineroInicio) {
       setErrMsg("Algun campo vacio");
       return
     }
     try {
-      await Axios.post("http://localhost:5000/cashCuts", {
+      const response = await Axios.post("http://localhost:5000/cashCuts", {
         inicialCash: parseFloat(dineroInicio),
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON()
       });
+      localStorage.setItem("cashCutId", response.data.id);
+
       setCajaIniciada(true);
       setVisible(false);
     } catch (err) {
@@ -48,6 +66,9 @@ function InicioCaja() {
       }
     }
   };
+    const handleDineroInicioInput = () => {
+      setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
+    };
 
   const handleAbrirFormulario = () => {
     setVisible(true);
@@ -126,7 +147,12 @@ function InicioCaja() {
           value={dineroInicio}
           onChange={(e) => setDineroInicio(e.target.value)}
           addonBefore="$"
+          onInput={handleDineroInicioInput}
         />
+        {errorVisible && (
+          <p className="text-red-600">Este campo es obligatorio</p>
+        )}
+        <p className="mt-2"></p>
         <p className="mt-2">
           <strong>Fecha y Hora:</strong>
         </p>

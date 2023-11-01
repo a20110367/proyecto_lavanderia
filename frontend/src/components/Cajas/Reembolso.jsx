@@ -69,6 +69,18 @@ function Reembolso() {
     setVisible(true);
   };
 
+  const handleMontoInput = () => {
+    setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };
+  
+  const handleNpedidoInput = () => {
+    setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };
+
+  const handleMotivoInput = () => {
+    setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };
+
   const handleConfirmReembolso = () => {
     // Validación de campos obligatorios
     let isValid = true;
@@ -204,6 +216,7 @@ function Reembolso() {
               value={numeroPedido}
               onChange={(e) => setNumeroPedido(e.target.value)}
               placeholder="Ingrese el número de pedido"
+              onInput={handleNpedidoInput}
             />
             <p className="text-red-500">{numeroPedidoError}</p>
           </div>
@@ -217,6 +230,7 @@ function Reembolso() {
               onChange={(e) => setMonto(e.target.value)}
               placeholder="Ingrese el monto"
               addonBefore="$"
+              onInput={handleMontoInput}
             />
             <p className="text-red-500">{montoError}</p>
           </div>
@@ -228,6 +242,7 @@ function Reembolso() {
               value={motivo}
               onChange={(e) => setMotivo(e.target.value)}
               placeholder="Ingrese el motivo"
+              onInput={handleMotivoInput}
             />
             <p className="text-red-500">{motivoError}</p>
           </div>

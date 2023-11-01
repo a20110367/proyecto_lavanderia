@@ -10,6 +10,7 @@ function InicioCaja() {
   const [dineroInicio, setDineroInicio] = useState("");
   const [cajaIniciada, setCajaIniciada] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
+  const [errorVisible, setErrorVisible] = useState(false);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -25,9 +26,11 @@ function InicioCaja() {
       setCajaIniciada(true);
       setVisible(false);
     } else {
-      // Mostrar un mensaje de error si los campos no están completos.
-      // Puedes implementar esto utilizando el componente Modal de Ant Design.
+      setErrorVisible(true);
     }
+  };
+  const handleDineroInicioInput = () => {
+    setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
   };
 
   const handleAbrirFormulario = () => {
@@ -101,11 +104,17 @@ function InicioCaja() {
           <strong>Dinero de Inicio (Fondo):</strong>
         </p>
         <Input
+          type="number"
           placeholder="Ingrese la cantidad inicial de dinero"
           value={dineroInicio}
           onChange={(e) => setDineroInicio(e.target.value)}
           addonBefore="$"
+          onInput={handleDineroInicioInput}
         />
+        {errorVisible && (
+          <p className="text-red-600">Este campo es obligatorio</p>
+        )}
+        <p className="mt-2"></p>
         <p className="mt-2">
           <strong>Fecha y Hora:</strong>
         </p>

@@ -86,7 +86,7 @@ function CorteCaja() {
         ingresoPlanchado: 15000,
       },
     ];
-
+ //a
     const now = moment();
     const currentCorte = dummyCortes.find((corte) =>
       moment(corte.fecha).isSame(now, "day")

@@ -1,32 +1,22 @@
 import express from 'express';
 import {
-    getWashMachines,
-    getWashMachinesById,
-    createWashMachine,
-    createWashMachineMany,
-    updateWashMachine,
-    deleteWashMachine,
-    getDryMachines,
-    getDryMachinesById,
-    createDryMachine,
-    createDryMachineMany,
-    updateDryMachine,
-    deleteDryMachine
+    getMachines,
+    getMachinesById,
+    createMachine,
+    createMachineMany,
+    updateMachine,
+    deleteMachine
+
 } from "../controllers/MachineController.js";
 
 const router = express.Router();
 
-router.get('/washMachines', getWashMachines);
-router.get('/washMachines/:id', getWashMachinesById);
-router.post('/washMachines', createWashMachine);
-router.post('/washMachinesMany', createWashMachineMany);
-router.patch('/washMachines/:id', updateWashMachine);
-router.delete('/washMachines/:id', deleteWashMachine);
-router.get('/dryMachines', getDryMachines);
-router.get('/dryMachines/:id', getDryMachinesById);
-router.post('/dryMachines', createDryMachine);
-router.post('/dryMachinesMany', createDryMachineMany);
-router.patch('/dryMachines/:id', updateDryMachine);
-router.delete('/dryMachines/:id', deleteDryMachine);
+router.get('/machines', getMachines);
+router.get('/machines/:id', getMachinesById);
+router.post('/machines', createMachine);
+router.post('/machinesMany', createMachineMany);
+router.patch('/machines/:id', updateMachine);
+router.delete('/machines/:id', deleteMachine);
+
 
 export default router;

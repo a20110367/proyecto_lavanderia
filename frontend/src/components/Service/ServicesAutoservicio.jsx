@@ -35,6 +35,8 @@ function ServicesAutoservicio() {
   const { data } = useSWR("services", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
+  console.log(data)
+
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();
     return description.includes("autoservicio");
@@ -80,12 +82,11 @@ function ServicesAutoservicio() {
               <tr>
               <th>No. servicio</th>
                 <th>Descripción</th>
+                <th>Categoria</th>
                 <th>Precio</th>
-                <th>Tiempo</th>
+                {/* <th>Tiempo</th>
                 <th>Peso</th>
-                <th>Piezas</th>
-                <th>Fecha de Creación</th>
-                <th>Fecha de Actualización</th>
+                <th>Piezas</th> */}
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -99,17 +100,16 @@ function ServicesAutoservicio() {
                   <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
+                    <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
-                    <td>{service.time} minutos</td>
+                    {/* <td>{service.time} minutos</td>
                     <td>
                       {service.weight} {service.weight ? "kg" : ""}
                     </td>
                     <td>
                       {service.pieces} {service.pieces ? "pz" : ""}
-                    </td>
-                    <td>{service.created}</td>
-                    <td>{service.updatedAT}</td>
-                    <td>
+                    </td>*/}
+                    <td> 
                       <button
                         onClick={() =>
                           navigate(

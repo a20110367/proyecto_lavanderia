@@ -175,6 +175,15 @@ function PedidosGeneral() {
     }
   };
 
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  
+
   return (
     <div>
       <div className="mb-3">
@@ -264,7 +273,7 @@ function PedidosGeneral() {
                   {pedido.client.name}
                 </td>
                 <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
-                <td className="py-3 px-6">{pedido.scheduledDeliveryDate}</td>
+                <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
                 <td className="py-3 px-6 ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">

@@ -20,7 +20,8 @@ function PedidosPlanchado() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-
+  const [showMachineName, setShowMachineName] = useState(false);
+  const [errMsg, setErrMsg] = useState("")
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5;
 
@@ -102,6 +103,14 @@ function PedidosPlanchado() {
     setTimeout(() => {
       setNotificationVisible(false);
     }, 2000);
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -191,7 +200,7 @@ function PedidosPlanchado() {
                   {pedido.client.name}
                 </td>
                 <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
-                <td className="py-3 px-6">{pedido.scheduledDeliveryDate}</td>
+                <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
                 <td className="py-3 px-6 ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">

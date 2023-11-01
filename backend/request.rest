@@ -263,10 +263,9 @@ POST http://localhost:5000/services
 Content-Type: application/json
 
 {
-    "description": "Planchado 1 piezas",
-    "price": 135,
-    "pieces": 1,
-    "category_id": 3
+    "description": "Lavado 10 kg",
+    "price": 60,
+    "category_id": 2
 }
 
 ###
@@ -287,8 +286,6 @@ Content-Type: application/json
     "description": "Lavado 25Kg",
     "category_id" : 3,
     "price": 250.0,
-    "time": 45,
-    "weight": 25
 }
 ###
 

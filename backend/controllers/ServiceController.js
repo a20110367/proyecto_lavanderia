@@ -5,20 +5,7 @@ const prisma = new PrismaClient();
 export const getServices = async (req, res) =>{
     try {
         const response = await prisma.service.findMany({
-            select:{
-                id_service:true,
-                description:true,
-                price:true,
-                time:true,
-                weight:true,
-                pieces:true,
-                category_id:true,
-                category:{
-                    select:{
-                        categoryDescription: true,
-                    },
-                },
-            },
+            
         });
         res.status(200).json(response);
     }catch(e){
@@ -28,22 +15,11 @@ export const getServices = async (req, res) =>{
 
 export const getServicesById = async (req, res) =>{
     try {
-        const response = await prisma.service.findUnique({
+        const response = await prisma.service.findFirst({
             where:{
                 id_service: Number(req.params.id)
-            },select:{
-                id_service:true,
-                description:true,
-                price:true,
-                time:true,
-                weight:true,
-                pieces:true,
-                category:{
-                    select:{
-                        categoryDescription: true,
-                    },
-                },
             },
+            
         });
         res.status(200).json(response);
     }catch(e){
@@ -72,7 +48,7 @@ export const createService = async (req, res) =>{
 
     try {
         const service = await prisma.service.create({
-            data:req.b
+            data:req.body
         });
         res.status(201).json(service);
     }catch(e){

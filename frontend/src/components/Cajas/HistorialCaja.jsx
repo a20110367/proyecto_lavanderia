@@ -3,6 +3,7 @@ import locale from 'antd/es/date-picker/locale/es_ES';
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
+import { AiOutlinePlusCircle } from "react-icons/ai"
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -249,7 +250,7 @@ function HistorialCaja() {
                         className="btn-primary mt-1 mb-1"
                         onClick={() => handleDetallesClick(corte)}
                       >
-                        Detalles
+                      <AiOutlinePlusCircle size={20}/>
                       </button>
                     </td>
                   </tr>

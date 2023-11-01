@@ -4,6 +4,7 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
+import { AiOutlinePlusCircle } from "react-icons/ai"
 
 
 function CorteCaja() {
@@ -366,7 +367,7 @@ function CorteCaja() {
                       className="btn-primary"
                       onClick={() => handleDetallesClick(corte)}
                     >
-                      
+                      <AiOutlinePlusCircle size={20}/>
                     </button>
                   </td>
                 </tr>

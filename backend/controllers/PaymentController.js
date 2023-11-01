@@ -34,7 +34,7 @@ export const createPayment = async (req, res) =>{
         });
 
         
-        const orderPayment = prisma.order.update({
+        const orderPayment = prisma.serviceOrder.update({
             where:{
                 id_order:Number(req.body.fk_idOrder),
             },

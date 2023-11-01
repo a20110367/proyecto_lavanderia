@@ -199,14 +199,14 @@ DELETE http://localhost:5000/clients/7
 //CRUD DE MACHINES
 GET http://localhost:5000/machines
 ###
-GET http://localhost:5000/machines/5
+GET http://localhost:5000/machines/3
 ###
-POST http://localhost:5000/washMachines
+POST http://localhost:5000/Machines
 Content-Type: application/json
 
 {
     "machineType": "lavadora",
-    "model": "Bien Chingona 3000",
+    "model": "Chingona 3000",
     "cicleTime": 45,
     "weight": 20,
     "status": "available",
@@ -215,12 +215,12 @@ Content-Type: application/json
 ###
 
 
-POST http://localhost:5000/dryMachines
+POST http://localhost:5000/Machines
 Content-Type: application/json
 
 {
     "machineType": "secadora",
-    "model": "Secadora Chingona 3000",
+    "model": "Chingona 3000",
     "cicleTime": 45,
     "weight": 20,
     "status": "available",
@@ -336,6 +336,8 @@ GET http://localhost:5000/ordersByClient/1
 POST http://localhost:5000/ordersMany
 Content-Type: application/json
 
+
+
 ###
 POST http://localhost:5000/orders
 Content-Type: application/json
@@ -378,14 +380,14 @@ POST http://localhost:5000/payments
 Content-Type: application/json
 
 {
-  
-  "fk_idOrder" :13,
-  "payTotal"   :35.28,
-  "payMethod" : "credit",
-  "payDate" :   "2023-10-15T00:00:00.000Z",
+  "fk_idOrder" :4,
+  "payTotal"  :60,
+  "payMethod" : "cash",
+  "payDate" :   "2023-11-01T00:00:00.000Z",
   "payTime":"1970-01-01T16:00:00.000Z",
-  "fk_cashCut": 1
+  "fk_cashCut": 2
 }
+
 ###
 PATCH  http://localhost:5000/payments/1
 Content-Type: application/json
@@ -439,7 +441,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:5000/cashCuts/7
+DELETE http://localhost:5000/cashCuts/1
 
 ### 
 

@@ -4,7 +4,28 @@ const prisma = new PrismaClient();
 
 export const getOrders = async (req, res) =>{
     try {
-        const response = await prisma.serviceOrder.findMany();
+        const response = await prisma.serviceOrder.findMany({
+
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },
+        });
+        
+
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});
@@ -16,7 +37,24 @@ export const getOrdersById = async (req, res) =>{
         const response = await prisma.serviceOrder.findFirst({
             where:{
                 id_order : Number(req.body.id)
-            }
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },
 
         });
     
@@ -31,7 +69,24 @@ export const getOrdersByIdUser = async (req, res) =>{
         const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_user: Number(req.params.fk_user)
-            }
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },
         });
         res.status(201).json(response);
     }catch(e){
@@ -44,7 +99,24 @@ export const getOrdersByIdClient = async (req, res) =>{
         const response = await prisma.serviceOrder.findMany({
             where:{
                 fk_client: Number(req.params.fk_client)
-            }            
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
         });
         res.status(201).json(response);
     }catch(e){

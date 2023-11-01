@@ -135,7 +135,7 @@ export const calculateCashCut = async (req, res) =>{
             where:{
                   fk_cashCut: Number(req.params.id)                            
             },select:{
-                order:{
+                serviceOrder:{
                     select:{
                         id_order:true
                     },
@@ -147,34 +147,37 @@ export const calculateCashCut = async (req, res) =>{
         //const ordersIds = ordersPayed.values();
         //const ordersIdsMap = new Map(Object.entries(JSON.parse(ordersPayed)));
         //console.log(ordersIdsMap);
-       const orders=Object.values(ordersPayed).map(ord => ord.order.id_order);
+       const orders=Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
+       console.log(orders)
 
-       const servicePayed = await prisma.orderServiceDetail.findMany({
+    //    const servicePayed = await prisma.serviceOrderDetail.findMany({
     
-            where:{
-                fk_Order:{
-                    in:orders,
-                },
-            },
+    //         where:{
+    //             fk_ServiceOrder:{
+    //                 in:orders,
+    //             },
+    //         },
                 
-            select:{
-                service:{
-                    select:{
-                        description:true,
-                        price:true,
-                        category_id:true,
-                    },
-                },
-            },
-        }); 
+    //         select:{
+    //             service:{
+    //                 select:{
+    //                     description:true,
+    //                     price:true,
+    //                     category_id:true,
+    //                 },
+    //             },
+    //         },
+    //     }); 
 
-        const totalEncargo = await prisma.order.aggregate({
+        const totalEncargo = await prisma.serviceOrder.aggregate({
      
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"encargo",
+                        category:{
+                            categoryDescription:"encargo"
+                        },
                     },
                     {
                         id_order:{
@@ -191,13 +194,15 @@ export const calculateCashCut = async (req, res) =>{
             
         });
 
-        const totalAutoservicio = await prisma.order.aggregate({
+        const totalAutoservicio = await prisma.serviceOrder.aggregate({
  
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"autoservicio",
+                        category:{
+                            categoryDescription:"autoservicio"
+                        },
                     },
                     {
                         id_order:{
@@ -215,14 +220,16 @@ export const calculateCashCut = async (req, res) =>{
             
         });
 
-        const totalPlanchado = await prisma.order.aggregate({
+        const totalPlanchado = await prisma.serviceOrder.aggregate({
            
                 
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"planchado",
+                        category:{
+                            categoryDescription:"planchado"
+                        },
                     },
                     {
                         id_order:{
@@ -241,7 +248,7 @@ export const calculateCashCut = async (req, res) =>{
 
         
          
-        const otherCategorys=(parseFloat(total._sum.payTotal.toFixed(2))-totalAutoservicio._sum.totalPrice-totalPlanchado._sum.totalPrice);
+        const otherCategorys=(parseFloat(total._sum.payTotal.toFixed(2))-totalAutoservicio._sum.totalPrice-totalPlanchado._sum.totalPrice-totalEncargo._sum.totalPrice);
         
         if(totalCashWhithdrawal._sum.amount===null)
             totalCashWhithdrawal._sum.amount=parseFloat(0.00);
@@ -348,7 +355,7 @@ export const closeCashCut = async (req, res) =>{
             where:{
                   fk_cashCut: Number(req.params.id)                            
             },select:{
-                order:{
+                serviceOrder:{
                     select:{
                         id_order:true
                     },
@@ -362,32 +369,34 @@ export const closeCashCut = async (req, res) =>{
         //console.log(ordersIdsMap);
        const orders=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
-       const servicePayed = await prisma.orderServiceDetail.findMany({
+    //    const servicePayed = await prisma.serviceOrderDetail.findMany({
     
-            where:{
-                fk_Order:{
-                    in:orders,
-                },
-            },
+    //         where:{
+    //             fk_ServiceOrder:{
+    //                 in:orders,
+    //             },
+    //         },
                 
-            select:{
-                service:{
-                    select:{
-                        description:true,
-                        price:true,
-                        category_id:true,
-                    },
-                },
-            },
-        }); 
+    //         select:{
+    //             service:{
+    //                 select:{
+    //                     description:true,
+    //                     price:true,
+    //                     category_id:true,
+    //                 },
+    //             },
+    //         },
+    //     }); 
 
-        const totalEncargo = await prisma.order.aggregate({
+        const totalEncargo = await prisma.serviceOrder.aggregate({
      
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"encargo",
+                        category:{
+                            categoryDescription:"encargo"
+                        },
                     },
                     {
                         id_order:{
@@ -404,13 +413,15 @@ export const closeCashCut = async (req, res) =>{
             
         });
 
-        const totalAutoservicio = await prisma.order.aggregate({
+        const totalAutoservicio = await prisma.serviceOrder.aggregate({
  
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"autoservicio",
+                        category:{
+                            categoryDescription:"autoservicio"
+                        },
                     },
                     {
                         id_order:{
@@ -428,14 +439,16 @@ export const closeCashCut = async (req, res) =>{
             
         });
 
-        const totalPlanchado = await prisma.order.aggregate({
+        const totalPlanchado = await prisma.serviceOrder.aggregate({
            
                 
             where:{
                 AND:[
 
                     {
-                        fk_categoryDescription:"planchado",
+                        category:{
+                            categoryDescription:"planchado"
+                        },
                     },
                     {
                         id_order:{
@@ -453,7 +466,7 @@ export const closeCashCut = async (req, res) =>{
         });
 
         
-        const otherCategorys=(parseFloat(total._sum.payTotal.toFixed(2))-totalAutoservicio._sum.totalPrice-totalPlanchado._sum.totalPrice);
+        const otherCategorys=(parseFloat(total._sum.payTotal.toFixed(2))-totalAutoservicio._sum.totalPrice-totalPlanchado._sum.totalPrice-totalEncargo._sum.totalPrice);
         
         if(totalCashWhithdrawal._sum.amount===null)
             totalCashWhithdrawal._sum.amount=parseFloat(0.00);

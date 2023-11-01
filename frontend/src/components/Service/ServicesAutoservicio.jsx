@@ -80,7 +80,6 @@ function ServicesAutoservicio() {
               <tr>
               <th>No. servicio</th>
                 <th>Descripción</th>
-                <th>Categoria</th>
                 <th>Precio</th>
                 <th>Tiempo</th>
                 <th>Peso</th>
@@ -100,7 +99,6 @@ function ServicesAutoservicio() {
                   <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
-                    <td>{service.category.cateforyDes}</td>
                     <td>${service.price}</td>
                     <td>{service.time} minutos</td>
                     <td>

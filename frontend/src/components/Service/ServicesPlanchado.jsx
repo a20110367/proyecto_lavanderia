@@ -35,8 +35,6 @@ function ServicesPlanchado() {
   const { data } = useSWR("services", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
-  console.log(data)
-
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();
     const exclusionKeywords = [
@@ -98,9 +96,6 @@ function ServicesPlanchado() {
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
-                {/* <th>Tiempo</th>
-                <th>Peso</th>
-                <th>Piezas</th> */}
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -116,13 +111,6 @@ function ServicesPlanchado() {
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
-                    {/* <td>{service.time} minutos</td>
-                    <td>
-                      {service.weight} {service.weight ? "kg" : ""}
-                    </td>
-                    <td>
-                      {service.pieces} {service.pieces ? "pz" : ""}
-                    </td> */}
                     <td>
                       <button
                         onClick={() =>

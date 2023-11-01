@@ -135,13 +135,13 @@ function AddServiceAutoservicio() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="pieces">
+              <label className="form-lbl" htmlFor="type">
                 Piezas
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="pieces"
+                id="type"
                 onChange={(e) => setPieces(e.target.value)}
                 value={pieces}
               />

@@ -97,9 +97,6 @@ function ServicesLavanderia() {
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
-                {/* <th>Tiempo</th>
-                <th>Peso</th>
-                <th>Piezas</th> */}
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -115,13 +112,6 @@ function ServicesLavanderia() {
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
-                    {/* <td>{service.time} minutos</td>
-                    <td>
-                      {service.weight} {service.weight ? "kg" : ""}
-                    </td>
-                    <td>
-                      {service.pieces} {service.pieces ? "pz" : ""}
-                    </td> */}
                     <td>
                       <button
                         onClick={() =>

@@ -3,23 +3,23 @@ import {
     getLaundryWashQueue,
     getLaundryWashQueueById,
     getLaundryWashQueueByOrderId,
-    createLaundryWashQueue,
+    createManyLaundryWashQueue,
     updateLaundryWashQueue,
     deleteLaundryWashQueue,
 
     getLaundryDryQueue,
     getLaundryDryQueueById,
     getLaundryDryQueueByOrderId,
-    createLaundryDryQueue,
+    createManyLaundryDryQueue,
     updateLaundryDryQueue,
     deleteLaundryDryQueue,
-    
-    getLaundryIronQueue,
-    getLaundryIronQueueById,
-    getLaundryIronQueueByOrderId,
-    createLaundryIronQueue,
-    updateLaundryIronQueue,
-    deleteLaundryIronQueue
+
+    getIronQueue,
+    getIronQueueById,
+    getIronQueueByOrderId,
+    createManyIronQueue,
+    updateIronQueue,
+    deleteIronQueue
 } from "../controllers/LaundryQueueController.js";
 
 const router = express.Router();
@@ -27,22 +27,22 @@ const router = express.Router();
 router.get('/laundryWashQueue', getLaundryWashQueue);
 router.get('/laundryWashQueueById/:id', getLaundryWashQueueById);
 router.get('/laundryWashQueueByOrder/:fk_Order', getLaundryWashQueueByOrderId);
-router.post('/laundryWashQueue', createLaundryWashQueue);
+router.post('/laundryWashQueue', createManyLaundryWashQueue);
 router.patch('/laundryWashQueue/:id', updateLaundryWashQueue);
 router.delete('/laundryWashQueue/:id', deleteLaundryWashQueue);
 
 router.get('/laundryDryQueue', getLaundryDryQueue);
 router.get('/laundryDryQueueById/:id', getLaundryDryQueueById);
 router.get('/laundryDryQueueByOrder/:fk_Order', getLaundryDryQueueByOrderId);
-router.post('/laundryDryQueue', createLaundryDryQueue);
+router.post('/laundryDryQueue', createManyLaundryDryQueue);
 router.patch('/laundryDryQueue/:id', updateLaundryDryQueue);
 router.delete('/laundryDryQueue/:id', deleteLaundryDryQueue);
 
-router.get('/laundryIronQueue', getLaundryIronQueue);
-router.get('/laundryIronQueueById/:id', getLaundryIronQueueById);
-router.get('/laundryIronQueueByOrder/:fk_Order', getLaundryIronQueueByOrderId);
-router.post('/laundryIronQueue', createLaundryIronQueue);
-router.patch('/laundryIronQueue/:id', updateLaundryIronQueue);
-router.delete('/laundryIronQueue/:id', deleteLaundryIronQueue);
+router.get('/laundryIronQueue', getIronQueue);
+router.get('/laundryIronQueueById/:id', getIronQueueById);
+router.get('/laundryIronQueueByOrder/:fk_Order', getIronQueueByOrderId);
+router.post('/laundryIronQueue', createManyIronQueue);
+router.patch('/laundryIronQueue/:id', updateIronQueue);
+router.delete('/laundryIronQueue/:id', deleteIronQueue);
 
 export default router;

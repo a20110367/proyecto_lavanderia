@@ -191,7 +191,7 @@ function PedidosPlanchado() {
                   {pedido.client.name}
                 </td>
                 <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
-                <td className="py-3 px-6">{pedido.scheduledDeliveryTime}</td>
+                <td className="py-3 px-6">{pedido.scheduledDeliveryDate}</td>
                 <td className="py-3 px-6 ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">

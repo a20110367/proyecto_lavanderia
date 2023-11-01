@@ -26,14 +26,6 @@ function PedidosGeneral() {
   const [errMsg, setErrMsg] = useState("")
   const location = useLocation();
 
-  const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/orders");
-    return response.data;
-  };
-
-  const { data } = useSWR("orders", fetcher);
-  if (!data) return <h2>Loading...</h2>;
-
   const machineIdQueryParam = new URLSearchParams(location.search).get(
     "machineId"
   );
@@ -52,6 +44,14 @@ function PedidosGeneral() {
     setCurrentPage(selectedPage.selected);
   };
 
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/orders");
+    return response.data;
+  };
+
+  const { data } = useSWR("orders", fetcher);
+  if (!data) return <h2>Loading...</h2>;
+
   useEffect(() => {
     setPedidos(data);
     setFilteredPedidos(data);
@@ -62,13 +62,13 @@ function PedidosGeneral() {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderStatus.toLowerCase() === filtroEstatus.toLowerCase();
+        return pedido.orderStatus === filtroEstatus
       }
     });
 
     const textFiltered = filtered.filter((pedido) => {
       return (
-        pedido.client.name.includes(filtro.toLowerCase()) ||
+        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.id_order.toString().includes(filtro)

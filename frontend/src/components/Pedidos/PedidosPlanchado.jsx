@@ -10,6 +10,8 @@ import {
   DropboxOutlined,
 } from "@ant-design/icons";
 import ReactPaginate from "react-paginate";
+import useSWR from "swr";
+import Axios from "axios";
 
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -29,72 +31,17 @@ function PedidosPlanchado() {
     setCurrentPage(selectedPage.selected);
   };
 
-  useEffect(() => {
-    const dummyPedidos = [
-      {
-        id_pedido: 1,
-        empleado_recibio: "Juan",
-        empleado_entrego: "María",
-        cliente: "Saul Rodriguez",
-        id_cobro: 1,
-        pedidoDetalle: "Planchado de patas",
-        orderstatus: "Pendiente",
-        fecha_entrega_real: "15/09/2023",
-      },
-      {
-        id_pedido: 2,
-        empleado_recibio: "Axel",
-        empleado_entrego: "María",
-        cliente: "Maria Fernandez",
-        id_cobro: 2,
-        pedidoDetalle: "Monas Chinas Planchadas",
-        orderstatus: "En proceso",
-        fecha_entrega_real: "16/09/2023",
-      },
-      {
-        id_pedido: 3,
-        empleado_recibio: "Carlos",
-        empleado_entrego: "Luis",
-        cliente: "Luis Robledo",
-        id_cobro: 3,
-        pedidoDetalle: "Planchado",
-        orderstatus: "Finalizado",
-        fecha_entrega_real: "17/09/2023",
-      },
-      {
-        id_pedido: 4,
-        empleado_recibio: "Laura",
-        empleado_entrego: "Ana",
-        cliente: "Axel Vergara",
-        id_cobro: 4,
-        pedidoDetalle: "Planchado basico",
-        orderstatus: "Entregado",
-        fecha_entrega_real: "18/09/2023",
-      },
-      {
-        id_pedido: 5,
-        empleado_recibio: "Fernanda",
-        empleado_entrego: "Maya",
-        cliente: "Ximena Marquez",
-        id_cobro: 5,
-        pedidoDetalle: "Lavado basico",
-        orderstatus: "CANCELADO",
-        fecha_entrega_real: "18/09/2023",
-      },
-      {
-        id_pedido: 6,
-        empleado_recibio: "Fernanda",
-        empleado_entrego: "Hector",
-        cliente: "Kevin Miranda",
-        id_cobro: 6,
-        pedidoDetalle: "Planchado basico",
-        orderstatus: "Almacenado",
-        fecha_entrega_real: "18/09/2023",
-      },
-    ];
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/orders");
+    return response.data;
+  };
 
-    setPedidos(dummyPedidos);
-    setFilteredPedidos(dummyPedidos);
+  const { data } = useSWR("orders", fetcher);
+  if (!data) return <h2>Loading...</h2>;
+
+  useEffect(() => {
+    setPedidos(data);
+    setFilteredPedidos(data);
   }, []);
 
   useEffect(() => {
@@ -102,16 +49,16 @@ function PedidosPlanchado() {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderstatus.toLowerCase() === filtroEstatus.toLowerCase();
+        return pedido.orderStatus === filtroEstatus
       }
     });
 
     const textFiltered = filtered.filter((pedido) => {
       return (
-        pedido.cliente.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.empleado_recibio.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.empleado_entrego.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.id_pedido.toString().includes(filtro)
+        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.id_order.toString().includes(filtro)
       );
     });
 
@@ -126,9 +73,26 @@ function PedidosPlanchado() {
     setFiltroEstatus(event.target.value);
   };
 
-  const handleNotificarCliente = (pedido) => {
-    console.log(`Notifying the client for pedido ID: ${pedido.id_pedido}`);
-    showNotification("NOTIFICACIÓN ENVIADA...");
+  const handleNotificarCliente = async (pedido) => {
+    console.log(`Notifying the client for ID Order: ${pedido.id_order}`);
+    try {
+      setShowMachineName(false);
+      showNotification("NOTIFICACIÓN ENVIADA...");
+      await Axios.post("http://localhost:5000/sendMessage", {
+        id_order: pedido.id_order,
+        name: pedido.client.name,
+        email: pedido.client.email,
+        tel: "521"+pedido.client.phone,
+        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`
+      });
+      console.log("NOTIFICACIÓN ENVIADA...")
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No hay respuesta del servidor.");
+      } else {
+        setErrMsg("Error al mandar la notificación");
+      }
+    }
   };
 
   const showNotification = (message) => {
@@ -169,28 +133,34 @@ function PedidosPlanchado() {
             Todos
           </option>
           <option
-            value="Pendiente"
+            value="pending"
             className="text-gray-600 font-semibold text-base"
           >
             Pendientes
           </option>
           <option
-            value="En proceso"
+            value="inProgress"
             className="text-yellow-600 font-semibold text-base"
           >
             En Proceso
           </option>
           <option
-            value="Finalizado"
+            value="finished"
             className="text-blue-600 font-semibold text-base"
           >
             Finalizados
           </option>
           <option
-            value="Entregado"
+            value="delivered"
             className="text-green-600 font-semibold text-base"
           >
             Entregados
+          </option>
+          <option
+            value="stored"
+            className="text-fuchsia-600 font-semibold text-base"
+          >
+            Almacenados
           </option>
         </select>
       </div>
@@ -209,33 +179,33 @@ function PedidosPlanchado() {
           </thead>
           <tbody>
             {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id_pedido}>
-                <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+              <tr className="bg-white border-b" key={pedido.id_order}>
+                <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                 <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleado_recibio}
+                  {pedido.user.name}
                 </td>
                 <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.empleado_entrego}
+                  {pedido.user.name}
                 </td>
                 <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.cliente}
+                  {pedido.client.name}
                 </td>
-                <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
-                <td className="py-3 px-6">
-                  {pedido.orderstatus === "Pendiente" ? (
+                <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
+                <td className="py-3 px-6">{pedido.scheduledDeliveryTime}</td>
+                <td className="py-3 px-6 ">
+                  {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
                       <MinusCircleOutlined /> Pendiente
                     </span>
-                  ) : pedido.orderstatus === "Almacenado" ? (
+                  ) : pedido.orderStatus === "stored" ? (
                     <span className="text-fuchsia-600 pl-1">
                       <DropboxOutlined /> Almacenado
                     </span>
-                  ) : pedido.orderstatus === "En proceso" ? (
+                  ) : pedido.orderStatus === "inProgress" ? (
                     <span className="text-yellow-600 pl-1">
                       <ClockCircleOutlined /> En Proceso
                     </span>
-                  ) : pedido.orderstatus === "Finalizado" ? (
+                  ) : pedido.orderStatus === "finished" ? (
                     <span className="text-blue-600 pl-1">
                       <IssuesCloseOutlined /> Finalizado no entregado
                       <button
@@ -245,7 +215,7 @@ function PedidosPlanchado() {
                         Notificar al Cliente
                       </button>
                     </span>
-                  ) : pedido.orderstatus === "Entregado" ? (
+                  ) : pedido.orderStatus === "delivered" ? (
                     <span className="text-green-600 pl-1">
                       <CheckCircleOutlined /> Finalizado Entregado
                     </span>

@@ -27,6 +27,9 @@ function PedidosLavanderia() {
   const [errMsg, setErrMsg] = useState("")
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/orders");
@@ -34,23 +37,20 @@ function PedidosLavanderia() {
   };
 
   const { data } = useSWR("orders", fetcher);
-  if (!data) return <h2>Loading...</h2>;
-
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected);
-  };
 
   useEffect(() => {
-    setPedidos(data);
-    setFilteredPedidos(data);
-  }, []);
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     const filtered = pedidos.filter((pedido) => {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderStatus === filtroEstatus
+        return pedido.orderStatus === filtroEstatus;
       }
     });
 
@@ -66,6 +66,7 @@ function PedidosLavanderia() {
     setFilteredPedidos(textFiltered);
   }, [filtro, filtroEstatus, pedidos]);
 
+  if (!data) return <h2>Loading...</h2>;
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
   };

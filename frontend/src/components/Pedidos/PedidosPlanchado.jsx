@@ -38,19 +38,20 @@ function PedidosPlanchado() {
   };
 
   const { data } = useSWR("orders", fetcher);
-  if (!data) return <h2>Loading...</h2>;
 
   useEffect(() => {
-    setPedidos(data);
-    setFilteredPedidos(data);
-  }, []);
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     const filtered = pedidos.filter((pedido) => {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderStatus === filtroEstatus
+        return pedido.orderStatus === filtroEstatus;
       }
     });
 
@@ -66,6 +67,7 @@ function PedidosPlanchado() {
     setFilteredPedidos(textFiltered);
   }, [filtro, filtroEstatus, pedidos]);
 
+  if (!data) return <h2>Loading...</h2>;
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
   };

@@ -3,6 +3,8 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import Axios from 'axios'
+import useSWR, { useSWRConfig } from "swr";
 
 import {
   IssuesCloseOutlined,
@@ -22,6 +24,17 @@ function PedidosGeneral() {
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const location = useLocation();
+
+  const { mutate } = useSWRConfig();
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/orders");
+    return response.data;
+  };
+
+  const { data } = useSWR("orders", fetcher);
+  console.log(data)
+  if (!data) return <h2>Loading...</h2>;
+
   const machineIdQueryParam = new URLSearchParams(location.search).get(
     "machineId"
   );

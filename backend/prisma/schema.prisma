@@ -39,7 +39,7 @@ model Client {
   ServiceOrders ServiceOrder[]
 }
 
-model WashMachine {
+model Machine {
   id_machine           Int                    @id @default(autoincrement())
   machineType          MachineType            @default(lavadora)
   model                String
@@ -52,23 +52,9 @@ model WashMachine {
   updatedAt            DateTime               @updatedAt
   serialNumber         String                 @default("N/A")
   LaundryWashQueue     LaundryWashQueue[]
+  LaundryDryQueue      LaundryDryQueue[]
   SelfServiceWashQueue SelfServiceWashQueue[]
-}
-
-model DryMachine {
-  id_machine          Int                   @id @default(autoincrement())
-  machineType         MachineType           @default(secadora)
-  model               String
-  cicleTime           Int
-  weight              Int
-  status              Status                @default(available)
-  freeForUse          Boolean               @default(true)
-  notes               String
-  created             DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  serialNumber        String                @default("N/A")
-  LaundryDryQueue     LaundryDryQueue[]
-  SelfServiceDryQueue SelfServiceDryQueue[]
+  SelfServiceDryQueue  SelfServiceDryQueue[]
 }
 
 model IronStation {
@@ -185,10 +171,10 @@ model LaundryWashQueue {
   fk_idWashService  Int
   fk_idServiceOrder Int
   fk_idStaffMember  Int?
-  fk_idWashMachine  Int?
+  fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  washMachine  WashMachine? @relation(fields: [fk_idWashMachine], references: [id_machine])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
   serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
   staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember])
   washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService])
@@ -198,10 +184,10 @@ model SelfServiceWashQueue {
   id_washEvent      Int     @id @default(autoincrement())
   fk_idWashService  Int
   fk_idServiceOrder Int
-  fk_idWashMachine  Int?
+  fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  washMachine  WashMachine? @relation(fields: [fk_idWashMachine], references: [id_machine])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
   serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
   washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService])
 }
@@ -211,10 +197,10 @@ model LaundryDryQueue {
   fk_idDryService   Int
   fk_idServiceOrder Int
   fk_idStaffMember  Int?
-  fk_idDryMachine   Int?
+  fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  dryMachine   DryMachine?  @relation(fields: [fk_idDryMachine], references: [id_machine])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
   serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
   staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember])
   dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService])
@@ -224,10 +210,10 @@ model SelfServiceDryQueue {
   id_dryEvent       Int     @id @default(autoincrement())
   fk_idDryService   Int
   fk_idServiceOrder Int
-  fk_idDryMachine   Int?
+  fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  dryMachine   DryMachine?  @relation(fields: [fk_idDryMachine], references: [id_machine])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
   serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
   dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService])
 }

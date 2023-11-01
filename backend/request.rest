@@ -201,12 +201,26 @@ GET http://localhost:5000/machines
 ###
 GET http://localhost:5000/machines/5
 ###
-POST http://localhost:5000/machines
+POST http://localhost:5000/washMachines
+Content-Type: application/json
+
+{
+    "machineType": "lavadora",
+    "model": "Bien Chingona 3000",
+    "cicleTime": 45,
+    "weight": 20,
+    "status": "available",
+    "notes": ""
+}
+###
+
+
+POST http://localhost:5000/dryMachines
 Content-Type: application/json
 
 {
     "machineType": "secadora",
-    "model": "Bien Chingona 5000",
+    "model": "Secadora Chingona 3000",
     "cicleTime": 45,
     "weight": 20,
     "status": "available",
@@ -230,7 +244,7 @@ Content-Type: application/json
     "notes": "Se madreo"
 }
 ###
-DELETE http://localhost:5000/machines/6
+DELETE http://localhost:5000/dryMachines/3
 ###
 
 //CRUD DE MACHINES

@@ -5,7 +5,13 @@ const prisma = new PrismaClient();
 export const getServices = async (req, res) =>{
     try {
         const response = await prisma.service.findMany({
-            
+            include:{
+                Category:{
+                    select:{
+                        categoryDescription:true
+                    },  
+                },
+            },
         });
         res.status(200).json(response);
     }catch(e){

@@ -12,6 +12,8 @@ export const getOrders = async (req, res) =>{
                         name:true,
                         firstLN:true,
                         secondLN:true,
+                        email:true,
+                        phone:true,
                     },
                 },
                 user:{

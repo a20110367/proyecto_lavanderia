@@ -40,7 +40,7 @@ export const sendMessage = async (req, res) => {
 
         console.log("Mail Message sent:  %s", info.messageId);
         
-        restAPI.message.sendMessage(tel+"@c.us", null , "Su suscripción a brazzers caduco, es prueba de la lavanderia de whatsapp").then((data) => {
+        restAPI.message.sendMessage(tel+"@c.us", null , message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
           

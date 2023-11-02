@@ -47,11 +47,8 @@ function EditServiceAutoservicio() {
     try {
       await Axios.patch(`http://localhost:5000/services/${id}`, {
         description: description,
-        fk_category: category === "Autoservicio" ? 1 : 2,
+        category_id: 1,
         price: parseFloat(price),
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
       });
       navigate("/servicesAutoservicio");
       setSuccess(true);

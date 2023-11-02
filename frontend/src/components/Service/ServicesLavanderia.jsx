@@ -35,6 +35,8 @@ function ServicesLavanderia() {
   const { data } = useSWR("services", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
+  console.log(data)
+
   // Filtrar servicios relacionados con lavandería
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();

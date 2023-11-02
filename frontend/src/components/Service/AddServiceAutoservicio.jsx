@@ -33,10 +33,7 @@ function AddServiceAutoservicio() {
       await Axios.post("http://localhost:5000/services", {
         description: description,
         price: parseFloat(price),
-        fk_category: category === "Autoservicio" ? 1 : 2,
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
+        category_id: 1,
       });
       setDescription("");
       setPrice(0);

@@ -120,12 +120,10 @@ function PedidosGeneral() {
     }, 2000);
   };
 
-  const handleSeleccionarPedido = (pedidoId, cliente) => {
-    const pedidoSeleccionado = pedidos.find(
-      (pedido) => pedido.id_pedido === pedidoId
-    );
+  const handleSeleccionarPedido = (pedido, pedidoId) => {
+    const pedidoSeleccionado = pedido
 
-    if (pedidoSeleccionado && pedidoSeleccionado.orderStatus === "Pendiente") {
+    if (pedidoSeleccionado && pedidoSeleccionado.orderStatus === "pending") {
       if (selectedPedidos[machineIdQueryParam]) {
         setSelectedPedidos((prevState) => ({
           ...prevState,
@@ -134,15 +132,18 @@ function PedidosGeneral() {
       }
 
       const pedidosActualizados = pedidos.map((pedido) => {
-        if (pedido.id_pedido === pedidoId) {
-          return { ...pedido, orderStatus: "En proceso" };
+        if (pedido.id_order === pedidoId) {
+          Axios.patch(`http://localhost:5000/orders/${pedidoId}`, {
+            orderStatus: "inProgress"
+          });
+          return { ...pedido, orderStatus: "inProgress" };
         }
         return pedido;
       });
 
       setSelectedPedidos((prevState) => ({
         ...prevState,
-        [machineIdQueryParam]: pedidoId,
+        [machineIdQueryParam]: pedido.id_order,
       }));
 
       setPedidos(pedidosActualizados);
@@ -152,7 +153,7 @@ function PedidosGeneral() {
         content: (
           <div>
             <p>
-              El pedido para el cliente: {cliente} ha sido cambiado a "En
+              El pedido para el cliente: {pedido.client.name} ha sido cambiado a "En
               Proceso".
             </p>
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
@@ -322,8 +323,8 @@ function PedidosGeneral() {
                           className="h-6 w-6"
                           onChange={() =>
                             handleSeleccionarPedido(
-                              pedido.id_order,
-                              pedido.client
+                              pedido,
+                              pedido.id_order
                             )
                           }
                         />

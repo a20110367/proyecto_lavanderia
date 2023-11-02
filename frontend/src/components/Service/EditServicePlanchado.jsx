@@ -62,11 +62,8 @@ function EditServicePlanchado() {
     try {
       await Axios.patch(`http://localhost:5000/services/${id}`, {
         description: description,
-        fk_category: category === "planchado" ? 1 : 2,
+        category_id: 3,
         price: parseFloat(price),
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
       });
       navigate("/servicesPlanchado");
       setSuccess(true);

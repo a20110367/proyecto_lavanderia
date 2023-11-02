@@ -62,11 +62,8 @@ function EditServiceLavanderia() {
     try {
       await Axios.patch(`http://localhost:5000/services/${id}`, {
         description: description,
-        fk_category: category === "lavado" ? 1 : 2,
+        category_id: 2,
         price: parseFloat(price),
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
       });
       navigate("/servicesLavanderia");
       setSuccess(true);
@@ -149,17 +146,6 @@ function EditServiceLavanderia() {
                 ref={weightRef}
                 onChange={(e) => setWeight(e.target.value)}
                 value={weight}
-              />
-
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
               />
 
               <label className="form-lbl" htmlFor="category">

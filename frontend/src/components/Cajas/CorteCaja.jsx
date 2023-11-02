@@ -59,40 +59,40 @@ function CorteCaja() {
 
     const turno = horaActual < 12 ? "Matutino" : "Vespertino";
 
-    // const nuevoCorte = {
-    //   id: Cortes.length + 1,
-    //   fecha: moment().format("DD/MM/YYYY"),
-    //   dineroFondo: 20000,
-    //   retirosTotales: 1200,
-    //   ingresoEfectivo: 61000,
-    //   ingresoTarjeta: 10000,
-    //   ingresosTotales:20000, 
-    //   finalTotalCaja: 0,
-    //   ingresoAutoservicio: 10000,
-    //   ingresoLavadoEncargo: 16000,
-    //   ingresoPlanchado: 15000,
-    //   usuario: nombreEmpleado,
-    //   turno: turno,
-    // };
+    const nuevoCorte = {
+      id: Cortes.length + 1,
+      fecha: moment().format("DD/MM/YYYY"),
+      dineroFondo: 20000,
+      retirosTotales: 1200,
+      ingresoEfectivo: 61000,
+      ingresoTarjeta: 10000,
+      ingresosTotales:20000, 
+      finalTotalCaja: 0,
+      ingresoAutoservicio: 10000,
+      ingresoLavadoEncargo: 16000,
+      ingresoPlanchado: 15000,
+      usuario: nombreEmpleado,
+      turno: turno,
+    };
     
-    // nuevoCorte.finalTotalCaja =
-    //   nuevoCorte.dineroFondo +
-    //   nuevoCorte.ingresoAutoservicio +
-    //   nuevoCorte.ingresoLavadoEncargo +
-    //   nuevoCorte.ingresoPlanchado -
-    //   nuevoCorte.ingresoTarjeta -
-    //   nuevoCorte.retirosTotales;
+    nuevoCorte.finalTotalCaja =
+      nuevoCorte.dineroFondo +
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado -
+      nuevoCorte.ingresoTarjeta -
+      nuevoCorte.retirosTotales;
     
-    // nuevoCorte.ingresoTotalServicios =
-    //   nuevoCorte.ingresoAutoservicio +
-    //   nuevoCorte.ingresoLavadoEncargo +
-    //   nuevoCorte.ingresoPlanchado;
+    nuevoCorte.ingresoTotalServicios =
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
     
-    // nuevoCorte.ingresoEfectivo =
-    //   nuevoCorte.dineroFondo +
-    //   nuevoCorte.ingresoAutoservicio +
-    //   nuevoCorte.ingresoLavadoEncargo +
-    //   nuevoCorte.ingresoPlanchado;
+    nuevoCorte.ingresoEfectivo =
+      nuevoCorte.dineroFondo +
+      nuevoCorte.ingresoAutoservicio +
+      nuevoCorte.ingresoLavadoEncargo +
+      nuevoCorte.ingresoPlanchado;
       const response = Axios.get(`http://localhost:5000/closeCashCut/${5}`);
       console.log(response.data)
 
@@ -105,7 +105,7 @@ function CorteCaja() {
       pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
       pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
       
-      // Separación
+      //Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
       pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
       pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
@@ -117,7 +117,7 @@ function CorteCaja() {
       );
       pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
       
-      // Separación
+      //Separación
       pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
       pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
       pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);

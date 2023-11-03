@@ -14,12 +14,23 @@ function ActivarEquipos() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
+  const [allEquipment, setAllEquipment] = useState([]);
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/machines");
-    return response.data;
+    const machinesResponse = await Axios.get("http://localhost:5000/machines");
+    const ironsResponse = await Axios.get("http://localhost:5000/ironStations");
+    const machinesData = machinesResponse.data.map((machine) => ({
+      ...machine,
+      type: "machine", // Agregar un campo 'type' para diferenciar las máquinas
+    }));
+    const ironsData = ironsResponse.data.map((iron) => ({
+      ...iron,
+      type: "iron", // Agregar un campo 'type' para diferenciar las planchas
+    }));
+    const allData = [...machinesData, ...ironsData];
+    setAllEquipment(allData);
+    return allData;
   };
-
   const { data } = useSWR("machines", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
@@ -69,9 +80,13 @@ function ActivarEquipos() {
                           : "text-green-500"
                       }`}
                     >
-                      {machine.machineType === "lavadora"
-                        ? "Lavadora"
-                        : "Secadora"}
+                      {machine.machineType === "lavadora" ? (
+                        "Lavadora"
+                      ) : machine.machineType === "plancha" ? (
+                        <span className="text-yellow-500">Plancha</span>
+                      ) : (
+                        "Secadora"
+                      )}
                     </td>
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>

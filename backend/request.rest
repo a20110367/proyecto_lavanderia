@@ -23,6 +23,7 @@ Content-Type: application/json
 POST http://localhost:5000/usersMany
 Content-Type: application/json
 
+
 POST http://localhost:5000/numberToWord
 Content-Type: application/json
 
@@ -118,6 +119,20 @@ DELETE http://localhost:5000/staffMembers/7
 POST http://localhost:5000/categoriesMany
 Content-Type: application/json
 
+[
+  {
+    "categoryDescription": "autoservicio"
+  },
+  {
+    "categoryDescription": "encargo"
+  },
+  {
+    "categoryDescription": "planchado"
+  },
+  {
+    "categoryDescription": "pruebas"
+  }
+]
 
 ###
 POST http://localhost:5000/categories
@@ -283,6 +298,59 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:5000/servicesLaundry
+Content-Type: application/json
+
+{
+"description":"lavado 10 kilos encargo",
+"price":100.00 ,
+"category_id":2,
+"washWeight":20,
+"washCycleTime":45,
+"dryWeight":20,
+"dryCycleTime":60
+}
+
+###
+
+POST http://localhost:5000/servicesWashSelfService
+Content-Type: application/json
+
+{
+"description":"Lavado 10 kilos autoservicio",
+"price":100.00 ,
+"category_id":1,
+"washWeight":10,
+"washCycleTime":45
+}
+
+###
+
+POST http://localhost:5000/servicesDrySelfService
+Content-Type: application/json
+
+{
+  "description":"Secado 15 kilos autoservicio",
+  "price":100.00 ,
+  "dryWeight":10,
+  "dryCycleTime":45
+}
+
+###
+
+POST http://localhost:5000/servicesIron
+Content-Type: application/json
+
+{
+"description":"Docena Planchado",
+"price":60.00 ,
+"ironPieces":12,
+"ironCycleTime":45
+}
+
+###
+
 POST http://localhost:5000/servicesMany
 Content-Type: application/json
 
@@ -290,6 +358,11 @@ Content-Type: application/json
 
 GET  http://localhost:5000/services
 ###
+
+GET http://localhost:5000/servicesLaundry
+###
+
+
 GET  http://localhost:5000/servicesById/1
 
 ###
@@ -312,7 +385,7 @@ Content-Type: application/json
 
 ###
 
-DELETE   http://localhost:5000/services/8
+DELETE   http://localhost:5000/services/3
 
 ###
 

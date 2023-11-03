@@ -80,7 +80,7 @@ model Category {
 
 model Service {
   id_service         Int                  @id @default(autoincrement())
-  description        String
+  description        String               @unique
   price              Float
   created            DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
@@ -157,6 +157,8 @@ model ServiceOrder {
 
 model ServiceOrderDetail {
   id_serviceOrderDetail Int      @id @default(autoincrement())
+  units                 Int      @default(1)
+  subtotal              Float    @default(0.00)
   created               DateTime @default(now())
   updatedAt             DateTime @updatedAt
   fk_ServiceOrder       Int
@@ -307,6 +309,7 @@ model CashWhithdrawal {
   cashWhithdrawalType CashWithdrawalType @default(withdrawal)
   amount              Float
   cause               String
+  serviceOrder        Int?
   date                DateTime?          @db.Date
   created             DateTime           @default(now())
   updatedAt           DateTime           @updatedAt

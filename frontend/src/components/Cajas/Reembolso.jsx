@@ -116,6 +116,7 @@ function Reembolso() {
 
       const nuevoReembolso = {
         id_cashWhithdrawal: reembolsos.length + 1,
+        cashWhithdrawalType : "refound",
         numeroPedido: numeroPedido,
         amount: parseInt(monto),
         cause: motivo,

@@ -413,7 +413,7 @@ export const createSelfServiceDryService = async (req, res) =>{
 export const createIronService = async (req, res) =>{
         
     try {
-        const{description,price,category_id,ironPieces, ironCycleTime }=req.body
+        const{description,price,ironPieces, ironCycleTime }=req.body
         const service = await prisma.service.create({
             data:{
                 description:description,

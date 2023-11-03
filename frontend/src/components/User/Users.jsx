@@ -89,9 +89,9 @@ function Users() {
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
                 )
-                .map((user, index) => (
-                  <tr key={user.id}>
-                    <td>{index + 1}</td>
+                .map((user) => (
+                  <tr key={user.id_user}>
+                    <td>{user.id_user}</td>
                     <td className="text-slate-700 font-semibold">
                       {user.username}
                     </td>
@@ -110,7 +110,6 @@ function Users() {
                     <td>{user.email}</td>
                     <td>{user.phone}</td>
                     <td>{user.pass}</td>
-
                     <td>
                       <button
                         onClick={() => navigate(`/editUser/${user.id_user}`)}

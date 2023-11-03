@@ -67,6 +67,7 @@ const items1 = [
     getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
         getItem("Administrar Equipos", "/equipos"),
+        getItem("Administrar Planchas", "/planchas"),
     ]),
 
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
@@ -117,6 +118,7 @@ const items2 = [
     getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
         getItem("Administrar Equipos", "/equipos"),
+        getItem("Administrar Planchas", "/planchas"),
     ]),
 
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[

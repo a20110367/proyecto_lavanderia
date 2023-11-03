@@ -57,8 +57,8 @@ function Retiro() {
 
   const handleMotivoInput = () => {
     setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
-  };  
-  
+  };
+
   const handleMontoInput = () => {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
@@ -88,15 +88,15 @@ function Retiro() {
     }
 
     if (isValid) {
-      const date = moment().format()
+      const date = moment().format();
 
       Axios.post("http://localhost:5000/cashWhithdrawals", {
-        cashWhithdrawalType : "withdrawal",
-        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
-        fk_user:cookies.token,
-        amount : parseInt(monto),
+        cashWhithdrawalType: "withdrawal",
+        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        fk_user: cookies.token,
+        amount: parseInt(monto),
         cause: motivo,
-        date: date
+        date: date,
       });
       setVisible(false);
 
@@ -105,7 +105,7 @@ function Retiro() {
         amount: parseInt(monto),
         cause: motivo,
         date: date,
-        user: { name: cookies.username}
+        user: { name: cookies.username },
       };
 
       setRetiros([...retiros, nuevoRetiro]);
@@ -120,7 +120,7 @@ function Retiro() {
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const day = date.getDate();
-    const month = date.getMonth() + 1; 
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -147,10 +147,7 @@ function Retiro() {
         </div>
       </div>
       <div className="mt-3 mb-3">
-        <button
-          onClick={handleRetiro}
-          className="btn-primary"
-        >
+        <button onClick={handleRetiro} className="btn-primary">
           Registrar Retiro
         </button>
       </div>
@@ -167,10 +164,13 @@ function Retiro() {
         </thead>
         <tbody>
           {filteredRetiros
+            .filter((retiro) => retiro.cashWhithdrawalType === "withdrawal")
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
               <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>
-                <td className="py-3 px-1 text-center">{retiro.id_cashWhithdrawal}</td>
+                <td className="py-3 px-1 text-center">
+                  {retiro.id_cashWhithdrawal}
+                </td>
                 <td className="py-3 px-6">{formatDate(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>
                 <td className="py-3 px-6">{retiro.cause}</td>
@@ -179,7 +179,7 @@ function Retiro() {
             ))}
         </tbody>
       </table>
-           <Modal
+      <Modal
         title="Registrar Retiro de Caja"
         open={visible}
         onOk={handleConfirmRetiro}

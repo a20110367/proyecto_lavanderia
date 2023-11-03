@@ -22,7 +22,7 @@ function PedidosLavanderia() {
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [showMachineName, setShowMachineName] = useState(false);
   const [errMsg, setErrMsg] = useState("")
   const startIndex = currentPage * itemsPerPage;

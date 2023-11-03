@@ -32,7 +32,7 @@ function Clients() {
   1;
 
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };

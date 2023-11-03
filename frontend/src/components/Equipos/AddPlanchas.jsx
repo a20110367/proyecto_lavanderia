@@ -14,7 +14,7 @@ const WEIGHT_REGEX = /^[0-9]{1,}$/;
 function AddPlancha() {
   const errRef = useRef();
 
-  const [machineType, setMachineType] = useState("Plancha");
+  const [machineType, setMachineType] = useState("plancha");
 
   const [pieces, setPieces] = useState("");
   const [validPieces, setValidPieces] = useState(false);

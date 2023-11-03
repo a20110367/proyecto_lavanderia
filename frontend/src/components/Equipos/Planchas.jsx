@@ -18,10 +18,9 @@ function Planchas() {
   const [ironSelId, setIronSelId] = useState();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [filtroTipo, setFiltroTipo] = useState("");
 
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
@@ -55,9 +54,6 @@ function Planchas() {
     deleteIron(id_ironStation);
   };
 
-  const handleFiltroTipoChange = (event) => {
-    setFiltroTipo(event.target.value);
-  };
 
   return (
     <div>
@@ -69,33 +65,6 @@ function Planchas() {
           <button className="btn-primary" onClick={() => navigate("/addPlancha")}>
             Añadir Nueva Plancha
           </button>
-          <select
-            className="select-category"
-            value={filtroTipo}
-            onChange={handleFiltroTipoChange}
-          >
-            <option className="text-base font-semibold" value="">
-              Todos
-            </option>
-            <option
-              value="lavadora"
-              className="text-dodgerBlue font-semibold text-base"
-            >
-              Lavadoras
-            </option>
-            <option
-              value="secadora"
-              className="text-green-500 font-semibold text-base"
-            >
-              Secadoras
-            </option>
-            <option
-              value="plancha"
-              className="text-yellow-500 font-semibold text-base"
-            >
-              Planchas
-            </option>
-          </select>
         </div>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>

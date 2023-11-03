@@ -35,7 +35,7 @@ function PedidosGeneral() {
   const showCheckbox = machineIdQueryParam !== null;
   const [showMachineName, setShowMachineName] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

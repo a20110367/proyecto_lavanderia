@@ -17,7 +17,7 @@ function EditEquipo() {
 
 
 
-  const [machineType, setMachineType] = useState("Plancha");
+  const [machineType, setMachineType] = useState("plancha");
 
 
   const [pieces, setPieces] = useState("");

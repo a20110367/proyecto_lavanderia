@@ -104,7 +104,6 @@ function Retiro() {
       const nuevoRetiro = {
         id_cashWhithdrawal: retiros.length + 1,
         amount: parseInt(monto),
-        cashWhithdrawalType: "withdrawal",
         cause: motivo,
         date: date,
         user: { name: cookies.username },

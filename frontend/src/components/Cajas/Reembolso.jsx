@@ -35,8 +35,9 @@ function Reembolso() {
 
   useEffect(() => {
     if (data) {
-      setReembolsos(data);
-      setFilteredReembolsos(data);
+      const reembolsosFiltrados = data.filter((reembolso) => reembolso.cashWhithdrawalType === "refound");
+      setReembolsos(reembolsosFiltrados);
+      setFilteredReembolsos(reembolsosFiltrados);
     }
   }, [data]);
 
@@ -60,7 +61,7 @@ function Reembolso() {
   const handleMontoInput = () => {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
-
+  
   const handleNpedidoInput = () => {
     setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
@@ -102,15 +103,15 @@ function Reembolso() {
     }
 
     if (isValid) {
-      const date = moment().format();
+      const date = moment().format(); 
 
       Axios.post("http://localhost:5000/cashWhithdrawals", {
-        cashWhithdrawalType: "refound",
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        fk_user: cookies.token,
-        amount: parseInt(monto),
+        cashWhithdrawalType : "refound",
+        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
+        fk_user:cookies.token,
+        amount : parseInt(monto),
         cause: motivo,
-        date: date,
+        date: date
       });
 
       const nuevoReembolso = {
@@ -135,7 +136,7 @@ function Reembolso() {
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const day = date.getDate();
-    const month = date.getMonth() + 1;
+    const month = date.getMonth() + 1; 
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -143,59 +144,57 @@ function Reembolso() {
   return (
     <div>
       <div className="mb-3">
-        <div className="title-container">
+      <div className="title-container">
           <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-      <div className="flex items-center -4">
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Buscar..."
-            className="input-search"
-            value={filtro}
-            onChange={handleFiltroChange}
-          />
-          <div className="absolute top-2.5 left-1 text-gray-400">
-            <HiOutlineSearch fontSize={20} className="text-gray-400" />
+        <div className="flex items-center -4">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Buscar..."
+              className="input-search"
+              value={filtro}
+              onChange={handleFiltroChange}
+            />
+            <div className="absolute top-2.5 left-1 text-gray-400">
+              <HiOutlineSearch fontSize={20} className="text-gray-400" />
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mt-3 mb-3">
-        <button onClick={handleReembolso} className="btn-primary">
-          Registrar Reembolso
-        </button>
-      </div>
-      <table className="w-full text-sm text-left text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-          <tr>
-            <th>No. Reembolso</th>
-            <th>Número de Pedido</th>
-            <th>Monto</th>
-            <th>Motivo</th>
-            <th>Fecha</th>
-          </tr>
-        </thead>
-        <tbody>
+        <div className="mt-3 mb-3">
+          <button
+            onClick={handleReembolso}
+            className="btn-primary"
+          >
+            Registrar Reembolso
+          </button>
+        
+        </div>
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th >No. Reembolso</th>
+              <th >Número de Pedido</th>
+              <th>Monto</th>
+              <th >Motivo</th>
+              <th >Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
           {filteredReembolsos
-            .filter((reembolso) => reembolso.cashWhithdrawalType === "refound")
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((reembolso) => (
-              <tr
-                className="bg-white border-b"
-                key={reembolso.id_cashWhithdrawal}
-              >
-                <td className="py-3 px-1 text-center">
-                  {reembolso.id_cashWhithdrawal}
-                </td>
+        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+        .map((reembolso) => (
+              <tr className="bg-white border-b" key={reembolso.id_cashWhithdrawal}>
+                <td className="py-3 px-1 text-center">{reembolso.id_cashWhithdrawal}</td>
                 <td className="py-3 px-6">{reembolso.id_order}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
                 <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
               </tr>
             ))}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
       <Modal
         title="Registrar Reembolso"
         open={visible}
@@ -219,7 +218,7 @@ function Reembolso() {
           </Button>,
         ]}
       >
-        <form>
+       <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Número de Pedido:
@@ -262,22 +261,22 @@ function Reembolso() {
         </form>
       </Modal>
       <div className="flex justify-center mt-4 mb-4">
-        <ReactPaginate
-          previousLabel={"Anterior"}
-          nextLabel={"Siguiente"}
-          breakLabel={"..."}
-          pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={2}
-          onPageChange={handlePageChange}
-          containerClassName={"pagination flex"}
-          pageLinkClassName="pageLinkClassName"
-          previousLinkClassName="prevOrNextLinkClassName"
-          nextLinkClassName="prevOrNextLinkClassName"
-          breakLinkClassName="breakLinkClassName"
-          activeLinkClassName="activeLinkClassName"
-        />
-      </div>
+    <ReactPaginate
+      previousLabel={"Anterior"}
+      nextLabel={"Siguiente"}
+      breakLabel={"..."}
+      pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
+      marginPagesDisplayed={2}
+      pageRangeDisplayed={2}
+      onPageChange={handlePageChange}
+      containerClassName={"pagination flex"}
+      pageLinkClassName="pageLinkClassName"
+      previousLinkClassName="prevOrNextLinkClassName"
+      nextLinkClassName="prevOrNextLinkClassName"
+      breakLinkClassName="breakLinkClassName"
+      activeLinkClassName="activeLinkClassName"
+    />
+  </div>
     </div>
   );
 }

@@ -34,8 +34,9 @@ function Retiro() {
 
   useEffect(() => {
     if (data) {
-      setRetiros(data);
-      setFilteredRetiros(data);
+      const retirosFiltrados = data.filter((retiro) => retiro.cashWhithdrawalType === "withdrawal");
+      setRetiros(retirosFiltrados);
+      setFilteredRetiros(retirosFiltrados);
     }
   }, [data]);
 
@@ -164,7 +165,6 @@ function Retiro() {
         </thead>
         <tbody>
           {filteredRetiros
-            .filter((retiro) => retiro.cashWhithdrawalType === "withdrawal")
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
               <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>

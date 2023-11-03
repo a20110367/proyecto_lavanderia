@@ -5,7 +5,7 @@ import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
 import Axios from "axios";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 
 function Retiro() {
   const [retiros, setRetiros] = useState([]);
@@ -80,18 +80,36 @@ function Retiro() {
       setMotivoError("");
     }
 
+    if (!localStorage.getItem("cashCutId")) {
+      setMotivoError("No se ha inicializado la caja");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
     if (isValid) {
       const date = moment().format()
 
       Axios.post("http://localhost:5000/cashWhithdrawals", {
+        cashWhithdrawalType : "withdrawal",
         fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
         fk_user:cookies.token,
         amount : parseInt(monto),
         cause: motivo,
         date: date
       });
-
       setVisible(false);
+
+      const nuevoRetiro = {
+        id_cashWhithdrawal: retiros.length + 1,
+        amount: parseInt(monto),
+        cause: motivo,
+        date: date,
+        user: { name: cookies.username}
+      };
+
+      setRetiros([...retiros, nuevoRetiro]);
+      setFilteredRetiros([...retiros, nuevoRetiro]);
     }
   };
 

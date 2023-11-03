@@ -109,7 +109,7 @@ function InicioCaja() {
       )}
       <Modal
         title="Iniciar Caja"
-        visible={visible}
+        open={visible}
         onOk={handleIniciarCaja}
         onCancel={handleCloseDialog}
         width={400}

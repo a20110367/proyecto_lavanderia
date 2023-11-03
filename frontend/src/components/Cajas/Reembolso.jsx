@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
+import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
+import Axios from "axios";
+import useSWR from "swr";
 
 function Reembolso() {
   const [reembolsos, setReembolsos] = useState([]);
@@ -12,54 +15,39 @@ function Reembolso() {
   const [numeroPedido, setNumeroPedido] = useState("");
   const [monto, setMonto] = useState("");
   const [motivo, setMotivo] = useState("");
-  const [fecha, setFecha] = useState("");
+  const { cookies } = useAuth();
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
 
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
 
-  useEffect(() => {
-    const dummyReembolsos = [
-      {
-        id: 1,
-        numeroPedido: "1001",
-        monto: 500,
-        motivo: "Decoloracion de ropa",
-        fecha: "20/09/2023",
-      },
-      {
-        id: 2,
-        numeroPedido: "1002",
-        monto: 300,
-        motivo: "Quemado por plancha",
-        fecha: "21/09/2023",
-      },
-      {
-        id: 3,
-        numeroPedido: "1003",
-        monto: 1000,
-        motivo: "Rasgado por lavadora",
-        fecha: "23/09/2023",
-      },
-    ];
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/cashWhithdrawals");
+    return response.data;
+  };
 
-    setReembolsos(dummyReembolsos);
-    setFilteredReembolsos(dummyReembolsos);
-  }, []);
+  const { data } = useSWR("cashWhithdrawals", fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setReembolsos(data);
+    setFilteredReembolsos(data);
+    }
+  }, [data]);
 
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = reembolsos.filter(
       (reembolso) =>
-        reembolso.numeroPedido.toLowerCase().includes(searchTerm) ||
-        reembolso.monto.toString().toLowerCase().includes(searchTerm) ||
-        reembolso.motivo.toLowerCase().includes(searchTerm) ||
-        reembolso.fecha.toLowerCase().includes(searchTerm)
+        reembolso.fk_cashCut.toLowerCase().includes(searchTerm) ||
+        reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
+        reembolso.cause.toLowerCase().includes(searchTerm) ||
+        reembolso.date.toLowerCase().includes(searchTerm)
     );
     setFiltro(event.target.value);
     setFilteredReembolsos(filtered);
@@ -106,16 +94,31 @@ function Reembolso() {
       setMotivoError("");
     }
 
+    if (!localStorage.getItem("cashCutId")) {
+      setMotivoError("No se ha inicializado la caja");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
     if (isValid) {
-      const currentDate = moment(); 
-      const formattedDate = currentDate.format("DD/MM/YYYY"); 
+      const date = moment().format(); 
+
+      Axios.post("http://localhost:5000/cashWhithdrawals", {
+        cashWhithdrawalType : "refound",
+        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
+        fk_user:cookies.token,
+        amount : parseInt(monto),
+        cause: motivo,
+        date: date
+      });
 
       const nuevoReembolso = {
-        id: reembolsos.length + 1,
+        id_cashWhithdrawal: reembolsos.length + 1,
         numeroPedido: numeroPedido,
-        monto: parseInt(monto),
-        motivo: motivo,
-        fecha: formattedDate,
+        amount: parseInt(monto),
+        cause: motivo,
+        date: date,
       };
 
       setReembolsos([...reembolsos, nuevoReembolso]);
@@ -127,6 +130,14 @@ function Reembolso() {
 
   const handleClose = () => {
     setVisible(false);
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -173,19 +184,19 @@ function Reembolso() {
           {filteredReembolsos
         .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
         .map((reembolso) => (
-              <tr className="bg-white border-b" key={reembolso.id}>
-                <td className="py-3 px-1 text-center">{reembolso.id}</td>
-                <td className="py-3 px-6">{reembolso.numeroPedido}</td>
-                <td className="py-3 px-6">{"$" + reembolso.monto}</td>
-                <td className="py-3 px-6">{reembolso.motivo}</td>
-                <td className="py-3 px-6">{reembolso.fecha}</td>
+              <tr className="bg-white border-b" key={reembolso.id_cashWhithdrawal}>
+                <td className="py-3 px-1 text-center">{reembolso.id_cashWhithdrawal}</td>
+                <td className="py-3 px-6">{reembolso.id_order}</td>
+                <td className="py-3 px-6">{"$" + reembolso.amount}</td>
+                <td className="py-3 px-6">{reembolso.cause}</td>
+                <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       <Modal
         title="Registrar Reembolso"
-        visible={visible}
+        open={visible}
         onOk={handleConfirmReembolso}
         onCancel={handleClose}
         width={600}

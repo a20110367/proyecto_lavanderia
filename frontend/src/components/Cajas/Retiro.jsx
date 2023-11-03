@@ -4,6 +4,8 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
+import Axios from "axios";
+import useSWR, { mutate } from "swr";
 
 function Retiro() {
   const [retiros, setRetiros] = useState([]);
@@ -12,54 +14,38 @@ function Retiro() {
   const [visible, setVisible] = useState(false);
   const [monto, setMonto] = useState("");
   const [motivo, setMotivo] = useState("");
-  const [usuario, setUsuario] = useState("");
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
   const [usuarioError, setUsuarioError] = useState("");
   const { cookies } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5; // Cantidad de elementos a mostrar por página
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
 
-  useEffect(() => {
-    const dummyRetiros = [
-      {
-        id: 1,
-        fecha: "20/09/2023",
-        monto: 500,
-        motivo: "Gastos varios",
-        usuario: "Usuario1",
-      },
-      {
-        id: 2,
-        fecha: "21/09/2023",
-        monto: 300,
-        motivo: "Retiro personal",
-        usuario: "Usuario2",
-      },
-      {
-        id: 3,
-        fecha: "22/09/2023",
-        monto: 1000,
-        motivo: "Pago a proveedor",
-        usuario: "Usuario3",
-      },
-    ];
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/cashWhithdrawals");
+    return response.data;
+  };
 
-    setRetiros(dummyRetiros);
-    setFilteredRetiros(dummyRetiros);
-  }, []);
+  const { data } = useSWR("cashWhithdrawals", fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setRetiros(data);
+      setFilteredRetiros(data);
+    }
+  }, [data]);
 
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = retiros.filter(
       (retiro) =>
-        retiro.motivo.toLowerCase().includes(searchTerm) ||
-        retiro.fecha.toLowerCase().includes(searchTerm) ||
-        retiro.usuario.toLowerCase().includes(searchTerm)
+        retiro.cause.toLowerCase().includes(searchTerm) ||
+        retiro.created.toLowerCase().includes(searchTerm) ||
+        retiro.user.name.toLowerCase().includes(searchTerm)
     );
     setFiltro(event.target.value);
     setFilteredRetiros(filtered);
@@ -95,19 +81,15 @@ function Retiro() {
     }
 
     if (isValid) {
-      const currentDate = moment();
-      const formattedDate = currentDate.format("DD/MM/YYYY");
+      const date = moment().format()
 
-      const nuevoRetiro = {
-        id: retiros.length + 1,
-        fecha: formattedDate,
-        monto: parseInt(monto),
-        motivo: motivo,
-        usuario: cookies.username,
-      };
-
-      setRetiros([...retiros, nuevoRetiro]);
-      setFilteredRetiros([...retiros, nuevoRetiro]);
+      Axios.post("http://localhost:5000/cashWhithdrawals", {
+        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
+        fk_user:cookies.token,
+        amount : parseInt(monto),
+        cause: motivo,
+        date: date
+      });
 
       setVisible(false);
     }
@@ -115,6 +97,14 @@ function Retiro() {
 
   const handleClose = () => {
     setVisible(false);
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.getMonth() + 1; 
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -161,19 +151,19 @@ function Retiro() {
           {filteredRetiros
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
-              <tr className="bg-white border-b" key={retiro.id}>
-                <td className="py-3 px-1 text-center">{retiro.id}</td>
-                <td className="py-3 px-6">{retiro.fecha}</td>
-                <td className="py-3 px-6">{"$" + retiro.monto}</td>
-                <td className="py-3 px-6">{retiro.motivo}</td>
-                <td className="py-3 px-6">{retiro.usuario}</td>
+              <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>
+                <td className="py-3 px-1 text-center">{retiro.id_cashWhithdrawal}</td>
+                <td className="py-3 px-6">{formatDate(retiro.date)}</td>
+                <td className="py-3 px-6">{"$" + retiro.amount}</td>
+                <td className="py-3 px-6">{retiro.cause}</td>
+                <td className="py-3 px-6">{retiro.user.name}</td>
               </tr>
             ))}
         </tbody>
       </table>
            <Modal
         title="Registrar Retiro de Caja"
-        visible={visible}
+        open={visible}
         onOk={handleConfirmRetiro}
         onCancel={handleClose}
         width={600}

@@ -54,7 +54,7 @@ function InicioCaja() {
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON()
       });
-      localStorage.setItem("cashCutId", response.data.id);
+      localStorage.setItem("cashCutId", response.data.id_cashCut);
 
       setCajaIniciada(true);
       setVisible(false);

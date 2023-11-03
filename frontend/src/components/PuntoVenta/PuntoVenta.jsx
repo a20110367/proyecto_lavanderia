@@ -162,6 +162,8 @@ export default function PuntoVenta() {
 
     // Regresar a la página anterior
     window.history.back();
+
+    console.log(cart)
   };
 
   const filteredServices = shouldShowAllServices
@@ -273,7 +275,7 @@ export default function PuntoVenta() {
 
                 <Modal
                   title={`Guardar Compra para ${clientName}`}
-                  visible={isModalVisible}
+                  open={isModalVisible}
                   onCancel={handleCancel}
                   footer={[
                     <button

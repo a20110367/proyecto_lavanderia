@@ -187,7 +187,6 @@ function PedidosGeneral() {
     return `${day}/${month}/${year}`;
   };
   
-
   return (
     <div>
       <div className="mb-3">

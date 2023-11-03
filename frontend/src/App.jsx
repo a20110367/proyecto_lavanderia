@@ -40,6 +40,9 @@ import AddEquipo from './components/Equipos/AddEquipo'
 import EditEquipo from "./components/Equipos/EditEquipo"
 import ActivarEquipos from "./components//Equipos/ActivarEquipos"
 
+import Planchas from "./components/Equipos/Planchas"
+import AddPlancha from "./components/Equipos/AddPlanchas"
+import EditPlancha from "./components/Equipos/EditPlancha"
 
 
 
@@ -97,6 +100,10 @@ function App() {
                     <Route path="/addEquipo" element={<AddEquipo />} />
                     <Route path="/editEquipo/:id" element={<EditEquipo />} />
                     <Route path="/activarEquipos" element={<ActivarEquipos />} />
+
+                    <Route path="/planchas" element={<Planchas />} />
+                    <Route path="/addPlancha" element={<AddPlancha />} />
+                    <Route path="/editPlancha/:id" element={<EditPlancha />} />
 
                     <Route path="/corteCaja" element={<CorteCaja />} />
                     <Route path="/inicioCaja" element={<InicioCaja />} />

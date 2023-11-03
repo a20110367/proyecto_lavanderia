@@ -262,7 +262,7 @@ function HistorialCaja() {
         {/* Modal para mostrar detalles */}
         <Modal
           title="Detalles del Corte"
-          visible={modalVisible}
+          open={modalVisible}
           onOk={() => setModalVisible(false)}
           onCancel={() => setModalVisible(false)}
           width={600}

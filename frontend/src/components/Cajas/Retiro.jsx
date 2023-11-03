@@ -121,9 +121,10 @@ function Retiro() {
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
+    date.setUTCHours(0, 0, 0, 0);
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1;
+    const year = date.getUTCFullYear();
     return `${day}/${month}/${year}`;
   };
 

@@ -29,7 +29,7 @@ function CorteCaja() {
     const response = await Axios.get("http://localhost:5000/cashCuts");
     return response.data;
   };
-
+  
   const { data } = useSWR("cashCuts", fetcher);
 
   useEffect(() => {
@@ -39,15 +39,11 @@ function CorteCaja() {
   }, []);
 
   useEffect(() => {
-    if (data) {
-      const now = moment().toISOString();
-      
-      // const currentCorte = data.filter((corte) =>
-      //   corte.cashCutD === now
-      // );
-
+    if (data) {      
+      const now = new Date();
+      now.setUTCHours(0, 0, 0, 0);
       const currentCorte = data.find((corte) =>
-        moment(corte.cashCutD).isSame(now)
+        moment(corte.cashCutD).isSame(now, "day")
       );
 
       if (currentCorte) {
@@ -272,9 +268,10 @@ function CorteCaja() {
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-    const day = date.getDate();
-    const month = date.getMonth() + 1; 
-    const year = date.getFullYear();
+    date.setUTCHours(0, 0, 0, 0);
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1;
+    const year = date.getUTCFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -328,7 +325,7 @@ function CorteCaja() {
                   <td className="py-3 px-6">${corte.totalCash + corte.totalCredit}</td>
                   <td className="py-3 px-6">${corte.totalCashWithdrawal}</td>
                   <td className="py-3 px-6">${totalIncome}</td>
-                  <td className="py-3 px-6">{corte.user}</td>
+                  <td className="py-3 px-6">{corte.user.name}</td>
                   <td className="py-3 px-6">{corte.turno}</td>
                   <td className="py-3 px-6">
                     <button

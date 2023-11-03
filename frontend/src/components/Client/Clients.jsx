@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
-import "moment/locale/es-mx";
 import moment from "moment";
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
@@ -24,9 +23,7 @@ function Clients() {
   const [word, setWord] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  moment.locale("es-mx");
-  console.log(moment.locale());
-  const date = moment().format("L");
+  const date = moment().format("DD / MM / YYYY")
   const hour = moment().format("LT");
   const [paid, setPaid] = useState(true);
   1;

@@ -13,7 +13,6 @@ function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
-  const [total, setTotal] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [turno, setTurno] = useState("Matutino");
@@ -41,14 +40,18 @@ function CorteCaja() {
 
   useEffect(() => {
     if (data) {
-      const now = moment().format();      
-      setTotal(data.totalCash + data.totalCredit)
-      setTotalIncome(total - data.totalCashWithdrawal)
+      const now = moment().toISOString();
+      
+      // const currentCorte = data.filter((corte) =>
+      //   corte.cashCutD === now
+      // );
+
       const currentCorte = data.find((corte) =>
-        moment(corte.cashCutD).format().getTime() === now.getTime() ? corte : undefined
+        moment(corte.cashCutD).isSame(now)
       );
 
       if (currentCorte) {
+        setTotalIncome((currentCorte.totalCash + currentCorte.totalCredit) - currentCorte.totalCashWithdrawal)
         setCortes([currentCorte]);
         setMostrarTabla(true);
       }
@@ -302,16 +305,15 @@ function CorteCaja() {
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
                 <th>No. Corte</th>
-                <th >FECHA</th>
-                <th >DINERO EN FONDO</th>
-                <th >INGRESO EN EFECTIVO</th>
-                <th >INGRESO EN TARJETA</th>
-                <th >INGRESOS TOTALES</th>
-                <th >RETIROS TOTALES</th>
-                <th >FINAL TOTAL CAJA</th>
-                <th >USUARIO</th>
-                <th >TURNO</th>
-                <th ></th>{" "}
+                <th>FECHA</th>
+                <th>DINERO EN FONDO</th>
+                <th>INGRESO EN EFECTIVO</th>
+                <th>INGRESO EN TARJETA</th>
+                <th>INGRESOS TOTALES</th>
+                <th>RETIROS TOTALES</th>
+                <th>FINAL TOTAL CAJA</th>
+                <th>USUARIO</th>
+                <th>TURNO</th>
               </tr>
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
@@ -323,10 +325,10 @@ function CorteCaja() {
                   <td className="py-3 px-6">${corte.inicialCash}</td>
                   <td className="py-3 px-6">${corte.totalCash}</td>
                   <td className="py-3 px-6">${corte.totalCredit}</td>
-                  <td className="py-3 px-6">${total}</td>
+                  <td className="py-3 px-6">${corte.totalCash + corte.totalCredit}</td>
                   <td className="py-3 px-6">${corte.totalCashWithdrawal}</td>
                   <td className="py-3 px-6">${totalIncome}</td>
-                  <td className="py-3 px-6">{corte.usuario}</td>
+                  <td className="py-3 px-6">{corte.user}</td>
                   <td className="py-3 px-6">{corte.turno}</td>
                   <td className="py-3 px-6">
                     <button

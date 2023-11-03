@@ -191,7 +191,7 @@ function PedidosGeneral() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos Genaral</strong>
+          <strong className="title-strong">Pedidos General</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">

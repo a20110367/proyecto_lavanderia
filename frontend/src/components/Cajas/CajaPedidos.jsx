@@ -209,7 +209,7 @@ function CajaPedidos() {
           </tbody>
         </table>        
       <Modal
-        visible={notificationVisible}
+        open={notificationVisible}
         footer={null}
         onCancel={() => setNotificationVisible(false)}
         destroyOnClose

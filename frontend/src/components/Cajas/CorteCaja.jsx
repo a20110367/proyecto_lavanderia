@@ -223,9 +223,15 @@ function CorteCaja() {
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
               {Cortes.map((corte) => (
+<<<<<<< HEAD
                 <tr className="bg-white border-b" key={corte.id_cashCut}>
                   <td className="py-3 px-1 text-center">{corte.id_cashCut}</td>
                   <td className="py-3 px-6">{formatDateToGMTMinus6(corte.cashCutD)}</td>
+=======
+                <tr className="bg-white border-b" key={cashCutId}>
+                  <td className="py-3 px-1 text-center">{cashCutId}</td>
+                  <td className="py-3 px-6">{formatDate(corte.cashCutD)}</td>
+>>>>>>> 17a2394e92bda3a6e01088e157582edf6fe20009
                   <td className="py-3 px-6">${initialCash ? initialCash : 0}</td>
                   <td className="py-3 px-6">${corte.totalCash ? corte.totalCash : 0}</td>
                   <td className="py-3 px-6">${corte.totalCredit ? corte.totalCredit : 0}</td>

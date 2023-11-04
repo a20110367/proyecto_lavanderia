@@ -134,12 +134,12 @@ function Reembolso() {
     setVisible(false);
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -192,7 +192,7 @@ function Reembolso() {
                 <td className="py-3 px-6">{reembolso.id_order}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
-                <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
+                <td className="py-3 px-6">{formatDateToGMTMinus6(reembolso.date)}</td>
               </tr>
             ))}
           </tbody>

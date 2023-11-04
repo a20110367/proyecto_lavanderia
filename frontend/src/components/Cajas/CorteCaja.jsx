@@ -359,7 +359,7 @@ function CorteCaja() {
                 <span className="font-bold">Autoservicio:</span> ${ selectedCorte.toalAutoservicio ? selectedCorte.toalAutoservicio : 0}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Lavado por Encargo:</span> ${selectedCorte.totalPlanchado ? selectedCorte.totalEncargo : 0}
+                <span className="font-bold">Lavado por Encargo:</span> ${selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Planchado:</span> ${ selectedCorte.totalPlanchado ? selectedCorte.totalPlanchado : 0}

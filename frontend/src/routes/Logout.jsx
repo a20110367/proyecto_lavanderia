@@ -8,7 +8,7 @@ function Logout() {
     const [cashCut, setCashCut] = useState(localStorage.getItem('lastCashCut'))
 
     useEffect(() => {
-        if (!cashCut) {
+        if (cashCut) {
             const { logout } = useAuth();
             logout()
         } else {

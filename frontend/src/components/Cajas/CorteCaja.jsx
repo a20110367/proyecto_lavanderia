@@ -25,7 +25,7 @@ function CorteCaja() {
   const [totalServices, setTotalServices] = useState(0)
   const [totalIncome, setTotalIncome] = useState(0)
   const [cashCutId, setCashCutId] = useState(localStorage.getItem(0))
-  const [cashCut, setCashCut] = useState(localStorage.getItem('lastCashCut'));
+  const [lastCashCut, setLastCashCut] = useState(JSON.parse(localStorage.getItem('lastCashCut')));
 
   useEffect(() => {
     setCashCutId(localStorage.getItem('cashCutId'))
@@ -35,41 +35,43 @@ function CorteCaja() {
   }, []);
 
   useEffect(() => {
-    if (cashCut) {
-      const now = new Date();
-      now.setUTCHours(0, 0, 0, 0);
-      const currentCorte = cashCut.find((corte) =>
-        moment(corte.cashCutD).isSame(now, "day")
-      );
+    if (lastCashCut) {
+      // const currentCorte = Cortes.find((corte) =>
+      //   moment(corte.cashCutD).isSame(now, "day")
+      // );
 
-      if (currentCorte) {
-        setCortes([currentCorte]);
-        setMostrarTabla(true);
-      }
+      // if (currentCorte) {
+      //   setCortes([currentCorte]);
+      //   setMostrarTabla(true);
+      // }
+      setCortes([lastCashCut]);
+      setMostrarTabla(true);
     }
-  }, [cashCut]);
+  }, [lastCashCut]);
 
   const handleCorteCaja = () => {
     setDialogVisible(true);
   };
 
+
+
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
-  const handleConfirmCorteCaja = () => {
+  const handleConfirmCorteCaja = async () => {
     const now = new Date();
     const horaActual = now.getHours();
 
     setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = Axios.get(`http://localhost:5000/closeCashCut/${cashCutId}`)
-    
-    console.log(nuevoCorte)
+    const response = await Axios.get(`http://localhost:5000/closeCashCut/${cashCutId}`)
+
+    const nuevoCorte = response.data
 
     const pdf = new jsPDF();
 
     pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
     pdf.text(`ID: ${cashCutId}`, 10, 20);
-    pdf.text(`Usuario: ${turno}`, 10, 30);
+    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
     pdf.text(`Dinero en Fondo: $${nuevoCorte.total}`, 10, 60);
@@ -79,16 +81,17 @@ function CorteCaja() {
     pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100);
     pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110);
     setTotalServices(nuevoCorte.toalAutoservicio + nuevoCorte.totalEncargo + nuevoCorte.totalPlanchado)
-    pdf.text(`Total (Suma de los Servicios): $${totalServices}}`,10,120);
+    pdf.text(`Total (Suma de los Servicios): $${totalServices}}`, 10, 120);
     pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130);
     //Separación
     pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150);
     pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
     setTotalIncome(nuevoCorte.inicialCash + totalServices + nuevoCorte.totalCredit + nuevoCorte.totalCash - nuevoCorte.totalCashWithdrawal)
     pdf.text(`Final Total en Caja: $${totalIncome}`, 10, 170);
-    pdf.save(`corte_de_caja_Turno_${turno}.pdf`);
+    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-
+    localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
+    setLastCashCut(nuevoCorte)
     setCortes([nuevoCorte]);
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
@@ -106,18 +109,20 @@ function CorteCaja() {
 
   /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
 
-  const handlePartialCorteConfirm = () => {
+  const handlePartialCorteConfirm = async () => {
     const now = new Date();
     const horaActual = now.getHours();
 
     setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = Axios.get(`http://localhost:5000/calculateCashCut/${cashCutId}`);
+    const response = await Axios.get(`http://localhost:5000/calculateCashCut/${cashCutId}`);
+
+    const nuevoCorte = response.data
 
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
     pdf.text(`ID: ${cashCutId}`, 10, 20);
-    pdf.text(`Usuario: ${turno}`, 10, 30);
+    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
     pdf.text(`Dinero en Fondo: $${nuevoCorte.inicialCash}`, 10, 60);
@@ -127,16 +132,18 @@ function CorteCaja() {
     pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100);
     pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110);
     setTotalServices(nuevoCorte.toalAutoservicio + nuevoCorte.totalEncargo + nuevoCorte.totalPlanchado)
-    pdf.text(`Total (Suma de los Servicios): $${totalServices}`,10,120);
+    pdf.text(`Total (Suma de los Servicios): $${totalServices}`, 10, 120);
     pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
     // Separación
     pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
     pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
     setTotalIncome(nuevoCorte.inicialCash + totalServices + nuevoCorte.totalCredit + nuevoCorte.totalCash - nuevoCorte.totalCashWithdrawal)
     pdf.text(`Final Total en Caja: $${totalIncome}`, 10, 170);
-    pdf.save(`corte_de_caja_Turno_${turno}.pdf`);
+    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-
+    localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
+    setLastCashCut(nuevoCorte)
+    console.log(lastCashCut)
     setCortes([nuevoCorte]);
     setPartialCorteDialogVisible(false);
   };

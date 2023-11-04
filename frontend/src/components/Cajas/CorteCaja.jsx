@@ -91,6 +91,7 @@ function CorteCaja() {
     pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
     localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
+    localStorage.removeItem('initialCash')
     setLastCashCut(nuevoCorte)
     setCortes([nuevoCorte]);
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte
@@ -140,10 +141,6 @@ function CorteCaja() {
     nuevoCorte.total ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170) : pdf.text("Final Total en Caja: $0", 10, 170)
     pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-    localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
-    localStorage.removeItem('initialCash')
-    setLastCashCut(nuevoCorte)
-    console.log(lastCashCut)
     setCortes([nuevoCorte]);
     setPartialCorteDialogVisible(false);
   };

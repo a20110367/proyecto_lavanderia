@@ -13,121 +13,80 @@ function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
-  const [totalIncome, setTotalIncome] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [turno, setTurno] = useState("Matutino");
-  const [usuario, setUsuario] = useState("");
   const [fechaHora, setFechaHora] = useState("");
-  const { cookies } = useAuth();
-  const [nombreEmpleado, setNombreEmpleado] = useState(cookies.username || "");
   const [partialCorteDialogVisible, setPartialCorteDialogVisible] = useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
 
-  const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/cashCuts");
-    return response.data;
-  };
-  
-  const { data } = useSWR("cashCuts", fetcher);
+  const { cookies } = useAuth();
+  const [turno, setTurno] = useState("Matutino");
+  const [totalServices, setTotalServices] = useState(0)
+  const [totalIncome, setTotalIncome] = useState(0)
+  const [cashCutId, setCashCutId] = useState(localStorage.getItem(0))
+  const [cashCut, setCashCut] = useState(localStorage.getItem('lastCashCut'));
 
   useEffect(() => {
+    setCashCutId(localStorage.getItem('cashCutId'))
     const now = new Date();
     const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
     setFechaHora(formattedDate);
   }, []);
 
   useEffect(() => {
-    if (data) {      
+    if (cashCut) {
       const now = new Date();
       now.setUTCHours(0, 0, 0, 0);
-      const currentCorte = data.find((corte) =>
+      const currentCorte = cashCut.find((corte) =>
         moment(corte.cashCutD).isSame(now, "day")
       );
 
       if (currentCorte) {
-        setTotalIncome((currentCorte.totalCash + currentCorte.totalCredit) - currentCorte.totalCashWithdrawal)
         setCortes([currentCorte]);
         setMostrarTabla(true);
       }
     }
-  }, [data]);
+  }, [cashCut]);
 
   const handleCorteCaja = () => {
     setDialogVisible(true);
   };
 
+  /* ------------------------------ FULL CASHCUT ------------------------------------*/
+
   const handleConfirmCorteCaja = () => {
     const now = new Date();
     const horaActual = now.getHours();
 
-    const turno = horaActual < 12 ? "Matutino" : "Vespertino";
+    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = {
-      id: Cortes.length + 1,
-      fecha: moment().format("DD/MM/YYYY"),
-      dineroFondo: 20000,
-      retirosTotales: 1200,
-      ingresoEfectivo: 61000,
-      ingresoTarjeta: 10000,
-      ingresosTotales: 20000,
-      finalTotalCaja: 0,
-      ingresoAutoservicio: 10000,
-      ingresoLavadoEncargo: 16000,
-      ingresoPlanchado: 15000,
-      usuario: nombreEmpleado,
-      turno: turno,
-    };
-
-    nuevoCorte.finalTotalCaja =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado -
-      nuevoCorte.ingresoTarjeta -
-      nuevoCorte.retirosTotales;
-
-    nuevoCorte.ingresoTotalServicios =
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-
-    nuevoCorte.ingresoEfectivo =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-    const response = Axios.get(`http://localhost:5000/closeCashCut/${5}`);
-    console.log(response.data)
+    const nuevoCorte = Axios.get(`http://localhost:5000/closeCashCut/${cashCutId}`)
+    
+    console.log(nuevoCorte)
 
     const pdf = new jsPDF();
 
     pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
-    pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
-    pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
+    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`Usuario: ${turno}`, 10, 30);
+    pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
-
+    pdf.text(`Dinero en Fondo: $${nuevoCorte.total}`, 10, 60);
     //Separación
     pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
-    pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
-    pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
-    pdf.text(
-      `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
-      10,
-      120
-    );
-    pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
-
+    pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90);
+    pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100);
+    pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110);
+    setTotalServices(nuevoCorte.toalAutoservicio + nuevoCorte.totalEncargo + nuevoCorte.totalPlanchado)
+    pdf.text(`Total (Suma de los Servicios): $${totalServices}}`,10,120);
+    pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130);
     //Separación
-    pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
-    pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
-    pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
-
-    pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
+    pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150);
+    pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
+    setTotalIncome(nuevoCorte.inicialCash + totalServices + nuevoCorte.totalCredit + nuevoCorte.totalCash - nuevoCorte.totalCashWithdrawal)
+    pdf.text(`Final Total en Caja: $${totalIncome}`, 10, 170);
+    pdf.save(`corte_de_caja_Turno_${turno}.pdf`);
 
 
     setCortes([nuevoCorte]);
@@ -145,73 +104,37 @@ function CorteCaja() {
     setPartialCorteDialogVisible(true);
   };
 
+  /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
+
   const handlePartialCorteConfirm = () => {
     const now = new Date();
     const horaActual = now.getHours();
 
-    const turno = horaActual < 12 ? "Matutino" : "Vespertino";
+    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = {
-      id: Cortes.length + 1,
-      fecha: moment().format("DD-MM-YYY"),
-      dineroFondo: 20000,
-      retirosTotales: 1200,
-      ingresoEfectivo: 61000,
-      ingresoTarjeta: 10000,
-      ingresosTotales: 20000,
-      finalTotalCaja: 0,
-      ingresoAutoservicio: 10000,
-      ingresoLavadoEncargo: 16000,
-      ingresoPlanchado: 15000,
-      usuario: nombreEmpleado,
-      turno: turno,
-    };
-
-    nuevoCorte.finalTotalCaja =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado -
-      nuevoCorte.ingresoTarjeta -
-      nuevoCorte.retirosTotales;
-
-    nuevoCorte.ingresoTotalServicios =
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-
-    nuevoCorte.ingresoEfectivo =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
+    const nuevoCorte = Axios.get(`http://localhost:5000/calculateCashCut/${cashCutId}`);
 
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
-    pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
-    pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
+    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`Usuario: ${turno}`, 10, 30);
+    pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
-
+    pdf.text(`Dinero en Fondo: $${nuevoCorte.inicialCash}`, 10, 60);
     // Separación
     pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
-    pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
-    pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
-    pdf.text(
-      `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
-      10,
-      120
-    );
+    pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90);
+    pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100);
+    pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110);
+    setTotalServices(nuevoCorte.toalAutoservicio + nuevoCorte.totalEncargo + nuevoCorte.totalPlanchado)
+    pdf.text(`Total (Suma de los Servicios): $${totalServices}`,10,120);
     pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
-
     // Separación
     pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
     pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
-    pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
-
-    pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
+    setTotalIncome(nuevoCorte.inicialCash + totalServices + nuevoCorte.totalCredit + nuevoCorte.totalCash - nuevoCorte.totalCashWithdrawal)
+    pdf.text(`Final Total en Caja: $${totalIncome}`, 10, 170);
+    pdf.save(`corte_de_caja_Turno_${turno}.pdf`);
 
 
     setCortes([nuevoCorte]);
@@ -279,8 +202,8 @@ function CorteCaja() {
     <div className="text-center mt-4">
       <h1 className="text-4xl">
         Bienvenido a corte de caja{" "}
-        {cookies.role === "admin" ? "Administrador" : "Empleado"}{" "}
-        {nombreEmpleado}
+        {cookies.role === "admin" ? "Administrador:" : "Empleado:"}{" "}
+        <span className="title-strong text-4xl">{cookies.username}</span>
       </h1>
       <p className="text-2xl">{fechaHora}</p>
       <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
@@ -309,8 +232,6 @@ function CorteCaja() {
                 <th>INGRESOS TOTALES</th>
                 <th>RETIROS TOTALES</th>
                 <th>FINAL TOTAL CAJA</th>
-                <th>USUARIO</th>
-                <th>TURNO</th>
               </tr>
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
@@ -322,11 +243,9 @@ function CorteCaja() {
                   <td className="py-3 px-6">${corte.inicialCash}</td>
                   <td className="py-3 px-6">${corte.totalCash}</td>
                   <td className="py-3 px-6">${corte.totalCredit}</td>
-                  <td className="py-3 px-6">${corte.totalCash + corte.totalCredit}</td>
+                  <td className="py-3 px-6">${totalServices}</td>
                   <td className="py-3 px-6">${corte.totalCashWithdrawal}</td>
                   <td className="py-3 px-6">${totalIncome}</td>
-                  <td className="py-3 px-6">{corte.user.name}</td>
-                  <td className="py-3 px-6">{corte.turno}</td>
                   <td className="py-3 px-6">
                     <button
                       className="btn-primary"

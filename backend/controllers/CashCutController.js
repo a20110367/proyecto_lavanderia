@@ -375,7 +375,7 @@ export const closeCashCut = async (req, res) => {
         //const ordersIds = ordersPayed.values();
         //const ordersIdsMap = new Map(Object.entries(JSON.parse(ordersPayed)));
         //console.log(ordersIdsMap);
-        const orders = Object.values(ordersPayed).map(ord => ord.order.id_order);
+        const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
 
         //    const servicePayed = await prisma.serviceOrderDetail.findMany({
 
@@ -487,8 +487,7 @@ export const closeCashCut = async (req, res) => {
         const time = new Date().toJSON();
         const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
 
-        const response =
-        {
+        const response = {
             "totalCash": cash._sum.payTotal,
             "totalCredit": credit._sum.payTotal,
             "totalIncome": totalIncome,

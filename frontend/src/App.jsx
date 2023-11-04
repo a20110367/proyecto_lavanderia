@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import { useState } from "react"
 import './index.css'
 
 //Routes
@@ -40,15 +39,18 @@ import AddEquipo from './components/Equipos/AddEquipo'
 import EditEquipo from "./components/Equipos/EditEquipo"
 import ActivarEquipos from "./components//Equipos/ActivarEquipos"
 
+import Planchas from "./components/Equipos/Planchas"
+import AddPlancha from "./components/Equipos/AddPlanchas"
+import EditPlancha from "./components/Equipos/EditPlancha"
 
-import Cajas from "./components/Cajas/Cajas"
-import CajaEntregas from "./components/Cajas/CajaEntregas"
+
+
 import InicioCaja from "./components/Cajas/InicioCaja"
 import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 
-import CajaDevolucion from "./components/Cajas/CajaDevolucion"
-import CajaRetiros from "./components/Cajas/CajaRetiros"
+
+
 
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/auth/auth';
@@ -98,10 +100,10 @@ function App() {
                     <Route path="/editEquipo/:id" element={<EditEquipo />} />
                     <Route path="/activarEquipos" element={<ActivarEquipos />} />
 
-                    <Route path="/cajas" element={<Cajas />} />
-                    <Route path="/cajaEntregas" element={<CajaEntregas />} />
-                    <Route path="/cajaDevolucion" element={<CajaDevolucion />} />
-                    <Route path="/cajaRetiros" element={<CajaRetiros />} />
+                    <Route path="/planchas" element={<Planchas />} />
+                    <Route path="/addPlancha" element={<AddPlancha />} />
+                    <Route path="/editPlancha/:id" element={<EditPlancha />} />
+
                     <Route path="/corteCaja" element={<CorteCaja />} />
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />

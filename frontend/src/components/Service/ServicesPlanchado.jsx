@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
+import ReactPaginate from "react-paginate";
+import { BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -17,6 +20,12 @@ function ServicesPlanchado() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -28,15 +37,20 @@ function ServicesPlanchado() {
 
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();
-    const exclusionKeywords = ["autoservicio", "auto servicio", "autoservicios", "auto servicios"];
+    const exclusionKeywords = [
+      "autoservicio",
+      "auto servicio",
+      "autoservicios",
+      "auto servicios",
+    ];
     const excludeService = exclusionKeywords.some((keyword) =>
-      new RegExp(keyword, 'i').test(description)
+      new RegExp(keyword, "i").test(description)
     );
     return (
       (description.includes("planchado") ||
         description.includes("planchados") ||
         description.includes("planchaduria")) &&
-        !excludeService
+      !excludeService
     );
   });
 
@@ -70,87 +84,102 @@ function ServicesPlanchado() {
           onClick={() => navigate("/addServicePlanchado")}
           className="btn-primary"
         >
-          Añadir Nuevo Servicio De Planchaduria
+          Añadir Nuevo Servicio
+          <br />
+          de Planchado
         </button>
-        <div className="shadow-container"  style={{ overflowX: 'auto' }}>
+        <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>No. servicio</th>
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
-                <th>Tiempo</th>
-                <th>Peso</th>
-                <th>Piezas</th>
-                <th>Fecha de Creación</th>
-                <th>Fecha de Actualización</th>
                 <th>Opciones</th>
               </tr>
             </thead>
             <tbody>
-              {filteredData.map((service, index) => (
-                <tr key={service.id_service}>
-                  <td>{index + 1}</td>
-                  <td>{service.description}</td>
-                  <td>{service.category.cateforyDes}</td>
-                  <td>${service.price}</td>
-                  <td>{service.time} minutos</td>
-                  <td>
-                    {service.weight} {service.weight ? "kg" : ""}
-                  </td>
-                  <td>
-                    {service.pieces} {service.pieces ? "pz" : ""}
-                  </td>
-                  <td>{service.created}</td>
-                  <td>{service.updatedAT}</td>
-                  <td>
-                    <button
-                      onClick={() =>
-                        navigate(`/editServicePlanchado/${service.id_service}`)
-                      }
-                      className="btn-edit"
-                    >
-                      Editar
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleClickOpen(service.description, service.id_service)
-                      }
-                      className="btn-cancel"
-                    >
-                      Eliminar
-                    </button>
-                    <Dialog
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="alert-dialog-title"
-                      aria-describedby="alert-dialog-description"
-                    >
-                      <DialogTitle id="alert-dialog-title">
-                        {"Eliminar el servicio"}
-                      </DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                          ¿Deseas eliminar el servicio: {serviceSelDesc}?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleClose}>Cancelar</Button>
-                        <Button
-                          onClick={() => deleteAndClose(serviceSelId)}
-                          autoFocus
-                        >
-                          Eliminar
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </td>
-                </tr>
-              ))}
+              {filteredData
+                .slice(
+                  currentPage * itemsPerPage,
+                  (currentPage + 1) * itemsPerPage
+                )
+                .map((service, index) => (
+                  <tr key={service.id_service}>
+                    <td>{index + 1}</td>
+                    <td>{service.description}</td>
+                    <td>{service.Category.categoryDescription}</td>
+                    <td>${service.price}</td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/editServicePlanchado/${service.id_service}`
+                          )
+                        }
+                        className="btn-edit"
+                      >
+                        <AiFillEdit />
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleClickOpen(
+                            service.description,
+                            service.id_service
+                          )
+                        }
+                        className="btn-cancel"
+                      >
+                        <BsFillTrashFill />
+                      </button>
+                      <Dialog
+                        open={open}
+                        onClose={handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                      >
+                        <DialogTitle id="alert-dialog-title">
+                          {"Eliminar el servicio"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            ¿Deseas eliminar el servicio: {serviceSelDesc}?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleClose}>Cancelar</Button>
+                          <Button
+                            onClick={() => deleteAndClose(serviceSelId)}
+                            autoFocus
+                          >
+                            Eliminar
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="flex justify-center mt-4 mb-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
       </div>
     </div>
   );

@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import ReactPaginate from "react-paginate";
 
 function EntregaLavanderia() {
   const [pedidos, setPedidos] = useState([]);
@@ -22,6 +23,12 @@ function EntregaLavanderia() {
 
   const [entregando, setEntregando] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
   useEffect(() => {
     const dummyPedidos = [
       {
@@ -32,8 +39,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado de patas",
         orderstatus: "Pagado",
         totalPrice: 100,
-        fentregaEstimada: "2023-09-15",
-        f_recepcion: "2023-09-12",
+        fentregaEstimada: "15/09/2023",
+        f_recepcion: "17/09/2023",
         empleadoRecibe: "Saul",
         metodoPago: "Tarjeta",
       },
@@ -45,8 +52,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Monas Chinas",
         orderstatus: "Adeudo",
         totalPrice: 150,
-        fentregaEstimada: "2023-09-16",
-        f_recepcion: "2023-09-13",
+        fentregaEstimada: "16/09/2023",
+        f_recepcion: "18/09/2023",
         empleadoRecibe: "Maria",
         metodoPago: "Efectivo",
       },
@@ -58,8 +65,8 @@ function EntregaLavanderia() {
         pedidoDetalle: "Lavado",
         orderstatus: "Adeudo",
         totalPrice: 80,
-        fentregaEstimada: "2023-09-17",
-        f_recepcion: "2023-09-14",
+        fentregaEstimada: "17/09/2023",
+        f_recepcion: "19/09/2023",
         empleadoRecibe: "Luis",
         metodoPago: "Tarjeta",
       },
@@ -69,7 +76,6 @@ function EntregaLavanderia() {
     setFilteredPedidos(dummyPedidos);
   }, []);
 
- 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
     filterPedidos(event.target.value);
@@ -169,41 +175,45 @@ function EntregaLavanderia() {
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong className="text-xl">Entregas Lavanderia</strong>
+        <div className="title-container">
+          <strong className="title-strong">Entregas Lavanderia</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="search-ipt"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-3 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-3 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">Nombre del Cliente</th>
-                <th className="py-3 px-6">Empleado que Recibe</th>
-                <th className="py-3 px-6">Detalle del pedido</th>
-                <th className="py-3 px-6">Fecha de Recepción</th>
-                <th className="py-3 px-6">Estatus</th>
-                <th className="py-3 px-6">Fecha de Entrega Estimada</th>
-                <th className="py-3 px-6">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPedidos.map((pedido) => (
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th className="">No. folio</th>
+              <th className="">Nombre del Cliente</th>
+              <th className="">Empleado que Recibe</th>
+              <th className="">Detalle del pedido</th>
+              <th className="">Fecha de Recepción</th>
+              <th className="">Estatus</th>
+              <th className="">Fecha de Entrega Estimada</th>
+              <th className="">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPedidos
+              .slice(
+                currentPage * itemsPerPage,
+                (currentPage + 1) * itemsPerPage
+              )
+              .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_pedido}>
                   <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
@@ -223,7 +233,8 @@ function EntregaLavanderia() {
                   >
                     {pedido.orderstatus === "Adeudo" ? (
                       <span className="text-red-600 pl-1">
-                        <ExclamationCircleOutlined /> Adeudo ${pedido.totalPrice}
+                        <ExclamationCircleOutlined /> Adeudo $
+                        {pedido.totalPrice}
                       </span>
                     ) : (
                       <span className="text-green-600 pl-1">
@@ -236,14 +247,14 @@ function EntregaLavanderia() {
                     {pedido.orderstatus === "Pagado" ? (
                       <button
                         onClick={() => handleEntregar(pedido)}
-                        className="bg-green-500 text-white p-2 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                        className="btn-delivery"
                       >
                         Entregar
                       </button>
                     ) : (
                       <button
                         onClick={() => handleCobrar(pedido)}
-                        className="bg-blue-500 text-white p-2 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+                        className="btn-payment"
                       >
                         Cobrar
                       </button>
@@ -251,34 +262,46 @@ function EntregaLavanderia() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
-        <Link
-          to="/menuPuntoVenta"
-          className="mt-4 flex text-center text-decoration-none"
-        >
-          <button className="bg-blue-500 text-white p-3 rounded-md shadow-lg hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm">
-            <div className="text-lg font-semibold">Volver</div>
-          </button>
-        </Link>
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center mt-4 mb-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
       </div>
 
-      {selectedPedido && entregando && selectedPedido.orderstatus === "Pagado" && (
-        <Modal
-          title="Pedido Entregado"
-          visible={entregando}
-          closable={false}
-          footer={null}
-        >
-          <div className="text-center">
-            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
-            <p className="text-green-600 font-bold text-lg mt-2">
-              Pedido Entregado...
-            </p>
-          </div>
-        </Modal>
-      )}
+      {selectedPedido &&
+        entregando &&
+        selectedPedido.orderstatus === "Pagado" && (
+          <Modal
+            title="Pedido Entregado"
+            visible={entregando}
+            closable={false}
+            footer={null}
+          >
+            <div className="text-center">
+              <CheckCircleOutlined
+                style={{ fontSize: "64px", color: "green" }}
+              />
+              <p className="text-green-600 font-bold text-lg mt-2">
+                Pedido Entregado...
+              </p>
+            </div>
+          </Modal>
+        )}
 
       <Modal
         title="Detalles del Pedido"
@@ -290,14 +313,14 @@ function EntregaLavanderia() {
           <Button
             key="guardarCobro"
             onClick={() => handleGuardarCobro(selectedPedido)}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-print text-white"
           >
             Guardar Cobro
           </Button>,
           <Button
             key="cerrar"
             onClick={handleClose}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+            className="btn-cancel-modal text-white"
           >
             Cerrar
           </Button>,
@@ -336,6 +359,7 @@ function EntregaLavanderia() {
                 value={cobroInfo.fechaPago}
                 onChange={handleCobroInfoChange}
                 className="bg-gray-200 rounded-md p-1"
+                readOnly
               />
             </div>
           </div>

@@ -1,178 +1,98 @@
 import React, { useState, useEffect } from "react";
-import { HiOutlineSearch } from "react-icons/hi";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button, Input, message } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
-import { format } from "date-fns";
+import Axios from "axios";
+import { AiOutlinePlusCircle } from "react-icons/ai"
+
 
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
-  const [filtro, setFiltro] = useState("");
-  const [visible, setVisible] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [turno, setTurno] = useState("Matutino");
-  const [usuario, setUsuario] = useState("");
   const [fechaHora, setFechaHora] = useState("");
-  const { cookies } = useAuth();
-  const [nombreEmpleado, setNombreEmpleado] = useState(cookies.username || "");
-  const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
-    useState(false);
+  const [partialCorteDialogVisible, setPartialCorteDialogVisible] = useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
+  const [corteActivo, setCorteActivo] = useState(false);
+
+
+  const { cookies } = useAuth();
+  const [turno, setTurno] = useState("Matutino");
+  const [initialCash, setInitialCash] = useState(localStorage.getItem('initialCash'))
+  const [cashCutId, setCashCutId] = useState(0)
+  const [lastCashCut, setLastCashCut] = useState(JSON.parse(localStorage.getItem('lastCashCut')));
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const now = new Date();
-      const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-      setFechaHora(formattedDate);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    setCashCutId(localStorage.getItem('cashCutId'))
+    const now = new Date();
+    const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+    setFechaHora(formattedDate);
   }, []);
 
   useEffect(() => {
-    const dummyCortes = [
-      {
-        id: 1,
-        fecha: "2023-09-20",
-        dineroFondo: 20000,
-        retirosTotales: 1200,
-        ingresosTotales: 20000,
-        ingresoEfectivo: 10000,
-        ingresoTarjeta: 10000,
-        finalTotalCaja: 0,
-        usuario: "Usuario1",
-        turno: "Matutino",
-        tipoServicio: "Autoservicio",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 10000,
-        ingresoLavadoEncargo: 16000,
-        ingresoPlanchado: 15000,
-      },
-      {
-        id: 2,
-        fecha: "2023-09-18",
-        dineroFondo: 15000,
-        retirosTotales: 300,
-        ingresosTotales: 15000,
-        ingresoEfectivo: 7000,
-        ingresoTarjeta: 8000,
-        finalTotalCaja: 0,
-        usuario: "Usuario2",
-        turno: "Vespertino",
-        tipoServicio: "Lavado por encargo",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 5000,
-        ingresoLavadoEncargo: 15000,
-        ingresoPlanchado: 10000,
-      },
-      {
-        id: 3,
-        fecha: "2023-09-15",
-        dineroFondo: 18000,
-        retirosTotales: 600,
-        ingresosTotales: 16000,
-        ingresoEfectivo: 9000,
-        ingresoTarjeta: 7000,
-        finalTotalCaja: 0,
-        usuario: "Usuario3",
-        turno: "Matutino",
-        tipoServicio: "Planchado",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 3000,
-        ingresoLavadoEncargo: 4000,
-        ingresoPlanchado: 16000,
-      },
-    ];
+    if (lastCashCut) {
+      setCorteActivo(true);
+      // const currentCorte = Cortes.find((corte) =>
+      //   moment(corte.cashCutD).isSame(now, "day")
+      // );
 
-    const now = moment();
-    const currentCorte = dummyCortes.find((corte) =>
-      moment(corte.fecha).isSame(now, "day")
-    );
-
-    if (currentCorte) {
-      setCortes([currentCorte]);
+      // if (currentCorte) {
+      //   setCortes([currentCorte]);
+      //   setMostrarTabla(true);
+      // }
+      setCortes([lastCashCut]);
       setMostrarTabla(true);
     }
-  }, []);
+  }, [lastCashCut]);
 
   const handleCorteCaja = () => {
-    setDialogVisible(true);
+    if (corteActivo) {
+      message.info("Ya hay un corte de caja activo.");
+    } else {
+      setDialogVisible(true);
+    }
   };
 
-  const handleConfirmCorteCaja = () => {
+
+
+  /* ------------------------------ FULL CASHCUT ------------------------------------*/
+
+  const handleConfirmCorteCaja = async () => {
     const now = new Date();
     const horaActual = now.getHours();
 
-    const turno = horaActual < 12 ? "Matutino" : "Vespertino";
+    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = {
-      id: Cortes.length + 1,
-      fecha: moment().format("YYYY-MM-DD"),
-      dineroFondo: 20000,
-      retirosTotales: 1200,
-      ingresoEfectivo: 61000,
-      ingresoTarjeta: 10000,
-      ingresosTotales:20000, 
-      finalTotalCaja: 0,
-      ingresoAutoservicio: 10000,
-      ingresoLavadoEncargo: 16000,
-      ingresoPlanchado: 15000,
-      usuario: nombreEmpleado,
-      turno: turno,
-    };
-    
-    nuevoCorte.finalTotalCaja =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado -
-      nuevoCorte.ingresoTarjeta -
-      nuevoCorte.retirosTotales;
-    
-    nuevoCorte.ingresoTotalServicios =
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-    
-    nuevoCorte.ingresoEfectivo =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-    
+    const response = await Axios.get(`http://localhost:5000/closeCashCut/${cashCutId}`)
 
-      const pdf = new jsPDF();
+    const nuevoCorte = response.data
 
-      pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-      pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
-      pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
-      pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
-      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-      pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
-      
-      // Separación
-      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
-      pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
-      pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
-      pdf.text(
-        `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
-        10,
-       120
-      );
-      pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
-      
-      // Separación
-      pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
-      pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
-      pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
-      
-      pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
-      
+    const pdf = new jsPDF();
 
+    pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
+    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+    pdf.text(`Turno: ${turno}`, 10, 40);
+    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+    pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
+    //Separación
+    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+    nuevoCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
+    nuevoCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
+    nuevoCorte.totalPlanchado ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
+    pdf.text(`Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`, 10, 120);
+    nuevoCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130) : pdf.text("Ingreso en Efectivo: $0", 10, 130)
+    nuevoCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
+    //Separación
+    pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
+    pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
+    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+
+    localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
+    localStorage.removeItem('initialCash')
+    setLastCashCut(nuevoCorte)
     setCortes([nuevoCorte]);
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
@@ -188,145 +108,97 @@ function CorteCaja() {
     setPartialCorteDialogVisible(true);
   };
 
-  const handlePartialCorteConfirm = () => {
+  /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
+
+  const handlePartialCorteConfirm = async () => {
     const now = new Date();
     const horaActual = now.getHours();
 
-    const turno = horaActual < 12 ? "Matutino" : "Vespertino";
+    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
 
-    const nuevoCorte = {
-      id: Cortes.length + 1,
-      fecha: moment().format("YYYY-MM-DD"),
-      dineroFondo: 20000,
-      retirosTotales: 1200,
-      ingresoEfectivo: 61000,
-      ingresoTarjeta: 10000,
-      ingresosTotales:20000, 
-      finalTotalCaja: 0,
-      ingresoAutoservicio: 10000,
-      ingresoLavadoEncargo: 16000,
-      ingresoPlanchado: 15000,
-      usuario: nombreEmpleado,
-      turno: turno,
-    };
+    const response = await Axios.get(`http://localhost:5000/calculateCashCut/${cashCutId}`);
 
-    nuevoCorte.finalTotalCaja =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado -
-      nuevoCorte.ingresoTarjeta -
-      nuevoCorte.retirosTotales;
-    
-    nuevoCorte.ingresoTotalServicios =
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-    
-    nuevoCorte.ingresoEfectivo =
-      nuevoCorte.dineroFondo +
-      nuevoCorte.ingresoAutoservicio +
-      nuevoCorte.ingresoLavadoEncargo +
-      nuevoCorte.ingresoPlanchado;
-      
+    const nuevoCorte = response.data
+
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${nuevoCorte.id}`, 10, 20);
-      pdf.text(`Usuario: ${nombreEmpleado}`, 10, 30);
-      pdf.text(`Turno: ${nuevoCorte.turno}`, 10, 40);
-      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-      pdf.text(`Dinero en Fondo: $${nuevoCorte.dineroFondo}`, 10, 60);
+    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+    pdf.text(`Turno: ${turno}`, 10, 40);
+    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+    initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 90)
       
-      // Separación
-      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      pdf.text(`Autoservicio: $${nuevoCorte.ingresoAutoservicio}`, 10, 90);
-      pdf.text(`Lavado por Encargo: $${nuevoCorte.ingresoLavadoEncargo}`, 10, 100);
-      pdf.text(`Planchado: $${nuevoCorte.ingresoPlanchado}`, 10, 110);
-      pdf.text(
-        `Total (Suma de los Servicios): $${nuevoCorte.ingresoTotalServicios}`,
-        10,
-       120
-      );
-      pdf.text(`Ingreso en Efectivo: $${nuevoCorte.ingresoEfectivo}`, 10, 130);
-      
-      // Separación
-      pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.ingresoTarjeta}`, 10, 150);
-      pdf.text(`Retiros Totales: $${nuevoCorte.retirosTotales}`, 10, 160);
-      pdf.text(`Final Total en Caja: $${nuevoCorte.finalTotalCaja}`, 10, 170);
-      
-      pdf.save(`corte_de_caja_Turno_${nombreEmpleado}.pdf`);
-      
+    // Separación
+    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+    nuevoCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
+    nuevoCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
+    nuevoCorte.totalPlanchado ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
+    nuevoCorte.totalIncome ? pdf.text(`Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,10,120) : pdf.text("Total (Suma de los Servicios): $0", 10, 120)
+    // Separación
+    nuevoCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140) : pdf.text("Ingreso en Efectivo: $0", 10, 140)
+    nuevoCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
+    nuevoCorte.totalCashWithdrawal ? pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160) : pdf.text("Retiros Totales: $0", 10, 160)
+    nuevoCorte.total ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170) : pdf.text("Final Total en Caja: $0", 10, 170)
+    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
     setCortes([nuevoCorte]);
     setPartialCorteDialogVisible(false);
   };
 
   const handleModalPrint = () => {
-    const doc = new jsPDF();
+    const pdf = new jsPDF();
 
     if (selectedCorte) {
-      doc.text(`Detalles del Corte`, 10, 10);
-      doc.text(`ID: ${selectedCorte.id}`, 10, 20);
-      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
-      doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
-      doc.text(
-        `Fecha: ${format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}`,
-        10,
-        50
-      );
-      doc.text(`Dinero en Fondo: $${selectedCorte.dineroFondo}`, 10, 60);
-
+      pdf.text(`Detalles del Corte`, 10, 10);
+      pdf.text(`ID: ${cashCutId}`, 10, 20);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,10,50);
+      initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 60)
+      
       // Separación
-      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      doc.text(`Autoservicio: $${selectedCorte.ingresoAutoservicio}`, 10, 90);
-      doc.text(
-        `Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`,
-        10,
-        100
-      );
-      doc.text(`Planchado: $${selectedCorte.ingresoPlanchado}`, 10, 110);
-      doc.text(
-        `Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`,
-        10,
-        120
-      );
-      doc.text(
-        `Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`,
-        10,
-        130
-      );
-
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      selectedCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${selectedCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
+      selectedCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
+      selectedCorte.totalPlanchado ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
+      selectedCorte.totalIncome ? pdf.text(`Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,10,120) : pdf.text("Total (Suma de los Servicios): $0", 10, 120)
       // Separación
-      doc.text(`Ingreso en Tarjeta: $${selectedCorte.ingresoTarjeta}`, 10, 150);
-      doc.text(`Retiros Totales: $${selectedCorte.retirosTotales}`, 10, 160);
-      doc.text(
-        `Final Total en Caja: $${selectedCorte.finalTotalCaja}`,
-        10,
-        170
-      );
-
-      doc.save("detalle_corte.pdf");
+      selectedCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 140) : pdf.text("Ingreso en Efectivo: $0", 10, 140)
+      selectedCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
+      selectedCorte.totalCashWithdrawal ? pdf.text(`Retiros Totales: $${selectedCorte.totalCashWithdrawal}`, 10, 160) : pdf.text("Retiros Totales: $0", 10, 160)
+      selectedCorte.total ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170) : pdf.text("Final Total en Caja: $0", 10, 170)    
+      pdf.save("detalle_corte.pdf");
     }
   };
+
+  const formatDateToGMTMinus6 = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  
 
   return (
     <div className="text-center mt-4">
       <h1 className="text-4xl">
         Bienvenido a corte de caja{" "}
-        {cookies.role === "admin" ? "Administrador" : "Empleado"}{" "}
-        {nombreEmpleado}
+        {cookies.role === "admin" ? "Administrador:" : "Empleado:"}{" "}
+        <span className="title-strong text-4xl">{cookies.username}</span>
       </h1>
       <p className="text-2xl">{fechaHora}</p>
       <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
       <button
         onClick={handleCorteCaja}
-        className="mt-4 mr-2 bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Turno
       </button>
       <button
         onClick={handlePartialCorteCaja}
-        className="mt-4 bg-yellow-500 text-white p-3 rounded-md shadow-lg hover:bg-yellow-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+        className="mt-4 bg-NonPhotoblue font-bold hover:text-white p-3 rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
       >
         Corte de Caja Parcial
       </button>
@@ -335,40 +207,34 @@ function CorteCaja() {
           <table className="w-full text-sm text-left text-gray-500">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">FECHA</th>
-                <th className="py-3 px-6">DINERO EN FONDO</th>
-                <th className="py-3 px-6">INGRESO EN EFECTIVO</th>
-                <th className="py-3 px-6">INGRESO EN TARJETA</th>
-                <th className="py-3 px-6">INGRESOS TOTALES</th>
-                <th className="py-3 px-6">RETIROS TOTALES</th>
-                <th className="py-3 px-6">FINAL TOTAL CAJA</th>
-                <th className="py-3 px-6">USUARIO</th>
-                <th className="py-3 px-6">TURNO</th>
-                <th className="py-3 px-6"></th>{" "}
+                <th>No. Corte</th>
+                <th>FECHA</th>
+                <th>DINERO EN FONDO</th>
+                <th>INGRESO EN EFECTIVO</th>
+                <th>INGRESO EN TARJETA</th>
+                <th>INGRESOS TOTALES</th>
+                <th>RETIROS TOTALES</th>
+                <th>FINAL TOTAL CAJA</th>
               </tr>
             </thead>
+            {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
               {Cortes.map((corte) => (
-                <tr className="bg-white border-b" key={corte.id}>
-                <td className="py-3 px-1 text-center">{corte.id}</td>
-                <td className="py-3 px-6">
-                  {format(new Date(corte.fecha), "dd/MM/yyyy")}
-                </td>
-                <td className="py-3 px-6">${corte.dineroFondo}</td>
-                <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
-                <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
-                <td className="py-3 px-6">${corte.ingresosTotales}</td>
-                <td className="py-3 px-6">${corte.retirosTotales}</td>
-                <td className="py-3 px-6">${corte.finalTotalCaja}</td>
-                  <td className="py-3 px-6">{corte.usuario}</td>
-                  <td className="py-3 px-6">{corte.turno}</td>
+                <tr className="bg-white border-b" key={cashCutId}>
+                  <td className="py-3 px-1 text-center">{cashCutId}</td>
+                  <td className="py-3 px-6">{formatDateToGMTMinus6(corte.cashCutD)}</td>
+                  <td className="py-3 px-6">${initialCash ? initialCash : 0}</td>
+                  <td className="py-3 px-6">${corte.totalCash ? corte.totalCash : 0}</td>
+                  <td className="py-3 px-6">${corte.totalCredit ? corte.totalCredit : 0}</td>
+                  <td className="py-3 px-6">${corte.totalIncome ? corte.totalIncome : 0}</td>
+                  <td className="py-3 px-6">${corte.totalCashWithdrawal ? corte.totalCashWithdrawal : 0}</td>
+                  <td className="py-3 px-6">${corte.total ? corte.total : 0}</td>
                   <td className="py-3 px-6">
                     <button
-                      className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+                      className="btn-primary"
                       onClick={() => handleDetallesClick(corte)}
                     >
-                      Detalles
+                      <AiOutlinePlusCircle size={20} />
                     </button>
                   </td>
                 </tr>
@@ -379,7 +245,7 @@ function CorteCaja() {
       )}
       <Modal
         title="Confirmar Corte de Caja Turno"
-        visible={dialogVisible}
+        open={dialogVisible}
         onOk={handleConfirmCorteCaja}
         onCancel={() => setDialogVisible(false)}
         width={400}
@@ -387,14 +253,14 @@ function CorteCaja() {
           <Button
             key="confirmar"
             onClick={handleConfirmCorteCaja}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Confirmar
           </Button>,
           <Button
             key="cancelar"
             onClick={() => setDialogVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -404,7 +270,7 @@ function CorteCaja() {
       </Modal>
       <Modal
         title="Confirmar Corte de Caja Parcial"
-        visible={partialCorteDialogVisible}
+        open={partialCorteDialogVisible}
         onOk={handlePartialCorteConfirm}
         onCancel={() => setPartialCorteDialogVisible(false)}
         width={400}
@@ -412,14 +278,14 @@ function CorteCaja() {
           <Button
             key="confirmar"
             onClick={handlePartialCorteConfirm}
-            className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Confirmar
           </Button>,
           <Button
             key="cancelar"
             onClick={() => setPartialCorteDialogVisible(false)}
-            className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-cancel-modal text-white"
           >
             Cancelar
           </Button>,
@@ -427,98 +293,86 @@ function CorteCaja() {
       >
         <p>¿Estás seguro de realizar un corte de caja parcial?</p>
       </Modal>
-              <Modal
-          title="Detalles del Corte"
-          visible={modalVisible}
-          onOk={() => setModalVisible(false)}
-          onCancel={() => setModalVisible(false)}
-          width={600}
-          footer={[
-            <Button
-              key="print"
-              onClick={handleModalPrint}
-              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-            >
-              Imprimir
-            </Button>,
-            <Button
-              key="close"
-              onClick={() => setModalVisible(false)}
-              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
-            >
-              Cerrar
-            </Button>,
-          ]}
-        >
-          {selectedCorte && (
-            <div>
-              <div className="flex">
-                <div className="w-1/2">
-                  <p className="text-lg">
-                    <span className="font-bold">ID:</span> {selectedCorte.id}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Usuario:</span>{" "}
-                    {selectedCorte.usuario}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Turno:</span>{" "}
-                    {selectedCorte.turno}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Fecha:</span>{" "}
-                    {format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Dinero en Fondo:</span> $
-                    {selectedCorte.dineroFondo}
-                  </p>
-                </div>
-                <div className="w-1/2">
-                  <p className="text-lg">
-                    <span className="font-bold">Ingreso en Efectivo:</span> $
-                    {selectedCorte.ingresoEfectivo}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Ingreso en Tarjeta:</span> $
-                    {selectedCorte.ingresoTarjeta}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Retiros Totales:</span> $
-                    {selectedCorte.retirosTotales}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Final Total en Caja:</span> $
-                    {selectedCorte.finalTotalCaja}
-                  </p>
-                </div>
+      <Modal
+        title="Detalles del Corte"
+        open={modalVisible}
+        onOk={() => setModalVisible(false)}
+        onCancel={() => setModalVisible(false)}
+        width={600}
+        footer={[
+          <Button
+            key="print"
+            onClick={handleModalPrint}
+            className="btn-print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            key="close"
+            onClick={() => setModalVisible(false)}
+            className="btn-cancel-modal"
+          >
+            Cerrar
+          </Button>,
+        ]}
+      >
+        {selectedCorte && (
+          <div>
+            <div className="flex">
+              <div className="w-1/2">
+                <p className="text-lg">
+                  <span className="font-bold">ID:</span> {cashCutId}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Usuario:</span>{" "}{cookies.username}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Turno:</span>{" "}{turno}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Fecha:</span>{" "}{formatDateToGMTMinus6(selectedCorte.cashCutD)}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Dinero en Fondo:</span> ${initialCash}
+                </p>
               </div>
-              <div>
-                <h3 className="text-lg font-bold mt-4">
-                  Detalles de Ingresos por Servicio:
-                </h3>
+              <div className="w-1/2">
                 <p className="text-lg">
-                  <span className="font-bold">Autoservicio:</span> $
-                  {selectedCorte.ingresoAutoservicio}
+                  <span className="font-bold">Ingreso en Efectivo:</span> ${ selectedCorte.totalCash ? selectedCorte.totalCash : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Lavado por Encargo:</span> $
-                  {selectedCorte.ingresoLavadoEncargo}
+                  <span className="font-bold">Ingreso en Tarjeta:</span> ${ selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Planchado:</span> $
-                  {selectedCorte.ingresoPlanchado}
+                  <span className="font-bold">Retiros Totales:</span> ${selectedCorte.totalCashWithdrawal ? selectedCorte.totalCashWithdrawal : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">
-                    Total (Suma de los Servicios):
-                  </span>{" "}
-                  ${selectedCorte.ingresoTotalServicios}
+                  <span className="font-bold">Final Total en Caja:</span> ${ selectedCorte.total ? selectedCorte.total: 0}
                 </p>
               </div>
             </div>
-          )}
-        </Modal>
+            <div>
+              <h3 className="text-lg font-bold mt-4">
+                Detalles de Ingresos por Servicio:
+              </h3>
+              <p className="text-lg">
+                <span className="font-bold">Autoservicio:</span> ${ selectedCorte.toalAutoservicio ? selectedCorte.toalAutoservicio : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Lavado por Encargo:</span> ${selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Planchado:</span> ${ selectedCorte.totalPlanchado ? selectedCorte.totalPlanchado : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">
+                  Total (Suma de los Servicios):
+                </span>{" "} ${ selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+              </p>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

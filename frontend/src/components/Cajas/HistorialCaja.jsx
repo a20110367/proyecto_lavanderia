@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import locale from 'antd/es/date-picker/locale/es_ES';
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
-import { format } from "date-fns";
+import ReactPaginate from "react-paginate";
+import { AiOutlinePlusCircle } from "react-icons/ai"
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -11,28 +13,34 @@ function HistorialCaja() {
   const [dateRange, setDateRange] = useState([null]);
   const [datesSelected, setDatesSelected] = useState(false);
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
   useEffect(() => {
     const dummyCortes = [
       {
         id: 1,
-        fecha: "2023-09-20",
-        dineroFondo: 20000,
-        retirosTotales: 1200,
-        ingresosTotales: 20000,
-        ingresoEfectivo: 10000,
-        ingresoTarjeta: 10000,
+        fecha: "15/09/2023", // Mantén el formato dd/mm/yyyy aquí
+        dineroFondo: 18000,
+        retirosTotales: 600,
+        ingresosTotales: 16000,
+        ingresoEfectivo: 9000,
+        ingresoTarjeta: 7000,
         finalTotalCaja: 0,
-        usuario: "Usuario1",
+        usuario: "Usuario3",
         turno: "Matutino",
-        tipoServicio: "Autoservicio",
+        tipoServicio: "Planchado",
         // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 10000,
-        ingresoLavadoEncargo: 16000,
-        ingresoPlanchado: 15000,
+        ingresoAutoservicio: 3000,
+        ingresoLavadoEncargo: 4000,
+        ingresoPlanchado: 16000,
       },
       {
         id: 2,
-        fecha: "2023-09-18",
+        fecha: "18/09/2023", // Mantén el formato dd/mm/yyyy aquí
         dineroFondo: 15000,
         retirosTotales: 300,
         ingresosTotales: 15000,
@@ -49,21 +57,22 @@ function HistorialCaja() {
       },
       {
         id: 3,
-        fecha: "2023-09-15",
-        dineroFondo: 18000,
-        retirosTotales: 600,
-        ingresosTotales: 16000,
-        ingresoEfectivo: 9000,
-        ingresoTarjeta: 7000,
+        fecha: "20/09/2023", // Mantén el formato dd/mm/yyyy aquí
+        dineroFondo: 20000,
+        retirosTotales: 1200,
+        ingresosTotales: 20000,
+        ingresoEfectivo: 10000,
+        ingresoTarjeta: 10000,
         finalTotalCaja: 0,
-        usuario: "Usuario3",
+        usuario: "Usuario1",
         turno: "Matutino",
-        tipoServicio: "Planchado",
+        tipoServicio: "Autoservicio",
         // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 3000,
-        ingresoLavadoEncargo: 4000,
-        ingresoPlanchado: 16000,
+        ingresoAutoservicio: 10000,
+        ingresoLavadoEncargo: 16000,
+        ingresoPlanchado: 15000,
       },
+      
     ];
     const cortesConFinalTotalCaja = dummyCortes.map((corte) => ({
       ...corte,
@@ -101,11 +110,7 @@ function HistorialCaja() {
       doc.text(`ID: ${selectedCorte.id}`, 10, 20);
       doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
-      doc.text(
-        `Fecha: ${format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}`,
-        10,
-        50
-      );
+      doc.text(`Fecha: ${selectedCorte.fecha}`, 10, 50);
       doc.text(`Dinero en Fondo: $${selectedCorte.dineroFondo}`, 10, 60);
 
       // Separación
@@ -149,8 +154,8 @@ function HistorialCaja() {
         return corteDate >= startDate && corteDate <= endDate;
       });
 
-      const startDateStr = format(startDate, "yyyy-MM-dd");
-      const endDateStr = format(endDate, "yyyy-MM-dd");
+      const startDateStr = startDate.toLocaleDateString("en-GB");
+      const endDateStr = endDate.toLocaleDateString("en-GB");
 
       const startCorte = Cortes.find((corte) => corte.fecha === startDateStr);
       const endCorte = Cortes.find((corte) => corte.fecha === endDateStr);
@@ -176,86 +181,88 @@ function HistorialCaja() {
     <div className="text-center mt-4">
       <div>
         <div className="mb-3">
-          <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1 mt-4">
-            <strong>Historial de cortes</strong>
+          <div className="title-container">
+            <strong className="title-strong">Historial de Cortes</strong>
           </div>
         </div>
-        <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-          <div className="flex items-center mb-4">
-            <div className="relative w-full">
-              <div className="relative w-full flex items-center">
-                <DatePicker.RangePicker
-                  onChange={(dates) => {
-                    setDateRange(dates);
-                    if (!dates || dates.length === 0) {
-                      setDatesSelected(false);
-                      setFilteredCortes(Cortes);
-                    }
-                  }}
-                  value={dateRange}
-                  format="DD/MM/YYYY" // Formato de fecha dd/mm/yyyy
-                  className="border-2 rounded-md py-2  pl-10  border-black mt-2"
-                />
-                <button
-                  className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm ml-2"
-                  onClick={handleFiltroPorFecha}
-                >
-                  Buscar
-                </button>
-              </div>
+        <div className="flex items-center mb-4">
+          <div className="relative w-full">
+            <div className="relative w-full flex items-center">
+              <DatePicker.RangePicker
+                locale={locale}
+                onChange={(dates) => {
+                  setDateRange(dates);
+                  if (!dates || dates.length === 0) {
+                    setDatesSelected(false);
+                    setFilteredCortes(Cortes);
+                  }
+                }}
+                value={dateRange}
+                format="DD/MM/YYYY"
+                className="border-2 rounded-md py-2  pl-10  border-Cerulean mt-2"
+              />
+              <button
+                className="btn-search"
+                onClick={handleFiltroPorFecha}
+              >
+                Buscar
+              </button>
             </div>
           </div>
-          <div className="mt-4" style={{ overflowX: "auto" }}>
-            <table className="w-full text-sm text-left text-gray-500 ">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-                <tr>
-                  <th className="py-3 px-1 text-center">ID</th>
-                  <th className="py-3 px-6">FECHA</th>
-                  <th className="py-3 px-6">DINERO EN FONDO</th>
-                  <th className="py-3 px-6">INGRESO EN EFECTIVO</th>
-                  <th className="py-3 px-6">INGRESO EN TARJETA</th>
-                  <th className="py-3 px-6">INGRESOS TOTALES</th>
-                  <th className="py-3 px-6">RETIROS TOTALES</th>
-                  <th className="py-3 px-6">FINAL TOTAL CAJA</th>
-                  <th className="py-3 px-6">USUARIO</th>
-                  <th className="py-3 px-6">TURNO</th>
-                  <th className="py-3 px-6"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCortes.map((corte) => (
+        </div>
+        <div className="mt-4" style={{ overflowX: "auto" }}>
+          <table className="w-full text-sm text-left text-gray-500 ">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+              <tr>
+                <th>No. Corte</th>
+                <th>FECHA</th>
+                <th>DINERO EN FONDO</th>
+                <th>INGRESO EN EFECTIVO</th>
+                <th>INGRESO EN TARJETA</th>
+                <th>INGRESOS TOTALES</th>
+                <th>RETIROS TOTALES</th>
+                <th>FINAL TOTAL CAJA</th>
+                <th>USUARIO</th>
+                <th>TURNO</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCortes
+                .slice(
+                  currentPage * itemsPerPage,
+                  (currentPage + 1) * itemsPerPage
+                )
+                .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id}>
-                    <td className="py-3 px-1 text-center">{corte.id}</td>
-                    <td className="py-3 px-6">
-                      {format(new Date(corte.fecha), "dd/MM/yyyy")}
-                    </td>
-                    <td className="py-3 px-6">${corte.dineroFondo}</td>
-                    <td className="py-3 px-6">${corte.ingresoEfectivo}</td>
-                    <td className="py-3 px-6">${corte.ingresoTarjeta}</td>
-                    <td className="py-3 px-6">${corte.ingresosTotales}</td>
-                    <td className="py-3 px-6">${corte.retirosTotales}</td>
-                    <td className="py-3 px-6">${corte.finalTotalCaja}</td>
-                    <td className="py-3 px-6">{corte.usuario}</td>
-                    <td className="py-3 px-6">{corte.turno}</td>
-                    <td className="py-3 px-6">
+                    <td className="">{corte.id}</td>
+                    <td className="">{corte.fecha}</td>
+                    <td className="">${corte.dineroFondo}</td>
+                    <td className="">${corte.ingresoEfectivo}</td>
+                    <td className="">${corte.ingresoTarjeta}</td>
+                    <td className="">${corte.ingresosTotales}</td>
+                    <td className="">${corte.retirosTotales}</td>
+                    <td className="">${corte.finalTotalCaja}</td>
+                    <td className="">{corte.usuario}</td>
+                    <td className="">{corte.turno}</td>
+                    <td className="min-w-[60px]">
                       <button
-                        className="bg-blue-500 text-white p-2 rounded-md shadow-md hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+                        className="btn-primary mt-1 mb-1"
                         onClick={() => handleDetallesClick(corte)}
                       >
-                        Detalles
+                      <AiOutlinePlusCircle size={20}/>
                       </button>
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </tbody>
+          </table>
         </div>
 
         {/* Modal para mostrar detalles */}
         <Modal
           title="Detalles del Corte"
-          visible={modalVisible}
+          open={modalVisible}
           onOk={() => setModalVisible(false)}
           onCancel={() => setModalVisible(false)}
           width={600}
@@ -263,14 +270,14 @@ function HistorialCaja() {
             <Button
               key="print"
               onClick={handleModalPrint}
-              className="bg-green-500 text-white hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-print text-white"
             >
               Imprimir
             </Button>,
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
-              className="bg-red-500 text-white hover:bg-red-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2"
+              className="btn-cancel-modal text-white"
             >
               Cerrar
             </Button>,
@@ -293,7 +300,7 @@ function HistorialCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}
-                    {format(new Date(selectedCorte.fecha), "dd/MM/yyyy")}
+                    {selectedCorte.fecha}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Dinero en Fondo:</span> $
@@ -345,6 +352,23 @@ function HistorialCaja() {
             </div>
           )}
         </Modal>
+      </div>
+      <div className="flex justify-center mt-4 mb-4">
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredCortes.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
       </div>
     </div>
   );

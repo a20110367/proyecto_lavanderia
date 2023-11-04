@@ -46,10 +46,7 @@ function AddServicePlanchado() {
       await Axios.post("http://localhost:5000/services", {
         description: description,
         price: parseFloat(price),
-        fk_category: category === "Planchado" ? 1 : 2,
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
+        category_id: 3,
       });
       setDescription("");
       setPrice(0);

@@ -45,10 +45,7 @@ function AddServiceLavanderia() {
       await Axios.post("http://localhost:5000/services", {
         description: description,
         price: parseFloat(price),
-        fk_category: category === "lavado" ? 1 : 2,
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
+        category_id: 2,
       });
       setDescription("");
       setPrice(0);
@@ -146,16 +143,7 @@ function AddServiceLavanderia() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
-              />
+          
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:

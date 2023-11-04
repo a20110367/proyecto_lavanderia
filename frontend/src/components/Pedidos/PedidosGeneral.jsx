@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import Axios from 'axios'
+import useSWR from "swr";
 
 import {
   IssuesCloseOutlined,
@@ -20,7 +23,9 @@ function PedidosGeneral() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [errMsg, setErrMsg] = useState("")
   const location = useLocation();
+
   const machineIdQueryParam = new URLSearchParams(location.search).get(
     "machineId"
   );
@@ -29,113 +34,52 @@ function PedidosGeneral() {
   );
   const showCheckbox = machineIdQueryParam !== null;
   const [showMachineName, setShowMachineName] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
+
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const handlePageChange = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+
+  const fetcher = async () => {
+    const response = await Axios.get("http://localhost:5000/orders");
+    return response.data;
+  };
+
+  const { data } = useSWR("orders", fetcher);
 
   useEffect(() => {
-    const dummyPedidos = [
-      {
-        id_pedido: 1,
-        empleado_recibio: "Juan",
-        empleado_entrego: "María",
-        cliente: "Saul Rodriguez",
-        id_cobro: 1,
-        pedidoDetalle: "Lavado de patas",
-        orderstatus: "Pendiente",
-        fecha_entrega_real: "2023-09-15",
-        forma_pago: "A la entrega",
-      },
-
-      {
-        id_pedido: 2,
-        empleado_recibio: "Axel",
-        empleado_entrego: "María",
-        cliente: "Maria Fernandez",
-        id_cobro: 2,
-        pedidoDetalle: "Monas Chinas Planchadas",
-        orderstatus: "En proceso",
-        fecha_entrega_real: "2023-09-16",
-        forma_pago: "Anticipado",
-      },
-      {
-        id_pedido: 3,
-        empleado_recibio: "Carlos",
-        empleado_entrego: "Luis",
-        cliente: "Luis Robledo",
-        id_cobro: 3,
-        pedidoDetalle: "Lavado",
-        orderstatus: "Finalizado",
-        fecha_entrega_real: "2023-09-17",
-        forma_pago: "A la entrega",
-      },
-      {
-        id_pedido: 4,
-        empleado_recibio: "Laura",
-        empleado_entrego: "Ana",
-        cliente: "Axel Vergara",
-        id_cobro: 4,
-        pedidoDetalle: "Planchado Basico",
-        orderstatus: "Entregado",
-        fecha_entrega_real: "2023-09-18",
-        forma_pago: "Anticipado",
-      },
-      {
-        id_pedido: 6,
-        empleado_recibio: "Fernanda",
-        empleado_entrego: "Hector",
-        cliente: "Kevin Miranda",
-        id_cobro: 6,
-        pedidoDetalle: "Planchado basico",
-        orderstatus: "Almacenado",
-        fecha_entrega_real: "2023-09-18",
-        forma_pago: "A la entrega",
-      },
-      {
-        id_pedido: 7,
-        empleado_recibio: "El didacta",
-        empleado_entrego: "El inquisidor",
-        cliente: "El jefe maestro",
-        id_cobro: 7,
-        pedidoDetalle: "Lavado de patas",
-        orderstatus: "Pendiente",
-        fecha_entrega_real: "2023-09-15",
-        forma_pago: "A la entrega",
-      },
-      {
-        id_pedido: 8,
-        empleado_recibio: "Fernanda",
-        empleado_entrego: "Hector",
-        cliente: "Kevin Miranda",
-        id_cobro: 8,
-        pedidoDetalle: "Planchado basico",
-        orderstatus: "Almacenado",
-        fecha_entrega_real: "2023-09-18",
-        forma_pago: "A la entrega",
-      },
-    ];
-
-    setPedidos(dummyPedidos);
-    setFilteredPedidos(dummyPedidos);
-  }, []);
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
+  }, [data]);
 
   useEffect(() => {
     const filtered = pedidos.filter((pedido) => {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderstatus.toLowerCase() === filtroEstatus.toLowerCase();
+        return pedido.orderStatus === filtroEstatus;
       }
     });
 
     const textFiltered = filtered.filter((pedido) => {
       return (
-        pedido.cliente.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.empleado_recibio.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.empleado_entrego.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.id_pedido.toString().includes(filtro)
+        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        pedido.id_order.toString().includes(filtro)
       );
     });
 
     setFilteredPedidos(textFiltered);
   }, [filtro, filtroEstatus, pedidos]);
+
+  if (!data) return <h2>Loading...</h2>;
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
@@ -145,10 +89,26 @@ function PedidosGeneral() {
     setFiltroEstatus(event.target.value);
   };
 
-  const handleNotificarCliente = (pedido) => {
-    console.log(`Notifying the client for pedido ID: ${pedido.id_pedido}`);
-    setShowMachineName(false);
-    showNotification("NOTIFICACIÓN ENVIADA...");
+  const handleNotificarCliente = async (pedido) => {
+    console.log(`Notifying the client for ID Order: ${pedido.id_order}`);
+    try {
+      setShowMachineName(false);
+      showNotification("NOTIFICACIÓN ENVIADA...");
+      await Axios.post("http://localhost:5000/sendMessage", {
+        id_order: pedido.id_order,
+        name: pedido.client.name,
+        email: pedido.client.email,
+        tel: "521"+pedido.client.phone,
+        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`
+      });
+      console.log("NOTIFICACIÓN ENVIADA...")
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No hay respuesta del servidor.");
+      } else {
+        setErrMsg("Error al mandar la notificación");
+      }
+    }
   };
 
   const showNotification = (message) => {
@@ -160,12 +120,10 @@ function PedidosGeneral() {
     }, 2000);
   };
 
-  const handleSeleccionarPedido = (pedidoId, cliente) => {
-    const pedidoSeleccionado = pedidos.find(
-      (pedido) => pedido.id_pedido === pedidoId
-    );
+  const handleSeleccionarPedido = (pedido, pedidoId) => {
+    const pedidoSeleccionado = pedido
 
-    if (pedidoSeleccionado && pedidoSeleccionado.orderstatus === "Pendiente") {
+    if (pedidoSeleccionado && pedidoSeleccionado.orderStatus === "pending") {
       if (selectedPedidos[machineIdQueryParam]) {
         setSelectedPedidos((prevState) => ({
           ...prevState,
@@ -174,15 +132,18 @@ function PedidosGeneral() {
       }
 
       const pedidosActualizados = pedidos.map((pedido) => {
-        if (pedido.id_pedido === pedidoId) {
-          return { ...pedido, orderstatus: "En proceso" };
+        if (pedido.id_order === pedidoId) {
+          Axios.patch(`http://localhost:5000/orders/${pedidoId}`, {
+            orderStatus: "inProgress"
+          });
+          return { ...pedido, orderStatus: "inProgress" };
         }
         return pedido;
       });
 
       setSelectedPedidos((prevState) => ({
         ...prevState,
-        [machineIdQueryParam]: pedidoId,
+        [machineIdQueryParam]: pedido.id_order,
       }));
 
       setPedidos(pedidosActualizados);
@@ -192,7 +153,7 @@ function PedidosGeneral() {
         content: (
           <div>
             <p>
-              El pedido para el cliente: {cliente} ha sido cambiado a "En
+              El pedido para el cliente: {pedido.client.name} ha sido cambiado a "En
               Proceso".
             </p>
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
@@ -218,153 +179,183 @@ function PedidosGeneral() {
     }
   };
 
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setUTCHours(0, 0, 0, 0);
+    const day = date.getUTCDate();
+    const month = date.getUTCMonth() + 1;
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  };
+  
   return (
     <div>
       <div className="mb-3">
-        <div className="bg-white px-4 pt-3 pb-4 rounded-md border border-gray-200 flex-1">
-          <strong>Pedidos Lavandería</strong>
+        <div className="title-container">
+          <strong className="title-strong">Pedidos General</strong>
         </div>
       </div>
-      <div className="bg-neutral-600 rounded-md min-h-screen p-4">
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="border-2 rounded-md py-2 px-4 pl-10 text-gray-600 focus:outline-none focus:ring focus:border-blue-300 border-black"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-2.5 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
-          <select
-            className="ml-2 border-2 font-bold text-base rounded-md py-2 px-4 text-black focus:outline-none focus:ring focus:border-blue-300 border-black"
-            value={filtroEstatus}
-            onChange={handleFiltroEstatusChange}
+        </div>
+        <select
+          className="select-category"
+          value={filtroEstatus}
+          onChange={handleFiltroEstatusChange}
+        >
+          <option className="text-base font-semibold" value="">
+            Todos
+          </option>
+          <option
+            value="pending"
+            className="text-gray-600 font-semibold text-base"
           >
-            <option className="text-base font-semibold" value="">
-              Todos
-            </option>
-            <option
-              value="Pendiente"
-              className="text-gray-600 font-semibold text-base"
-            >
-              Pendientes
-            </option>
-            <option
-              value="En proceso"
-              className="text-yellow-600 font-semibold text-base"
-            >
-              En Proceso
-            </option>
-            <option
-              value="Finalizado"
-              className="text-blue-600 font-semibold text-base"
-            >
-              Finalizados
-            </option>
-            <option
-              value="Entregado"
-              className="text-green-600 font-semibold text-base"
-            >
-              Entregados
-            </option>
-          </select>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th className="py-3 px-1 text-center">ID</th>
-                <th className="py-3 px-6">Empleado que Recibió</th>
-                <th className="py-3 px-6">Empleado que Entregó</th>
-                <th className="py-3 px-6">Nombre del Cliente</th>
-                <th className="py-3 px-6">Detalle del pedido</th>
-                <th className="py-3 px-6">Fecha de Entrega</th>
-                <th className="py-3 px-6">Estatus</th>
-                <th className="py-3 px-6">Forma de Pago</th>
-                {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPedidos.map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleado_recibio}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleado_entrego}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
-                  </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.fecha_entrega_real}</td>
-                  <td className="py-3 px-6">
-                    {pedido.orderstatus === "Pendiente" ? (
-                      <span className="text-gray-600 pl-1">
-                        <MinusCircleOutlined /> Pendiente
-                      </span>
-                    ) : pedido.orderstatus === "Almacenado" ? (
-                      <span className="text-fuchsia-600 pl-1">
-                        <DropboxOutlined /> Almacenado
-                      </span>
-                    ) : pedido.orderstatus === "En proceso" ? (
-                      <span className="text-yellow-600 pl-1">
-                        <ClockCircleOutlined /> En Proceso
-                      </span>
-                    ) : pedido.orderstatus === "Finalizado" ? (
-                      <span className="text-blue-600 pl-1">
-                        <IssuesCloseOutlined /> Finalizado no entregado
-                        <button
-                          onClick={() => handleNotificarCliente(pedido)}
-                          className="ml-2 mt-2 bg-blue-600 text-white rounded-md px-2 py-1 cursor-pointer transform transition-transform duration-200 ease-in-out hover:scale-110 active:scale-95"
-                        >
-                          Notificar al Cliente
-                        </button>
-                      </span>
-                    ) : pedido.orderstatus === "Entregado" ? (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Finalizado Entregado
-                      </span>
-                    ) : (
-                      <span className="text-red-600 pl-1">
-                        <StopOutlined /> Cancelado
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-3 px-6">{pedido.forma_pago}</td>
-                  {showCheckbox && (
-                    <td className="py-3 px-6">
-                      {pedido.orderstatus === "Pendiente" ? (
-                        selectedPedidos[machineIdQueryParam] ? (
-                          <input type="checkbox" className="h-6 w-6" disabled />
-                        ) : (
-                          <input
-                            type="checkbox"
-                            className="h-6 w-6"
-                            onChange={() =>
-                              handleSeleccionarPedido(
-                                pedido.id_pedido,
-                                pedido.cliente
-                              )
-                            }
-                          />
-                        )
-                      ) : null}
-                    </td>
+            Pendientes
+          </option>
+          <option
+            value="inProgress"
+            className="text-yellow-600 font-semibold text-base"
+          >
+            En Proceso
+          </option>
+          <option
+            value="finished"
+            className="text-blue-600 font-semibold text-base"
+          >
+            Finalizados
+          </option>
+          <option
+            value="delivered"
+            className="text-green-600 font-semibold text-base"
+          >
+            Entregados
+          </option>
+          <option
+            value="stored"
+            className="text-fuchsia-600 font-semibold text-base"
+          >
+            Almacenados
+          </option>
+        </select>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th>No. Folio</th>
+              <th>Empleado que Recibió</th>
+              <th>Empleado que Entregó</th>
+              <th>Nombre del Cliente</th>
+              <th>Detalle del pedido</th>
+              <th>Fecha de Entrega</th>
+              <th>Estatus</th>
+              <th>Forma de Pago</th>
+              {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
+              <tr className="bg-white border-b" key={pedido.id_order}>
+                <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.user.name}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.user.name}
+                </td>
+                <td className="py-3 px-6 font-medium text-gray-900">
+                  {pedido.client.name}
+                </td>
+                <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
+                <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
+                <td className="py-3 px-6 ">
+                  {pedido.orderStatus === "pending" ? (
+                    <span className="text-gray-600 pl-1">
+                      <MinusCircleOutlined /> Pendiente
+                    </span>
+                  ) : pedido.orderStatus === "stored" ? (
+                    <span className="text-fuchsia-600 pl-1">
+                      <DropboxOutlined /> Almacenado
+                    </span>
+                  ) : pedido.orderStatus === "inProgress" ? (
+                    <span className="text-yellow-600 pl-1">
+                      <ClockCircleOutlined /> En Proceso
+                    </span>
+                  ) : pedido.orderStatus === "finished" ? (
+                    <span className="text-blue-600 pl-1">
+                      <IssuesCloseOutlined /> Finalizado no entregado
+                      <button
+                        onClick={() => handleNotificarCliente(pedido)}
+                        className="btn-primary mt-1"
+                      >
+                        Notificar al Cliente
+                      </button>
+                    </span>
+                  ) : pedido.orderStatus === "delivered" ? (
+                    <span className="text-green-600 pl-1">
+                      <CheckCircleOutlined /> Finalizado Entregado
+                    </span>
+                  ) : (
+                    <span className="text-red-600 pl-1">
+                      <StopOutlined /> Cancelado
+                    </span>
                   )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                </td>
+                <td className="py-3 px-6">{pedido.payForm === 'delivery' ? 'Entrega' : 'Anticipo'}</td>
+                {showCheckbox && (
+                  <td className="py-3 px-6">
+                    {pedido.orderStatus === "pending" ? (
+                      selectedPedidos[machineIdQueryParam] ? (
+                        <input type="checkbox" className="h-6 w-6" disabled />
+                      ) : (
+                        <input
+                          type="checkbox"
+                          className="h-6 w-6"
+                          onChange={() =>
+                            handleSeleccionarPedido(
+                              pedido,
+                              pedido.id_order
+                            )
+                          }
+                        />
+                      )
+                    ) : null}
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center items-center my-8">
+        <ReactPaginate
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          breakLabel="..."
+          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName="pagination flex"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
       </div>
       <Modal
-        visible={notificationVisible}
+        open={notificationVisible}
         footer={null}
         onCancel={() => setNotificationVisible(false)}
         destroyOnClose

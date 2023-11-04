@@ -33,10 +33,7 @@ function AddServiceAutoservicio() {
       await Axios.post("http://localhost:5000/services", {
         description: description,
         price: parseFloat(price),
-        fk_category: category === "Autoservicio" ? 1 : 2,
-        time: Number(time),
-        weight: Number(weight),
-        pieces: Number(pieces),
+        category_id: 1,
       });
       setDescription("");
       setPrice(0);
@@ -135,13 +132,13 @@ function AddServiceAutoservicio() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="pieces">
+              <label className="form-lbl" htmlFor="type">
                 Piezas
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="pieces"
+                id="type"
                 onChange={(e) => setPieces(e.target.value)}
                 value={pieces}
               />

@@ -1,4 +1,3 @@
-import Navbar from "../../routes/Navbar";
 import { useRef, useState, useEffect } from "react";
 import {
   faCheck,

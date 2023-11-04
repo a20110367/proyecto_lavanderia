@@ -10,6 +10,14 @@ export const getMachines = async (req, res) =>{
         res.status(500).json({msg:e.message});
     }
 }
+export const getDryMachines = async (req, res) =>{
+    try {
+        const response = await prisma.dryMachine.findMany();
+        res.status(200).json(response);
+    }catch(e){
+        res.status(500).json({msg:e.message});
+    }
+}
 
 export const getMachinesById = async (req, res) =>{
     try {
@@ -25,18 +33,11 @@ export const getMachinesById = async (req, res) =>{
 }
 
 export const createMachine = async (req, res) =>{
-    //const {machineType, model, cicleTime, weight, status, notes} = req.body;
+
     try {
         const machine = await prisma.machine.create({
            data:req.body
-            // data:{
-            //     machineType: machineType,
-            //     model: model,
-            //     cicleTime: cicleTime,
-            //     weight: weight,
-            //     status: status,
-            //     notes: notes,
-            // }
+
         });
         res.status(201).json(machine);
     }catch(e){
@@ -44,28 +45,35 @@ export const createMachine = async (req, res) =>{
     }
 }
 
+export const createMachineMany = async (req, res) =>{
+
+    try {
+        const machineMany = await prisma.machine.createMany({
+           data:req.body
+
+        });
+        res.status(201).json(machineMany);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
 export const updateMachine =  async (req, res) =>{
-    const {machineType, model, cicleTime, weight, status, notes} = req.body;
+
     try {
         const machine = await prisma.machine.update({
             where:{
                 id_machine: Number(req.params.id)
             },
             data:req.body
-            // data:{
-            //     machineType: machineType,
-            //     model: model,
-            //     cicleTime: cicleTime,
-            //     weight: weight,
-            //     status: status,
-            //     notes: notes,
-            // }
         });
         res.status(200).json(machine);
     }catch(e){
         res.status(400).json({msg:e.message});
     }
 }
+
 
 export const deleteMachine =  async (req, res) =>{
     try {

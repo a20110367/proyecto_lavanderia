@@ -71,7 +71,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
           className="text-lg  w-16 h-9"
         />
           <p className="user font-bold">{cookies.role === 'admin' ? 'Administrador:' : 'Empleado:'}</p>
-          <p className="user text-dodgerBlue">{cookies.username}</p>
+          <p className="user text-RedPantone">{cookies.username}</p>
       </div>
       <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">

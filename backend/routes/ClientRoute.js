@@ -3,6 +3,7 @@ import {
     getClients,
     getClientsById,
     createClient,
+    createClientMany,
     updateClient,
     deleteClient,
     getClientsByEmail,
@@ -16,6 +17,7 @@ router.get('/clientsById/:id', getClientsById);
 router.get('/clientsByEmail/:email', getClientsByEmail);
 router.get('/clientsByPhone/:phone', getClientsByPhone);
 router.post('/clients', createClient);
+router.post('/clientsMany', createClientMany);
 router.patch('/clients/:id', updateClient);
 router.delete('/clients/:id', deleteClient);
 

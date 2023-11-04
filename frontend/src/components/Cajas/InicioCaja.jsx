@@ -2,34 +2,74 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
+import Axios from 'axios'
+import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
+
 
 function InicioCaja() {
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
-  const [dineroInicio, setDineroInicio] = useState("");
-  const [cajaIniciada, setCajaIniciada] = useState(false);
+  const [dineroInicio, setDineroInicio] = useState(0);
   const [fechaHora, setFechaHora] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [errorVisible, setErrorVisible] = useState(false);
+  const [cajaIniciada, setCajaIniciada] = useState(false);
+  const dateD = new Date()
+  const dateT = new Date()
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const now = moment();
-      const formattedDate = now.format("YYYY-MM-DD HH:mm:ss");
+      const formattedDate = moment().format('DD/MM/yyyy HH:mm:ss');
       setFechaHora(formattedDate);
     }, 1000);
 
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleIniciarCaja = () => {
-    if (nombreUsuario && dineroInicio) {
+  useEffect(() => {
+    // Verificar si la caja ya ha sido inicializada
+    const cashCutId = localStorage.getItem("cashCutId");
+    if (cashCutId) {
+      setCajaIniciada(true);
+    }
+  }, []);
+
+  const handleIniciarCaja = async (e) => {
+    e.preventDefault();
+
+    if (cajaIniciada) {
+      setErrMsg("La caja ya ha sido inicializada.");
+      return;
+    }
+
+    if (!nombreUsuario && !dineroInicio) {
+      setErrMsg("Algun campo vacio");
+      return
+    }
+    try {
+      const response = await Axios.post("http://localhost:5000/cashCuts", {
+        inicialCash: parseFloat(dineroInicio),
+        fk_user: parseInt(cookies.token),
+        cashCutD: dateD.toJSON(),
+        cashCutT: dateT.toJSON()
+      });
+      localStorage.setItem("cashCutId", response.data.id_cashCut);
+      localStorage.setItem("initialCash", response.data.inicialCash)
+
       setCajaIniciada(true);
       setVisible(false);
-    } else {
-      // Mostrar un mensaje de error si los campos no están completos.
-      // Puedes implementar esto utilizando el componente Modal de Ant Design.
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No hay respuesta del servidor.");
+      } else {
+        setErrMsg("Error al hacer corte de caja.");
+      }
     }
   };
+    const handleDineroInicioInput = () => {
+      setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
+    };
 
   const handleAbrirFormulario = () => {
     setVisible(true);
@@ -41,6 +81,7 @@ function InicioCaja() {
 
   return (
     <div className="text-center mt-4">
+      <p>{errMsg}</p>
       {cajaIniciada ? (
         <div>
           <h1 className="text-4xl">
@@ -61,7 +102,7 @@ function InicioCaja() {
           <p className="text-xl mt-4">¿Desea inicializar la caja    ?</p>
           <button
             onClick={handleAbrirFormulario}
-            className="mt-4 bg-green-500 text-white p-3 rounded-md shadow-lg hover:bg-green-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
             >
             Iniciar Caja
           </button>
@@ -69,7 +110,7 @@ function InicioCaja() {
       )}
       <Modal
         title="Iniciar Caja"
-        visible={visible}
+        open={visible}
         onOk={handleIniciarCaja}
         onCancel={handleCloseDialog}
         width={400}
@@ -77,7 +118,7 @@ function InicioCaja() {
           <Button
             key="iniciar"
             onClick={handleIniciarCaja}
-            className="bg-blue-500 text-white hover:bg-blue-600 hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm"
+            className="btn-print text-white"
           >
             Iniciar
           </Button>,
@@ -102,11 +143,17 @@ function InicioCaja() {
           <strong>Dinero de Inicio (Fondo):</strong>
         </p>
         <Input
+          type="number"
           placeholder="Ingrese la cantidad inicial de dinero"
           value={dineroInicio}
           onChange={(e) => setDineroInicio(e.target.value)}
           addonBefore="$"
+          onInput={handleDineroInicioInput}
         />
+        {errorVisible && (
+          <p className="text-red-600">Este campo es obligatorio</p>
+        )}
+        <p className="mt-2"></p>
         <p className="mt-2">
           <strong>Fecha y Hora:</strong>
         </p>

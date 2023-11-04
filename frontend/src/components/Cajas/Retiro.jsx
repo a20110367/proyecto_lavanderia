@@ -118,12 +118,12 @@ function Retiro() {
     setVisible(false);
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -172,7 +172,7 @@ function Retiro() {
                 <td className="py-3 px-1 text-center">
                   {retiro.id_cashWhithdrawal}
                 </td>
-                <td className="py-3 px-6">{formatDate(retiro.date)}</td>
+                <td className="py-3 px-6">{formatDateToGMTMinus6(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>
                 <td className="py-3 px-6">{retiro.cause}</td>
                 <td className="py-3 px-6">{retiro.user.name}</td>

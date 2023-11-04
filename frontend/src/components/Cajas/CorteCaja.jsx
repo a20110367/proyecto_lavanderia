@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button, Input, message } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
@@ -15,6 +15,8 @@ function CorteCaja() {
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
+  const [corteActivo, setCorteActivo] = useState(false);
+
 
   const { cookies } = useAuth();
   const [turno, setTurno] = useState("Matutino");
@@ -31,6 +33,7 @@ function CorteCaja() {
 
   useEffect(() => {
     if (lastCashCut) {
+      setCorteActivo(true);
       // const currentCorte = Cortes.find((corte) =>
       //   moment(corte.cashCutD).isSame(now, "day")
       // );
@@ -45,7 +48,11 @@ function CorteCaja() {
   }, [lastCashCut]);
 
   const handleCorteCaja = () => {
-    setDialogVisible(true);
+    if (corteActivo) {
+      message.info("Ya hay un corte de caja activo.");
+    } else {
+      setDialogVisible(true);
+    }
   };
 
 
@@ -149,7 +156,7 @@ function CorteCaja() {
       pdf.text(`ID: ${cashCutId}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
-      pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`,10,50);
+      pdf.text(`Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,10,50);
       initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 90)
       
       // Separación
@@ -167,14 +174,15 @@ function CorteCaja() {
     }
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+  
 
   return (
     <div className="text-center mt-4">
@@ -217,7 +225,7 @@ function CorteCaja() {
               {Cortes.map((corte) => (
                 <tr className="bg-white border-b" key={cashCutId}>
                   <td className="py-3 px-1 text-center">{cashCutId}</td>
-                  <td className="py-3 px-6">{formatDate(corte.cashCutD)}</td>
+                  <td className="py-3 px-6">{formatDateToGMTMinus6(corte.cashCutD)}</td>
                   <td className="py-3 px-6">${initialCash ? initialCash : 0}</td>
                   <td className="py-3 px-6">${corte.totalCash ? corte.totalCash : 0}</td>
                   <td className="py-3 px-6">${corte.totalCredit ? corte.totalCredit : 0}</td>
@@ -325,7 +333,7 @@ function CorteCaja() {
                   <span className="font-bold">Turno:</span>{" "}{turno}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Fecha:</span>{" "}{formatDate(selectedCorte.cashCutD)}
+                  <span className="font-bold">Fecha:</span>{" "}{formatDateToGMTMinus6(selectedCorte.cashCutD)}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Dinero en Fondo:</span> ${initialCash}

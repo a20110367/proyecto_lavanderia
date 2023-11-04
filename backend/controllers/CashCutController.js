@@ -280,7 +280,8 @@ export const calculateCashCut = async (req, res) => {
             "toalAutoservicio": totalAutoservicio._sum.totalPrice,
             "totalPlanchado": totalPlanchado._sum.totalPrice,
             "totalOtros": otherCategorys,
-            "ordersPayed": orders.length
+            "ordersPayed": orders.length,
+            "cashCutD": today,
             //"selfService":selfService
             //"ordersIds":ordersIds
         }

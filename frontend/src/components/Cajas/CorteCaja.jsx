@@ -157,7 +157,7 @@ function CorteCaja() {
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
       pdf.text(`Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,10,50);
-      initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 90)
+      initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 60)
       
       // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);

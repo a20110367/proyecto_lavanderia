@@ -11,9 +11,6 @@ function EditServicePlanchado() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState();
-  const [pieces, setPieces] = useState();
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -31,8 +28,6 @@ function EditServicePlanchado() {
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Planchado");
-      setTime(response.data.time);
-      setWeight(response.data.weight);
     };
     getServiceById();
   }, [id]);
@@ -49,7 +44,7 @@ function EditServicePlanchado() {
       return;
     }
 
-    if (!description || !price || !time) {
+    if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
@@ -121,42 +116,6 @@ function EditServicePlanchado() {
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
-              />
-
-              <label className="form-lbl" htmlFor="time">
-                Tiempo (minutos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="time"
-                ref={timeRef}
-                onChange={(e) => setTime(e.target.value)}
-                value={time}
-                required
-              />
-
-              <label className="form-lbl" htmlFor="weight">
-                Peso (gramos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="weight"
-                ref={weightRef}
-                onChange={(e) => setWeight(e.target.value)}
-                value={weight}
-              />
-
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
               />
 
               <label className="form-lbl" htmlFor="category">

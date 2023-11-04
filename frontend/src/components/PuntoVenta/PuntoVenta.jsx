@@ -32,8 +32,11 @@ export default function PuntoVenta() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
-    useState("A la entrega");
-  const [paymentMethod, setPaymentMethod] = useState("");
+  useState(serviceType === "autoservicio" ? "Anticipado" : "A la entrega");
+
+  const [paymentMethod, setPaymentMethod] = useState(
+    serviceType === "autoservicio" ? "Efectivo" : ""
+  );
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
   const [deliveryDate, setDeliveryDate] = useState(moment());
@@ -67,7 +70,7 @@ export default function PuntoVenta() {
       }
     } else {
       if (cart.length === 0) {
-        const serviceToAdd = service;
+        const serviceToAdd = { ...service, quantity: 1, price: service.price };
         if (serviceToAdd) {
           setCart([serviceToAdd]);
           setSelectedServiceId(serviceId);
@@ -163,7 +166,7 @@ export default function PuntoVenta() {
     // Regresar a la página anterior
     window.history.back();
 
-    console.log(cart)
+    console.log(cart);
   };
 
   const filteredServices = shouldShowAllServices
@@ -254,7 +257,7 @@ export default function PuntoVenta() {
                       {service.price * service.quantity}
                     </div>
                     <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
                       onClick={() => removeFromCart(service.id_service)}
                     >
                       Eliminar
@@ -362,13 +365,23 @@ export default function PuntoVenta() {
                           setPaymentMethod("");
                         }
                       }}
-                      value={selectedPaymentOption}
+                      value={
+                        serviceType === "autoservicio"
+                          ? "Anticipado"
+                          : selectedPaymentOption
+                      }
+                      disabled={serviceType === "autoservicio"}
                     >
-                      <Option value="A La Entrega">A la Entrega</Option>
+                      <Option
+                        value="A La Entrega"
+                        disabled={serviceType === "autoservicio"}
+                      >
+                        A la Entrega
+                      </Option>
                       <Option value="Anticipado">Anticipado</Option>
                     </Select>
-
-                    {selectedPaymentOption === "Anticipado" && (
+                    {(selectedPaymentOption === "Anticipado" ||
+                      serviceType === "autoservicio") &&  (
                       <div>
                         <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                           Método de Pago Anticipado:
@@ -376,7 +389,7 @@ export default function PuntoVenta() {
                         <Select
                           style={{ width: "100%", fontSize: "16px" }}
                           onChange={(value) => setPaymentMethod(value)}
-                          value={paymentMethod}
+                          value={paymentMethod} 
                         >
                           <Option value="Tarjeta">Tarjeta</Option>
                           <Option value="Efectivo">Efectivo</Option>

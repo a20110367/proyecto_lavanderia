@@ -56,7 +56,7 @@ function InicioCaja() {
       });
       localStorage.setItem("cashCutId", response.data.id_cashCut);
       localStorage.setItem("initialCash", response.data.inicialCash)
-
+      localStorage.removeItem('lastCashCut')
       setCajaIniciada(true);
       setVisible(false);
     } catch (err) {

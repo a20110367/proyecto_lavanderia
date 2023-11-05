@@ -62,12 +62,12 @@ export default function PuntoVenta() {
         if (existingService) {
           const updatedCart = cart.map((item) =>
             item.id_service === serviceId
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + 1, totalPrice: item.price * (item.quantity + 1) }
               : item
           );
           setCart(updatedCart);
         } else {
-          setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
+          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: 0 }]);
         }
       }
     } else {
@@ -111,32 +111,58 @@ export default function PuntoVenta() {
 
   const showModal = () => {
     console.log(cart)
+    // const now = new Date();
+    // console.log(now.toISOString())
+    // console.log(now.toISOString().split("T")[0] + 'T00:00:00.000Z')
     setIsModalVisible(true);
+    console.log(total)
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setTotalPrice(0)
   };
 
   const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
 
+    const now = new Date();
+    const arrayServiceDetail = []
+
+    let total = 0
+    cart.map(detail => total = total + detail.totalPrice)
+
+    cart.map( detail => 
+      arrayServiceDetail.push({
+        units: detail.quantity,
+        subtotal: detail.quantity * detail.price,
+        updatedAt: now.toISOString(),
+        fk_Service: detail.id_service,
+      }
+    ))
+
     ///////////////////////////////////////////////
     if (selectedPaymentOption === 'advance') {
       setPayStatus('paid')
     }
+    //CART[0,1]
     try {
       await Axios.post("http://localhost:5000/orders", {
         serviceOrder: {
-          receptionDate: '1',
-          totalPrice: cart.price * cart.quantity,
-          fk_client: 1,
+          receptionDate: now.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          receptionTime: 0,
+          totalPrice: parseFloat(totalPrice),
+          fk_client: clientId,
+          numberOfItems: arrayServiceDetail.length,
+          payForm: paymentMethod,
+          payStatus: payStatus,
           
+          fk_user: cookies.token,
+          scheduledDeliveryDate: 0,
+          scheduledDeliveryTime: 0,
+          fk_categoryId: 0,    
         },
-        serviceOrderDetail: [{
-          units: cart.quantity,
-          subtotal: cart.price * cart.quantity
-        }]
+        serviceOrderDetail: arrayServiceDetail,
       });
       //console.log(JSON.stringify(response))
       setSuccess(true);

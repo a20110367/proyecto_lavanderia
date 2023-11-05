@@ -107,7 +107,7 @@ function RecepcionPlanchado() {
                     <td className="th2">{client.email}</td>
                     <td>
                       <Link
-                        to={`/puntoVenta?clientName=${client.name}&serviceType=Planchado`}
+                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Planchado`}
                       >
                         <button className="btn-generate">
                           <div className="subtitle m-1">Generar pedido</div>

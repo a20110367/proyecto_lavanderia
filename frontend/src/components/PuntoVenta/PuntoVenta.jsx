@@ -26,6 +26,7 @@ export default function PuntoVenta() {
   ]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";

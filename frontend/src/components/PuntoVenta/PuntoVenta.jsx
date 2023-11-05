@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import Axios from "axios";
 import useSWR from "swr";
@@ -39,9 +39,23 @@ export default function PuntoVenta() {
     serviceType === "autoservicio" ? "cash" : ""
   );
 
+  useEffect(() => {
+    // Definir el category_id
+    if (serviceType === 'autoservicio') {
+      setCategoryId(1)
+    }else if(serviceType === 'encargo'){
+      setCategoryId(2)
+    }else{
+      setCategoryId(3)
+    }
+  }, [serviceType]);
+
   const [purchaseDate, setPurchaseDate] = useState(moment());
   const [deliveryDate, setDeliveryDate] = useState(moment().toISOString());
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
+  const [categoryId, setCategoryId] = useState(0)
+
+  useEffect
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");
@@ -109,17 +123,17 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
-    console.log(cart)
+    // console.log(cart)
+    // console.log(deliveryDate)
+    // console.log(categoryId)
     // const now = new Date();
     // console.log(now.toISOString())
     // console.log(now.toISOString().split("T")[0] + 'T00:00:00.000Z')
     setIsModalVisible(true);
-    console.log(total)
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
-    setTotalPrice(0)
   };
 
   const handleSaveAndGenerateTicket = async () => {
@@ -145,35 +159,25 @@ export default function PuntoVenta() {
     try {
       await Axios.post("http://localhost:5000/orders", {
         serviceOrder: {
-          receptionDate: now.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          receptionTime: 0,
+          receptionDate: purchaseDate.split("T")[0] + 'T00:00:00.000Z',
+          receptionTime: "1970-01-01T" + purchaseDate.split("T")[1],
           totalPrice: parseFloat(totalPrice),
           fk_client: clientId,
           numberOfItems: arrayServiceDetail.length,
           payForm: paymentMethod,
-          payStatus: selectedPaymentOption,
-          
+          payStatus: selectedPaymentOption,          
           fk_user: cookies.token,
-          scheduledDeliveryDate: 0,
-          scheduledDeliveryTime: 0,
-          fk_categoryId: 0,    
+          scheduledDeliveryDate: deliveryDate,
+          scheduledDeliveryTime: "1970-01-01T" + deliveryDate.split("T")[1],
+          fk_categoryId: categoryId,    
         },
         serviceOrderDetail: arrayServiceDetail,
       });
-      //console.log(JSON.stringify(response))
-      setSuccess(true);
-      //clear state and controlled inputs
-      setUserName("");
-      setPwd("");
-      setMatchPwd("");
-      navigate("/menuPuntoVenta");
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 409) {
-        setErrMsg("Username Taken");
+        setErrMsg("Sin respuesta del Servidor");
       } else {
-        setErrMsg("Registration Failed");
+        setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
       }
     }
     ///////////////////////

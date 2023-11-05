@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import locale from 'antd/es/date-picker/locale/es_ES';
+import locale from "antd/es/date-picker/locale/es_ES";
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
-import { AiOutlinePlusCircle } from "react-icons/ai"
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import Axios from "axios";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -19,82 +20,28 @@ function HistorialCaja() {
     setCurrentPage(selectedPage.selected);
   };
 
+  const fetchCashCuts = async () => {
+    try {
+      const response = await Axios.get("http://localhost:5000/cashCuts");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching cash cuts:", error);
+      return [];
+    }
+  };
+
   useEffect(() => {
-    const dummyCortes = [
-      {
-        id: 1,
-        fecha: "15/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 18000,
-        retirosTotales: 600,
-        ingresosTotales: 16000,
-        ingresoEfectivo: 9000,
-        ingresoTarjeta: 7000,
-        finalTotalCaja: 0,
-        usuario: "Usuario3",
-        turno: "Matutino",
-        tipoServicio: "Planchado",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 3000,
-        ingresoLavadoEncargo: 4000,
-        ingresoPlanchado: 16000,
-      },
-      {
-        id: 2,
-        fecha: "18/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 15000,
-        retirosTotales: 300,
-        ingresosTotales: 15000,
-        ingresoEfectivo: 7000,
-        ingresoTarjeta: 8000,
-        finalTotalCaja: 0,
-        usuario: "Usuario2",
-        turno: "Vespertino",
-        tipoServicio: "Lavado por encargo",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 5000,
-        ingresoLavadoEncargo: 15000,
-        ingresoPlanchado: 10000,
-      },
-      {
-        id: 3,
-        fecha: "20/09/2023", // Mantén el formato dd/mm/yyyy aquí
-        dineroFondo: 20000,
-        retirosTotales: 1200,
-        ingresosTotales: 20000,
-        ingresoEfectivo: 10000,
-        ingresoTarjeta: 10000,
-        finalTotalCaja: 0,
-        usuario: "Usuario1",
-        turno: "Matutino",
-        tipoServicio: "Autoservicio",
-        // Añade los campos de ingresos por servicio
-        ingresoAutoservicio: 10000,
-        ingresoLavadoEncargo: 16000,
-        ingresoPlanchado: 15000,
-      },
-      
-    ];
-    const cortesConFinalTotalCaja = dummyCortes.map((corte) => ({
-      ...corte,
-      finalTotalCaja:
-        corte.dineroFondo +
-        corte.ingresoAutoservicio +
-        corte.ingresoLavadoEncargo +
-        corte.ingresoPlanchado -
-        corte.ingresoTarjeta -
-        corte.retirosTotales,
-      ingresoTotalServicios:
-        corte.ingresoAutoservicio +
-        corte.ingresoLavadoEncargo +
-        corte.ingresoPlanchado,
-      ingresoEfectivo:
-        corte.dineroFondo +
-        corte.ingresoAutoservicio +
-        corte.ingresoLavadoEncargo +
-        corte.ingresoPlanchado,
-    }));
-    setCortes(cortesConFinalTotalCaja);
-    setFilteredCortes(cortesConFinalTotalCaja);
+    const fetchData = async () => {
+      try {
+        const cashCuts = await fetchCashCuts();
+        setCortes(cashCuts);
+        setFilteredCortes(cashCuts);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleDetallesClick = (corte) => {
@@ -107,40 +54,49 @@ function HistorialCaja() {
 
     if (selectedCorte) {
       doc.text(`Detalles del Corte`, 10, 10);
-      doc.text(`ID: ${selectedCorte.id}`, 10, 20);
-      doc.text(`Usuario: ${selectedCorte.usuario}`, 10, 30);
+      doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
+      doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
-      doc.text(`Fecha: ${selectedCorte.fecha}`, 10, 50);
-      doc.text(`Dinero en Fondo: $${selectedCorte.dineroFondo}`, 10, 60);
+      doc.text(
+        `Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,
+        10,
+        50
+      );
+      doc.text(`Dinero en Fondo: $${selectedCorte.inicialCash}`, 10, 60);
 
       // Separación
       doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      doc.text(`Autoservicio: $${selectedCorte.ingresoAutoservicio}`, 10, 90);
+      selectedCorte.toalAutoservicio
+      ? doc.text(`Autoservicio: $${selectedCorte.toalAutoservicio}`, 10, 90)
+      : doc.text("Autoservicio: $0", 10, 90);
+      selectedCorte.totalEncargo
+      ? doc.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 100)
+      : doc.text("Lavado por Encargo: $0", 10, 100);
+      selectedCorte.totalPlanchado
+      ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
+      : doc.text("Planchado: $0", 10, 110);
       doc.text(
-        `Lavado por Encargo: $${selectedCorte.ingresoLavadoEncargo}`,
-        10,
-        100
-      );
-      doc.text(`Planchado: $${selectedCorte.ingresoPlanchado}`, 10, 110);
-      doc.text(
-        `Total (Suma de los Servicios): $${selectedCorte.ingresoTotalServicios}`,
+        `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
         10,
         120
       );
-      doc.text(
-        `Ingreso en Efectivo: $${selectedCorte.ingresoEfectivo}`,
-        10,
-        130
-      );
+      selectedCorte.totalCash
+      ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 130)
+      : doc.text("Ingreso en Efectivo: $0", 10, 130);
 
       // Separación
-      doc.text(`Ingreso en Tarjeta: $${selectedCorte.ingresoTarjeta}`, 10, 150);
-      doc.text(`Retiros Totales: $${selectedCorte.retirosTotales}`, 10, 160);
-      doc.text(
-        `Final Total en Caja: $${selectedCorte.finalTotalCaja}`,
+      selectedCorte.totalCredit
+      ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150)
+      : doc.text("Ingreso en Tarjeta: $0", 10, 150);
+
+      selectedCorte.totalCashWithdrawal
+      ? doc.text(
+        `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
         10,
-        170
-      );
+        160
+      )
+      : doc.text("Retiros Totales: $0", 10, 160);
+      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170);
 
       doc.save("detalle_corte.pdf");
     }
@@ -149,25 +105,33 @@ function HistorialCaja() {
   const handleFiltroPorFecha = () => {
     if (dateRange.length === 2) {
       const [startDate, endDate] = dateRange.map((date) => date.toDate());
+  
+      const startDateStr = startDate.toISOString().split('T')[0];
+      const endDateStr = endDate.toISOString().split('T')[0];
+  
       const filtered = Cortes.filter((corte) => {
-        const corteDate = new Date(corte.fecha);
-        return corteDate >= startDate && corteDate <= endDate;
+        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        return corteDateStr >= startDateStr && corteDateStr <= endDateStr;
       });
-
-      const startDateStr = startDate.toLocaleDateString("en-GB");
-      const endDateStr = endDate.toLocaleDateString("en-GB");
-
-      const startCorte = Cortes.find((corte) => corte.fecha === startDateStr);
-      const endCorte = Cortes.find((corte) => corte.fecha === endDateStr);
-
-      if (startCorte && !filtered.some((c) => c.id === startCorte.id)) {
+  
+      const startCorte = Cortes.find((corte) => {
+        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        return corteDateStr === startDateStr;
+      });
+  
+      const endCorte = Cortes.find((corte) => {
+        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        return corteDateStr === endDateStr;
+      });
+  
+      if (startCorte && !filtered.some((c) => c.id_cashCut === startCorte.id_cashCut)) {
         filtered.push(startCorte);
       }
-
-      if (endCorte && !filtered.some((c) => c.id === endCorte.id)) {
+  
+      if (endCorte && !filtered.some((c) => c.id_cashCut === endCorte.id_cashCut)) {
         filtered.push(endCorte);
       }
-
+  
       setFilteredCortes(filtered);
       setDatesSelected(true);
     } else {
@@ -175,6 +139,15 @@ function HistorialCaja() {
         setFilteredCortes(Cortes);
       }
     }
+  };
+  
+  const formatDateToGMTMinus6 = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -201,10 +174,7 @@ function HistorialCaja() {
                 format="DD/MM/YYYY"
                 className="border-2 rounded-md py-2  pl-10  border-Cerulean mt-2"
               />
-              <button
-                className="btn-search"
-                onClick={handleFiltroPorFecha}
-              >
+              <button className="btn-search" onClick={handleFiltroPorFecha}>
                 Buscar
               </button>
             </div>
@@ -219,7 +189,6 @@ function HistorialCaja() {
                 <th>DINERO EN FONDO</th>
                 <th>INGRESO EN EFECTIVO</th>
                 <th>INGRESO EN TARJETA</th>
-                <th>INGRESOS TOTALES</th>
                 <th>RETIROS TOTALES</th>
                 <th>FINAL TOTAL CAJA</th>
                 <th>USUARIO</th>
@@ -234,23 +203,35 @@ function HistorialCaja() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((corte) => (
-                  <tr className="bg-white border-b" key={corte.id}>
-                    <td className="">{corte.id}</td>
-                    <td className="">{corte.fecha}</td>
-                    <td className="">${corte.dineroFondo}</td>
-                    <td className="">${corte.ingresoEfectivo}</td>
-                    <td className="">${corte.ingresoTarjeta}</td>
-                    <td className="">${corte.ingresosTotales}</td>
-                    <td className="">${corte.retirosTotales}</td>
-                    <td className="">${corte.finalTotalCaja}</td>
-                    <td className="">{corte.usuario}</td>
+                  <tr className="bg-white border-b" key={corte.id_cashCut}>
+                    <td className="">{corte.id_cashCut}</td>
+                    <td className="">
+                      {formatDateToGMTMinus6(corte.cashCutD)}
+                    </td>
+                    <td className="">
+                      ${corte.inicialCash ? corte.inicialCash : 0}
+                    </td>
+                    <td className="">
+                      ${corte.totalCash ? corte.totalCash : 0}
+                    </td>
+                    <td className="">
+                      ${corte.totalCredit ? corte.totalCredit : 0}
+                    </td>
+                    <td className="">
+                      $
+                      {corte.totalCashWithdrawal
+                        ? corte.totalCashWithdrawal
+                        : 0}
+                    </td>
+                    <td className="">${corte.total ? corte.total : 0}</td>
+                    <td className="">{corte.user.name}</td>
                     <td className="">{corte.turno}</td>
                     <td className="min-w-[60px]">
                       <button
                         className="btn-primary mt-1 mb-1"
                         onClick={() => handleDetallesClick(corte)}
                       >
-                      <AiOutlinePlusCircle size={20}/>
+                        <AiOutlinePlusCircle size={20} />
                       </button>
                     </td>
                   </tr>
@@ -288,11 +269,12 @@ function HistorialCaja() {
               <div className="flex">
                 <div className="w-1/2">
                   <p className="text-lg">
-                    <span className="font-bold">ID:</span> {selectedCorte.id}
+                    <span className="font-bold">ID:</span>{" "}
+                    {selectedCorte.id_cashCut}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Usuario:</span>{" "}
-                    {selectedCorte.usuario}
+                    {selectedCorte.user.name}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Turno:</span>{" "}
@@ -300,29 +282,31 @@ function HistorialCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}
-                    {selectedCorte.fecha}
+                    {formatDateToGMTMinus6(selectedCorte.cashCutD)}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Dinero en Fondo:</span> $
-                    {selectedCorte.dineroFondo}
+                    {selectedCorte.inicialCash ? selectedCorte.inicialCash : 0}
                   </p>
                 </div>
                 <div className="w-1/2">
                   <p className="text-lg">
                     <span className="font-bold">Ingreso en Efectivo:</span> $
-                    {selectedCorte.ingresoEfectivo}
+                    {selectedCorte.totalCash ? selectedCorte.totalCash : 0}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Ingreso en Tarjeta:</span> $
-                    {selectedCorte.ingresoTarjeta}
+                    {selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Retiros Totales:</span> $
-                    {selectedCorte.retirosTotales}
+                    {selectedCorte.totalCashWithdrawal
+                      ? selectedCorte.totalCashWithdrawal
+                      : 0}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Final Total en Caja:</span> $
-                    {selectedCorte.finalTotalCaja}
+                    {selectedCorte.total ? selectedCorte.total : 0}
                   </p>
                 </div>
               </div>
@@ -332,21 +316,25 @@ function HistorialCaja() {
                 </h3>
                 <p className="text-lg">
                   <span className="font-bold">Autoservicio:</span> $
-                  {selectedCorte.ingresoAutoservicio}
+                  {selectedCorte.toalAutoservicio
+                    ? selectedCorte.toalAutoservicio
+                    : 0}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Lavado por Encargo:</span> $
-                  {selectedCorte.ingresoLavadoEncargo}
+                  {selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Planchado:</span> $
-                  {selectedCorte.ingresoPlanchado}
+                  {selectedCorte.totalPlanchado
+                    ? selectedCorte.totalPlanchado
+                    : 0}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">
                     Total (Suma de los Servicios):
                   </span>{" "}
-                  ${selectedCorte.ingresoTotalServicios}
+                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
                 </p>
               </div>
             </div>

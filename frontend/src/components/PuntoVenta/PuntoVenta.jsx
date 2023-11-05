@@ -32,7 +32,6 @@ export default function PuntoVenta() {
   const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [payStatus, setPayStatus] = useState('unpaid')
   const [selectedPaymentOption, setSelectedPaymentOption] =
   useState(serviceType === "autoservicio" ? "advance" : "delivery");
 
@@ -41,7 +40,7 @@ export default function PuntoVenta() {
   );
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
-  const [deliveryDate, setDeliveryDate] = useState(moment());
+  const [deliveryDate, setDeliveryDate] = useState(moment().toISOString());
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
 
   const fetcher = async () => {
@@ -142,9 +141,6 @@ export default function PuntoVenta() {
     ))
 
     ///////////////////////////////////////////////
-    if (selectedPaymentOption === 'advance') {
-      setPayStatus('paid')
-    }
     //CART[0,1]
     try {
       await Axios.post("http://localhost:5000/orders", {
@@ -155,7 +151,7 @@ export default function PuntoVenta() {
           fk_client: clientId,
           numberOfItems: arrayServiceDetail.length,
           payForm: paymentMethod,
-          payStatus: payStatus,
+          payStatus: selectedPaymentOption,
           
           fk_user: cookies.token,
           scheduledDeliveryDate: 0,
@@ -398,7 +394,7 @@ export default function PuntoVenta() {
                       Fecha de Entrega:
                     </p>
                     <DatePicker
-                      selected={deliveryDate.toDate()}
+                      selected={moment(deliveryDate).toDate()}
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={15}

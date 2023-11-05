@@ -11,7 +11,8 @@ export const getServices = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true,
                     },  
                 },
                 WashService:{

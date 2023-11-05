@@ -92,6 +92,7 @@ function CorteCaja() {
 
     localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
     localStorage.removeItem('initialCash')
+    localStorage.removeItem('cashCutId')
     setLastCashCut(nuevoCorte)
     setCortes([nuevoCorte]);
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte

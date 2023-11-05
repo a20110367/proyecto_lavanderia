@@ -238,7 +238,7 @@ export default function PuntoVenta() {
     : data.filter((service) => {
         // Aquí aplicamos las condiciones para filtrar los servicios
         if (
-          serviceType === "lavado" &&
+          serviceType === "encargo" &&
           !service.description.toLowerCase().includes("autoservicio") &&
           !service.description.toLowerCase().includes("planchado")
         ) {
@@ -247,7 +247,7 @@ export default function PuntoVenta() {
         if (
           serviceType === "planchado" &&
           !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("lavado")
+          !service.description.toLowerCase().includes("encargo")
         ) {
           return true;
         }

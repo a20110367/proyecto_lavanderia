@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import Axios from "axios";
+import useSWR, { useSWRConfig } from "swr";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -30,6 +31,8 @@ function HistorialCaja() {
     }
   };
 
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,6 +46,9 @@ function HistorialCaja() {
 
     fetchData();
   }, []);
+  
+  const { data } = useSWR("cashCuts", fetchCashCuts);
+  if (!data) return <h2>Loading...</h2>;
 
   const handleDetallesClick = (corte) => {
     setSelectedCorte(corte);

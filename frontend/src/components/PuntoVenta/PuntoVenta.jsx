@@ -31,6 +31,7 @@ export default function PuntoVenta() {
   const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [payStatus, setPayStatus] = useState('unpaid')
   const [selectedPaymentOption, setSelectedPaymentOption] =
   useState(serviceType === "autoservicio" ? "Anticipado" : "A la entrega");
 
@@ -108,6 +109,7 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
+    console.log(cart)
     setIsModalVisible(true);
   };
 
@@ -115,8 +117,43 @@ export default function PuntoVenta() {
     setIsModalVisible(false);
   };
 
-  const handleSaveAndGenerateTicket = () => {
+  const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
+
+    ///////////////////////////////////////////////
+    if (selectedPaymentOption === 'Anticipado') {
+      setPayStatus('paid')
+    }
+    try {
+      await Axios.post("http://localhost:5000/orders", {
+        serviceOrder: {
+          receptionDate: '1',
+          totalPrice: cart.price * cart.quantity,
+          fk_client: 1,
+          
+        },
+        serviceOrderDetail: [{
+          units: cart.quantity,
+          subtotal: cart.price * cart.quantity
+        }]
+      });
+      //console.log(JSON.stringify(response))
+      setSuccess(true);
+      //clear state and controlled inputs
+      setUserName("");
+      setPwd("");
+      setMatchPwd("");
+      navigate("/menuPuntoVenta");
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 409) {
+        setErrMsg("Username Taken");
+      } else {
+        setErrMsg("Registration Failed");
+      }
+    }
+    ///////////////////////
 
     const doc = new jsPDF();
 

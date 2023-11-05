@@ -54,8 +54,7 @@ export default function PuntoVenta() {
   const [deliveryDate, setDeliveryDate] = useState(moment().toISOString());
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
   const [categoryId, setCategoryId] = useState(0)
-
-  useEffect
+  const [errMsg, setErrMsg] = useState("")
 
   const fetcher = async () => {
     const response = await Axios.get("http://localhost:5000/services");

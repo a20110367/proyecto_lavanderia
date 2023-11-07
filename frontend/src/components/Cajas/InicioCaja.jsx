@@ -18,12 +18,8 @@ function InicioCaja() {
   const dateT = new Date()
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const formattedDate = moment().format('DD/MM/yyyy HH:mm:ss');
-      setFechaHora(formattedDate);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    const formattedDate = moment().format('DD/MM/yyyy HH:mm');
+    setFechaHora(formattedDate);
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   faCheck,
@@ -7,6 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from '../../api/api'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%*]).{8,24}$/;
@@ -74,7 +74,7 @@ function EditClient() {
 
   useEffect(() => {
     const getClientById = async () => {
-      const response = await Axios.get(`http://localhost:5000/clientsById/${id}`);
+      const response = await api.get(`/clientsById/${id}`);
       setUserName(response.data.username);
       setName(response.data.name);
       setFirstLN(response.data.firstLN);
@@ -89,7 +89,7 @@ function EditClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const isNameValid = USER_REGEX.test(name);
+    const isNameValid = USER_REGEX.test(userName);
     const isPwdValid = PWD_REGEX.test(pwd);
 
     if (!isNameValid || !isPwdValid) {
@@ -98,9 +98,9 @@ function EditClient() {
     }
 
     try {
-      await Axios.patch(`http://localhost:5000/clients/${id}`, {
+      await api.patch(`/clients/${id}`, {
         name: name,
-        userName: userName,
+        username: userName,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
@@ -112,7 +112,7 @@ function EditClient() {
       setName("");
       setPwd("");
       setMatchPwd("");
-      navigate("/login");
+      navigate("/clients");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor");

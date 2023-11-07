@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import api from '../../api/api'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$*]).{8,24}$/;
@@ -92,8 +92,8 @@ function AddClient() {
     }
 
     try {
-      await Axios.post("http://localhost:5000/clients", {
-        userName: userName,
+      await api.post("/clients", {
+        username: userName,
         name: name,
         firstLN: firstLN,
         secondLN: secondLN,

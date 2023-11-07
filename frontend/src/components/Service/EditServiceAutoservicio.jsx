@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function EditServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -25,7 +25,7 @@ function EditServiceAutoservicio() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await Axios.get(`http://localhost:5000/servicesById/${id}`);
+      const response = await api.get(`/servicesById/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");
@@ -45,7 +45,7 @@ function EditServiceAutoservicio() {
   
 
     try {
-      await Axios.patch(`http://localhost:5000/services/${id}`, {
+      await api.patch(`/services/${id}`, {
         description: description,
         category_id: 1,
         price: parseFloat(price),

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -28,7 +28,7 @@ function ServicesLavanderia() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/services");
     return response.data;
   };
 
@@ -58,7 +58,7 @@ function ServicesLavanderia() {
   });
 
   const deleteService = async (serviceId) => {
-    await Axios.delete(`http://localhost:5000/services/${serviceId}`);
+    await api.delete(`/services/${serviceId}`);
     mutate("services");
   };
 

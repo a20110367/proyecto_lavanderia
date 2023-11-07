@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   faCheck,
@@ -7,7 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import api from '../../api/api'
 
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
 
@@ -15,10 +14,7 @@ function EditEquipo() {
 
   const errRef = useRef();
 
-
-
   const [machineType, setMachineType] = useState("plancha");
-
 
   const [pieces, setPieces] = useState("");
   const [validPieces, setValidPieces] = useState(false);
@@ -44,7 +40,7 @@ function EditEquipo() {
 
   useEffect(() => {
     const getIronStationsById = async () => {
-      const response = await Axios.get(`http://localhost:5000/ironStations/${id}`);
+      const response = await api.get(`/ironStations/${id}`);
       setMachineType(response.data.machineType);
       setPieces(response.data.pieces.toString());
       setStatus(response.data.status);
@@ -64,7 +60,7 @@ function EditEquipo() {
     }
 
     try {
-      await Axios.patch(`http://localhost:5000/ironStations/${id}`, {
+      await api.patch(`/ironStations/${id}`, {
         machineType: machineType,
         pieces: parseInt(pieces),
         status: status,

@@ -4,8 +4,8 @@ import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
+import api from '../../api/api'
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -23,7 +23,7 @@ function HistorialCaja() {
 
   const fetchCashCuts = async () => {
     try {
-      const response = await Axios.get("http://localhost:5000/cashCuts");
+      const response = await api.get("/cashCuts");
       return response.data;
     } catch (error) {
       console.error("Error fetching cash cuts:", error);

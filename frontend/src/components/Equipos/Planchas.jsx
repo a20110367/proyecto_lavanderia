@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -27,7 +27,7 @@ function Planchas() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/ironStations");
+    const response = await api.get("/ironStations");
     return response.data;
   };
 
@@ -36,7 +36,7 @@ function Planchas() {
 
 
   const deleteIron = async (id_ironStation) => {
-    await Axios.delete(`http://localhost:5000/ironStations/${id_ironStation}`);
+    await api.delete(`/ironStations/${id_ironStation}`);
     mutate("ironStations");
   };
 

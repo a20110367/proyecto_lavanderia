@@ -5,13 +5,13 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import Axios from "axios";
 import ReactPaginate from "react-paginate";
+import api from '../../api/api'
 
 function AutoServicio() {
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
-    const response = await Axios.get("http://localhost:5000/clients");
+    const response = await api.get("/clients");
     return response.data;
   });
 

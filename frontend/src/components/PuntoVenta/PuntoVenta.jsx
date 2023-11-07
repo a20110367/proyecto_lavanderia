@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import Axios from "axios";
 import useSWR from "swr";
 import { Link, useLocation } from "react-router-dom";
 import { Modal, Select } from "antd";
@@ -10,6 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
+import api from '../../api/api'
 
 const { Option } = Select;
 
@@ -57,7 +57,7 @@ export default function PuntoVenta() {
   const [errMsg, setErrMsg] = useState("")
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/services");
     return response.data;
   };
 
@@ -138,7 +138,6 @@ export default function PuntoVenta() {
   const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
 
-    const now = new Date();
     const arrayServiceDetail = []
 
     let total = 0
@@ -148,7 +147,6 @@ export default function PuntoVenta() {
       arrayServiceDetail.push({
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
-        updatedAt: now.toISOString(),
         fk_Service: detail.id_service,
       }
     ))
@@ -156,10 +154,8 @@ export default function PuntoVenta() {
     ///////////////////////////////////////////////
     //CART[0,1]
     try {
-      await Axios.post("http://localhost:5000/orders", {
+      await api.post("/orders", {
         serviceOrder: {
-          receptionDate: purchaseDate.split("T")[0] + 'T00:00:00.000Z',
-          receptionTime: "1970-01-01T" + purchaseDate.split("T")[1],
           totalPrice: parseFloat(totalPrice),
           fk_client: clientId,
           numberOfItems: arrayServiceDetail.length,

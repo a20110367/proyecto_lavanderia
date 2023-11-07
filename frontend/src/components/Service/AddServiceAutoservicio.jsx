@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function AddServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -30,7 +30,7 @@ function AddServiceAutoservicio() {
     }
 
     try {
-      await Axios.post("http://localhost:5000/services", {
+      await api.post("/services", {
         description: description,
         price: parseFloat(price),
         category_id: 1,

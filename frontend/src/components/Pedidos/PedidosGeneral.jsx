@@ -3,8 +3,8 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import Axios from 'axios'
 import useSWR from "swr";
+import api from '../../api/api'
 
 import {
   IssuesCloseOutlined,
@@ -45,7 +45,7 @@ function PedidosGeneral() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/orders");
+    const response = await api.get("/orders");
     return response.data;
   };
 
@@ -94,7 +94,7 @@ function PedidosGeneral() {
     try {
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
-      await Axios.post("http://localhost:5000/sendMessage", {
+      await api.post("/sendMessage", {
         id_order: pedido.id_order,
         name: pedido.client.name,
         email: pedido.client.email,
@@ -133,7 +133,7 @@ function PedidosGeneral() {
 
       const pedidosActualizados = pedidos.map((pedido) => {
         if (pedido.id_order === pedidoId) {
-          Axios.patch(`http://localhost:5000/orders/${pedidoId}`, {
+          Axios.api(`/orders/${pedidoId}`, {
             orderStatus: "inProgress"
           });
           return { ...pedido, orderStatus: "inProgress" };

@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
-import Axios from 'axios'
 import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
-
+import api from '../../api/api'
 
 function InicioCaja() {
   const [visible, setVisible] = useState(false);
@@ -48,7 +47,7 @@ function InicioCaja() {
       return
     }
     try {
-      const response = await Axios.post("http://localhost:5000/cashCuts", {
+      const response = await api.post("/cashCuts", {
         inicialCash: parseFloat(dineroInicio),
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),

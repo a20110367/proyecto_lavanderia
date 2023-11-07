@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
-import Axios from "axios";
+import api from '../../api/api'
 
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -33,7 +33,7 @@ function PedidosPlanchado() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/orders");
+    const response = await api.get("/orders");
     return response.data;
   };
 
@@ -81,7 +81,7 @@ function PedidosPlanchado() {
     try {
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
-      await Axios.post("http://localhost:5000/sendMessage", {
+      await api.post("/sendMessage", {
         id_order: pedido.id_order,
         name: pedido.client.name,
         email: pedido.client.email,

@@ -3,8 +3,8 @@ import { Modal, Button, Input, message } from "antd";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
-import Axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -66,9 +66,7 @@ function CorteCaja() {
 
     setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const response = await Axios.get(
-      `http://localhost:5000/closeCashCut/${cashCutId}`
-    );
+    const response = await api.get(`/closeCashCut/${cashCutId}`);
 
     const nuevoCorte = response.data;
 
@@ -134,9 +132,7 @@ function CorteCaja() {
 
     setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const response = await Axios.get(
-      `http://localhost:5000/calculateCashCut/${cashCutId}`
-    );
+    const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
     const nuevoCorte = response.data;
 

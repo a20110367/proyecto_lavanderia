@@ -4,8 +4,8 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
-import Axios from "axios";
 import useSWR from "swr";
+import api from '../../api/api'
 
 function Reembolso() {
   const [reembolsos, setReembolsos] = useState([]);
@@ -27,7 +27,7 @@ function Reembolso() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/cashWhithdrawals");
+    const response = await api.get("/cashWhithdrawals");
     return response.data;
   };
 
@@ -105,7 +105,7 @@ function Reembolso() {
     if (isValid) {
       const date = moment().format(); 
 
-      Axios.post("http://localhost:5000/cashWhithdrawals", {
+      api.post("/cashWhithdrawals", {
         cashWhithdrawalType : "refound",
         fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
         fk_user:cookies.token,

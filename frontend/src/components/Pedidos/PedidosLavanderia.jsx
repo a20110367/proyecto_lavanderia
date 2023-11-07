@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal } from "antd";
 import useSWR from "swr";
-import Axios from "axios";
 import ReactPaginate from "react-paginate";
+import api from '../../api/api'
 
 import {
   IssuesCloseOutlined,
@@ -32,7 +32,7 @@ function PedidosLavanderia() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/orders");
+    const response = await api.get("/orders");
     return response.data;
   };
 
@@ -80,7 +80,7 @@ function PedidosLavanderia() {
     try {
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
-      await Axios.post("http://localhost:5000/sendMessage", {
+      await api.post("/sendMessage", {
         id_order: pedido.id_order,
         name: pedido.client.name,
         email: pedido.client.email,

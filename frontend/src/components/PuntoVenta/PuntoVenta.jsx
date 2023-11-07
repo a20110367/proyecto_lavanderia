@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import Axios from "axios";
 import useSWR from "swr";
 import { Link, useLocation } from "react-router-dom";
 import { Modal, Select } from "antd";
@@ -10,6 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
+import api from '../../api/api'
 
 const { Option } = Select;
 
@@ -26,24 +26,38 @@ export default function PuntoVenta() {
   ]);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
+  const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
-  useState(serviceType === "autoservicio" ? "Anticipado" : "A la entrega");
+  useState(serviceType === "autoservicio" ? "advance" : "delivery");
 
   const [paymentMethod, setPaymentMethod] = useState(
-    serviceType === "autoservicio" ? "Efectivo" : ""
+    serviceType === "autoservicio" ? "cash" : ""
   );
 
+  useEffect(() => {
+    // Definir el category_id
+    if (serviceType === 'autoservicio') {
+      setCategoryId(1)
+    }else if(serviceType === 'encargo'){
+      setCategoryId(2)
+    }else{
+      setCategoryId(3)
+    }
+  }, [serviceType]);
+
   const [purchaseDate, setPurchaseDate] = useState(moment());
-  const [deliveryDate, setDeliveryDate] = useState(moment());
+  const [deliveryDate, setDeliveryDate] = useState(moment().toISOString());
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
+  const [categoryId, setCategoryId] = useState(0)
+  const [errMsg, setErrMsg] = useState("")
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/services");
     return response.data;
   };
 
@@ -60,12 +74,12 @@ export default function PuntoVenta() {
         if (existingService) {
           const updatedCart = cart.map((item) =>
             item.id_service === serviceId
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + 1, totalPrice: item.price * (item.quantity + 1) }
               : item
           );
           setCart(updatedCart);
         } else {
-          setCart([...cart, { ...serviceToAdd, quantity: 1 }]);
+          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: 0 }]);
         }
       }
     } else {
@@ -108,6 +122,12 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
+    // console.log(cart)
+    // console.log(deliveryDate)
+    // console.log(categoryId)
+    // const now = new Date();
+    // console.log(now.toISOString())
+    // console.log(now.toISOString().split("T")[0] + 'T00:00:00.000Z')
     setIsModalVisible(true);
   };
 
@@ -115,8 +135,47 @@ export default function PuntoVenta() {
     setIsModalVisible(false);
   };
 
-  const handleSaveAndGenerateTicket = () => {
+  const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
+
+    const arrayServiceDetail = []
+
+    let total = 0
+    cart.map(detail => total = total + detail.totalPrice)
+
+    cart.map( detail => 
+      arrayServiceDetail.push({
+        units: detail.quantity,
+        subtotal: detail.quantity * detail.price,
+        fk_Service: detail.id_service,
+      }
+    ))
+
+    ///////////////////////////////////////////////
+    //CART[0,1]
+    try {
+      await api.post("/orders", {
+        serviceOrder: {
+          totalPrice: parseFloat(totalPrice),
+          fk_client: clientId,
+          numberOfItems: arrayServiceDetail.length,
+          payForm: paymentMethod,
+          payStatus: selectedPaymentOption,          
+          fk_user: cookies.token,
+          scheduledDeliveryDate: deliveryDate,
+          scheduledDeliveryTime: "1970-01-01T" + deliveryDate.split("T")[1],
+          fk_categoryId: categoryId,    
+        },
+        serviceOrderDetail: arrayServiceDetail,
+      });
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("Sin respuesta del Servidor");
+      } else {
+        setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
+      }
+    }
+    ///////////////////////
 
     const doc = new jsPDF();
 
@@ -154,7 +213,7 @@ export default function PuntoVenta() {
 
     doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 40);
 
-    if (selectedPaymentOption === "Anticipado") {
+    if (selectedPaymentOption === "advance") {
       doc.text(`Método de Pago Anticipado: ${paymentMethod}`, 10, y + 50);
     }
 
@@ -174,7 +233,7 @@ export default function PuntoVenta() {
     : data.filter((service) => {
         // Aquí aplicamos las condiciones para filtrar los servicios
         if (
-          serviceType === "lavado" &&
+          serviceType === "encargo" &&
           !service.description.toLowerCase().includes("autoservicio") &&
           !service.description.toLowerCase().includes("planchado")
         ) {
@@ -183,7 +242,7 @@ export default function PuntoVenta() {
         if (
           serviceType === "planchado" &&
           !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("lavado")
+          !service.description.toLowerCase().includes("encargo")
         ) {
           return true;
         }
@@ -334,7 +393,7 @@ export default function PuntoVenta() {
                       Fecha de Entrega:
                     </p>
                     <DatePicker
-                      selected={deliveryDate.toDate()}
+                      selected={moment(deliveryDate).toDate()}
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={15}
@@ -359,28 +418,28 @@ export default function PuntoVenta() {
                       style={{ width: "100%", fontSize: "16px" }}
                       onChange={(value) => {
                         setSelectedPaymentOption(value);
-                        if (value === "Anticipado") {
-                          setPaymentMethod("Efectivo");
+                        if (value === "advance") {
+                          setPaymentMethod("cash");
                         } else {
                           setPaymentMethod("");
                         }
                       }}
                       value={
                         serviceType === "autoservicio"
-                          ? "Anticipado"
+                          ? "advance"
                           : selectedPaymentOption
                       }
                       disabled={serviceType === "autoservicio"}
                     >
                       <Option
-                        value="A La Entrega"
+                        value="delivery"
                         disabled={serviceType === "autoservicio"}
                       >
                         A la Entrega
                       </Option>
-                      <Option value="Anticipado">Anticipado</Option>
+                      <Option value="advance">Anticipado</Option>
                     </Select>
-                    {(selectedPaymentOption === "Anticipado" ||
+                    {(selectedPaymentOption === "advance" ||
                       serviceType === "autoservicio") &&  (
                       <div>
                         <p style={{ fontSize: "18px", fontWeight: "bold" }}>
@@ -391,8 +450,8 @@ export default function PuntoVenta() {
                           onChange={(value) => setPaymentMethod(value)}
                           value={paymentMethod} 
                         >
-                          <Option value="Tarjeta">Tarjeta</Option>
-                          <Option value="Efectivo">Efectivo</Option>
+                          <Option value="credit">Tarjeta</Option>
+                          <Option value="cash">Efectivo</Option>
                         </Select>
                       </div>
                     )}

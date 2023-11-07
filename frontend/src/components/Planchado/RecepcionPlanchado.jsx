@@ -5,13 +5,13 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import Axios from "axios";
 import ReactPaginate from "react-paginate";
+import api from '../../api/api'
 
 function RecepcionPlanchado() {
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
-    const response = await Axios.get("http://localhost:5000/clients");
+    const response = await api.get("/clients");
     return response.data;
   });
 
@@ -107,7 +107,7 @@ function RecepcionPlanchado() {
                     <td className="th2">{client.email}</td>
                     <td>
                       <Link
-                        to={`/puntoVenta?clientName=${client.name}&serviceType=Planchado`}
+                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Planchado`}
                       >
                         <button className="btn-generate">
                           <div className="subtitle m-1">Generar pedido</div>

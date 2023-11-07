@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import Axios from 'axios';
+import api from '../../api/api'
 
 const UserContext = createContext();
 
@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
     const [cookies, setCookies, removeCookie] = useCookies();
 
     const login = async ({ user, pass }) => {
-        const res = await Axios.post("http://localhost:5000/auth", {
+        const res = await api.post("/auth", {
             username: user,
             pass: pass
         });

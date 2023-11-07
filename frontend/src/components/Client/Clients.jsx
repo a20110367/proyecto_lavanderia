@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import api from '../../api/api'
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
 import moment from "moment";
@@ -36,7 +36,7 @@ function Clients() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/clients");
+    const response = await api.get("/clients");
     return response.data;
   };
 
@@ -44,7 +44,7 @@ function Clients() {
   if (!data) return <h2>Loading...</h2>;
 
   const deleteClient = async (clientId) => {
-    await Axios.delete(`http://localhost:5000/clients/${clientId}`);
+    await api.delete(`/clients/${clientId}`);
     mutate("clients");
   };
 
@@ -66,7 +66,7 @@ function Clients() {
   };
 
   const n2word = async () => {
-    const res = await Axios.post("http://localhost:5000/numberToWord", {
+    const res = await api.post("/numberToWord", {
       number: 95.0,
     });
 

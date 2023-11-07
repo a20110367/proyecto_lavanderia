@@ -11,7 +11,8 @@ export const getServices = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true
                     },  
                 },
                 WashService:{
@@ -67,7 +68,8 @@ export const getServicesById = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true
                     },  
                 },
                 WashService:{
@@ -119,7 +121,8 @@ export const getServicesByCategory = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true
                     },  
                 },
                 WashService:{
@@ -171,7 +174,8 @@ export const getLaundryServices = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        category_id:true
                     },  
                 },
                 WashService:{
@@ -214,7 +218,8 @@ export const getSelfServiceServices = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true
                     },  
                 },
                 WashService:{
@@ -254,7 +259,8 @@ export const getIronServices = async (req, res) =>{
                 price:true,
                 Category:{
                     select:{
-                        categoryDescription:true
+                        categoryDescription:true,
+                        id_category:true
                     },  
                 },
                 IronService:{
@@ -293,7 +299,7 @@ export const createService = async (req, res) =>{
 export const createLaundryService = async (req, res) =>{
         
     try {
-        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
         const service = await  prisma.service.create({
             data:{
                 description:description,
@@ -341,7 +347,7 @@ export const createLaundryService = async (req, res) =>{
 export const createSelfServiceWashService = async (req, res) =>{
         
     try {
-        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
         const service = await  prisma.service.create({
             data:{
                 description:description,
@@ -378,7 +384,7 @@ export const createSelfServiceWashService = async (req, res) =>{
 export const createSelfServiceDryService = async (req, res) =>{
         
     try {
-        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
         const service = await prisma.service.create({
             data:{
                 description:description,
@@ -413,7 +419,7 @@ export const createSelfServiceDryService = async (req, res) =>{
 export const createIronService = async (req, res) =>{
         
     try {
-        const{description,price,ironPieces, ironCycleTime }=req.body
+        const{description,price,ironPieces, ironCycleTime }=req.body;
         const service = await prisma.service.create({
             data:{
                 description:description,

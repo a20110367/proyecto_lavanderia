@@ -202,7 +202,7 @@ function PedidosPlanchado() {
                 <td className="py-3 px-6 font-medium text-gray-900">
                   {pedido.client.name}
                 </td>
-                <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
+                <td className="py-3 px-6">{pedido.ServiceOrderDetail.find(service => service.id_serviceOrderDetail) != undefined ? pedido.ServiceOrderDetail.length : 0}</td>
                 <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
                 <td className="py-3 px-6 ">
                   {pedido.orderStatus === "pending" ? (

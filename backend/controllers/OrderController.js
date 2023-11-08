@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { response } from "express";
 
 const prisma = new PrismaClient();
 
@@ -153,6 +154,281 @@ export const createOrderMany = async (req, res) =>{
         res.status(400).json({msg:e.message});
     }
 }
+
+export const createLaudryServiceOrder = async (req, res) =>{
+        
+    try {
+        console.log(req.body.services);
+        const services=req.body.services.at(0);
+        const{id_service,quantity,price,category_id}=services;
+
+        const service = await prisma.service.findFirst({
+            where:{
+
+                id_service:id_service,
+            },
+
+            include:{
+                WashService:true,
+                DryService:true
+            }
+
+        });
+        console.log(service);
+
+
+        const serviceOrder = await prisma.serviceOrder.create({
+
+            data:req.body.serviceOrder
+
+        });
+
+        console.log(serviceOrder.id_order);
+
+        const orderDetail = await prisma.serviceOrderDetail.create({
+            
+            data:{
+                units:quantity,
+                subtotal:price,
+                fk_Service:id_service,
+                fk_ServiceOrder:serviceOrder.id_order
+            },
+
+        });
+
+        const washService = await prisma.laundryWashQueue.create({
+            
+            data:{
+                washService:{
+                    connect:{id_washService:service.WashService.at(0).id_washService},
+                },
+                serviceOrder:{
+                    connect:{id_order:serviceOrder.id_order},
+                }
+            }
+
+        });
+
+        const dryService = await prisma.laundryDryQueue.create({
+            data:{                
+                dryService:{
+                    connect:{id_dryService:service.DryService.at(0).id_dryService},
+                },
+                serviceOrder:{
+                    connect:{id_order:serviceOrder.id_order},
+                }   
+            }
+          
+        });
+        
+        const response = {
+
+            "serviceOrder": serviceOrder,
+            "orderDetail": orderDetail,
+            "washService": washService,
+            "dryService": dryService
+        }
+        
+        res.status(201).json(response);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
+export const createIronServiceOrder = async (req, res) =>{
+        
+    try {
+        console.log(req.body.services);
+        const services=req.body.services.at(0);
+        const{id_service,quantity,price,category_id}=services;
+
+        const service = await prisma.service.findFirst({
+            where:{
+
+                id_service:id_service,
+            },
+
+            include:{
+                IronService:true,
+            }
+
+        });
+        console.log(service);
+
+
+        const serviceOrder = await prisma.serviceOrder.create({
+
+            data:req.body.serviceOrder
+
+        });
+
+        console.log(serviceOrder.id_order);
+
+        const orderDetail = await prisma.serviceOrderDetail.create({
+            
+            data:{
+                units:quantity,
+                subtotal:price,
+                fk_Service:id_service,
+                fk_ServiceOrder:serviceOrder.id_order
+            },
+
+        });
+
+        const ironService = await prisma.IronQueue.create({
+            
+            data:{
+                ironService:{
+                    connect:{id_ironService:service.IronService.at(0).id_ironService},
+                },
+                serviceOrder:{
+                    connect:{id_order:serviceOrder.id_order},
+                }
+            }
+
+        });
+        
+        const response = {
+
+            "serviceOrder": serviceOrder,
+            "orderDetail": orderDetail,
+            "ironService": ironService
+        }
+        
+        res.status(201).json(response);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const createSelfServiceOrder = async (req, res) =>{
+        
+    try {
+        
+        const services=req.body.services;
+        const washServiceCreated =[];
+        const dryServiceCreated =[];
+        console.log(services);
+      
+        //const{id_service,quantity,price,category_id}=services;
+
+        const serviceOrder = await prisma.serviceOrder.create({
+
+            data:req.body.serviceOrder
+
+        });
+
+        console.log(serviceOrder.id_order);
+
+        const serviceDetail = services.map(item =>({... item, fk_ServiceOrder: serviceOrder.id_order}));
+
+        //console.log(serviceOrder.id_order);
+    
+        const orderDetail = await prisma.serviceOrderDetail.createMany({
+        
+            data:serviceDetail,
+            // data:{
+            //     units:quantity,
+            //     subtotal:price,
+            //     fk_Service:id_service,
+            //     fk_ServiceOrder:serviceOrder.id_order
+            // },
+
+        });
+        
+        serviceDetail.forEach( async element => {
+            
+
+            let cicloTimes = element.units;
+            while(cicloTimes>0){
+
+                var typeWashService= true; 
+
+                var serviceWash = await prisma.washService.findFirst({
+                    where: {
+                        fk_idService: element.fk_Service,
+                    },
+                });
+
+                console.log(serviceWash);
+
+                if(serviceWash===null){
+
+                var serviceDry = await prisma.dryService.findFirst({
+                        where: {
+                            fk_idService: element.fk_Service
+                        },
+        
+                    });
+
+                    console.log(serviceDry);
+
+                    typeWashService=false;
+
+                    var dryService = await prisma.laundryDryQueue.create({
+                        data:{                
+                            dryService:{
+                                connect:{id_dryService:serviceDry.id_dryService},
+                            },
+                            serviceOrder:{
+                                connect:{id_order:serviceOrder.id_order},
+                            }   
+                        }
+                    
+                    });
+
+                    console.log(dryService);
+
+                    //dryServiceCreated.push({dryService});
+
+
+                }else{
+
+                    var washService = await prisma.laundryWashQueue.create({
+                
+                        data:{
+                            washService:{
+                                connect:{id_washService:serviceWash.id_washService},
+                            },
+                            serviceOrder:{
+                                connect:{id_order:serviceOrder.id_order},
+                            }
+                        }
+            
+                    });
+                    console.log(washService);
+
+                    //washServiceCreated.push({...washService});
+
+
+                }
+
+                cicloTimes--;
+
+            }
+
+            
+        });
+        
+
+        const response = {
+
+            "serviceOrder": serviceOrder,
+            "orderDetail": orderDetail,
+            //"washService": washServiceCreated.length,
+            //dryService": dryServiceCreated.length
+        }
+        
+        res.status(201).json(response);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
 
 export const updateOrder =  async (req, res) =>{
  

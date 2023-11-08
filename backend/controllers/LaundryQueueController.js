@@ -29,7 +29,7 @@ export const getLaundryWashQueueByOrderId = async (req, res) =>{
     try {
         const response = await prisma.laundryWashQueue.findMany({
             where:{
-                fk_ServiceOrder: Number(req.params.fk_ServiceOrder)
+                fk_idServiceOrder: Number(req.params.fk_ServiceOrder)
             }
         });
         res.status(200).json(response);

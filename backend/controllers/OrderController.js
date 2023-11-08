@@ -160,7 +160,7 @@ export const createLaudryServiceOrder = async (req, res) =>{
     try {
         console.log(req.body.services);
         const services=req.body.services.at(0);
-        const{id_service,quantity,price,category_id}=services;
+        //const{id_service,quantity,price,category_id}=services;
 
         const service = await prisma.service.findFirst({
             where:{
@@ -188,9 +188,9 @@ export const createLaudryServiceOrder = async (req, res) =>{
         const orderDetail = await prisma.serviceOrderDetail.create({
             
             data:{
-                units:quantity,
-                subtotal:price,
-                fk_Service:id_service,
+                units:services.units,
+                subtotal:services.subtotal,
+                fk_Service:services.fk_Service,
                 fk_ServiceOrder:serviceOrder.id_order
             },
 
@@ -242,7 +242,7 @@ export const createIronServiceOrder = async (req, res) =>{
     try {
         console.log(req.body.services);
         const services=req.body.services.at(0);
-        const{id_service,quantity,price,category_id}=services;
+        //const{id_service,quantity,price,category_id}=services;
 
         const service = await prisma.service.findFirst({
             where:{
@@ -269,9 +269,9 @@ export const createIronServiceOrder = async (req, res) =>{
         const orderDetail = await prisma.serviceOrderDetail.create({
             
             data:{
-                units:quantity,
-                subtotal:price,
-                fk_Service:id_service,
+                units:services.units,
+                subtotal:services.subtotal,
+                fk_Service:services.fk_Service,
                 fk_ServiceOrder:serviceOrder.id_order
             },
 

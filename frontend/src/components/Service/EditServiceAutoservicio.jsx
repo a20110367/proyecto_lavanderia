@@ -168,13 +168,13 @@ function EditServiceAutoservicio() {
 
               {service == 'dry' ?
                 <div>
-                  <label className="form-lbl" htmlFor="type">
+                  <label className="form-lbl" htmlFor="pieces">
                     Piezas
                   </label>
                   <input
                     className="form-input"
                     type="number"
-                    id="type"
+                    id="pieces"
                     onChange={(e) => setPieces(e.target.value)}
                     value={pieces}
                   />

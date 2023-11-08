@@ -1,173 +1,60 @@
-import Navbar from "../../routes/Navbar"
-import { useRef, useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
-import Axios from "axios";
-
-
-function AddClient() {
-
-    const clientRef = useRef();
-    const errcRef = useRef();
-
-    const [client, setClient] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [clientFocus, setClientFocus] = useState(false);
-
-    const [apellido_p, setApellido_p] = useState('');
-    const [validApellido_p, setValidApellido_p] = useState(false);
-    const [apellido_pFocus, setApellido_pFocus] = useState(false);
-    
-    const [apellido_m, setApellido_m] = useState('');
-    const [validApellido_m, setValidApellido_m] = useState(false);
-    const [apellido_mFocus, setApellido_mFocus] = useState(false);
-
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        clientRef.current.focus();
-    }, [])
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(client)
-        console.log(apellido_p)
-        console.log(apellido_m)
-        console.log(phone)
-        console.log(email)
-       
-       
-        try {
-            await Axios.post("http://localhost:5000/clients", {
-                name: client,
-                apellido_p: apellido_p,
-                apellido_m: apellido_m,
-                phone: phone,
-                email: email,
-                
-            });
-            //console.log(JSON.stringify(response))
-            setSuccess(true);
-            //clear state and controlled inputs
-            setClient('');
-            setApellido_p('');
-            setApellido_m('');
-
-            navigate('/login')
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else if (err.response?.status === 409) {
-                setErrMsg('Clientname Taken');
-            } else {
-                setErrMsg('Registration Failed')
-            }
-            errcRef.current.focus();
-        }
-    }
-
-
-    return (
-        <div className="signup-form">
-            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-                <strong>Añadir Cliente</strong>
-            </div>
-            {success ? (
-                <section>
-                    <h1>Success!</h1>
-                    <p>
-                        <a href="/login">Sign In</a>
-                    </p>
-                </section>
-            ) : (
-                <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-                    <p ref={errcRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1 className="font-medium text-lg text-gray-500 mt-4">Por favor añade los datos del Cliente</h1>
-                    <form onSubmit={handleSubmit}>
-                        <label className="text-lg font-medium" htmlFor="clientname">
-                            Nombre Cliente
-                        </label>
-                        <input className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="text"
-                            id="clientname"
-                            ref={clientRef}
-                            autoComplete="off"
-                            onChange={(e) => setClient(e.target.value)}
-                            value={client}
-                            required
-                            onFocus={() => setClientFocus(true)}
-                            onBlur={() => setClientFocus(false)}
-                        />
-
-
-                        <label  className="text-lg font-medium" htmlFor="apellido_p">
-                            Apellido Parterno
-                        </label>
-                        <input
-                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
-                            type="text"
-                            id="apellido_p"
-                            onChange={(e) => setApellido_p(e.target.value)}
-                            value={apellido_p}
-                            required
-                            onFocus={() => setApellido_pFocus(true)}
-                            onBlur={() => setApellido_pFocus(false)}
-                        />
-
-
-                        <label  className="text-lg font-medium" htmlFor="apellido_m">
-                            Apellido Materno
-                        </label>
-                        <input
-                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
-                            type="text"
-                            id="apellido_m"
-                            onChange={(e) => setApellido_m(e.target.value)}
-                            value={apellido_m}
-                            required
-                            onFocus={() => setApellido_mFocus(true)}
-                            onBlur={() => setApellido_mFocus(false)}
-                        />
-
-                        <label className="text-lg font-medium" htmlFor="phone">
-                            Telefono
-                        </label>
-                        <input
-                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="tel"
-                            id="phone"
-                            onChange={(e) => setPhone(e.target.value)}
-                            value={phone}
-                            required
-                            pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                        />
-
-                        <label  className="text-lg font-medium" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="email"
-                            id="email"
-                            onChange={(e) => setEmail(e.target.value)}
-                            value={email}
-                            required
-                        />
-                    
-
-                        <button>Sign Up</button>
-                    </form>
-                </section>
-            )}
-            <Navbar></Navbar>
+const ticketPaid = `
+<form class="form-container" id="container" style="font-size:small">
+    <div class="PrintOnly">
+        <div class="info" style="text-align: center;"> 
+            <img src="${
+              IMAGES.caprelogo
+            }" width="150" height="100" alt="logo" class="logo">
+            <p>**CAPREL**</p>
+            <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
+            <p>TLAQUEPAQUE, JALISCO</p>
+            <p>TEL. (33) 30001789</p>
+            <p>RFC: RORS010912QZ6</p>
         </div>
-    )
-}
+        <hr class="hr-header">
+        <div style=" padding-top: 0px">                    
+            <h2>FOLIO No.: 87668</h2>
+            <h2>TIPO PAGO: ANTICIPADO</h2>                     
+            ${
+              paid ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"
+            }                    
+            <hr class="hr-header">  
+            <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
+                <p>Color</p>
+                <p>Estampado</p>
+                <p>Fibra</p>
+                <p>Cant.</p>
+                <p>Producto</p>
+                <p>Precio</p>           
+                <p>1</p>
+                <p>EDREDON MATRIMONIAL</p>
+                <p>95.00</p>
+            </div>
+            <hr class="hr-header">       
+            <h4 style="text-align:center;">Total Pagado: $95.00</h4>
+            <!--*<p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>-->
+            <p style="text-align:center;">${word}</p>            
+                <p>F. PAGO: EFECTIVO</p>
+                <p>Pago recibido: $100.00</p>
+                <p>Cambio devuelto: $5.00</p> 
+                <p>Cajero: YADIRA</p> 
+            <hr class="hr-header">   
+                <p>Cliente: biagai</p>         
+                <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
+                <h4>F. Entrega: 22/07/2023 SABADO 12:00 PM</h4>        
+                <hr class="hr-header">
+            <p>Observaciones Generales: </p>
+            <hr class="hr-header">
+            <div style="text-align:center;">
+                <p>PROFECO N. REGISTRO: 4390/2013</p>
+                <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
+                <p>FECHA: ${date}</p>
+                <p>HORA: ${hour}</p>                    
+                <p>GRACIAS POR SU VISITA</p>
+            </div>
+        </div>
+    </div>
+</form>
+`;
 
-export default AddClient
+export default ticketPaid;

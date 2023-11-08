@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 export const authUser = async (req, res) =>{
     const {username, pass} = req.body
     try{
-        const response = await prisma.user.findFirst({
+        const auth = await prisma.user.findFirst({
             select:{
                 id_user: true,
                 username: true,
@@ -15,7 +16,18 @@ export const authUser = async (req, res) =>{
                 username: username,
                 pass: pass,
             }
+
         });
+
+        const lastServiceOrder = await prisma.serviceOrder.aggregate({
+            _max:{
+                id_order:true,
+            },
+        });
+
+        const lastOrder=lastServiceOrder._max;
+        const response= {...auth,id_lastOrder:lastOrder};
+
         res.status(200).json(response)
     }catch(e){
         res.status(500).json({msg:e.message})

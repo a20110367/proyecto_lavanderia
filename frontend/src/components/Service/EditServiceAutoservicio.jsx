@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Select } from "antd";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from '../../api/api'
 
@@ -15,6 +16,7 @@ function EditServiceAutoservicio() {
   const [weight, setWeight] = useState();
   const [pieces, setPieces] = useState();
   const [category, setCategory] = useState("Autoservicio");
+  const [service, setService] = useState('laundry')
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -39,21 +41,40 @@ function EditServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
-        setErrMsg("Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio).");
-        return;
-      }
-  
+      setErrMsg("Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio).");
+      return;
+    }
 
-    try {
-      await api.patch(`/services/${id}`, {
-        description: description,
-        category_id: 1,
-        price: parseFloat(price),
-      });
-      navigate("/servicesAutoservicio");
-      setSuccess(true);
-    } catch (err) {
-      setErrMsg("Error al actualizar el servicio.");
+    if (service == 'laundry') {
+      try {
+        await api.patch(`/services/${id}`, {
+          description: description,
+          price: parseFloat(price),
+          washWeight: weight,
+          washCycleTime: time,
+          category_id: 1,
+          dryWeight: weight,
+          dryCycleTime: time
+        });
+        navigate("/servicesAutoservicio");
+        setSuccess(true);
+      } catch (err) {
+        setErrMsg("Error al actualizar el servicio lavado.");
+      }
+    } else if (service == 'dry') {
+      try {
+        await api.patch(`/services/${id}`, {
+          description: description,
+          price: parseFloat(price),
+          category_id: 1,
+          dryWeight: weight,
+          dryCycleTime: time
+        });
+        navigate("/servicesAutoservicio");
+        setSuccess(true);
+      } catch (err) {
+        setErrMsg("Error al actualizar el servicio lavanderia.");
+      }
     }
   };
 
@@ -133,16 +154,32 @@ function EditServiceAutoservicio() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
+              <label className="form-lbl" htmlFor="type">
+                Tipo de Servicio
               </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
-              />
+              <Select
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setService(value)}
+                value={service}
+              >
+                <Option value="laundry">Lavado</Option>
+                <Option value="dry">Secado</Option>
+              </Select>
+
+              {service == 'dry' ?
+                <div>
+                  <label className="form-lbl" htmlFor="type">
+                    Piezas
+                  </label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="type"
+                    onChange={(e) => setPieces(e.target.value)}
+                    value={pieces}
+                  />
+                </div>
+                : <p></p>}
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:

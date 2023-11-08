@@ -148,6 +148,7 @@ export default function PuntoVenta() {
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_Service: detail.id_service,
+        fk_categoryId: categoryId,
       }
     ))
 
@@ -157,9 +158,11 @@ export default function PuntoVenta() {
       await api.post("/orders", {
         serviceOrder: {
           totalPrice: parseFloat(totalPrice),
-          fk_client: clientId,
+          fk_client: parseInt(clientId),
           numberOfItems: arrayServiceDetail.length,
+          // DELIVERY OF ADVANCE
           payForm: paymentMethod,
+          //REVISAR PAYSTATUS
           payStatus: selectedPaymentOption,          
           fk_user: cookies.token,
           scheduledDeliveryDate: deliveryDate,

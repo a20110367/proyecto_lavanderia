@@ -166,7 +166,7 @@ function EditServiceAutoservicio() {
                 <Option value="dry">Secado</Option>
               </Select>
 
-              {service == 'dry' ?
+              {/* {service == 'dry' ?
                 <div>
                   <label className="form-lbl" htmlFor="pieces">
                     Piezas
@@ -179,7 +179,7 @@ function EditServiceAutoservicio() {
                     value={pieces}
                   />
                 </div>
-                : <p></p>}
+                : <p></p>} */}
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:

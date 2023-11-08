@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from '../../api/api'
 
@@ -31,7 +31,7 @@ function ActivarEquipos() {
     setAllEquipment(allData);
     return allData;
   };
-  const { data } = useSWR("machines", fetcher);
+  const { data } = useSWR("turnOnMachines", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const handleClickOpen = (machineModel, machineId) => {

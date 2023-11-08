@@ -34,6 +34,7 @@ export default function PuntoVenta() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedPaymentOption, setSelectedPaymentOption] =
   useState(serviceType === "autoservicio" ? "advance" : "delivery");
+  const [payStatus, setPayStatus] = useState('unpaid')
 
   const [paymentMethod, setPaymentMethod] = useState(
     serviceType === "autoservicio" ? "cash" : ""
@@ -128,6 +129,11 @@ export default function PuntoVenta() {
     // const now = new Date();
     // console.log(now.toISOString())
     // console.log(now.toISOString().split("T")[0] + 'T00:00:00.000Z')
+    // let total = 0
+    // let noOfItems = 0
+    // cart.map(detail => total = total + detail.totalPrice)
+    // cart.map(detail => noOfItems = noOfItems + detail.quantity)
+    // console.log(noOfItems)
     setIsModalVisible(true);
   };
 
@@ -141,13 +147,16 @@ export default function PuntoVenta() {
     const arrayServiceDetail = []
 
     let total = 0
+    let noOfItems = 0
     cart.map(detail => total = total + detail.totalPrice)
+    cart.map(detail => noOfItems = noOfItems + detail.quantity)
 
     cart.map( detail => 
       arrayServiceDetail.push({
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_Service: detail.id_service,
+        fk_categoryId: categoryId,
       }
     ))
 
@@ -157,12 +166,14 @@ export default function PuntoVenta() {
       await api.post("/orders", {
         serviceOrder: {
           totalPrice: parseFloat(totalPrice),
-          fk_client: clientId,
-          numberOfItems: arrayServiceDetail.length,
-          payForm: paymentMethod,
-          payStatus: selectedPaymentOption,          
+          fk_client: parseInt(clientId),
+          numberOfItems: noOfItems,
+          // DELIVERY OF ADVANCE
+          payForm: selectedPaymentOption,
+          //REVISAR PAYSTATUS
+          payStatus: payStatus,          
           fk_user: cookies.token,
-          scheduledDeliveryDate: deliveryDate,
+          scheduledDeliveryDate: deliveryDate.split("T")[0] + 'T00:00:00.000Z',
           scheduledDeliveryTime: "1970-01-01T" + deliveryDate.split("T")[1],
           fk_categoryId: categoryId,    
         },
@@ -420,8 +431,10 @@ export default function PuntoVenta() {
                         setSelectedPaymentOption(value);
                         if (value === "advance") {
                           setPaymentMethod("cash");
+                          setPayStatus('paid')
                         } else {
                           setPaymentMethod("");
+                          setPayStatus('unpaid')
                         }
                       }}
                       value={

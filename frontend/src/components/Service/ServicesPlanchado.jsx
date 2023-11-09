@@ -55,8 +55,9 @@ function ServicesPlanchado() {
   });
 
   const deleteService = async (serviceId) => {
+    console.log(serviceId)
     await api.delete(`/services/${serviceId}`);
-    mutate("services");
+    mutate("servicesIron");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {

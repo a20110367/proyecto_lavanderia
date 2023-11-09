@@ -57,7 +57,7 @@ function ServicesLavanderia() {
 
   const deleteService = async (serviceId) => {
     await api.delete(`/services/${serviceId}`);
-    mutate("services");
+    mutate("servicesLaundry");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {

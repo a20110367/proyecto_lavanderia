@@ -11,6 +11,7 @@ function AddServicePlanchado() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [pieces, setPieces] = useState(0);
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -40,9 +41,11 @@ function AddServicePlanchado() {
   
 
     try {
-      await api.post("/services", {
+      await api.post("/servicesIron", {
         description: description,
         price: parseFloat(price),
+        pieces: pieces,
+        cycleTime: 0,
         category_id: 3,
       });
       setDescription("");
@@ -98,6 +101,17 @@ function AddServicePlanchado() {
                   </p>
                 </div>
               )}
+
+<label className="form-lbl" htmlFor="pieces">
+                    Piezas
+                  </label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="pieces"
+                    onChange={(e) => setPieces(e.target.value)}
+                    value={pieces}
+                    />
 
               <label className="form-lbl" htmlFor="price">
                 Precio Unitario:

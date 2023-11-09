@@ -42,10 +42,14 @@ function AddServiceLavanderia() {
     }
 
     try {
-      await api.post("/services", {
-        description: description,
-        price: parseFloat(price),
-        category_id: 2,
+      await api.post("/servicesLaundry", {
+          description: description,
+          price: parseFloat(price),
+          washWeight: weight,
+          washCycleTime: time,
+          category_id: 2,
+          dryWeight: weight,
+          dryCycleTime: time
       });
       setDescription("");
       setPrice(0);

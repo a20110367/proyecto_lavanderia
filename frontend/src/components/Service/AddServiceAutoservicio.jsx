@@ -60,8 +60,8 @@ function AddServiceAutoservicio() {
           description: description,
           price: parseFloat(price),
           category_id: 1,
-          dryWeight: weight,
-          dryCycleTime: time
+          dryWeight: parseInt(weight),
+          dryCycleTime: parseInt(time)
         });
         setDescription("");
         setPrice(0);
@@ -165,12 +165,13 @@ function AddServiceAutoservicio() {
                 Tipo de Servicio
               </label>
               <Select
+                id="type"
                 style={{ width: "100%", fontSize: "16px" }}
                 onChange={(value) => setService(value)}
                 value={service}
               >
-                <Option value="laundry">Lavado</Option>
-                <Option value="dry">Secado</Option>
+                <Select.Option value="laundry">Lavado</Select.Option>
+                <Select.Option value="dry">Secado</Select.Option>
               </Select>
 
               {/* {service == 'dry' ?

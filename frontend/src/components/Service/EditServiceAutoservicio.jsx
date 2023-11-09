@@ -50,11 +50,11 @@ function EditServiceAutoservicio() {
         await api.patch(`/services/${id}`, {
           description: description,
           price: parseFloat(price),
-          washWeight: weight,
-          washCycleTime: time,
+          washWeight: parseInt(weight),
+          washCycleTime: parseInt(time),
           category_id: 1,
-          dryWeight: weight,
-          dryCycleTime: time
+          dryWeight: parseInt(weight),
+          dryCycleTime: parseInt(time)
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);
@@ -67,8 +67,8 @@ function EditServiceAutoservicio() {
           description: description,
           price: parseFloat(price),
           category_id: 1,
-          dryWeight: weight,
-          dryCycleTime: time
+          dryWeight: parseInt(weight),
+          dryCycleTime: parseInt(time)
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);

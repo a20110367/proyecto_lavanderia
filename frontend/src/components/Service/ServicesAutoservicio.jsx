@@ -28,11 +28,11 @@ function ServicesAutoservicio() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/services");
+    const response = await api.get("/servicesSelfService");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesSelfService", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const filteredData = data.filter((service) => {

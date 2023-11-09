@@ -28,14 +28,12 @@ function ServicesLavanderia() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/services");
+    const response = await api.get("/servicesLaundry");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesLaundry", fetcher);
   if (!data) return <h2>Loading...</h2>;
-
-  console.log(data)
 
   // Filtrar servicios relacionados con lavandería
   const filteredData = data.filter((service) => {

@@ -12,6 +12,7 @@ function AddServicePlanchado() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [pieces, setPieces] = useState(0);
+  const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -35,17 +36,16 @@ function AddServicePlanchado() {
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-        setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
-        return;
-      }
-  
+      setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
+      return;
+    }
 
     try {
       await api.post("/servicesIron", {
         description: description,
         price: parseFloat(price),
-        pieces: pieces,
-        cycleTime: 0,
+        ironPieces: parseInt(pieces),
+        ironCycleTime: parseInt(time),
         category_id: 3,
       });
       setDescription("");
@@ -102,16 +102,29 @@ function AddServicePlanchado() {
                 </div>
               )}
 
-<label className="form-lbl" htmlFor="pieces">
-                    Piezas
-                  </label>
-                  <input
-                    className="form-input"
-                    type="number"
-                    id="pieces"
-                    onChange={(e) => setPieces(e.target.value)}
-                    value={pieces}
-                    />
+              <label className="form-lbl" htmlFor="pieces">
+                Piezas
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="pieces"
+                onChange={(e) => setPieces(e.target.value)}
+                value={pieces}
+              />
+
+              <label className="form-lbl" htmlFor="time">
+                Tiempo de Ciclo en minutos:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="time"
+                ref={timeRef}
+                onChange={(e) => setTime(e.target.value)}
+                value={time}
+                required
+              />
 
               <label className="form-lbl" htmlFor="price">
                 Precio Unitario:

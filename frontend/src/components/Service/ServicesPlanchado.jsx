@@ -28,11 +28,11 @@ function ServicesPlanchado() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/services");
+    const response = await api.get("/servicesIronService");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesIron", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const filteredData = data.filter((service) => {

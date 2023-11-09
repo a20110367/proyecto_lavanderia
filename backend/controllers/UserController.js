@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { response } from "express";
 
 
 const prisma = new PrismaClient();
@@ -57,7 +58,7 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    //const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+     const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
             data: req.body
@@ -72,7 +73,25 @@ export const createUser = async (req, res) =>{
             //     role: role
             // }
         });
-        res.status(201).json(user);
+
+        const staffMember = await prisma.staffMember.create({
+            data:{
+                name: name,
+                firstLN: firstLN,
+                secondLN: secondLN,
+                email: email,                
+                phone: phone            
+            }
+            
+        });
+
+        const response = {
+
+            "user": user,
+            "staffMember":staffMember
+        }
+
+        res.status(201).json(response);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

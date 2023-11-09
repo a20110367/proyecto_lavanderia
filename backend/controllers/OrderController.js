@@ -127,6 +127,102 @@ export const getOrdersByIdClient = async (req, res) =>{
     }
 }
 
+export const getOrdersSelfService = async (req, res) =>{
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where:{
+                  fk_categoryId:1 
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
+        });
+        res.status(201).json(response);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
+export const getOrdersLaundry = async (req, res) =>{
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where:{
+                  fk_categoryId:2 
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
+        });
+        res.status(201).json(response);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const getOrdersIron = async (req, res) =>{
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where:{
+
+                fk_categoryId:3
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
+        });
+        res.status(201).json(response);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
+
+
+
 export const getOrdersLaundryFinished = async (req, res) =>{
     try {
         const response = await prisma.serviceOrder.findMany({

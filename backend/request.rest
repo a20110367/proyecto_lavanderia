@@ -48,7 +48,6 @@ Content-Type: application/json
 
 {
    
-  "id_user": 3,
     "username": "Juan1234",
     "name": "Juan24",
     "firstLN": "Perez4",

@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
 import api from '../../api/api'
+import ticket from "../Ticket/Tickets";
 
 const { Option } = Select;
 
@@ -32,13 +33,9 @@ export default function PuntoVenta() {
   const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedPaymentOption, setSelectedPaymentOption] =
-  useState(serviceType === "autoservicio" ? "advance" : "delivery");
+  const [payForm, setPayForm] = useState(serviceType === "autoservicio" ? "advance" : "delivery");
   const [payStatus, setPayStatus] = useState('unpaid')
-
-  const [paymentMethod, setPaymentMethod] = useState(
-    serviceType === "autoservicio" ? "cash" : ""
-  );
+  const [payMethod, setPayMethod] = useState(serviceType === "autoservicio" ? "cash" : "");
 
   useEffect(() => {
     // Definir el category_id
@@ -52,7 +49,7 @@ export default function PuntoVenta() {
   }, [serviceType]);
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
-  const [deliveryDate, setDeliveryDate] = useState(moment().toISOString());
+  const [deliveryDate, setDeliveryDate] = useState(moment());
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
   const [categoryId, setCategoryId] = useState(0)
   const [errMsg, setErrMsg] = useState("")
@@ -146,9 +143,7 @@ export default function PuntoVenta() {
 
     const arrayServiceDetail = []
 
-    let total = 0
     let noOfItems = 0
-    cart.map(detail => total = total + detail.totalPrice)
     cart.map(detail => noOfItems = noOfItems + detail.quantity)
 
     cart.map( detail => 
@@ -160,25 +155,39 @@ export default function PuntoVenta() {
       }
     ))
 
+    console.log(deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z')
+
+    const order = {
+      id_order: 1,
+      payForm: payForm,
+      payStatus: payStatus,
+      payMethod: payMethod,
+      subtotal: calculateSubtotal(),
+      casher: cookies.username,
+      client: clientName,
+      scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+      scheduledDeliveryTime: "1970-01-01T" +  deliveryDate.toISOString().split("T")[1],
+      notes: ''
+    }
+
     ///////////////////////////////////////////////
     //CART[0,1]
     try {
-      await api.post("/orders", {
+      const res = await api.post("/orders", {
         serviceOrder: {
-          totalPrice: parseFloat(totalPrice),
+          totalPrice: calculateSubtotal(),
           fk_client: parseInt(clientId),
           numberOfItems: noOfItems,
-          // DELIVERY OF ADVANCE
-          payForm: selectedPaymentOption,
-          //REVISAR PAYSTATUS
+          payForm: payForm,
           payStatus: payStatus,          
           fk_user: cookies.token,
-          scheduledDeliveryDate: deliveryDate.split("T")[0] + 'T00:00:00.000Z',
-          scheduledDeliveryTime: "1970-01-01T" + deliveryDate.split("T")[1],
-          fk_categoryId: categoryId,    
+          scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
+          fk_categoryId: categoryId
         },
-        serviceOrderDetail: arrayServiceDetail,
+        serviceOrderDetail: arrayServiceDetail
       });
+      console.log(res.data)
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
@@ -222,10 +231,10 @@ export default function PuntoVenta() {
       y + 30
     );
 
-    doc.text(`Forma de Pago: ${selectedPaymentOption}`, 10, y + 40);
+    doc.text(`Forma de Pago: ${payForm}`, 10, y + 40);
 
-    if (selectedPaymentOption === "advance") {
-      doc.text(`Método de Pago Anticipado: ${paymentMethod}`, 10, y + 50);
+    if (payForm === "advance") {
+      doc.text(`Método de Pago Anticipado: ${payMethod}`, 10, y + 50);
     }
 
     doc.save("ticket_compra.pdf");
@@ -234,8 +243,8 @@ export default function PuntoVenta() {
     localStorage.setItem("returningFromPuntoVenta", "true");
 
     // Regresar a la página anterior
-    window.history.back();
-
+    // window.history.back();
+    ticket(order)
     console.log(cart);
   };
 
@@ -428,19 +437,19 @@ export default function PuntoVenta() {
                     <Select
                       style={{ width: "100%", fontSize: "16px" }}
                       onChange={(value) => {
-                        setSelectedPaymentOption(value);
+                        setPayForm(value);
                         if (value === "advance") {
-                          setPaymentMethod("cash");
+                          setPayMethod("cash");
                           setPayStatus('paid')
                         } else {
-                          setPaymentMethod("");
+                          setPayMethod("");
                           setPayStatus('unpaid')
                         }
                       }}
                       value={
                         serviceType === "autoservicio"
                           ? "advance"
-                          : selectedPaymentOption
+                          : payForm
                       }
                       disabled={serviceType === "autoservicio"}
                     >
@@ -452,7 +461,7 @@ export default function PuntoVenta() {
                       </Option>
                       <Option value="advance">Anticipado</Option>
                     </Select>
-                    {(selectedPaymentOption === "advance" ||
+                    {(payForm === "advance" ||
                       serviceType === "autoservicio") &&  (
                       <div>
                         <p style={{ fontSize: "18px", fontWeight: "bold" }}>
@@ -460,8 +469,8 @@ export default function PuntoVenta() {
                         </p>
                         <Select
                           style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPaymentMethod(value)}
-                          value={paymentMethod} 
+                          onChange={(value) => setPayMethod(value)}
+                          value={payMethod} 
                         >
                           <Option value="credit">Tarjeta</Option>
                           <Option value="cash">Efectivo</Option>

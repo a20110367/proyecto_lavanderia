@@ -49,7 +49,6 @@ Content-Type: application/json
 
 {
    
-  "id_user": 3,
     "username": "Juan1234",
     "name": "Juan24",
     "firstLN": "Perez4",
@@ -535,6 +534,17 @@ GET http://localhost:5000/ordersByUser/1
 GET http://localhost:5000/ordersByClient/1
 
 ###
+
+GET http://localhost:5000/ordersLaundryFinished
+
+###
+
+
+GET http://localhost:5000/ordersIronFinished
+
+###
+
+
 
 POST http://localhost:5000/ordersMany
 Content-Type: application/json

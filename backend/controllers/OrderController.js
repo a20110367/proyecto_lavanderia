@@ -165,7 +165,7 @@ export const createLaudryServiceOrder = async (req, res) =>{
         const service = await prisma.service.findFirst({
             where:{
 
-                id_service:id_service,
+                id_service:services.id_service,
             },
 
             include:{
@@ -247,7 +247,7 @@ export const createIronServiceOrder = async (req, res) =>{
         const service = await prisma.service.findFirst({
             where:{
 
-                id_service:id_service,
+                id_service:services.id_service,
             },
 
             include:{

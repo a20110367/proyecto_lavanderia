@@ -175,7 +175,7 @@ export const getLaundryServices = async (req, res) =>{
                 Category:{
                     select:{
                         categoryDescription:true,
-                        category_id:true
+                        id_category:true
                     },  
                 },
                 WashService:{

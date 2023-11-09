@@ -22,9 +22,9 @@ const router = express.Router();
 router.get('/services', getServices);
 router.get('/servicesById/:id', getServicesById);
 router.get('/servicesByCategoryId/:id', getServicesByCategory);
-router.get('/servicesLaundry/', getLaundryServices);
-router.get('/servicesSelfService/', getSelfServiceServices);
-router.get('/servicesIronService/', getIronServices);
+router.get('/servicesLaundry', getLaundryServices);
+router.get('/servicesSelfService', getSelfServiceServices);
+router.get('/servicesIronService', getIronServices);
 
 
 router.post('/services', createService);

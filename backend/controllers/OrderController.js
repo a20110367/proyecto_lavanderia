@@ -127,6 +127,84 @@ export const getOrdersByIdClient = async (req, res) =>{
     }
 }
 
+export const getOrdersLaundryFinished = async (req, res) =>{
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where:{
+                AND:[
+                    {
+                        orderStatus: "finished",
+                    },
+                    {
+                        fk_categoryId:2
+                    }
+
+                ]
+                
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
+        });
+        res.status(201).json(response);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const getOrdersIronFinished = async (req, res) =>{
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where:{
+                AND:[
+                    {
+                        orderStatus: "finished",
+                    },
+                    {
+                        fk_categoryId:3
+                    }
+
+                ]
+            },
+            include:{
+                client:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                user:{
+                    select:{
+                        name:true,
+                        firstLN:true,
+                        secondLN:true,
+                    },
+                },
+                ServiceOrderDetail:true,
+            },            
+        });
+        res.status(201).json(response);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
 export const createOrder = async (req, res) =>{
    
     try {

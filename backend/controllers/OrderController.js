@@ -171,6 +171,8 @@ export const getOrdersLaundry = async (req, res) =>{
                         name:true,
                         firstLN:true,
                         secondLN:true,
+                        email: true,
+                        phone: true,
                     },
                 },
                 user:{
@@ -202,6 +204,8 @@ export const getOrdersIron = async (req, res) =>{
                         name:true,
                         firstLN:true,
                         secondLN:true,
+                        email: true,
+                        phone: true,
                     },
                 },
                 user:{
@@ -245,6 +249,8 @@ export const getOrdersLaundryFinished = async (req, res) =>{
                         name:true,
                         firstLN:true,
                         secondLN:true,
+                        email: true,
+                        phone: true,
                     },
                 },
                 user:{
@@ -283,6 +289,8 @@ export const getOrdersIronFinished = async (req, res) =>{
                         name:true,
                         firstLN:true,
                         secondLN:true,
+                        email: true,
+                        phone: true,
                     },
                 },
                 user:{

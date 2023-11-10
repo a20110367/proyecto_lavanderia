@@ -245,6 +245,25 @@ function PedidosLavanderia() {
         orderStatus: "finished",
       });
   
+      try {
+        setShowMachineName(false);
+        showNotification("NOTIFICACIÓN ENVIADA...");
+        await api.post("/sendMessage", {
+          id_order: selectedPedido.id_order,
+          name: selectedPedido.client.name,
+          email: selectedPedido.client.email,
+          tel: "521" + selectedPedido.client.phone,
+          message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("No hay respuesta del servidor.");
+        } else {
+          setErrMsg("Error al mandar la notificación");
+        }
+      }
+
       showNotification(`Pedido finalizado correctamente`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);

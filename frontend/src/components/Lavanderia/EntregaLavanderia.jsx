@@ -102,7 +102,7 @@ function EntregaLavanderia() {
     setVisible(false);
 
     try {
-      await api.post('/paymentDeliverys', {
+      await api.post('/paymentsDelivery', {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,

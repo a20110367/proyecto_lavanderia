@@ -125,13 +125,29 @@ function EntregaLavanderia() {
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
     doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
-    doc.text(`Pedido: ${pedido.ServiceOrderDetail.find(
-      (service) => service.id_serviceOrderDetail
-    ) != undefined
-      ? pedido.ServiceOrderDetail.length
-      : 0}`, 10, 30);
+    doc.text(
+      `Pedido: ${
+        pedido.ServiceOrderDetail.find(
+          (service) => service.id_serviceOrderDetail
+        ) != undefined
+          ? pedido.ServiceOrderDetail.length
+          : 0
+      }`,
+      10,
+      30
+    );
     doc.text(`Estatus: Adeudo`, 10, 40);
-    doc.text(`Método de Pago: ${pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}`, 10, 50);
+    doc.text(
+      `Método de Pago: ${
+        pedido.payment
+          ? pedido.payment.payMethod === "cash"
+            ? "Efectivo"
+            : "Tarjeta"
+          : "N/A"
+      }`,
+      10,
+      50
+    );
     doc.text(
       `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
       10,
@@ -157,13 +173,29 @@ function EntregaLavanderia() {
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
         doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
-        doc.text(`Pedido: ${pedido.ServiceOrderDetail.find(
-          (service) => service.id_serviceOrderDetail
-        ) != undefined
-          ? pedido.ServiceOrderDetail.length
-          : 0}`, 10, 30);
+        doc.text(
+          `Pedido: ${
+            pedido.ServiceOrderDetail.find(
+              (service) => service.id_serviceOrderDetail
+            ) != undefined
+              ? pedido.ServiceOrderDetail.length
+              : 0
+          }`,
+          10,
+          30
+        );
         doc.text(`Estatus: Entregado`, 10, 40);
-        doc.text(`Método de Pago: ${pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}`, 10, 50);
+        doc.text(
+          `Método de Pago: ${
+            pedido.payment
+              ? pedido.payment.payMethod === "cash"
+                ? "Efectivo"
+                : "Tarjeta"
+              : "N/A"
+          }`,
+          10,
+          50
+        );
         doc.text(
           `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
           10,
@@ -221,6 +253,7 @@ function EntregaLavanderia() {
           </thead>
           <tbody>
             {filteredPedidos
+              .filter((pedido) => pedido.orderStatus === "finished")
               .slice(
                 currentPage * itemsPerPage,
                 (currentPage + 1) * itemsPerPage
@@ -303,25 +336,21 @@ function EntregaLavanderia() {
           activeLinkClassName="activeLinkClassName"
         />
       </div>
-      {selectedPedido &&
-        entregando &&
-        selectedPedido.payStatus === "paid" && (
-          <Modal
-            title="Pedido Entregado"
-            open={entregando}
-            closable={false}
-            footer={null}
-          >
-            <div className="text-center">
-              <CheckCircleOutlined
-                style={{ fontSize: "64px", color: "green" }}
-              />
-              <p className="text-green-600 font-bold text-lg mt-2">
-                Pedido Entregado...
-              </p>
-            </div>
-          </Modal>
-        )}
+      {selectedPedido && entregando && selectedPedido.payStatus === "paid" && (
+        <Modal
+          title="Pedido Entregado"
+          open={entregando}
+          closable={false}
+          footer={null}
+        >
+          <div className="text-center">
+            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
+            <p className="text-green-600 font-bold text-lg mt-2">
+              Pedido Entregado...
+            </p>
+          </div>
+        </Modal>
+      )}
 
       <Modal
         title="Detalles del Pedido"

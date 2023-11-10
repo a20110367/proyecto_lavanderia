@@ -428,7 +428,7 @@ function PedidosLavanderia() {
       </div>
 
       <Modal
-        title="Seleccionar Máquina"
+
         open={showMachineName}
         onCancel={() => setShowMachineName(false)}
         footer={[
@@ -496,7 +496,6 @@ function PedidosLavanderia() {
       </Modal>
 
       <Modal
-        title="Seleccionar Secadora"
         open={showDryerSelection}
         onCancel={() => setShowDryerSelection(false)}
         footer={[

@@ -52,6 +52,85 @@ export const createPayment = async (req, res) =>{
     }
 }
 
+export const createPaymentDelyvery = async (req, res) =>{
+   
+    try {
+        const payment =  prisma.payment.create({
+            data: req.body
+       
+        });
+
+        const delivery =  prisma.deliveryDetail.create({
+            data: {
+                fk_userCashier:cashier,
+                deliveryDate:deliveryDate,
+                deliveryTime:deliveryTime,
+                fk_idOrder:Number(req.body.fk_idOrder),
+                fk_idPayment:id_payment
+            }
+       
+        });
+
+        
+        const orderPayment = prisma.serviceOrder.update({
+            where:{
+                id_order:Number(req.body.fk_idOrder),
+            },
+            data:{
+                payStatus:'paid',
+                orderStatus:'delivered',
+            },
+
+        });
+
+
+
+        const result= await prisma.$transaction([payment,delivery,orderPayment]);
+
+        res.status(201).json(result);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const createPaymentAdvance = async (req, res) =>{
+   
+    try {
+        const payment =  prisma.payment.create({
+            data: req.body
+            //  {
+            //     fk_idOrder:fk_idOrder,
+            //     payMethod:payMethod,
+            //     payDate:payDate,
+            //     fk_userCashier:id_user,
+            //     payTime:payTime,
+            //     payTotal:payTotal
+
+            // },
+        });
+
+        
+        const orderPayment = prisma.serviceOrder.update({
+            where:{
+                id_order:Number(req.body.fk_idOrder),
+            },
+            data:{
+                payStatus:'paid',
+                orderStatus:'delivered',
+            },
+
+        });
+
+
+
+        const result= await prisma.$transaction([payment,orderPayment]);
+
+        res.status(201).json(result);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
 export const updatePayment =  async (req, res) =>{
     try {
         const payment = await prisma.payment.update({

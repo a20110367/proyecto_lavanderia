@@ -302,8 +302,8 @@ POST http://localhost:5000/services
 Content-Type: application/json
 
 {
-    "description": "Lavado 10 kg",
-    "price": 60,
+    "description": "Lavado prueba 10 kg",
+    "price": 90,
     "category_id": 2
 }
 
@@ -360,11 +360,38 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:5000/servicesIronService
+
+###
+
 
 POST http://localhost:5000/servicesMany
 Content-Type: application/json
 
 ###
+
+PATCH  http://localhost:5000/services/31
+Content-Type: application/json
+
+{
+    "description": "Lavado prueba 10 kg",
+    "price": 150,
+    "category_id": 2
+}
+
+###
+
+DELETE   http://localhost:5000/services/31
+Content-Type: application/json
+
+
+
+###
+
+
+
+
+///CRUD SERVICE ORDERS
 
 POST http://localhost:5000/ordersLaundryService
 Content-Type: application/json
@@ -375,7 +402,7 @@ Content-Type: application/json
     "receptionDate": "2023-11-02T00:00:00.000Z",
     "orderStatus": "pending",
     "totalPrice": 300,
-    "fk_client": 1,
+    "fk_client": 2,
     "created": "2023-11-03T04:46:52.708Z",
     "numberOfItems": 5,
     "payForm": "delivery",
@@ -393,10 +420,9 @@ Content-Type: application/json
   "services":
       [ 
         {
-          "id_service":7,
-          "quantity":1,
-          "price":117,
-          "category_id":1
+          "fk_Service":7,
+          "units":1,
+          "price":117
         }
     ]
    
@@ -431,10 +457,9 @@ Content-Type: application/json
   "services":
       [ 
         {
-          "id_service":12,
-          "quantity":1,
-          "price":117,
-          "category_id":3
+          "fk_Service":10,
+          "units":1,
+          "subtotal":117
         }
     ]
    
@@ -449,21 +474,21 @@ Content-Type: application/json
   "serviceOrder":
   {
     "receptionDate": "2023-10-11T00:00:00.000Z",
-    "orderStatus": "pending",
+    //"orderStatus": "pending",
     "totalPrice": 600,
     "fk_client": 1,
-    "created": "2023-11-03T04:46:52.708Z",
+    //"created": "2023-11-03T04:46:52.708Z",
     "numberOfItems": 4,
-    "payForm": "advance",
-    "payStatus": "paid",
+    //"payForm": "advance",
+    //"payStatus": "paid",
     "receptionTime": "1970-01-01T13:15:48.000Z",
-    "updatedAt": "2023-11-04T00:55:45.377Z",
+    //"updatedAt": "2023-11-04T00:55:45.377Z",
     "fk_user": 3,
     "scheduledDeliveryDate": "2023-11-02T00:00:00.000Z",
     "scheduledDeliveryTime": null,
-    "fk_categoryId": 1,
-    "fk_deliveryDetail": null,
-    "token": null
+    "fk_categoryId": 1
+    //"fk_deliveryDetail": null,
+    //"token": null
 
   },
  "services": 
@@ -471,13 +496,13 @@ Content-Type: application/json
         {
           "units": 2,
           "subtotal": 200,
-          "updatedAt": "2023-10-11T00:00:00.000Z",
+          //"updatedAt": "2023-10-11T00:00:00.000Z",
           "fk_Service": 8
         },
         {
           "units": 2,
           "subtotal": 200,
-          "updatedAt": "2023-10-11T00:00:00.000Z",
+          //"updatedAt": "2023-10-11T00:00:00.000Z",
           "fk_Service": 9
         }
     ]
@@ -513,7 +538,7 @@ Content-Type: application/json
 
 ###
 
-DELETE   http://localhost:5000/services/3
+DELETE   http://localhost:5000/services/28
 
 ###
 
@@ -543,6 +568,13 @@ GET http://localhost:5000/ordersIronFinished
 
 ###
 
+GET http://localhost:5000/ordersSelfService
+
+###
+
+GET http://localhost:5000/ordersLaundry
+
+###
 
 
 POST http://localhost:5000/ordersMany
@@ -762,36 +794,6 @@ Content-Type: application/json
 ###
 DELETE   http://localhost:5000/cashWhithdrawals/19
 
-//CRUD DE LAUNDRY SERVICE DETAILS
-GET http://localhost:5000/orderLaundryServiceDetails
-
-###
-
-GET http://localhost:5000/orderLaundryServiceDetails/20
-
-###
-
-POST http://localhost:5000/orderLaundryServiceDetails
-Content-Type: application/json
-
-{
-  
-    "fk_Order":2,
-  "fk_Service":4
-
-}
-
-###
-PATCH  http://localhost:5000/orderLaundryServiceDetails/21
-Content-Type: application/json
-
-{
-    "started":true
-}
-###
-DELETE   http://localhost:5000/orderLaundryServiceDetails/17
-
-###
 
 //CRUD DE IRON SERVICE DETAILS
 GET http://localhost:5000/orderIronServiceDetails

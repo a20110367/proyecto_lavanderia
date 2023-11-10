@@ -339,7 +339,7 @@ export const createLaudryServiceOrder = async (req, res) =>{
         const service = await prisma.service.findFirst({
             where:{
 
-                id_service:services.id_service,
+                id_service:services.fk_Service,
             },
 
             include:{
@@ -421,12 +421,12 @@ export const createIronServiceOrder = async (req, res) =>{
         const service = await prisma.service.findFirst({
             where:{
 
-                id_service:services.id_service,
+                id_service:services.fk_Service,
             },
 
             include:{
                 IronService:true,
-            }
+            },
 
         });
         console.log(service);
@@ -451,6 +451,8 @@ export const createIronServiceOrder = async (req, res) =>{
 
         });
 
+
+        console.log(service.IronService.at(0));
         const ironService = await prisma.IronQueue.create({
             
             data:{

@@ -42,7 +42,7 @@ function ServicesAutoservicio() {
 
   const deleteService = async (serviceId) => {
     await api.delete(`/services/${serviceId}`);
-    mutate("services");
+    mutate("servicesSelfService");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {

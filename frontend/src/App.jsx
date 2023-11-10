@@ -62,6 +62,7 @@ import RecepcionLavanderia from "./components/Lavanderia/RecepcionLavanderia"
 import EntregaPlanchado from "./components/Planchado/EntregaPlanchado"
 import RecepcionPlanchado from "./components/Planchado/RecepcionPlanchado"
 import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
+import PedidosAutoservicio from "./components/Pedidos/PedidosAutoservicio"
 import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
 import Reembolso from "./components/Cajas/Reembolso"
@@ -129,6 +130,7 @@ function App() {
 
                     {/* Pedidos */}
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
+                    <Route path="/pedidosAutoservicio" element={<PedidosAutoservicio />} />
 
                     {/*Lavanderia */}
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />

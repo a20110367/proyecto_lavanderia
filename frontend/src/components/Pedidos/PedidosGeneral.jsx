@@ -4,7 +4,7 @@ import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
-import api from '../../api/api'
+import api from "../../api/api";
 
 import {
   IssuesCloseOutlined,
@@ -23,7 +23,7 @@ function PedidosGeneral() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [errMsg, setErrMsg] = useState("")
+  const [errMsg, setErrMsg] = useState("");
   const location = useLocation();
 
   const machineIdQueryParam = new URLSearchParams(location.search).get(
@@ -98,10 +98,10 @@ function PedidosGeneral() {
         id_order: pedido.id_order,
         name: pedido.client.name,
         email: pedido.client.email,
-        tel: "521"+pedido.client.phone,
-        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`
+        tel: "521" + pedido.client.phone,
+        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
       });
-      console.log("NOTIFICACIÓN ENVIADA...")
+      console.log("NOTIFICACIÓN ENVIADA...");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
@@ -121,7 +121,7 @@ function PedidosGeneral() {
   };
 
   const handleSeleccionarPedido = (pedido, pedidoId) => {
-    const pedidoSeleccionado = pedido
+    const pedidoSeleccionado = pedido;
 
     if (pedidoSeleccionado && pedidoSeleccionado.orderStatus === "pending") {
       if (selectedPedidos[machineIdQueryParam]) {
@@ -134,7 +134,7 @@ function PedidosGeneral() {
       const pedidosActualizados = pedidos.map((pedido) => {
         if (pedido.id_order === pedidoId) {
           Axios.api(`/orders/${pedidoId}`, {
-            orderStatus: "inProgress"
+            orderStatus: "inProgress",
           });
           return { ...pedido, orderStatus: "inProgress" };
         }
@@ -153,8 +153,8 @@ function PedidosGeneral() {
         content: (
           <div>
             <p>
-              El pedido para el cliente: {pedido.client.name} ha sido cambiado a "En
-              Proceso".
+              El pedido para el cliente: {pedido.client.name} ha sido cambiado a
+              "En Proceso".
             </p>
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
           </div>
@@ -187,7 +187,7 @@ function PedidosGeneral() {
     const year = date.getUTCFullYear();
     return `${day}/${month}/${year}`;
   };
-  
+
   return (
     <div>
       <div className="mb-3">
@@ -253,13 +253,17 @@ function PedidosGeneral() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th>No. Folio</th>
-              <th>Empleado que Recibió</th>
-              <th>Empleado que Entregó</th>
-              <th>Nombre del Cliente</th>
-              <th>Detalle del pedido</th>
-              <th>Fecha de Entrega</th>
-              <th>Estatus</th>
+              <th>Recibió</th>
+              <th>Entregó</th>
+              <th>Cliente</th>
+              <th>Detalles</th>
+              <th>
+                Fecha de <br />
+                Entrega
+              </th>
               <th>Forma de Pago</th>
+              <th>Estatus</th>
+              <th></th>
               {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
             </tr>
           </thead>
@@ -276,9 +280,20 @@ function PedidosGeneral() {
                 <td className="py-3 px-6 font-medium text-gray-900">
                   {pedido.client.name}
                 </td>
-                <td className="py-3 px-6">{pedido.ServiceOrderDetail.find(service => service.id_serviceOrderDetail) != undefined ? pedido.ServiceOrderDetail.length : 0}</td>
-                <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
-                <td className="py-3 px-6 ">
+                <td className="py-3 px-6">
+                  {pedido.ServiceOrderDetail.find(
+                    (service) => service.id_serviceOrderDetail
+                  ) != undefined
+                    ? pedido.ServiceOrderDetail.length
+                    : 0}
+                </td>
+                <td className="py-3 px-6">
+                  {formatDate(pedido.scheduledDeliveryDate)}
+                </td>
+                <td className="py-3 px-6">
+                  {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                </td>
+                <td className="py-3 px-6 font-bold">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
                       <MinusCircleOutlined /> Pendiente
@@ -294,12 +309,6 @@ function PedidosGeneral() {
                   ) : pedido.orderStatus === "finished" ? (
                     <span className="text-blue-600 pl-1">
                       <IssuesCloseOutlined /> Finalizado no entregado
-                      <button
-                        onClick={() => handleNotificarCliente(pedido)}
-                        className="btn-primary mt-1"
-                      >
-                        Notificar al Cliente
-                      </button>
                     </span>
                   ) : pedido.orderStatus === "delivered" ? (
                     <span className="text-green-600 pl-1">
@@ -311,7 +320,7 @@ function PedidosGeneral() {
                     </span>
                   )}
                 </td>
-                <td className="py-3 px-6">{pedido.payForm === 'delivery' ? 'Entrega' : 'Anticipo'}</td>
+
                 {showCheckbox && (
                   <td className="py-3 px-6">
                     {pedido.orderStatus === "pending" ? (
@@ -322,16 +331,23 @@ function PedidosGeneral() {
                           type="checkbox"
                           className="h-6 w-6"
                           onChange={() =>
-                            handleSeleccionarPedido(
-                              pedido,
-                              pedido.id_order
-                            )
+                            handleSeleccionarPedido(pedido, pedido.id_order)
                           }
                         />
                       )
                     ) : null}
                   </td>
                 )}
+                <td>
+                  {pedido.orderStatus === "finished" && (
+                    <button
+                      onClick={() => handleNotificarCliente(pedido)}
+                      className="btn-primary mt-1"
+                    >
+                      Notificar al Cliente
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

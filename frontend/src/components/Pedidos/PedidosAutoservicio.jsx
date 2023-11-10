@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
+import useSWR from "swr";
+import ReactPaginate from "react-paginate";
+import api from "../../api/api";
+
 import {
   IssuesCloseOutlined,
   CheckCircleOutlined,
@@ -9,11 +13,8 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
-import ReactPaginate from "react-paginate";
-import useSWR from "swr";
-import api from "../../api/api";
 
-function PedidosPlanchado() {
+function PedidosAutoservicio() {
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -35,11 +36,11 @@ function PedidosPlanchado() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ordersIron");
+    const response = await api.get("/ordersSelfService");
     return response.data;
   };
 
-  const { data } = useSWR("ordersIron", fetcher);
+  const { data } = useSWR("ordersSelfService", fetcher);
 
   useEffect(() => {
     if (data) {
@@ -105,9 +106,9 @@ function PedidosPlanchado() {
       setLoading(true);
 
       // Obtener datos de las máquinas y estaciones de planchado
-      const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
+      const [machinesResponse] = await Promise.all([api.get("/machines")]);
 
-      const allMachines = [...ironsResponse.data];
+      const allMachines = [...machinesResponse.data];
 
       setAvailableMachines(allMachines);
       setSelectedMachine(null);
@@ -115,36 +116,6 @@ function PedidosPlanchado() {
       setShowMachineName(true);
     } catch (error) {
       console.error("Error al obtener datos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFinishProcess = async () => {
-    try {
-      setLoading(true);
-
-      if (!selectedPedido) {
-        console.error("El pedido seleccionado es indefinido.");
-        return;
-      }
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
-      );
-
-      setPedidos(updatedPedidos);
-
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
-      });
-      setShowMachineName(false);
-      showNotification(`Pedido finalizado`);
-      // Actualizar datos
-    } catch (error) {
-      console.error("Error al finalizar el pedido:", error);
     } finally {
       setLoading(false);
     }
@@ -159,18 +130,19 @@ function PedidosPlanchado() {
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "inProgress" }
+          ? { ...p, orderStatus: "delivered" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "inProgress",
+        orderStatus: "delivered",
         assignedMachine: selectedMachine.id,
       });
       setShowMachineName(false);
-
+      showNotification(`Pedido iniciado en ${selectedMachine.model}`);
+      // Actualizar datos
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
@@ -180,7 +152,7 @@ function PedidosPlanchado() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos de Planchado</strong>
+          <strong className="title-strong">Pedidos de Autoservicio</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">
@@ -244,7 +216,7 @@ function PedidosPlanchado() {
               <th>Recibió</th>
               <th>Entregó</th>
               <th>Cliente</th>
-              <th>Detalles</th>
+              <th>Detalle</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
               <th></th>
@@ -307,14 +279,6 @@ function PedidosPlanchado() {
                       className="btn-primary ml-2 mt-1"
                     >
                       Iniciar
-                    </button>
-                  )}
-                  {pedido.orderStatus === "inProgress" && (
-                    <button
-                      onClick={() => handleFinishProcess()}
-                      className="btn-primary ml-2 mt-1"
-                    >
-                      Terminar
                     </button>
                   )}
                 </td>
@@ -423,4 +387,5 @@ function PedidosPlanchado() {
     </div>
   );
 }
-export default PedidosPlanchado;
+
+export default PedidosAutoservicio;

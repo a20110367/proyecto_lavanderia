@@ -72,6 +72,18 @@ function Clients() {
 
     setWord(res.data);
   };
+
+  const order = {
+    id_order: 1,
+    payForm: "advance",
+    payStatus: 'paid',
+    payMethod: 'cash',
+    subtotal: '1209',
+    casher: 'axel',
+    client: 'ñoño',
+    notes: ''
+  }
+
   // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
   /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
   folio folio, fecha */
@@ -268,21 +280,7 @@ function Clients() {
         }
       >
         Print Data ID HTML
-      </button>
-      <button
-        className="btn-cancel"
-        type="button"
-        onClick={() =>
-          printJS({
-            printable: html,
-            type: "raw-html",
-            header: "PrintJS - Form Element Selection",
-            css: "../../ticket.css",
-          })
-        }
-      >
-        Print Data Raw HTML
-      </button> */}
+      </button>*/}
       {/* -----------------------------PAGINADOR -----------------------------*/}
       <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate

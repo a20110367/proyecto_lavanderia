@@ -288,7 +288,7 @@ function EntregaLavanderia() {
         selectedPedido.orderstatus === "Pagado" && (
           <Modal
             title="Pedido Entregado"
-            visible={entregando}
+            open={entregando}
             closable={false}
             footer={null}
           >
@@ -305,7 +305,7 @@ function EntregaLavanderia() {
 
       <Modal
         title="Detalles del Pedido"
-        visible={visible}
+        open={visible}
         onOk={() => handleGuardarCobro(selectedPedido)}
         onCancel={handleClose}
         width={600}

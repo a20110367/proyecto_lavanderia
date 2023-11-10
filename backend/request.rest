@@ -384,13 +384,7 @@ Content-Type: application/json
 
 DELETE   http://localhost:5000/services/31
 Content-Type: application/json
-
-
-
 ###
-
-
-
 
 ///CRUD SERVICE ORDERS
 

@@ -177,7 +177,6 @@ export default function PuntoVenta() {
         notes: ''
       }
       ticket(order)
-      console.log(res)
       const idOrder = res.data.serviceOrder.id_order
       console.log(idOrder)
       const resPayment = await api.post('/paymentsAdvance', {

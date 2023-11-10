@@ -55,6 +55,7 @@ export const createPayment = async (req, res) =>{
 export const createPaymentDelivery = async (req, res) =>{
    
     try {
+        console.log(req.body)
         const payment =  prisma.payment.create({
             data: req.body.payment
        
@@ -95,16 +96,18 @@ export const createPaymentDelivery = async (req, res) =>{
 
 export const createPaymentAdvance = async (req, res) =>{
    
+        console.log(req.body)
+
     try {
         const payment =  prisma.payment.create({
-            data:req.body.payment
+            data: req.body.payment
        
         });
 
         
         const orderPayment = prisma.serviceOrder.update({
             where:{
-                id_order:Number(req.body.fk_idOrder),
+                id_order:Number(req.body.payment.fk_idOrder),
             },
             data:{
                 payStatus:'paid',

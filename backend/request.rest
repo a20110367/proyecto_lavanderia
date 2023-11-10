@@ -707,6 +707,43 @@ Content-Type: application/json
 }
 
 ###
+
+
+POST http://localhost:5000/paymentsAdvance
+Content-Type: application/json
+
+{
+  "payment":{
+    "fk_idOrder":39,     
+  //"fk_userCashier":2,
+  "payTotal": 300,
+  "payMethod":"cash",     
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z",       
+  "fk_cashCut":23     
+
+  }
+  
+}
+
+POST http://localhost:5000/paymentsDelivery
+Content-Type: application/json
+
+{
+  "payment":{
+    "fk_idOrder":39,     
+  //"fk_userCashier":2,
+  "payTotal": 300,
+  "payMethod":"cash",     
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z",       
+  "fk_cashCut":23     
+
+  }
+  
+}
+
+###
 PATCH  http://localhost:5000/payments/3
 Content-Type: application/json
 

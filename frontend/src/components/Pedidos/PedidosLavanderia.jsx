@@ -41,17 +41,17 @@ function PedidosLavanderia() {
   const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] = useState(false);
 
   useEffect(() => {
-    // Store the confirmation status in local storage
+
     localStorage.setItem("isDryingProcessConfirmed", isDryingProcessConfirmed);
   }, [isDryingProcessConfirmed]);
   
   useEffect(() => {
-    // Check for the confirmation status in local storage
+
     const storedConfirmationStatus = localStorage.getItem(
       "isDryingProcessConfirmed"
     );
   
-    // Update the state based on the stored value
+
     setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
   }, []);
   
@@ -64,12 +64,12 @@ function PedidosLavanderia() {
   const { data } = useSWR("ordersLaundry", fetcher);
 
   useEffect(() => {
-    // Check for the confirmation status in local storage
+
     const storedConfirmationStatus = localStorage.getItem(
       "isDryingProcessConfirmed"
     );
 
-    // Update the state based on the stored value
+
     setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
   }, []);
 
@@ -145,8 +145,8 @@ function PedidosLavanderia() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowMachineName(true);
-      setShowDryerSelection(false); // Ensure dryer selection modal is closed
-      setIsDryingProcessConfirmedInModal(false); // Set to false for "Secado" button
+      setShowDryerSelection(false); 
+      setIsDryingProcessConfirmedInModal(false); 
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -198,7 +198,7 @@ function PedidosLavanderia() {
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
 
-      // Set isDryingProcessConfirmed to false
+
       setIsDryingProcessConfirmed(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -240,7 +240,7 @@ function PedidosLavanderia() {
   
       setPedidos(updatedPedidos);
   
-      // Update the order status in the database
+
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });

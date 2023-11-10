@@ -170,8 +170,7 @@ function PedidosPlanchado() {
         assignedMachine: selectedMachine.id,
       });
       setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedMachine.model}`);
-      // Actualizar datos
+
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }

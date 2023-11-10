@@ -302,6 +302,10 @@ function EntregaLavanderia() {
         )}
 
       <Modal
+<<<<<<< HEAD
+=======
+        title="Detalles del Pedido"
+>>>>>>> 034a5a61281d2749ff3d6031b255b8993a2a48fc
         open={visible}
         onOk={() => handleGuardarCobro(selectedPedido)}
         onCancel={handleClose}

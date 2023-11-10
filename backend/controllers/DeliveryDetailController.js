@@ -33,13 +33,13 @@ export const createDeliveryDetail = async (req, res) =>{
        
         });
 
-        const orderUpdate =  prisma.order.update({
+        const orderUpdate =  prisma.serviceOrder.update({
             where:{
                 id_order: Number(req.body.fk_idOrder)
             },
              data:
              { 
-                orderStatus: delivered 
+                orderStatus:"delivered"  
             }
         });
 

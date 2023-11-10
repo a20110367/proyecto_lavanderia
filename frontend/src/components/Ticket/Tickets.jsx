@@ -71,7 +71,7 @@ async function ticket(order) {
                 <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
                 <!--*<p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>-->
                 <p style="text-align:center;">${word}</p>            
-                    <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p>
+                    ${order.payMethod ? <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> : ""}
                     <p>Pago recibido: $100.00</p>
                     <p>Cambio devuelto: $5.00</p> 
                     <p>Cajero: ${order.casher}</p> 

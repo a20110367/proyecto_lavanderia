@@ -3,7 +3,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
-import api from "../../api/api";
+import api from '../../api/api'
 
 import {
   IssuesCloseOutlined,
@@ -14,7 +14,7 @@ import {
   DropboxOutlined,
 } from "@ant-design/icons";
 
-function PedidosLavanderia() {
+function PedidosAutoservicio() {
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -37,11 +37,11 @@ function PedidosLavanderia() {
   const [showDryerSelection, setShowDryerSelection] = useState(false);
 
   const fetcher = async () => {
-    const response = await api.get("/ordersLaundry");
+    const response = await api.get("/ordersSelfService");
     return response.data;
   };
 
-  const { data } = useSWR("ordersLaundry", fetcher);
+  const { data } = useSWR("ordersSelfService", fetcher);
 
   useEffect(() => {
     if (data) {
@@ -79,6 +79,7 @@ function PedidosLavanderia() {
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
   };
+
 
   const showNotification = (message) => {
     setNotificationMessage(message);
@@ -205,7 +206,7 @@ function PedidosLavanderia() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos de Lavanderia</strong>
+          <strong className="title-strong">Pedidos de Autoservicio</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">
@@ -510,4 +511,4 @@ function PedidosLavanderia() {
   );
 }
 
-export default PedidosLavanderia;
+export default PedidosAutoservicio;

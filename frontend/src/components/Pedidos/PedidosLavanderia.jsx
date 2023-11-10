@@ -458,7 +458,9 @@ function PedidosLavanderia() {
               </tr>
             </thead>
             <tbody>
-              {availableMachines.map((machine) => (
+            {availableMachines
+                .filter((machine) => machine.machineType === "lavadora")
+                .map((machine) => (
                 <tr key={machine.id_machine}>
                   <td>{machine.machineType}</td>
                   <td>{machine.model}</td>

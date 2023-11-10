@@ -55,25 +55,26 @@ export const createPayment = async (req, res) =>{
 export const createPaymentDelivery = async (req, res) =>{
    
     try {
-        console.log(req.body)
-        const payment =  prisma.payment.create({
+        console.log(req.body);
+        const payment = await prisma.payment.create({
             data: req.body.payment
        
         });
-
-        const delivery =  prisma.deliveryDetail.create({
+        console.log(payment);
+        const delivery = await prisma.deliveryDetail.create({
             data: {
                 fk_userCashier:req.body.deliveryDetail.fk_userCashier,
                 deliveryDate:req.body.deliveryDetail.deliveryDate,
                 deliveryTime:req.body.deliveryDetail.deliveryTime,
                 fk_idOrder:req.body.deliveryDetail.fk_idOrder,
-                fk_idPayment:(await payment).id_payment
+                fk_idPayment:payment.id_payment
             }
        
         });
+        console.log(delivery);
 
         
-        const orderPayment = prisma.serviceOrder.update({
+        const orderPayment = await prisma.serviceOrder.update({
             where:{
                 id_order:req.body.deliveryDetail.fk_idOrder,
             },
@@ -84,9 +85,13 @@ export const createPaymentDelivery = async (req, res) =>{
 
         });
 
+        console.log(orderPayment);
 
-
-        const result= await prisma.$transaction([payment,delivery,orderPayment]);
+        const result = {
+            "payment":payment,
+            "delivery":delivery,
+            "orderPayment":orderPayment
+        }
 
         res.status(201).json(result);
     }catch(e){

@@ -33,9 +33,9 @@ export default function PuntoVenta() {
   const shouldShowAllServices = !serviceType || serviceType === "";
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [payForm, setPayForm] = useState(serviceType === "autoservicio" ? "advance" : "delivery");
-  const [payStatus, setPayStatus] = useState(serviceType === "autoservicio" ? "paid" : "unpaid")
-  const [payMethod, setPayMethod] = useState(serviceType === "autoservicio" ? "cash" : "");
+  const [payForm, setPayForm] = useState("delivery");
+  const [payStatus, setPayStatus] = useState("unpaid")
+  const [payMethod, setPayMethod] = useState('cash');
   const [categoryId, setCategoryId] = useState(0)
   const [url, setUrl] = useState('')
 
@@ -43,6 +43,8 @@ export default function PuntoVenta() {
     // Definir el category_id
     if (serviceType === 'autoservicio') {
       setCategoryId(1)
+      setPayForm('advance')
+      setPayStatus('paid')
       setUrl('/ordersSelfService')
     } else if (serviceType === 'encargo') {
       setCategoryId(2)
@@ -147,6 +149,8 @@ export default function PuntoVenta() {
       }
       ))
 
+
+
     try {
       const res = await api.post(url, {
         serviceOrder: {
@@ -179,16 +183,18 @@ export default function PuntoVenta() {
       ticket(order)
       const idOrder = res.data.serviceOrder.id_order
       console.log(idOrder)
-      const resPayment = await api.post('/paymentsAdvance', {
-        payment: {
-          fk_idOrder: idOrder,
-          payMethod: payMethod,
-          payDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-          fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
-          payTotal: calculateSubtotal()
-        }
-      });
+      if (payForm === 'advance') {
+        const resPayment = await api.post('/paymentsAdvance', {
+          payment: {
+            fk_idOrder: idOrder,
+            payMethod: payMethod,
+            payDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+            payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
+            fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
+            payTotal: calculateSubtotal()
+          }
+        });
+      }
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
@@ -196,7 +202,7 @@ export default function PuntoVenta() {
         setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
       }
     }
-    
+
 
 
     const doc = new jsPDF();
@@ -244,7 +250,7 @@ export default function PuntoVenta() {
     localStorage.setItem("returningFromPuntoVenta", "true");
 
     // Regresar a la página anterior
-    // window.history.back();
+    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices

@@ -184,7 +184,7 @@ function CajaPedidos() {
                   <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
                   </td>
-                  <td className="py-3 px-6">{pedido.payment ? pedido.payment.payMethod : 'N/A'}</td>
+                  <td className="py-3 px-6"> {pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}</td>
                   <td className="py-3 px-6">${pedido.totalPrice}</td>
                 </tr>
               ))}

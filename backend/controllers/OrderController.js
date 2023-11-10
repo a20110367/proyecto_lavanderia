@@ -25,6 +25,7 @@ export const getOrders = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                payment:true,
             },
         });
         

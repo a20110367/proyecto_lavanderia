@@ -97,13 +97,7 @@ export const createPaymentAdvance = async (req, res) =>{
    
     try {
         const payment =  prisma.payment.create({
-            data: {
-                fk_userCashier:req.body.deliveryDetail.fk_userCashier,
-                deliveryDate:req.body.deliveryDetail.deliveryDate,
-                deliveryTime:req.body.deliveryDetail.deliveryTime,
-                fk_idOrder:req.body.deliveryDetail.fk_idOrder,
-                fk_idPayment:(await payment).id_payment
-            }
+            data:req.body.payment
        
         });
 

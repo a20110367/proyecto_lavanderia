@@ -8,7 +8,6 @@ import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
-import  ticket from '../Ticket/Tickets'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -239,13 +238,6 @@ function Clients() {
                           </Button>
                         </DialogActions>
                       </Dialog>
-                      <button
-                        className="btn-cancel"
-                        type="button"
-                        onClick={() => ticket(order)}
-                      >
-                        Print Data Raw HTML
-                      </button> 
                     </td>
                   </tr>
                 ))}

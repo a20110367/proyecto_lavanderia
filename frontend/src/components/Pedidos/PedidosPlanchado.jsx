@@ -105,12 +105,9 @@ function PedidosPlanchado() {
       setLoading(true);
 
       // Obtener datos de las máquinas y estaciones de planchado
-      const [machinesResponse, ironsResponse] = await Promise.all([
-        api.get("/machines"),
-        api.get("/ironStations"),
-      ]);
+      const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
 
-      const allMachines = [...machinesResponse.data, ...ironsResponse.data];
+      const allMachines = [...ironsResponse.data];
 
       setAvailableMachines(allMachines);
       setSelectedMachine(null);
@@ -245,12 +242,13 @@ function PedidosPlanchado() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th>No. Folio</th>
-              <th>Empleado que Recibió</th>
-              <th>Empleado que Entregó</th>
-              <th>Nombre del Cliente</th>
-              <th>Detalle del pedido</th>
+              <th>Recibió</th>
+              <th>Entregó</th>
+              <th>Cliente</th>
+              <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -280,12 +278,6 @@ function PedidosPlanchado() {
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
                       <MinusCircleOutlined /> Pendiente
-                      <button
-                        onClick={() => handleStartProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
-                      >
-                        Iniciar
-                      </button>
                     </span>
                   ) : pedido.orderStatus === "stored" ? (
                     <span className="text-fuchsia-600 pl-1">
@@ -294,12 +286,6 @@ function PedidosPlanchado() {
                   ) : pedido.orderStatus === "inProgress" ? (
                     <span className="text-yellow-600 pl-1">
                       <ClockCircleOutlined /> En Proceso
-                      <button
-                        onClick={() => handleFinishProcess()}
-                        className="btn-primary ml-2 mt-1"
-                      >
-                        Finalizar
-                      </button>
                     </span>
                   ) : pedido.orderStatus === "finished" ? (
                     <span className="text-blue-600 pl-1">
@@ -313,6 +299,24 @@ function PedidosPlanchado() {
                     <span className="text-red-600 pl-1">
                       <StopOutlined /> Cancelado
                     </span>
+                  )}
+                </td>
+                <td>
+                  {pedido.orderStatus === "pending" && (
+                    <button
+                      onClick={() => handleStartProcess(pedido)}
+                      className="btn-primary ml-2 mt-1"
+                    >
+                      Iniciar
+                    </button>
+                  )}
+                  {pedido.orderStatus === "inProgress" && (
+                    <button
+                      onClick={() => handleFinishProcess()}
+                      className="btn-primary ml-2 mt-1"
+                    >
+                      Terminar
+                    </button>
                   )}
                 </td>
               </tr>

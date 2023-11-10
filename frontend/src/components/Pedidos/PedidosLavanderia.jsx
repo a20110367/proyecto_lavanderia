@@ -35,6 +35,26 @@ function PedidosLavanderia() {
     setCurrentPage(selectedPage.selected);
   };
   const [showDryerSelection, setShowDryerSelection] = useState(false);
+  const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] =
+    useState(false);
+  
+  const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] = useState(false);
+
+  useEffect(() => {
+    // Store the confirmation status in local storage
+    localStorage.setItem("isDryingProcessConfirmed", isDryingProcessConfirmed);
+  }, [isDryingProcessConfirmed]);
+  
+  useEffect(() => {
+    // Check for the confirmation status in local storage
+    const storedConfirmationStatus = localStorage.getItem(
+      "isDryingProcessConfirmed"
+    );
+  
+    // Update the state based on the stored value
+    setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
+  }, []);
+  
 
   const fetcher = async () => {
     const response = await api.get("/ordersLaundry");
@@ -42,6 +62,16 @@ function PedidosLavanderia() {
   };
 
   const { data } = useSWR("ordersLaundry", fetcher);
+
+  useEffect(() => {
+    // Check for the confirmation status in local storage
+    const storedConfirmationStatus = localStorage.getItem(
+      "isDryingProcessConfirmed"
+    );
+
+    // Update the state based on the stored value
+    setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -105,25 +135,25 @@ function PedidosLavanderia() {
   const handleStartProcess = async (pedido) => {
     try {
       setLoading(true);
-
+  
       // Obtener datos de las máquinas y estaciones de planchado
-      const [machinesResponse, ironsResponse] = await Promise.all([
-        api.get("/machines"),
-        api.get("/ironStations"),
-      ]);
-
-      const allMachines = [...machinesResponse.data, ...ironsResponse.data];
-
+      const [machinesResponse] = await Promise.all([api.get("/machines")]);
+  
+      const allMachines = [...machinesResponse.data];
+  
       setAvailableMachines(allMachines);
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowMachineName(true);
+      setShowDryerSelection(false); // Ensure dryer selection modal is closed
+      setIsDryingProcessConfirmedInModal(false); // Set to false for "Secado" button
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleConfirmMachineSelection = async () => {
     try {
@@ -167,6 +197,9 @@ function PedidosLavanderia() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
+
+      // Set isDryingProcessConfirmed to false
+      setIsDryingProcessConfirmed(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -180,26 +213,44 @@ function PedidosLavanderia() {
         console.error("El pedido o la secadora seleccionada son indefinidos.");
         return;
       }
+  
+      setShowDryerSelection(false);
+      showNotification(`Pedido finalizado en ${selectedMachine.model}`);
+  
+      setIsDryingProcessConfirmed(true);
+      setIsDryingProcessConfirmedInModal(true);
+    } catch (error) {
+      console.error("Error al actualizar el pedido:", error);
+    }
+  };
+  
+  const handleFinishProcess = async () => {
+    try {
+      if (!selectedPedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        return;
+      }
+  
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "finished" }
           : p
       );
-
+  
       setPedidos(updatedPedidos);
-
+  
+      // Update the order status in the database
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
-        assignedMachine: selectedMachine.id,
       });
-      setShowDryerSelection(false);
-      showNotification(`Pedido finalizado en ${selectedMachine.model}`);
-      // Actualizar datos
+  
+      showNotification(`Pedido finalizado correctamente`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
+  
 
   return (
     <div>
@@ -266,12 +317,13 @@ function PedidosLavanderia() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th>No. Folio</th>
-              <th>Empleado que Recibió</th>
-              <th>Empleado que Entregó</th>
-              <th>Nombre del Cliente</th>
-              <th>Detalle del pedido</th>
+              <th>Recibió</th>
+              <th>Entregó</th>
+              <th>Cliente</th>
+              <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -300,13 +352,7 @@ function PedidosLavanderia() {
                 <td className="py-3 px-6 font-bold ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined/> Pendiente
-                      <button
-                        onClick={() => handleStartProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
-                      >
-                        Iniciar
-                      </button>
+                      <MinusCircleOutlined /> Pendiente
                     </span>
                   ) : pedido.orderStatus === "stored" ? (
                     <span className="text-fuchsia-600 pl-1">
@@ -315,12 +361,6 @@ function PedidosLavanderia() {
                   ) : pedido.orderStatus === "inProgress" ? (
                     <span className="text-yellow-600 pl-1">
                       <ClockCircleOutlined /> En Proceso
-                      <button
-                        onClick={() => handleStartDryerProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
-                      >
-                        Secado
-                      </button>
                     </span>
                   ) : pedido.orderStatus === "finished" ? (
                     <span className="text-blue-600 pl-1">
@@ -335,6 +375,34 @@ function PedidosLavanderia() {
                       <StopOutlined /> Cancelado
                     </span>
                   )}
+                </td>
+                <td className="py-3 px-6">
+                  {pedido.orderStatus === "pending" && (
+                    <button
+                      onClick={() => handleStartProcess(pedido)}
+                      className="btn-primary ml-2 mt-1"
+                    >
+                      Iniciar
+                    </button>
+                  )}
+{pedido.orderStatus === "inProgress" && (
+  <button
+    onClick={() => {
+      if (isDryingProcessConfirmedInModal) {
+        // If the drying process is confirmed, finish the order
+        handleFinishProcess();
+      } else {
+        // Otherwise, open the dryer selection modal
+        handleStartDryerProcess(pedido);
+      }
+    }}
+    className="btn-primary ml-2 mt-1"
+  >
+    {isDryingProcessConfirmedInModal ? 'Terminar' : 'Secado'}
+  </button>
+)}
+
+
                 </td>
               </tr>
             ))}

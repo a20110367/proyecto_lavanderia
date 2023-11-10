@@ -3,7 +3,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
-import api from '../../api/api'
+import api from "../../api/api";
 
 import {
   IssuesCloseOutlined,
@@ -79,7 +79,6 @@ function PedidosAutoservicio() {
     setFiltroEstatus(event.target.value);
   };
 
-
   const showNotification = (message) => {
     setNotificationMessage(message);
     setNotificationVisible(true);
@@ -107,12 +106,9 @@ function PedidosAutoservicio() {
       setLoading(true);
 
       // Obtener datos de las máquinas y estaciones de planchado
-      const [machinesResponse, ironsResponse] = await Promise.all([
-        api.get("/machines"),
-        api.get("/ironStations"),
-      ]);
+      const [machinesResponse] = await Promise.all([api.get("/machines")]);
 
-      const allMachines = [...machinesResponse.data, ...ironsResponse.data];
+      const allMachines = [...machinesResponse.data];
 
       setAvailableMachines(allMachines);
       setSelectedMachine(null);
@@ -134,14 +130,14 @@ function PedidosAutoservicio() {
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
+          ? { ...p, orderStatus: "delivered" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
+        orderStatus: "delivered",
         assignedMachine: selectedMachine.id,
       });
       setShowMachineName(false);
@@ -217,12 +213,13 @@ function PedidosAutoservicio() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th>No. Folio</th>
-              <th>Empleado que Recibió</th>
-              <th>Empleado que Entregó</th>
-              <th>Nombre del Cliente</th>
-              <th>Detalle del pedido</th>
+              <th>Recibió</th>
+              <th>Entregó</th>
+              <th>Cliente</th>
+              <th>Detalle</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -251,13 +248,7 @@ function PedidosAutoservicio() {
                 <td className="py-3 px-6 font-bold ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined/> Pendiente
-                      <button
-                        onClick={() => handleStartProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
-                      >
-                        Iniciar
-                      </button>
+                      <MinusCircleOutlined /> Pendiente
                     </span>
                   ) : pedido.orderStatus === "stored" ? (
                     <span className="text-fuchsia-600 pl-1">
@@ -279,6 +270,16 @@ function PedidosAutoservicio() {
                     <span className="text-red-600 pl-1">
                       <StopOutlined /> Cancelado
                     </span>
+                  )}
+                </td>
+                <td>
+                  {pedido.orderStatus === "pending" && (
+                    <button
+                      onClick={() => handleStartProcess(pedido)}
+                      className="btn-primary ml-2 mt-1"
+                    >
+                      Iniciar
+                    </button>
                   )}
                 </td>
               </tr>
@@ -369,7 +370,6 @@ function PedidosAutoservicio() {
           </table>
         </div>
       </Modal>
-
 
       <Modal
         open={notificationVisible}

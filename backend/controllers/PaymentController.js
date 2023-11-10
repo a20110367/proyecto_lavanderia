@@ -52,21 +52,21 @@ export const createPayment = async (req, res) =>{
     }
 }
 
-export const createPaymentDelyvery = async (req, res) =>{
+export const createPaymentDelivery = async (req, res) =>{
    
     try {
         const payment =  prisma.payment.create({
-            data: req.body
+            data: req.body.payment
        
         });
 
         const delivery =  prisma.deliveryDetail.create({
             data: {
-                fk_userCashier:cashier,
-                deliveryDate:deliveryDate,
-                deliveryTime:deliveryTime,
-                fk_idOrder:Number(req.body.fk_idOrder),
-                fk_idPayment:id_payment
+                fk_userCashier:req.body.deliveryDetail.fk_userCashier,
+                deliveryDate:req.body.deliveryDetail.deliveryDate,
+                deliveryTime:req.body.deliveryDetail.deliveryTime,
+                fk_idOrder:req.body.deliveryDetail.fk_idOrder,
+                fk_idPayment:(await payment).id_payment
             }
        
         });
@@ -74,7 +74,7 @@ export const createPaymentDelyvery = async (req, res) =>{
         
         const orderPayment = prisma.serviceOrder.update({
             where:{
-                id_order:Number(req.body.fk_idOrder),
+                id_order:req.body.deliveryDetail.fk_idOrder,
             },
             data:{
                 payStatus:'paid',
@@ -97,16 +97,14 @@ export const createPaymentAdvance = async (req, res) =>{
    
     try {
         const payment =  prisma.payment.create({
-            data: req.body
-            //  {
-            //     fk_idOrder:fk_idOrder,
-            //     payMethod:payMethod,
-            //     payDate:payDate,
-            //     fk_userCashier:id_user,
-            //     payTime:payTime,
-            //     payTotal:payTotal
-
-            // },
+            data: {
+                fk_userCashier:req.body.deliveryDetail.fk_userCashier,
+                deliveryDate:req.body.deliveryDetail.deliveryDate,
+                deliveryTime:req.body.deliveryDetail.deliveryTime,
+                fk_idOrder:req.body.deliveryDetail.fk_idOrder,
+                fk_idPayment:(await payment).id_payment
+            }
+       
         });
 
         
@@ -116,7 +114,6 @@ export const createPaymentAdvance = async (req, res) =>{
             },
             data:{
                 payStatus:'paid',
-                orderStatus:'delivered',
             },
 
         });

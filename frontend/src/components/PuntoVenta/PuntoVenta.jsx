@@ -177,6 +177,19 @@ export default function PuntoVenta() {
         notes: ''
       }
       ticket(order)
+      console.log(res)
+      const idOrder = res.data.serviceOrder.id_order
+      console.log(idOrder)
+      const resPayment = await api.post('/paymentsAdvance', {
+        payment: {
+          fk_idOrder: idOrder,
+          payMethod: payMethod,
+          payDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
+          fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
+          payTotal: calculateSubtotal()
+        }
+      });
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
@@ -184,6 +197,7 @@ export default function PuntoVenta() {
         setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
       }
     }
+    
 
 
     const doc = new jsPDF();

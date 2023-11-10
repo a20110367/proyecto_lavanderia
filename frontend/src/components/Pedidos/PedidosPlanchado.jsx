@@ -123,32 +123,35 @@ function PedidosPlanchado() {
   const handleFinishProcess = async () => {
     try {
       setLoading(true);
-
+  
       if (!selectedPedido) {
         console.error("El pedido seleccionado es indefinido.");
         return;
       }
-
+  
+      // Update the order status locally first
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "finished" }
           : p
       );
-
+  
       setPedidos(updatedPedidos);
-
+  
+      // Then update the order status in the database
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
+  
       setShowMachineName(false);
       showNotification(`Pedido finalizado`);
-      // Actualizar datos
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleConfirmMachineSelection = async () => {
     try {

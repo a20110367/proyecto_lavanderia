@@ -9,18 +9,20 @@ import {
 import moment from "moment";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
+import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";
 import useSWR from "swr";
 
 function EntregaLavanderia() {
+  const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [cobroInfo, setCobroInfo] = useState({
-    metodoPago: "",
-    fechaPago: moment().format("DD/MM/YYYY"),
+    metodoPago: "cash",
+    fechaPago: moment(),
   });
 
   const [entregando, setEntregando] = useState(false);
@@ -77,16 +79,16 @@ function EntregaLavanderia() {
     });
   };
 
-  const handleGuardarCobro = (pedido) => {
+  const handleGuardarCobro = async (pedido) => {
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
-      .format("YYYY-MM-DD");
+      .format("DD/MM/YYYY")
 
     const updatedPedido = {
       ...pedido,
       payStatus: "paid",
       metodoPago: cobroInfo.metodoPago,
-      f_recepcion: cobroInfo.fechaPago,
+      f_recepcion: cobroInfo.fechaPago.format("DD/MM/YYYY"),
       fentregaEstimada: fechaEntrega,
     };
 
@@ -98,6 +100,27 @@ function EntregaLavanderia() {
     setFilteredPedidos(updatedFilteredPedidos);
 
     setVisible(false);
+
+    try {
+      await api.post('/paymentDelivery', {
+        payment: {
+          fk_idOrder: pedido.id_order,
+          payMethod: cobroInfo.metodoPago,
+          payDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          payTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
+          payTotal: pedido.totalPrice
+        },
+        deliveryDetail: {
+          fk_userCashier: cookies.token,
+          deliveryDate: pedido.scheduledDeliveryDate,
+          deliveryTime: pedido.scheduledDeliveryTime,
+          fk_idOrder: pedido.id_order
+        }
+      })
+    }catch(err){
+      console.log(err)
+    }
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
@@ -222,11 +245,10 @@ function EntregaLavanderia() {
                     {formatDateToGMTMinus6(pedido.receptionTime)}
                   </td>
                   <td
-                    className={`py-3 px-6 ${
-                      pedido.payStatus === "unpaid"
+                    className={`py-3 px-6 ${pedido.payStatus === "unpaid"
                         ? "text-red-600"
                         : "text-green-600"
-                    }`}
+                      }`}
                   >
                     {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">
@@ -345,8 +367,8 @@ function EntregaLavanderia() {
                 onChange={handleCobroInfoChange}
                 className="bg-gray-200 rounded-md p-1"
               >
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
+                <option value="cash">Efectivo</option>
+                <option value="credit">Tarjeta</option>
               </select>
             </div>
           </div>

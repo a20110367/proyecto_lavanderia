@@ -41,9 +41,9 @@ export default function PuntoVenta() {
     // Definir el category_id
     if (serviceType === 'autoservicio') {
       setCategoryId(1)
-    }else if(serviceType === 'encargo'){
+    } else if (serviceType === 'encargo') {
       setCategoryId(2)
-    }else{
+    } else {
       setCategoryId(3)
     }
   }, [serviceType]);
@@ -141,21 +141,18 @@ export default function PuntoVenta() {
   const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
 
-    const arrayServiceDetail = []
+    const arrayService = []
 
     let noOfItems = 0
     cart.map(detail => noOfItems = noOfItems + detail.quantity)
 
-    cart.map( detail => 
-      arrayServiceDetail.push({
+    cart.map(detail =>
+      arrayService.push({
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
-        fk_Service: detail.id_service,
-        fk_categoryId: categoryId,
+        fk_Service: detail.id_service
       }
-    ))
-
-    console.log(deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z')
+      ))
 
     const order = {
       id_order: 1,
@@ -166,28 +163,30 @@ export default function PuntoVenta() {
       casher: cookies.username,
       client: clientName,
       scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-      scheduledDeliveryTime: "1970-01-01T" +  deliveryDate.toISOString().split("T")[1],
+      scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
       notes: ''
     }
 
     ///////////////////////////////////////////////
     //CART[0,1]
     try {
-      const res = await api.post("/orders", {
+      const res = await api.post("/ordersSelfService", {
         serviceOrder: {
-          totalPrice: calculateSubtotal(),
+          totalPrice: parseFloat(400),
           fk_client: parseInt(clientId),
           numberOfItems: noOfItems,
           payForm: payForm,
-          payStatus: payStatus,          
+          payStatus: payStatus,
           fk_user: cookies.token,
+          receptionDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          receptionTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
           scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
           scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
           fk_categoryId: categoryId
         },
-        serviceOrderDetail: arrayServiceDetail
+        services: arrayService
       });
-      console.log(res.data)
+      console.log(res.data.serviceOrder.id_order)
     } catch (err) {
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
@@ -208,8 +207,7 @@ export default function PuntoVenta() {
 
     cart.forEach((service) => {
       doc.text(
-        `${service.description} x ${service.quantity} - $${
-          service.price * service.quantity
+        `${service.description} x ${service.quantity} - $${service.price * service.quantity
         }`,
         10,
         y
@@ -245,35 +243,34 @@ export default function PuntoVenta() {
     // Regresar a la página anterior
     // window.history.back();
     ticket(order)
-    console.log(cart);
   };
 
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
   return (
     <div>
       <div className="basic-container w-5/12">
@@ -299,11 +296,10 @@ export default function PuntoVenta() {
                     </h3>
                     <h5 className="text-gray-600">${service.price}</h5>
                     <button
-                      className={`${
-                        isAddButtonDisabled
+                      className={`${isAddButtonDisabled
                           ? "bg-gray-400"
                           : "bg-blue-500 hover:bg-blue-700"
-                      } text-white font-bold py-2 px-4 rounded mt-2`}
+                        } text-white font-bold py-2 px-4 rounded mt-2`}
                       onClick={() => addToCart(service.id_service, service)}
                       disabled={isAddButtonDisabled}
                     >
@@ -462,21 +458,21 @@ export default function PuntoVenta() {
                       <Option value="advance">Anticipado</Option>
                     </Select>
                     {(payForm === "advance" ||
-                      serviceType === "autoservicio") &&  (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod} 
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                      serviceType === "autoservicio") && (
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

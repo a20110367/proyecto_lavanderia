@@ -9,6 +9,8 @@ import {
 import moment from "moment";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
+import api from "../../api/api";
+import useSWR from "swr";
 
 function EntregaPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -18,7 +20,7 @@ function EntregaPlanchado() {
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [cobroInfo, setCobroInfo] = useState({
     metodoPago: "",
-    fechaPago: moment().format("YYYY-MM-DD"),
+    fechaPago: moment().format("DD/MM/YYYY"),
   });
 
   const [entregando, setEntregando] = useState(false);
@@ -30,50 +32,19 @@ function EntregaPlanchado() {
   };
 
   useEffect(() => {
-    const dummyPedidos = [
-      {
-        id_pedido: 1,
-        user: "Saul",
-        cliente: "Juan",
-        id_cobro: 1,
-        pedidoDetalle: "Planchado de patas",
-        orderstatus: "Pagado",
-        totalPrice: 100,
-        fentregaEstimada: "15/09/2023",
-        f_recepcion: "17/09/2023",
-        empleadoRecibe: "Saul",
-        metodoPago: "Tarjeta",
-      },
-      {
-        id_pedido: 2,
-        user: "Maria",
-        cliente: "Axel",
-        id_cobro: 2,
-        pedidoDetalle: "Monas Chinas planchadas",
-        orderstatus: "Adeudo",
-        totalPrice: 150,
-        fentregaEstimada: "16/09/2023",
-        f_recepcion: "18/09/2023",
-        empleadoRecibe: "Maria",
-        metodoPago: "Efectivo",
-      },
-      {
-        id_pedido: 3,
-        user: "Luis",
-        cliente: "Carlos",
-        id_cobro: 3,
-        pedidoDetalle: "Planchado",
-        orderstatus: "Adeudo",
-        totalPrice: 80,
-        fentregaEstimada: "17/09/2023",
-        f_recepcion: "19/09/2023",
-        empleadoRecibe: "Luis",
-        metodoPago: "Tarjeta",
-      },
-    ];
+    const fetchOrders = async () => {
+      try {
+        const response = await api.get("/ordersIron"); // Assuming your API endpoint is /orders
+        const ordersData = response.data;
 
-    setPedidos(dummyPedidos);
-    setFilteredPedidos(dummyPedidos);
+        setPedidos(ordersData);
+        setFilteredPedidos(ordersData);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrders();
   }, []);
 
   const handleFiltroChange = (event) => {
@@ -93,6 +64,7 @@ function EntregaPlanchado() {
   };
 
   const handleCobrar = (pedido) => {
+    console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
     setVisible(true);
   };
@@ -112,14 +84,16 @@ function EntregaPlanchado() {
 
     const updatedPedido = {
       ...pedido,
-      orderstatus: "Pagado",
+      payStatus: "paid",
       metodoPago: cobroInfo.metodoPago,
       f_recepcion: cobroInfo.fechaPago,
       fentregaEstimada: fechaEntrega,
     };
 
+    console.log("Pedido actualizado:", updatedPedido);
+
     const updatedFilteredPedidos = filteredPedidos.map((p) =>
-      p.id_pedido === updatedPedido.id_pedido ? updatedPedido : p
+      p.id_order === updatedPedido.id_order ? updatedPedido : p
     );
     setFilteredPedidos(updatedFilteredPedidos);
 
@@ -127,19 +101,21 @@ function EntregaPlanchado() {
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.cliente}`, 10, 20);
-    doc.text(`Pedido: ${updatedPedido.pedidoDetalle}`, 10, 30);
+    doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
+    doc.text(`Pedido: ${pedido.ServiceOrderDetail.find(
+      (service) => service.id_serviceOrderDetail
+    ) != undefined
+      ? pedido.ServiceOrderDetail.length
+      : 0}`, 10, 30);
     doc.text(`Estatus: Adeudo`, 10, 40);
-    doc.text(`Método de Pago: ${updatedPedido.metodoPago}`, 10, 50);
+    doc.text(`Método de Pago: ${pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}`, 10, 50);
     doc.text(
-      `Fecha de Pago: ${moment(updatedPedido.f_recepcion).format(
-        "DD/MM/YYYY"
-      )}`,
+      `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
       10,
       60
     );
     doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
-    doc.save(`pedido_${updatedPedido.id_pedido}.pdf`);
+    doc.save(`pedido_${updatedPedido.id_order}.pdf`);
   };
 
   const handleClose = () => {
@@ -148,28 +124,41 @@ function EntregaPlanchado() {
   };
 
   const handleEntregar = (pedido) => {
-    if (pedido.orderstatus === "Pagado") {
+    if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 
       setEntregando(true);
-
+      console.log(pedido);
       setTimeout(() => {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.cliente}`, 10, 20);
-        doc.text(`Pedido: ${pedido.pedidoDetalle}`, 10, 30);
+        doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
+        doc.text(`Pedido: ${pedido.ServiceOrderDetail.find(
+          (service) => service.id_serviceOrderDetail
+        ) != undefined
+          ? pedido.ServiceOrderDetail.length
+          : 0}`, 10, 30);
         doc.text(`Estatus: Entregado`, 10, 40);
-        doc.text(`Método de Pago: ${pedido.metodoPago}`, 10, 50);
+        doc.text(`Método de Pago: ${pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}`, 10, 50);
         doc.text(
-          `Fecha de Pago: ${moment(pedido.f_recepcion).format("DD/MM/YYYY")}`,
+          `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
           10,
           60
         );
         doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
-        doc.save(`pedido_${pedido.id_pedido}.pdf`);
+        doc.save(`pedido_${pedido.id_order}.pdf`);
       }, 1500);
     }
+  };
+
+  const formatDateToGMTMinus6 = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -214,24 +203,32 @@ function EntregaPlanchado() {
                 (currentPage + 1) * itemsPerPage
               )
               .map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <tr className="bg-white border-b" key={pedido.id_order}>
+                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
+                    {pedido.client.name}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleadoRecibe}
+                    {pedido.user.name}
                   </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                  <td className="py-3 px-6">
+                    {pedido.ServiceOrderDetail.find(
+                      (service) => service.id_serviceOrderDetail
+                    ) != undefined
+                      ? pedido.ServiceOrderDetail.length
+                      : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDateToGMTMinus6(pedido.receptionTime)}
+                  </td>
                   <td
                     className={`py-3 px-6 ${
-                      pedido.orderstatus === "Adeudo"
+                      pedido.payStatus === "unpaid"
                         ? "text-red-600"
                         : "text-green-600"
                     }`}
                   >
-                    {pedido.orderstatus === "Adeudo" ? (
+                    {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">
                         <ExclamationCircleOutlined /> Adeudo $
                         {pedido.totalPrice}
@@ -242,9 +239,11 @@ function EntregaPlanchado() {
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
+                  <td className="py-3 px-6">
+                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                  </td>
                   <td>
-                    {pedido.orderstatus === "Pagado" ? (
+                    {pedido.payStatus === "paid" ? (
                       <button
                         onClick={() => handleEntregar(pedido)}
                         className="btn-delivery"
@@ -284,10 +283,10 @@ function EntregaPlanchado() {
       </div>
       {selectedPedido &&
         entregando &&
-        selectedPedido.orderstatus === "Pagado" && (
+        selectedPedido.payStatus === "paid" && (
           <Modal
             title="Pedido Entregado"
-            visible={entregando}
+            open={entregando}
             closable={false}
             footer={null}
           >
@@ -303,7 +302,6 @@ function EntregaPlanchado() {
         )}
 
       <Modal
-        title="Detalles del Pedido"
         open={visible}
         onOk={() => handleGuardarCobro(selectedPedido)}
         onCancel={handleClose}
@@ -325,17 +323,17 @@ function EntregaPlanchado() {
           </Button>,
         ]}
       >
-        {selectedPedido?.orderstatus === "Adeudo" && (
+        {selectedPedido?.payStatus === "unpaid" && (
           <div>
             <p className="text-lg font-semibold">Detalles del Pedido</p>
             <p>
-              <strong>Cliente:</strong> {selectedPedido?.cliente}
+              <strong>Cliente:</strong> {selectedPedido?.client.name}
             </p>
             <p>
-              <strong>Pedido:</strong> {selectedPedido?.pedidoDetalle}
+              <strong>Pedido:</strong> {selectedPedido.id_order}
             </p>
             <p>
-              <strong>Estatus:</strong> Adeudo - <strong>Adeudo:</strong> $
+              <strong>Estatus:</strong> Adeudo - <strong>Monto:</strong> $
               {selectedPedido?.totalPrice}
             </p>
             <div className="mb-2">
@@ -350,28 +348,17 @@ function EntregaPlanchado() {
                 <option value="Tarjeta">Tarjeta</option>
               </select>
             </div>
-            <div>
-              <strong>Fecha de Pago:</strong>{" "}
-              <input
-                type="date"
-                name="fechaPago"
-                value={cobroInfo.fechaPago}
-                onChange={handleCobroInfoChange}
-                className="bg-gray-200 rounded-md p-1"
-                readOnly
-              />
-            </div>
           </div>
         )}
         <div className="text-center">
-          {selectedPedido?.orderstatus === "Adeudo" ? (
+          {selectedPedido?.payStatus === "unpaid" ? (
             <ExclamationCircleOutlined
               style={{ fontSize: "64px", color: "red" }}
             />
           ) : (
             <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
           )}
-          {selectedPedido?.orderstatus === "Pagado" && (
+          {selectedPedido?.payStatus === "paid" && (
             <p className="text-green-600 font-bold text-lg mt-2">
               Pago Confirmado...
             </p>

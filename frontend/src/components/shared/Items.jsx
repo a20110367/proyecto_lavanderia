@@ -49,6 +49,7 @@ const items1 = [
     ]),
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("General", "/pedidosGeneral"),
     ]),
@@ -102,8 +103,10 @@ const items2 = [
     ]),
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("General", "/pedidosGeneral"),
+
     ]),
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),
 

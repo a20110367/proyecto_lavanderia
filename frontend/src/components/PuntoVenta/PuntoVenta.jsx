@@ -34,18 +34,22 @@ export default function PuntoVenta() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [payForm, setPayForm] = useState(serviceType === "autoservicio" ? "advance" : "delivery");
-  const [payStatus, setPayStatus] = useState('unpaid')
+  const [payStatus, setPayStatus] = useState(serviceType === "autoservicio" ? "paid" : "unpaid")
   const [payMethod, setPayMethod] = useState(serviceType === "autoservicio" ? "cash" : "");
   const [categoryId, setCategoryId] = useState(0)
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === 'autoservicio') {
       setCategoryId(1)
+      setUrl('/ordersSelfService')
     } else if (serviceType === 'encargo') {
       setCategoryId(2)
+      setUrl('/ordersLaundryService')
     } else {
       setCategoryId(3)
+      setUrl('/ordersIronService')
     }
   }, [serviceType]);
 
@@ -120,17 +124,6 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
-    // console.log(cart)
-    // console.log(deliveryDate)
-    // console.log(categoryId)
-    // const now = new Date();
-    // console.log(now.toISOString())
-    // console.log(now.toISOString().split("T")[0] + 'T00:00:00.000Z')
-    // let total = 0
-    // let noOfItems = 0
-    // cart.map(detail => total = total + detail.totalPrice)
-    // cart.map(detail => noOfItems = noOfItems + detail.quantity)
-    // console.log(noOfItems)
     setIsModalVisible(true);
   };
 
@@ -154,128 +147,44 @@ export default function PuntoVenta() {
       }
       ))
 
-    switch (categoryId) {
-      case 1:
-        try {
-          const res = await api.post("/ordersSelfService", {
-            serviceOrder: {
-              totalPrice: parseFloat(400),
-              fk_client: parseInt(clientId),
-              numberOfItems: noOfItems,
-              payForm: payForm,
-              payStatus: payStatus,
-              fk_user: cookies.token,
-              receptionDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              receptionTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-              scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-              fk_categoryId: categoryId
-            },
-            services: arrayService
-          });
-          const order = {
-            id_order: res.data.serviceOrder.id_order,
-            payForm: payForm,
-            payStatus: payStatus,
-            payMethod: payMethod,
-            subtotal: calculateSubtotal(),
-            casher: cookies.username,
-            client: clientName,
-            scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-            scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-            notes: ''
-          }
-          ticket(order)
-        } catch (err) {
-          if (!err?.response) {
-            setErrMsg("Sin respuesta del Servidor");
-          } else {
-            setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
-          }
-        }
-        break;
-      case 2:
-        try {
-          const res = await api.post("/ordersLaundryService", {
-            serviceOrder: {
-              totalPrice: parseFloat(400),
-              fk_client: parseInt(clientId),
-              numberOfItems: noOfItems,
-              payForm: payForm,
-              payStatus: payStatus,
-              fk_user: cookies.token,
-              receptionDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              receptionTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-              scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-              fk_categoryId: categoryId
-            },
-            services: arrayService
-          });
-          const order = {
-            id_order: res.data.serviceOrder.id_order,
-            payForm: payForm,
-            payStatus: payStatus,
-            payMethod: payMethod,
-            subtotal: calculateSubtotal(),
-            casher: cookies.username,
-            client: clientName,
-            scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-            scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-            notes: ''
-          }
-          ticket(order)
-        } catch (err) {
-          if (!err?.response) {
-            setErrMsg("Sin respuesta del Servidor");
-          } else {
-            setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
-          }
-        }
-        break;
-      case 3:
-        try {
-          const res = await api.post("/ordersIronService", {
-            serviceOrder: {
-              totalPrice: parseFloat(400),
-              fk_client: parseInt(clientId),
-              numberOfItems: noOfItems,
-              payForm: payForm,
-              payStatus: payStatus,
-              fk_user: cookies.token,
-              receptionDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              receptionTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-              scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-              scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-              fk_categoryId: categoryId
-            },
-            services: arrayService
-          });
-          const order = {
-            id_order: res.data.serviceOrder.id_order,
-            payForm: payForm,
-            payStatus: payStatus,
-            payMethod: payMethod,
-            subtotal: calculateSubtotal(),
-            casher: cookies.username,
-            client: clientName,
-            scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-            scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-            notes: ''
-          }
-          ticket(order)
-        } catch (err) {
-          if (!err?.response) {
-            setErrMsg("Sin respuesta del Servidor");
-          } else {
-            setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
-          }
-        }
-        break;
-      default:
-        console.log('Eso no existe joven')
-        setErrMsg('Eso no existe joven')
+    try {
+      const res = await api.post(url, {
+        serviceOrder: {
+          totalPrice: calculateSubtotal(),
+          fk_client: parseInt(clientId),
+          numberOfItems: noOfItems,
+          payForm: payForm,
+          payStatus: payStatus,
+          fk_user: cookies.token,
+          receptionDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          receptionTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
+          scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
+          fk_categoryId: categoryId
+        },
+        services: arrayService
+      });
+      const order = {
+        id_order: res.data.serviceOrder.id_order,
+        payForm: payForm,
+        payStatus: payStatus,
+        payMethod: payMethod,
+        subtotal: calculateSubtotal(),
+        casher: cookies.username,
+        client: clientName,
+        scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+        scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
+        notes: ''
+      }
+      ticket(order)
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("Sin respuesta del Servidor");
+      } else {
+        setErrMsg("Hubo un error al registrar la Orden, comuniquese con Soporte");
+      }
     }
+
 
     const doc = new jsPDF();
 

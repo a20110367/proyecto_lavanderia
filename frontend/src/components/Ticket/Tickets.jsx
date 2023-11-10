@@ -78,7 +78,7 @@ async function ticket(order) {
                 <hr class="hr-header">   
                     <p>Cliente: ${order.client}</p>         
                     <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
-                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${formatTime(order.scheduledDeliveryTime)}</h4>        
+                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${order.scheduledDeliveryTime}</h4>        
                     <hr class="hr-header">
                 <p>Observaciones Generales: ${order.notes}</p>
                 <hr class="hr-header">

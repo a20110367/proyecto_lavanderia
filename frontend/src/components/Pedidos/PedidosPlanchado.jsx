@@ -345,7 +345,6 @@ function PedidosPlanchado() {
       </div>
 
       <Modal
-        title="Seleccionar Máquina"
         open={showMachineName}
         onCancel={() => setShowMachineName(false)}
         footer={[

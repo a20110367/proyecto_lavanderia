@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
@@ -33,7 +33,6 @@ function PedidosPlanchado() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
-  const [showDryerSelection, setShowDryerSelection] = useState(false);
 
   const fetcher = async () => {
     const response = await api.get("/ordersIron");
@@ -78,7 +77,6 @@ function PedidosPlanchado() {
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
   };
-
 
   const showNotification = (message) => {
     setNotificationMessage(message);
@@ -125,6 +123,36 @@ function PedidosPlanchado() {
     }
   };
 
+  const handleFinishProcess = async () => {
+    try {
+      setLoading(true);
+
+      if (!selectedPedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        return;
+      }
+
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === selectedPedido.id_order
+          ? { ...p, orderStatus: "finished" }
+          : p
+      );
+
+      setPedidos(updatedPedidos);
+
+      await api.patch(`/orders/${selectedPedido.id_order}`, {
+        orderStatus: "finished",
+      });
+      setShowMachineName(false);
+      showNotification(`Pedido finalizado`);
+      // Actualizar datos
+    } catch (error) {
+      console.error("Error al finalizar el pedido:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleConfirmMachineSelection = async () => {
     try {
       if (!selectedPedido || !selectedMachine) {
@@ -146,55 +174,6 @@ function PedidosPlanchado() {
       });
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
-      // Actualizar datos
-    } catch (error) {
-      console.error("Error al actualizar el pedido:", error);
-    }
-  };
-
-  const handleStartDryerProcess = async (pedido) => {
-    try {
-      setLoading(true);
-
-      // Obtener datos de las secadoras
-      const dryersResponse = await api.get("/machines", {
-        params: { machineType: "secadora" },
-      });
-
-      const availableDryers = dryersResponse.data;
-
-      setAvailableMachines(availableDryers);
-      setSelectedMachine(null);
-      setSelectedPedido(pedido);
-      setShowDryerSelection(true);
-    } catch (error) {
-      console.error("Error al obtener datos:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleConfirmDryerSelection = async () => {
-    try {
-      if (!selectedPedido || !selectedMachine) {
-        console.error("El pedido o la secadora seleccionada son indefinidos.");
-        return;
-      }
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
-      );
-
-      setPedidos(updatedPedidos);
-
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
-        assignedMachine: selectedMachine.id,
-      });
-      setShowDryerSelection(false);
-      showNotification(`Pedido finalizado en ${selectedMachine.model}`);
       // Actualizar datos
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
@@ -300,7 +279,7 @@ function PedidosPlanchado() {
                 <td className="py-3 px-6 font-bold ">
                   {pedido.orderStatus === "pending" ? (
                     <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined/> Pendiente
+                      <MinusCircleOutlined /> Pendiente
                       <button
                         onClick={() => handleStartProcess(pedido)}
                         className="btn-primary ml-2 mt-1"
@@ -316,10 +295,10 @@ function PedidosPlanchado() {
                     <span className="text-yellow-600 pl-1">
                       <ClockCircleOutlined /> En Proceso
                       <button
-                        onClick={() => handleStartDryerProcess(pedido)}
+                        onClick={() => handleFinishProcess()}
                         className="btn-primary ml-2 mt-1"
                       >
-                        Secado
+                        Finalizar
                       </button>
                     </span>
                   ) : pedido.orderStatus === "finished" ? (
@@ -420,74 +399,6 @@ function PedidosPlanchado() {
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
-      </Modal>
-
-      <Modal
-        title="Seleccionar Secadora"
-        open={showDryerSelection}
-        onCancel={() => setShowDryerSelection(false)}
-        footer={[
-          <button
-            key="submit"
-            className="btn-primary"
-            onClick={() => handleConfirmDryerSelection()}
-            disabled={!selectedMachine}
-          >
-            Confirmar
-          </button>,
-        ]}
-        width={800}
-        style={{ padding: "20px" }}
-      >
-        <div>
-          <p className="mb-4 text-xl font-bold">Selecciona una secadora:</p>
-          <table className="w-full text-center">
-            <thead className="bg-gray-200">
-              <tr>
-                <th>Tipo de Máquina</th>
-                <th>Modelo</th>
-                <th>Tiempo de Ciclo</th>
-                <th>Peso</th>
-                <th>Estado de la Máquina</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {availableMachines
-                .filter((machine) => machine.machineType === "secadora")
-                .map((machine) => (
-                  <tr key={machine.id_machine}>
-                    <td>{machine.machineType}</td>
-                    <td>{machine.model}</td>
-                    <td>{machine.cicleTime}</td>
-                    <td>{machine.weight}</td>
-                    <td
-                      className={`${
-                        machine.status === "available"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      {machine.status === "available"
-                        ? "Disponible"
-                        : "No Disponible"}
-                    </td>
-                    <td>
-                      <div className="flex flex-col items-center">
-                        <Checkbox
-                          key={`checkbox_${machine.id_machine}`}
-                          checked={selectedMachine === machine}
-                          onChange={() => handleSelectMachine(machine)}
-                          className="mb-2"
-                        />
-                        <span className="text-blue-500">Seleccionar</span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
             </tbody>
           </table>
         </div>

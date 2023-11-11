@@ -44,13 +44,13 @@ function InicioCaja() {
     }
     try {
       const response = await api.post("/cashCuts", {
-        inicialCash: parseFloat(dineroInicio),
+        initialCash: parseFloat(dineroInicio),
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON()
       });
       localStorage.setItem("cashCutId", response.data.id_cashCut);
-      localStorage.setItem("initialCash", response.data.inicialCash)
+      localStorage.setItem("initialCash", response.data.initialCash)
       localStorage.removeItem('lastCashCut')
       setCajaIniciada(true);
       setVisible(false);

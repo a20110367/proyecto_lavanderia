@@ -68,12 +68,12 @@ function HistorialCaja() {
         10,
         50
       );
-      doc.text(`Dinero en Fondo: $${selectedCorte.inicialCash}`, 10, 60);
+      doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
 
       // Separación
       doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      selectedCorte.toalAutoservicio
-      ? doc.text(`Autoservicio: $${selectedCorte.toalAutoservicio}`, 10, 90)
+      selectedCorte.totalAutoservicio
+      ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
       : doc.text("Autoservicio: $0", 10, 90);
       selectedCorte.totalEncargo
       ? doc.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 100)
@@ -215,7 +215,7 @@ function HistorialCaja() {
                       {formatDateToGMTMinus6(corte.cashCutD)}
                     </td>
                     <td className="">
-                      ${corte.inicialCash ? corte.inicialCash : 0}
+                      ${corte.initialCash ? corte.initialCash : 0}
                     </td>
                     <td className="">
                       ${corte.totalCash ? corte.totalCash : 0}
@@ -292,7 +292,7 @@ function HistorialCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Dinero en Fondo:</span> $
-                    {selectedCorte.inicialCash ? selectedCorte.inicialCash : 0}
+                    {selectedCorte.initialCash ? selectedCorte.initialCash : 0}
                   </p>
                 </div>
                 <div className="w-1/2">
@@ -322,8 +322,8 @@ function HistorialCaja() {
                 </h3>
                 <p className="text-lg">
                   <span className="font-bold">Autoservicio:</span> $
-                  {selectedCorte.toalAutoservicio
-                    ? selectedCorte.toalAutoservicio
+                  {selectedCorte.totalAutoservicio
+                    ? selectedCorte.totalAutoservicio
                     : 0}
                 </p>
                 <p className="text-lg">

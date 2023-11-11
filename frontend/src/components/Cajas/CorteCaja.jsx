@@ -80,8 +80,8 @@ function CorteCaja() {
     pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
     //Separación
     pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.toalAutoservicio
-      ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90)
+    nuevoCorte.totalAutoservicio
+      ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
       : pdf.text("Autoservicio: $0", 10, 90);
     nuevoCorte.totalEncargo
       ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
@@ -148,8 +148,8 @@ function CorteCaja() {
 
     // Separación
     pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.toalAutoservicio
-      ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90)
+    nuevoCorte.totalAutoservicio
+      ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
       : pdf.text("Autoservicio: $0", 10, 90);
     nuevoCorte.totalEncargo
       ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
@@ -202,8 +202,8 @@ function CorteCaja() {
 
       // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      selectedCorte.toalAutoservicio
-        ? pdf.text(`Autoservicio: $${selectedCorte.toalAutoservicio}`, 10, 90)
+      selectedCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
         : pdf.text("Autoservicio: $0", 10, 90);
       selectedCorte.totalEncargo
         ? pdf.text(
@@ -446,8 +446,8 @@ function CorteCaja() {
               </h3>
               <p className="text-lg">
                 <span className="font-bold">Autoservicio:</span> $
-                {selectedCorte.toalAutoservicio
-                  ? selectedCorte.toalAutoservicio
+                {selectedCorte.totalAutoservicio
+                  ? selectedCorte.totalAutoservicio
                   : 0}
               </p>
               <p className="text-lg">

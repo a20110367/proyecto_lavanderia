@@ -113,8 +113,8 @@ function EntregaLavanderia() {
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
-          deliveryDate: pedido.scheduledDeliveryDate,
-          deliveryTime: pedido.scheduledDeliveryTime,
+          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
           fk_idOrder: pedido.id_order
         }
       })

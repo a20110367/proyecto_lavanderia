@@ -37,24 +37,24 @@ function PedidosLavanderia() {
   const [showDryerSelection, setShowDryerSelection] = useState(false);
   const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] =
     useState(false);
-  
+
   const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] = useState(false);
 
   useEffect(() => {
 
     localStorage.setItem("isDryingProcessConfirmed", isDryingProcessConfirmed);
   }, [isDryingProcessConfirmed]);
-  
+
   useEffect(() => {
 
     const storedConfirmationStatus = localStorage.getItem(
       "isDryingProcessConfirmed"
     );
-  
+
 
     setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
   }, []);
-  
+
 
   const fetcher = async () => {
     const response = await api.get("/ordersLaundry");
@@ -135,25 +135,25 @@ function PedidosLavanderia() {
   const handleStartProcess = async (pedido) => {
     try {
       setLoading(true);
-  
+
       // Obtener datos de las máquinas y estaciones de planchado
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
-  
+
       const allMachines = [...machinesResponse.data];
-  
+
       setAvailableMachines(allMachines);
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowMachineName(true);
-      setShowDryerSelection(false); 
-      setIsDryingProcessConfirmedInModal(false); 
+      setShowDryerSelection(false);
+      setIsDryingProcessConfirmedInModal(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   const handleConfirmMachineSelection = async () => {
     try {
@@ -213,63 +213,54 @@ function PedidosLavanderia() {
         console.error("El pedido o la secadora seleccionada son indefinidos.");
         return;
       }
-  
+
       setShowDryerSelection(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);
-  
+
       setIsDryingProcessConfirmed(true);
       setIsDryingProcessConfirmedInModal(true);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
-  
+
   const handleFinishProcess = async () => {
     try {
       if (!selectedPedido) {
         console.error("El pedido seleccionado es indefinido.");
         return;
       }
-  
+
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "finished" }
           : p
       );
-  
+
       setPedidos(updatedPedidos);
-  
+
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
-  
-      try {
-        setShowMachineName(false);
-        showNotification("NOTIFICACIÓN ENVIADA...");
-        await api.post("/sendMessage", {
-          id_order: selectedPedido.id_order,
-          name: selectedPedido.client.name,
-          email: selectedPedido.client.email,
-          tel: "521" + selectedPedido.client.phone,
-          message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-        });
-        console.log("NOTIFICACIÓN ENVIADA...");
-      } catch (err) {
-        if (!err?.response) {
-          setErrMsg("No hay respuesta del servidor.");
-        } else {
-          setErrMsg("Error al mandar la notificación");
-        }
-      }
-
+      
+      setShowMachineName(false);
+      showNotification("NOTIFICACIÓN ENVIADA...");
+      await api.post("/sendMessage", {
+        id_order: selectedPedido.id_order,
+        name: selectedPedido.client.name,
+        email: selectedPedido.client.email,
+        tel: "521" + selectedPedido.client.phone,
+        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      });
+      console.log("NOTIFICACIÓN ENVIADA...");
       showNotification(`Pedido finalizado correctamente`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
-  
+
 
   return (
     <div>
@@ -404,22 +395,22 @@ function PedidosLavanderia() {
                       Iniciar
                     </button>
                   )}
-{pedido.orderStatus === "inProgress" && (
-  <button
-    onClick={() => {
-      if (isDryingProcessConfirmedInModal) {
-        // If the drying process is confirmed, finish the order
-        handleFinishProcess();
-      } else {
-        // Otherwise, open the dryer selection modal
-        handleStartDryerProcess(pedido);
-      }
-    }}
-    className="btn-primary ml-2 mt-1"
-  >
-    {isDryingProcessConfirmedInModal ? 'Terminar' : 'Secado'}
-  </button>
-)}
+                  {pedido.orderStatus === "inProgress" && (
+                    <button
+                      onClick={() => {
+                        if (isDryingProcessConfirmedInModal) {
+                          // If the drying process is confirmed, finish the order
+                          handleFinishProcess();
+                        } else {
+                          // Otherwise, open the dryer selection modal
+                          handleStartDryerProcess(pedido);
+                        }
+                      }}
+                      className="btn-primary ml-2 mt-1"
+                    >
+                      {isDryingProcessConfirmedInModal ? 'Terminar' : 'Secado'}
+                    </button>
+                  )}
 
 
                 </td>
@@ -477,38 +468,37 @@ function PedidosLavanderia() {
               </tr>
             </thead>
             <tbody>
-            {availableMachines
+              {availableMachines
                 .filter((machine) => machine.machineType === "lavadora")
                 .map((machine) => (
-                <tr key={machine.id_machine}>
-                  <td>{machine.machineType}</td>
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
-                  <td
-                    className={`${
-                      machine.status === "available"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {machine.status === "available"
-                      ? "Disponible"
-                      : "No Disponible"}
-                  </td>
-                  <td>
-                    <div className="flex flex-col items-center">
-                      <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedMachine === machine}
-                        onChange={() => handleSelectMachine(machine)}
-                        className="mb-2"
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                  <tr key={machine.id_machine}>
+                    <td>{machine.machineType}</td>
+                    <td>{machine.model}</td>
+                    <td>{machine.cicleTime}</td>
+                    <td>{machine.weight}</td>
+                    <td
+                      className={`${machine.status === "available"
+                          ? "text-green-500"
+                          : "text-red-500"
+                        }`}
+                    >
+                      {machine.status === "available"
+                        ? "Disponible"
+                        : "No Disponible"}
+                    </td>
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_machine}`}
+                          checked={selectedMachine === machine}
+                          onChange={() => handleSelectMachine(machine)}
+                          className="mb-2"
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
@@ -553,11 +543,10 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.status === "available"
+                      className={`${machine.status === "available"
                           ? "text-green-500"
                           : "text-red-500"
-                      }`}
+                        }`}
                     >
                       {machine.status === "available"
                         ? "Disponible"

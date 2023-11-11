@@ -164,8 +164,8 @@ model ServiceOrderDetail {
   fk_ServiceOrder       Int
   fk_Service            Int
 
-  seviceOrder ServiceOrder @relation(fields: [fk_ServiceOrder], references: [id_order])
-  service     Service      @relation(fields: [fk_Service], references: [id_service])
+  serviceOrder ServiceOrder @relation(fields: [fk_ServiceOrder], references: [id_order])
+  service      Service      @relation(fields: [fk_Service], references: [id_service])
 }
 
 model LaundryWashQueue {
@@ -287,9 +287,9 @@ model CashCut {
   cashCutT            DateTime?         @db.Time(0)
   id_cashCut          Int               @id @default(autoincrement())
   cashCutStatus       CashCutStatus     @default(open)
-  inicialCash         Float?            @default(0)
+  initialCash         Float?            @default(0)
   ordersPayed         Int?
-  toalAutoservicio    Float?
+  totalAutoservicio   Float?
   totalCash           Float?
   totalCashWithdrawal Float?
   totalCredit         Float?

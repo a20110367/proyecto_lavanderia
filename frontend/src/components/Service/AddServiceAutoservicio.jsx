@@ -40,6 +40,7 @@ function AddServiceAutoservicio() {
           dryWeight: parseInt(weight),
           dryCycleTime: parseInt(time)
         });
+        
         setDescription("");
         setPrice(0);
         setTime(0);

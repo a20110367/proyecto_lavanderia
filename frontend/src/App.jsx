@@ -65,6 +65,7 @@ import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
 import PedidosAutoservicio from "./components/Pedidos/PedidosAutoservicio"
 import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
+import CajaChica from "./components/Cajas/CajaChica"
 import Reembolso from "./components/Cajas/Reembolso"
 
 import Settings from "./components/Settings"
@@ -109,6 +110,7 @@ function App() {
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />
                     <Route path="/retiro" element={<Retiro />} />
+                    <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />
                     <Route path="/cajaPedidos" element={<CajaPedidos />} />
 

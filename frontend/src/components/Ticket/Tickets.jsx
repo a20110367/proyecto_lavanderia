@@ -28,6 +28,7 @@ const formatTime = (dateStr) => {
 async function ticket(order) {
     const date = moment().format("DD / MM / YYYY")
     const hour = moment().format("LT");
+    console.log(order.cart)
     let word = 'w'
     try {
         const res = await api.post("/numberToWord", {
@@ -62,7 +63,8 @@ async function ticket(order) {
                     <p>Fibra</p>
                     <p>Cant.</p>
                     <p>Producto</p>
-                    <p>Precio</p>           
+                    <p>Precio</p>
+                               
                     <p>1</p>
                     <p>EDREDON MATRIMONIAL</p>
                     <p>95.00</p>

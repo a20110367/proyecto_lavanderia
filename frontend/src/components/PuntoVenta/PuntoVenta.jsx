@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import useSWR from "swr";
 import { Link, useLocation } from "react-router-dom";
 import { Modal, Select } from "antd";
+import Swal from 'sweetalert2'
 import moment from "moment";
 import "moment/locale/es";
 import DatePicker from "react-datepicker";
@@ -128,6 +129,16 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
+    if(cart.length === 0){ 
+      Swal.fire({
+        icon: "error",
+        title: "La lista de servicios esta vacia!",
+        text: 'Intenta añadir un servicio a la lista.',
+        confirmButtonColor: '#034078'
+      });
+      setIsModalVisible(false);
+      return
+    }
     setIsModalVisible(true);
   };
 
@@ -137,7 +148,6 @@ export default function PuntoVenta() {
 
   const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
-
     const arrayService = [];
 
     let noOfItems = 0;
@@ -339,7 +349,7 @@ export default function PuntoVenta() {
           <div className="col-md-4">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
-                <p className="font-bold">Cliente seleccionado: {clientName}</p>
+                <p className="font-bold">Cliente seleccionado: <p className="text-xl text-IndigoDye">{clientName}</p></p>
               </h3>
               <ul className="divide-y divide-gray-300">
                 {cart.map((service) => (

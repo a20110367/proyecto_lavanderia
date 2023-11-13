@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { IoIosArrowBack } from 'react-icons/io';
 import {
   faCheck,
   faTimes,
@@ -126,11 +127,12 @@ function AddClient() {
   return (
     <div className="signup-form">
       <div className="form-container">
-        <div className="HeadContent">
-          <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
-          <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
-          <div className="clearBoth"></div>
-        </div>
+          {/* <button className="flex-none px-2 py-2 rounded-rtn shadow-md bg-NonPhotoblue hover:text-white"><IoIosArrowBack size={30}/></button> */}
+          <div className="HeadContent">
+            <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
+            <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
+            <div className="clearBoth"></div>
+          </div>
         {success ? (
           <section>
             <h1>Success!</h1>
@@ -200,7 +202,7 @@ function AddClient() {
                 onBlur={() => setUserNameFocus(false)}
               />
               <div className="group">
-              <p
+                <p
                   id="uidnote"
                   className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
                     }`}
@@ -317,7 +319,7 @@ function AddClient() {
                 >
                   <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 8 a 24 characters.
                   <br />
-                  Debera incluir al menos una 
+                  Debera incluir al menos una
                   <br />
                   Mayuscula, Minuscula,
                   <br />

@@ -82,6 +82,7 @@ function ServicesAutoservicio() {
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
+                <th>Tipo de Servicio</th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -97,6 +98,7 @@ function ServicesAutoservicio() {
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
+                    <td>{service.WashService.length === 0 ? 'Secadora' : 'Lavadora'}</td>
                     <td> 
                       <button
                         onClick={() =>

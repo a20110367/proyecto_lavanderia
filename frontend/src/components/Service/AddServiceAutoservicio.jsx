@@ -38,9 +38,8 @@ function AddServiceAutoservicio() {
           washWeight: weight,
           washCycleTime: time,
           category_id: 1,
-          dryWeight: weight,
-          dryCycleTime: time
         });
+        
         setDescription("");
         setPrice(0);
         setTime(0);

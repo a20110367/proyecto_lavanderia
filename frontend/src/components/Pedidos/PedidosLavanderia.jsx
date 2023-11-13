@@ -156,6 +156,18 @@ function PedidosLavanderia() {
         return;
       }
 
+      // Modificar el estado local de la lavadora seleccionada
+    const updatedMachines = availableMachines.map((machine) =>
+      machine.id_machine === selectedMachine.id_machine
+        ? { ...machine, freeForUse: false }
+        : machine
+    );
+    setAvailableMachines(updatedMachines);
+
+   
+    await api.patch(`/machines/${selectedMachine.id_machine}`, {
+      freeForUse: false,
+    });
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "inProgress" }
@@ -164,9 +176,6 @@ function PedidosLavanderia() {
 
       setPedidos(updatedPedidos);
 
-      await api.patch(`/machines/${selectedMachine.id_machine}`, {
-        freeForUse: false,
-      });
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "inProgress",
@@ -195,9 +204,6 @@ function PedidosLavanderia() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
-      await api.patch(`/machines/${selectedMachine.id_machine}`, {
-        freeForUse: false,
-      });
 
       setIsDryingProcessConfirmed(false);
     } catch (error) {
@@ -243,22 +249,17 @@ function PedidosLavanderia() {
         orderStatus: "finished",
       });
 
-      // Update machine status in the database
-      await api.patch(`/machines/${selectedMachine.id_machine}`, {
-        freeForUse: true,
-      });
-
       setShowMachineName(false);
-      showNotification("NOTIFICACIÓN ENVIADA...");
-      await api.post("/sendMessage", {
-        id_order: selectedPedido.id_order,
-        name: selectedPedido.client.name,
-        email: selectedPedido.client.email,
-        tel: "521" + selectedPedido.client.phone,
-        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-      });
-      console.log("NOTIFICACIÓN ENVIADA...");
-      showNotification(`Pedido finalizado correctamente`);
+      // showNotification("NOTIFICACIÓN ENVIADA...");
+      // await api.post("/sendMessage", {
+      //   id_order: selectedPedido.id_order,
+      //   name: selectedPedido.client.name,
+      //   email: selectedPedido.client.email,
+      //   tel: "521" + selectedPedido.client.phone,
+      //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      // });
+      // console.log("NOTIFICACIÓN ENVIADA...");
+      // showNotification(`Pedido finalizado correctamente`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
@@ -487,12 +488,10 @@ function PedidosLavanderia() {
                       <div className="flex flex-col items-center">
                         <Checkbox
                           key={`checkbox_${machine.id_machine}`}
-                          checked={
-                            selectedMachine === machine && machine.freeForUse
-                          }
-                          disabled={!machine.freeForUse}
+                          checked={selectedMachine === machine}
                           onChange={() => handleSelectMachine(machine)}
                           className="mb-2"
+                          disabled={!machine.freeForUse}
                         />
                         <span className="text-blue-500">Seleccionar</span>
                       </div>
@@ -554,7 +553,7 @@ function PedidosLavanderia() {
                       <div className="flex flex-col items-center">
                         <Checkbox
                           key={`checkbox_${machine.id_machine}`}
-                          checked={selectedMachine === machine && machine.freeForUse}
+                          checked={selectedMachine === machine}
                           onChange={() => handleSelectMachine(machine)}
                           className="mb-2"
                           disabled={!machine.freeForUse}

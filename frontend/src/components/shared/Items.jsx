@@ -2,6 +2,7 @@ import React from 'react'
 import {
     MdLocalLaundryService,
     MdIron,
+    MdOutlineLocalLaundryService
 } from "react-icons/md";
 import {
     FcEngineering,
@@ -32,17 +33,19 @@ const iconStyle = {
 };
 
 const items1 = [
+    getItem("Autoservicio", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
+    
     getItem(
-        "Lavanderia",
-        "/lavanderia",
-        <MdLocalLaundryService style={iconStyle} />,
+        "Encargo",
+        "/Encargo",
+        <MdOutlineLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
         ]
     ),
+
     getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
@@ -58,7 +61,7 @@ const items1 = [
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
         getItem("Inicio de caja", "/inicioCaja"),
         getItem("Corte de caja", "/corteCaja"),
-
+        getItem("Caja Chica", "/cajaChica"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
         getItem("Historial de cortes", "/historialCaja"),
@@ -86,17 +89,19 @@ const items1 = [
 ];
 
 const items2 = [
+    getItem("Lavanderia", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
+
     getItem(
-        "Lavanderia",
-        "/lavanderia",
-        <MdLocalLaundryService style={iconStyle} />,
+        "Encargo",
+        "/Encargo",
+        <MdOutlineLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
         ]
     ),
+
     getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
@@ -109,15 +114,18 @@ const items2 = [
 
     ]),
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),
-
+    
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
-        //getItem("Inicio de caja", "/cajas"),
-        getItem("Corte de caja Turno", "/corteCajaTurno"),
-        getItem("Corte de caja Parcial", "/corteCajaParcial"),
+        getItem("Inicio de caja", "/inicioCaja"),
+        getItem("Corte de caja", "/corteCaja"),
+        getItem("Caja Chica", "/cajaChica"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
+        getItem("Historial de cortes", "/historialCaja"),
         getItem("Pedidos", "/cajaPedidos"),
+        
     ]),
+        
     getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
         getItem("Administrar Equipos", "/equipos"),

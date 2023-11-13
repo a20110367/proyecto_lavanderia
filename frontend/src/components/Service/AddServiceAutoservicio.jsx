@@ -13,8 +13,7 @@ function AddServiceAutoservicio() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState("");
-  const [pieces, setPieces] = useState("");
+  const [weight, setWeight] = useState(0);
   const [category, setCategory] = useState("Autoservicio");
   const [service, setService] = useState('laundry')
 
@@ -45,8 +44,7 @@ function AddServiceAutoservicio() {
         setDescription("");
         setPrice(0);
         setTime(0);
-        setWeight("");
-        setPieces("");
+        setWeight(0);
         setCategory("Autoservicio");
         setSuccess(true);
 
@@ -67,7 +65,6 @@ function AddServiceAutoservicio() {
         setPrice(0);
         setTime(0);
         setWeight("");
-        setPieces("");
         setCategory("Autoservicio");
         setSuccess(true);
 
@@ -150,7 +147,7 @@ function AddServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="weight">
-                Peso (Kilogramos):
+                Peso (Kilos):
               </label>
               <input
                 className="form-input"

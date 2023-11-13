@@ -78,7 +78,7 @@ function ServicesLavanderia() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Lavanderia</strong>
+        <strong className="title-strong">Servicios De Encargo</strong>
       </div>
       <div className="w-full pt-4">
         <button
@@ -87,7 +87,7 @@ function ServicesLavanderia() {
         >
           Añadir Nuevo Servicio
           <br />
-          de Lavandería
+          de Encargo
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>

@@ -48,7 +48,7 @@ const items1 = [
         getItem("Entrega", "/entregaPlanchado"),
     ]),
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Encargo", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("General", "/pedidosGeneral"),
@@ -74,7 +74,7 @@ const items1 = [
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
     
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Encargo", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
 
@@ -102,7 +102,7 @@ const items2 = [
         getItem("Entrega", "/entregaPlanchado"),
     ]),
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Encargo", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("General", "/pedidosGeneral"),
@@ -125,7 +125,7 @@ const items2 = [
     ]),
 
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Encargo", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
 

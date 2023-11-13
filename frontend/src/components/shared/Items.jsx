@@ -61,12 +61,11 @@ const items1 = [
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
         getItem("Inicio de caja", "/inicioCaja"),
         getItem("Corte de caja", "/corteCaja"),
-        getItem("Caja Chica", "/cajaChica"),
+        getItem("Pedidos", "/cajaPedidos"),
+        getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Historial de cortes", "/historialCaja"),
-        getItem("Pedidos", "/cajaPedidos"),
-        
+        getItem("Caja Chica", "/cajaChica"),        
     ]),
     getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
@@ -84,7 +83,7 @@ const items1 = [
     ]),
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
+    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), 
     getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
@@ -116,14 +115,13 @@ const items2 = [
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),
     
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
-        getItem("Inicio de caja", "/inicioCaja"),
+        getItem("Iniciar caja", "/inicioCaja"),
         getItem("Corte de caja", "/corteCaja"),
-        getItem("Caja Chica", "/cajaChica"),
+        getItem("Pedidos", "/cajaPedidos"),
+        getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Historial de cortes", "/historialCaja"),
-        getItem("Pedidos", "/cajaPedidos"),
-        
+        getItem("Caja Chica", "/cajaChica"),        
     ]),
         
     getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [

@@ -166,7 +166,7 @@ function CajaChica() {
 
   <div className="mt-3 mb-3">
     <button onClick={handleAbono} className="btn-primary">
-      Registrar Reembolso 
+      Registrar Abono 
     </button>
   </div>
 </div>

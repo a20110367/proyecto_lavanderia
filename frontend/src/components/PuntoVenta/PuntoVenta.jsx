@@ -274,7 +274,8 @@ export default function PuntoVenta() {
         if (
           serviceType === "planchado" &&
           !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo")
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
         ) {
           return true;
         }

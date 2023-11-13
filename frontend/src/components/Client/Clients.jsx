@@ -65,25 +65,6 @@ function Clients() {
     deleteClient(clientId);
   };
 
-  const n2word = async () => {
-    const res = await api.post("/numberToWord", {
-      number: 95.0,
-    });
-
-    setWord(res.data);
-  };
-
-  const order = {
-    id_order: 1,
-    payForm: "advance",
-    payStatus: 'paid',
-    payMethod: 'cash',
-    subtotal: '1209',
-    casher: 'axel',
-    client: 'ñoño',
-    notes: ''
-  }
-
   // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
   /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
   folio folio, fecha */
@@ -152,7 +133,6 @@ function Clients() {
       <div className="title-container">
         <strong className="title-strong">Lista de Clientes</strong>
       </div>
-      <button onClick={n2word}>n2word</button>
       <div className="w-full pt-4">
         <button className="btn-primary" onClick={() => navigate("/addClient")}>
           Añadir Nuevo Cliente

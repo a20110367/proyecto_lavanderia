@@ -136,7 +136,6 @@ export default function PuntoVenta() {
         text: 'Intenta añadir un servicio a la lista.',
         confirmButtonColor: '#034078'
       });
-      setIsModalVisible(false);
       return
     }
     setIsModalVisible(true);

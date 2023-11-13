@@ -13,6 +13,7 @@ import {
     createIronService,
     createServiceMany,
     updateService,
+    updateLaundryService,
     deleteService,
     
 } from "../controllers/ServiceController.js";
@@ -34,6 +35,7 @@ router.post('/servicesDrySelfService', createSelfServiceDryService);
 router.post('/servicesIron', createIronService);
 router.post('/servicesMany', createServiceMany);
 
+router.patch('/servicesUpdateLaundry', updateLaundryService);
 
 router.patch('/services/:id', updateService);
 router.delete('/services/:id', deleteService);

@@ -481,6 +481,57 @@ export const updateService =  async (req, res) =>{
     }
 }
 
+export const updateLaundryService = async (req, res) =>{
+        
+    try {
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
+        const service = await  prisma.service.update({
+
+            where:{
+                id_service:Number(req.params.id),
+            },
+
+            data:{
+                description:description,
+                price:price,
+                category_id:2,
+                WashService:{
+                    update:{
+                        where:{
+                            id_service:Number(req.params.id),
+                        },
+                        data:{
+                            weight:washWeight,
+                            cycleTime:washCycleTime,
+                        },
+                    }, 
+                },
+
+                DryService:{
+                    update:{
+                        where:{
+                            id_service:Number(req.params.id),
+                        },
+                        data:{
+                            weight:dryWeight,
+                            cycleTime:dryCycleTime,
+                        },
+                    }, 
+                },
+            },
+            include:{
+                WashService:true,
+                DryService:true,
+            },
+
+        });        
+
+        res.status(201).json(service);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
 
 export const deleteService =  async (req, res) =>{
 

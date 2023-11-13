@@ -6,11 +6,12 @@ function Logout() {
 
     const navigate = useNavigate();
     const [cashCut, setCashCut] = useState(localStorage.getItem('lastCashCut'))
+    const { logout } = useAuth();
 
     useEffect(() => {
         if (cashCut) {
-            const { logout } = useAuth();
             logout()
+            localStorage.removeItem('lastCashCut')
         } else {
             alert("Es necesario primero cerrar caja antes de poder Cerrar Sesión");
             navigate('/corteCaja')

@@ -30,10 +30,10 @@ function EditServiceLavanderia() {
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
         setCategory("Encargo");
-        setWashCycleTime(response.data.WashService.cycleTime || 0);
-        setWashWeight(response.data.WashService.weight || 0);
-        setDryCycleTime(response.data.DryService.cycleTime || 0);
-        setDryWeight(response.data.DryService.weight || 0);
+        setWashCycleTime(response.data.WashService[0].cycleTime || 0);
+        setWashWeight(response.data.WashService[0].weight || 0);
+        setDryCycleTime(response.data.DryService[0].cycleTime || 0);
+        setDryWeight(response.data.DryService[0].weight || 0);
       } catch (error) {
         console.error("Error fetching service:", error);
       }

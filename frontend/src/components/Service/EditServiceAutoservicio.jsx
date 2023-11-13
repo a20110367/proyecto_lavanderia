@@ -31,8 +31,18 @@ function EditServiceAutoservicio() {
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");
-      setTime(response.data.time);
-      setWeight(response.data.weight);
+      if(response.data.WashService.length === 0){
+        setTime(response.data.DryService[0].cycleTime);
+        setWeight(response.data.DryService[0].weight);
+        setService('dry')
+      }else if(response.data.DryService.length === 0){
+        setTime(response.data.IronService[0].cycleTime);
+        setWeight(response.data.IronService[0].weight);
+      }else{
+        setTime(response.data.WashService[0].cycleTime);
+        setWeight(response.data.WashService[0].weight);
+        setService('laundry')
+      }
     };
     getServiceById();
   }, [id]);

@@ -35,9 +35,10 @@ function AddServiceAutoservicio() {
         await api.post("/servicesWashSelfService", {
           description: description,
           price: parseFloat(price),
-          washWeight: weight,
-          washCycleTime: time,
-          category_id: 1,
+          washWeight:parseInt(weight),
+          washCycleTime: parseInt(time),
+          dryWeight: parseInt(weight),
+          dryCycleTime: parseInt(time)
         });
         
         setDescription("");
@@ -50,13 +51,13 @@ function AddServiceAutoservicio() {
         navigate("/servicesAutoservicio");
       } catch (err) {
         setErrMsg("Failed to add service.");
+        console.log(err)
       }
     } else if (service == 'dry') {
       try {
         await api.post("/servicesDrySelfService", {
           description: description,
           price: parseFloat(price),
-          category_id: 1,
           dryWeight: parseInt(weight),
           dryCycleTime: parseInt(time)
         });
@@ -70,6 +71,7 @@ function AddServiceAutoservicio() {
         navigate("/servicesAutoservicio");
       } catch (err) {
         setErrMsg("Failed to add service.");
+        console.log(err)
       }
     }
   };

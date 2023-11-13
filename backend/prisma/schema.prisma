@@ -85,7 +85,7 @@ model Service {
   created            DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
   category_id        Int
-  Category           Category             @relation(fields: [category_id], references: [id_category])
+  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   WashService        WashService[]
   DryService         DryService[]
   IronService        IronService[]
@@ -98,7 +98,7 @@ model WashService {
   machineType          MachineType            @default(lavadora)
   weight               Int
   cycleTime            Int
-  service              Service                @relation(fields: [fk_idService], references: [id_service])
+  service              Service                @relation(fields: [fk_idService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
   LaundryWashQueue     LaundryWashQueue[]
   SelfServiceWashQueue SelfServiceWashQueue[]
 }
@@ -109,7 +109,7 @@ model DryService {
   machineType         MachineType           @default(secadora)
   weight              Int
   cycleTime           Int
-  service             Service               @relation(fields: [fk_idService], references: [id_service])
+  service             Service               @relation(fields: [fk_idService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
   LaundryDryQueue     LaundryDryQueue[]
   SelfServiceDryQueue SelfServiceDryQueue[]
 }
@@ -120,7 +120,7 @@ model IronService {
   machineType    MachineType @default(plancha)
   pieces         Int
   cycleTime      Int
-  service        Service     @relation(fields: [fk_idService], references: [id_service])
+  service        Service     @relation(fields: [fk_idService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
   IronQueue      IronQueue[]
 }
 
@@ -141,9 +141,9 @@ model ServiceOrder {
   scheduledDeliveryTime DateTime?              @db.Time(0)
   fk_categoryId         Int
   fk_deliveryDetail     Int?
-  category              Category               @relation(fields: [fk_categoryId], references: [id_category])
-  client                Client                 @relation(fields: [fk_client], references: [id_client])
-  user                  User                   @relation(fields: [fk_user], references: [id_user])
+  category              Category               @relation(fields: [fk_categoryId], references: [id_category], onDelete: Cascade, onUpdate: Cascade)
+  client                Client                 @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
+  user                  User                   @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   deliveryDetail        DeliveryDetail?
   payment               Payment?
   token                 Int?
@@ -164,8 +164,8 @@ model ServiceOrderDetail {
   fk_ServiceOrder       Int
   fk_Service            Int
 
-  serviceOrder ServiceOrder @relation(fields: [fk_ServiceOrder], references: [id_order])
-  service      Service      @relation(fields: [fk_Service], references: [id_service])
+  serviceOrder ServiceOrder @relation(fields: [fk_ServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  service      Service      @relation(fields: [fk_Service], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model LaundryWashQueue {
@@ -176,10 +176,10 @@ model LaundryWashQueue {
   fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
-  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
-  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember])
-  washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: SetNull, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: SetNull, onUpdate: Cascade)
+  washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SelfServiceWashQueue {
@@ -189,9 +189,9 @@ model SelfServiceWashQueue {
   fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
-  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
-  washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  washService  WashService  @relation(fields: [fk_idWashService], references: [id_washService], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model LaundryDryQueue {
@@ -202,10 +202,10 @@ model LaundryDryQueue {
   fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
-  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
-  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember])
-  dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
+  dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SelfServiceDryQueue {
@@ -215,9 +215,9 @@ model SelfServiceDryQueue {
   fk_idMachine      Int?
   isDone            Boolean @default(false)
 
-  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine])
-  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
-  dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService])
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  dryService   DryService   @relation(fields: [fk_idDryService], references: [id_dryService], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model IronQueue {
@@ -228,10 +228,10 @@ model IronQueue {
   fk_idIronStation  Int?
   isDone            Boolean @default(false)
 
-  ironStation  IronStation? @relation(fields: [fk_idIronStation], references: [id_ironStation])
-  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order])
-  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember])
-  ironService  IronService  @relation(fields: [fk_idIronService], references: [id_ironService])
+  ironStation  IronStation? @relation(fields: [fk_idIronStation], references: [id_ironStation], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
+  ironService  IronService  @relation(fields: [fk_idIronService], references: [id_ironService], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Payment {
@@ -245,8 +245,8 @@ model Payment {
   payTotal     Float
   updatedAt    DateTime        @updatedAt
   delivery     DeliveryDetail?
-  cashCut      CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
-  serviceOrder ServiceOrder    @relation(fields: [fk_idOrder], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  cashCut      CashCut         @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder    @relation(fields: [fk_idOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model DeliveryDetail {
@@ -258,8 +258,8 @@ model DeliveryDetail {
   updatedAt      DateTime     @updatedAt
   fk_idOrder     Int          @unique
   fk_idPayment   Int          @unique
-  payment        Payment      @relation(fields: [fk_idPayment], references: [id_payment], onDelete: NoAction, onUpdate: NoAction)
-  user           User         @relation(fields: [fk_userCashier], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  payment        Payment      @relation(fields: [fk_idPayment], references: [id_payment], onDelete: Cascade, onUpdate: Cascade)
+  user           User         @relation(fields: [fk_userCashier], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order])
 }
 
@@ -297,7 +297,7 @@ model CashCut {
   totalOtros          Float?            @default(0)
   totalPlanchado      Float?
   totalIncome         Float?
-  user                User              @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  user                User              @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   cashWhithdrawal     CashWhithdrawal[]
   payment             Payment[]
 }
@@ -313,8 +313,8 @@ model CashWhithdrawal {
   date                DateTime?          @db.Date
   created             DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
-  cashCut             CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: NoAction, onUpdate: NoAction)
-  user                User               @relation(fields: [fk_user], references: [id_user], onDelete: NoAction, onUpdate: NoAction)
+  cashCut             CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
+  user                User               @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
 }
 
 enum Role {

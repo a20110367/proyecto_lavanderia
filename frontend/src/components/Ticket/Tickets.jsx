@@ -68,13 +68,9 @@ async function ticket(order) {
                     <p>95.00</p>
                 </div>
                 <hr class="hr-header">       
-                <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
-                <!--*<p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>-->
-                <p style="text-align:center;">${word}</p>            
-                    <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p>
-                    <p>Pago recibido: $100.00</p>
-                    <p>Cambio devuelto: $5.00</p> 
-                    <p>Cajero: ${order.casher}</p> 
+                    <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
+                    <p style="text-align:center;">${word}</p> 
+                    ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p> <p>Cajero: ${order.casher}</p></div>` : '' }
                 <hr class="hr-header">   
                     <p>Cliente: ${order.client}</p>         
                     <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>

@@ -496,34 +496,33 @@ export const updateLaundryService = async (req, res) =>{
                 price:price,
                 category_id:2,
                 WashService:{
-                    update:{
-                        where:{
-                            id_service:Number(req.params.id),
-                        },
+                    updateMany:{
                         data:{
                             weight:washWeight,
                             cycleTime:washCycleTime,
                         },
+                        where:{
+                            fk_idService:{
+                              equals:Number(req.params.id),  
+                            },
+                        }
                     }, 
                 },
 
                 DryService:{
-                    update:{
-                        where:{
-                            id_service:Number(req.params.id),
-                        },
+                    updateMany:{
                         data:{
                             weight:dryWeight,
                             cycleTime:dryCycleTime,
                         },
+                        where:{
+                            fk_idService:{
+                              equals:Number(req.params.id),  
+                            },
+                        }
                     }, 
                 },
             },
-            include:{
-                WashService:true,
-                DryService:true,
-            },
-
         });        
 
         res.status(201).json(service);

@@ -220,7 +220,7 @@ function EntregaLavanderia() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Entregas Planchado</strong>
+          <strong className="title-strong">Entregas Lavanderia</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import api from '../../api/api'
 
-const MODEL_REGEX = /^[A-z0-9-_]{1,191}$/;
+const MODEL_REGEX = /^[A-z0-9-_ ]{1,191}$/;
 const TIME_REGEX = /^[0-9]{1,}$/;
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
 
@@ -130,7 +130,6 @@ function AddEquipo() {
                 onChange={(e) => setMachineType(e.target.value)}
               >
                 <option value="lavadora">Lavadora</option>
-                <option value="plancha">Plancha</option>
                 <option value="secadora">Secadora</option>
               </select>
 

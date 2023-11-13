@@ -1,20 +1,23 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function AddServiceLavanderia() {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const timeRef = useRef();
   const weightRef = useRef();
+  const drytimeRef = useRef();
+  const dryweightRef = useRef();
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState("");
-  const [pieces, setPieces] = useState("");
-  const [category, setCategory] = useState("lavado");
+  const [washCycleTime, setWashCycleTime] = useState(0);
+  const [washWeight, setWashWeight] = useState(0);
+  const [dryCycleTime, setDryCycleTime] = useState(0);
+  const [dryWeight, setDryWeight] = useState(0);
+  const [category, setCategory] = useState("Encargo");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -22,7 +25,7 @@ function AddServiceLavanderia() {
   const navigate = useNavigate();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = "autoservicio";
+  const forbiddenKeyword = ["autoservicio", "planchado"];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +35,7 @@ function AddServiceLavanderia() {
     );
 
     if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de lavandería.");
+      setErrMsg("Error, solo puedes añadir servicios de Encargo.");
       return;
     }
 
@@ -43,20 +46,21 @@ function AddServiceLavanderia() {
 
     try {
       await api.post("/servicesLaundry", {
-          description: description,
-          price: parseFloat(price),
-          washWeight: parseInt(weight),
-          washCycleTime: parseInt(time),
-          category_id: 2,
-          dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time)
+        description: description,
+        price: parseFloat(price),
+        washWeight: parseInt(washWeight),
+        washCycleTime: parseInt(washCycleTime),
+        category_id: 2,
+        dryWeight: parseInt(dryWeight),
+        dryCycleTime: parseInt(dryCycleTime),
       });
       setDescription("");
       setPrice(0);
-      setTime(0);
-      setWeight("");
-      setPieces("");
-      setCategory("Lavado");
+      setWashCycleTime(0);
+      setWashWeight(0);
+      setDryCycleTime(0);
+      setDryWeight(0);
+      setCategory("Encargo");
       setSuccess(true);
 
       navigate("/servicesLavanderia");
@@ -70,9 +74,11 @@ function AddServiceLavanderia() {
       <div className="form-container">
         <div className="HeadContent">
           <h2 className="title text-white">
-            <em>Añadir un Servicio de Lavanderia </em>
+            <em>Añadir un Servicio de Encargo </em>
           </h2>
-          <p className="form-lbl text-white">Ingrese los detalles del Servicio.</p>
+          <p className="form-lbl text-white">
+            Ingrese los detalles del Servicio.
+          </p>
           <div className="clearBoth"></div>
         </div>
         {success ? (
@@ -102,9 +108,7 @@ function AddServiceLavanderia() {
                     className="text-red-500"
                     style={{ fontSize: "1rem" }}
                   />
-                  <p className="errmsg text-red-500 ">
-                    {errMsg}
-                  </p>
+                  <p className="errmsg text-red-500 ">{errMsg}</p>
                 </div>
               )}
 
@@ -122,7 +126,7 @@ function AddServiceLavanderia() {
                 required
               />
 
-              <label className="form-lbl" htmlFor="time">
+              <label className="form-lbl" htmlFor="washCycleTime">
                 Tiempo (minutos):
               </label>
               <input
@@ -130,12 +134,12 @@ function AddServiceLavanderia() {
                 type="number"
                 id="time"
                 ref={timeRef}
-                onChange={(e) => setTime(e.target.value)}
-                value={time}
+                onChange={(e) => setWashCycleTime(e.target.value)}
+                value={washCycleTime}
                 required
               />
 
-              <label className="form-lbl" htmlFor="weight">
+              <label className="form-lbl" htmlFor="washWeight">
                 Peso (Kilogramos):
               </label>
               <input
@@ -143,11 +147,34 @@ function AddServiceLavanderia() {
                 type="number"
                 id="weight"
                 ref={weightRef}
-                onChange={(e) => setWeight(e.target.value)}
-                value={weight}
+                onChange={(e) => setWashWeight(e.target.value)}
+                value={washWeight}
               />
 
-          
+              <label className="form-lbl" htmlFor="dryCycleTime">
+                Tiempo de Secado (minutos):
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="dryCycleTime"
+                ref={drytimeRef}
+                onChange={(e) => setDryCycleTime(e.target.value)}
+                value={dryCycleTime}
+                required
+              />
+
+              <label className="form-lbl" htmlFor="dryWeight">
+                Peso de Secado (Kilogramos):
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="dryWeight"
+                ref={dryweightRef}
+                onChange={(e) => setDryWeight(e.target.value)}
+                value={dryWeight}
+              />
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:
@@ -156,7 +183,7 @@ function AddServiceLavanderia() {
                 className="form-input"
                 type="text"
                 id="category"
-                value="Lavandería"
+                value="Encargo"
                 disabled
               />
 

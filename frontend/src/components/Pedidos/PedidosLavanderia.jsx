@@ -38,23 +38,20 @@ function PedidosLavanderia() {
   const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] =
     useState(false);
 
-  const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] = useState(false);
+  const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] =
+    useState(false);
 
   useEffect(() => {
-
     localStorage.setItem("isDryingProcessConfirmed", isDryingProcessConfirmed);
   }, [isDryingProcessConfirmed]);
 
   useEffect(() => {
-
     const storedConfirmationStatus = localStorage.getItem(
       "isDryingProcessConfirmed"
     );
 
-
     setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
   }, []);
-
 
   const fetcher = async () => {
     const response = await api.get("/ordersLaundry");
@@ -64,11 +61,9 @@ function PedidosLavanderia() {
   const { data } = useSWR("ordersLaundry", fetcher);
 
   useEffect(() => {
-
     const storedConfirmationStatus = localStorage.getItem(
       "isDryingProcessConfirmed"
     );
-
 
     setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
   }, []);
@@ -154,7 +149,6 @@ function PedidosLavanderia() {
     }
   };
 
-
   const handleConfirmMachineSelection = async () => {
     try {
       if (!selectedPedido || !selectedMachine) {
@@ -169,6 +163,10 @@ function PedidosLavanderia() {
       );
 
       setPedidos(updatedPedidos);
+
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "inProgress",
@@ -197,7 +195,9 @@ function PedidosLavanderia() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
-
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
 
       setIsDryingProcessConfirmed(false);
     } catch (error) {
@@ -231,7 +231,6 @@ function PedidosLavanderia() {
         return;
       }
 
-
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "finished" }
@@ -240,11 +239,15 @@ function PedidosLavanderia() {
 
       setPedidos(updatedPedidos);
 
-
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
-      
+
+      // Update machine status in the database
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: true,
+      });
+
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
       await api.post("/sendMessage", {
@@ -260,7 +263,6 @@ function PedidosLavanderia() {
       console.error("Error al actualizar el pedido:", error);
     }
   };
-
 
   return (
     <div>
@@ -408,11 +410,9 @@ function PedidosLavanderia() {
                       }}
                       className="btn-primary ml-2 mt-1"
                     >
-                      {isDryingProcessConfirmedInModal ? 'Terminar' : 'Secado'}
+                      {isDryingProcessConfirmedInModal ? "Terminar" : "Secado"}
                     </button>
                   )}
-
-
                 </td>
               </tr>
             ))}
@@ -438,7 +438,6 @@ function PedidosLavanderia() {
       </div>
 
       <Modal
-
         open={showMachineName}
         onCancel={() => setShowMachineName(false)}
         footer={[
@@ -477,20 +476,21 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.status === "available"
-                          ? "text-green-500"
-                          : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
-                      {machine.status === "available"
-                        ? "Disponible"
-                        : "No Disponible"}
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>
+
                     <td>
                       <div className="flex flex-col items-center">
                         <Checkbox
                           key={`checkbox_${machine.id_machine}`}
-                          checked={selectedMachine === machine}
+                          checked={
+                            selectedMachine === machine && machine.freeForUse
+                          }
+                          disabled={!machine.freeForUse}
                           onChange={() => handleSelectMachine(machine)}
                           className="mb-2"
                         />
@@ -543,22 +543,21 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.status === "available"
-                          ? "text-green-500"
-                          : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
-                      {machine.status === "available"
-                        ? "Disponible"
-                        : "No Disponible"}
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>
+
                     <td>
                       <div className="flex flex-col items-center">
                         <Checkbox
                           key={`checkbox_${machine.id_machine}`}
-                          checked={selectedMachine === machine}
+                          checked={selectedMachine === machine && machine.freeForUse}
                           onChange={() => handleSelectMachine(machine)}
                           className="mb-2"
+                          disabled={!machine.freeForUse}
                         />
                         <span className="text-blue-500">Seleccionar</span>
                       </div>

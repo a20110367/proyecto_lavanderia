@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Select } from "antd";
+const { Option } = Select;
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from '../../api/api'
 
@@ -14,7 +15,6 @@ function EditServiceAutoservicio() {
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState();
-  const [pieces, setPieces] = useState();
   const [category, setCategory] = useState("Autoservicio");
   const [service, setService] = useState('laundry')
 
@@ -143,7 +143,7 @@ function EditServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="weight">
-                Peso (gramos):
+                Peso (Kilos):
               </label>
               <input
                 className="form-input"

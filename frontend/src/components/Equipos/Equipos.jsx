@@ -94,12 +94,6 @@ function Equipos() {
             >
               Secadoras
             </option>
-            <option
-              value="plancha"
-              className="text-yellow-500 font-semibold text-base"
-            >
-              Planchas
-            </option>
           </select>
         </div>
         <div className="shadow-container" style={{ overflowX: "auto" }}>

@@ -153,7 +153,7 @@ function RecepcionLavanderia() {
       )}
 
       <div className="fcol-container">
-        <Link to="/addClient">
+        <Link to="/addClient?source=encargo">
           <button className="btn-big-light">
             <div className="subtitle m-1">Añadir Cliente</div>
           </button>

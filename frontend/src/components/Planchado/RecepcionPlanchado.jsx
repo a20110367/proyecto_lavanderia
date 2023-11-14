@@ -153,11 +153,12 @@ function RecepcionPlanchado() {
       )}
 
       <div className="fcol-container">
-        <Link to="/addClient">
-          <button className="btn-big-light">
-            <div className="subtitle m-1">Añadir Cliente</div>
-          </button>
-        </Link>
+      <Link to="/addClient?source=planchado">
+  <button className="btn-big-light">
+    <div className="subtitle m-1">Añadir Cliente</div>
+  </button>
+</Link>
+
         <div className="text-IndigoDye font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!
         </div>

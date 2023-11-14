@@ -123,7 +123,22 @@ function AddClient() {
       errRef.current.focus();
     }
   };
-
+  const handleCancel = () => {
+    const source = new URLSearchParams(location.search).get("source");
+    console.log("Source:", source);
+  
+    if (source === "encargo") {
+      navigate(`/recepcionLavanderia?serviceType=${source}`);
+    } else if (source === "autoservicio") {
+      navigate(`/autoservicio?serviceType=${source}`);
+    } else if (source === "planchado") {
+      navigate(`/recepcionPlanchado?serviceType=${source}`);
+    } else {
+      navigate("/clients");
+    }
+  };
+  
+  
   return (
     <div className="signup-form">
       <div className="form-container">
@@ -364,8 +379,8 @@ function AddClient() {
                   </button>
                   <button
                     className="btn-cancel"
-                    onClick={() => navigate("/clients")}
-                  >
+                    onClick={handleCancel}>
+                  
                     Cancelar
                   </button>
                 </div>

@@ -505,7 +505,7 @@ export const updateLaundryService = async (req, res) =>{
                             fk_idService:{
                               equals:Number(req.params.id),  
                             },
-                        }
+                        },
                     }, 
                 },
 
@@ -519,7 +519,7 @@ export const updateLaundryService = async (req, res) =>{
                             fk_idService:{
                               equals:Number(req.params.id),  
                             },
-                        }
+                        },
                     }, 
                 },
             },
@@ -537,6 +537,9 @@ export const updateSelfServiceWashService = async (req, res) =>{
     try {
         const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
         const service = await  prisma.service.update({
+            where:{
+                id_service:Number(req.params.id),
+            },
             data:{
                 description:description,
                 price:price,
@@ -551,7 +554,7 @@ export const updateSelfServiceWashService = async (req, res) =>{
                             fk_idService:{
                               equals:Number(req.params.id),  
                             },
-                        }
+                        },
                     }, 
                 },
 
@@ -570,6 +573,9 @@ export const updateSelfServiceDryService = async (req, res) =>{
     try {
         const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
         const service = await prisma.service.create({
+            where:{
+                id_service:Number(req.params.id),
+            },
             data:{
                 description:description,
                 price:price,
@@ -584,13 +590,10 @@ export const updateSelfServiceDryService = async (req, res) =>{
                             fk_idService:{
                               equals:Number(req.params.id),  
                             },
-                        }
+                        },
                     },
                 },
 
-            },
-            include:{
-                DryService:true,
             },
         });
 
@@ -607,6 +610,9 @@ export const updateIronService = async (req, res) =>{
     try {
         const{description,price,ironPieces, ironCycleTime }=req.body;
         const service = await prisma.service.create({
+            where:{
+                id_service:Number(req.params.id),
+            },
             data:{
                 description:description,
                 price:price,
@@ -621,7 +627,7 @@ export const updateIronService = async (req, res) =>{
                             fk_idService:{
                               equals:Number(req.params.id),  
                             },
-                        }
+                        },
                     }, 
                 },
             },

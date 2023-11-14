@@ -145,6 +145,10 @@ export default function PuntoVenta() {
     setIsModalVisible(false);
   };
 
+  const handleCancelar = () => {
+    window.history.back();
+  };
+
   const handleSaveAndGenerateTicket = async () => {
     setIsModalVisible(false);
     const arrayService = [];
@@ -297,6 +301,8 @@ export default function PuntoVenta() {
         }
         return false;
       });
+
+    
   return (
     <div>
       <div className="basic-container w-5/12">
@@ -384,6 +390,12 @@ export default function PuntoVenta() {
                   onClick={showModal}
                 >
                   Guardar Compra
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleCancelar}
+                >
+                  Cancelar
                 </button>
 
                 <Modal

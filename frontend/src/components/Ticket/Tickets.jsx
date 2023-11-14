@@ -64,7 +64,6 @@ async function ticket(order) {
                     <p>Cant.</p>
                     <p>Producto</p>
                     <p>Precio</p>
-                    ${console.log(order.cart.map(detail => `<p>${detail.quantity}</p><p>${detail.description}</p><p>$${detail.totalPrice}</p>`))}
                     ${order.cart.map(detail => `<p>${detail.quantity}</p><p>${detail.description}</p><p>$${detail.totalPrice}</p>`)}  
                         <!--<p>1</p>-->
                         <!--<p>EDREDON MATRIMONIAL</p>-->

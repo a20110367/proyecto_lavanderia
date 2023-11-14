@@ -35,23 +35,13 @@ function PedidosLavanderia() {
     setCurrentPage(selectedPage.selected);
   };
   const [showDryerSelection, setShowDryerSelection] = useState(false);
-  const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] =
-    useState(false);
+  const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] = useState(
+    localStorage.getItem("isDryingProcessConfirmed") === "true"
+  );
+  
 
   const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] =
     useState(false);
-
-  useEffect(() => {
-    localStorage.setItem("isDryingProcessConfirmed", isDryingProcessConfirmed);
-  }, [isDryingProcessConfirmed]);
-
-  useEffect(() => {
-    const storedConfirmationStatus = localStorage.getItem(
-      "isDryingProcessConfirmed"
-    );
-
-    setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
-  }, []);
 
   const fetcher = async () => {
     const response = await api.get("/ordersLaundry");
@@ -60,13 +50,14 @@ function PedidosLavanderia() {
 
   const { data } = useSWR("ordersLaundry", fetcher);
 
-  useEffect(() => {
-    const storedConfirmationStatus = localStorage.getItem(
-      "isDryingProcessConfirmed"
-    );
 
-    setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
-  }, []);
+useEffect(() => {
+  const storedConfirmationStatus = localStorage.getItem("isDryingProcessConfirmed");
+  setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
+
+  const storedModalConfirmationStatus = localStorage.getItem("isDryingProcessConfirmedInModal");
+  setIsDryingProcessConfirmedInModal(storedModalConfirmationStatus === "true");
+}, []);
 
   useEffect(() => {
     if (data) {
@@ -157,17 +148,16 @@ function PedidosLavanderia() {
       }
 
       // Modificar el estado local de la lavadora seleccionada
-    const updatedMachines = availableMachines.map((machine) =>
-      machine.id_machine === selectedMachine.id_machine
-        ? { ...machine, freeForUse: false }
-        : machine
-    );
-    setAvailableMachines(updatedMachines);
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
 
-   
-    await api.patch(`/machines/${selectedMachine.id_machine}`, {
-      freeForUse: false,
-    });
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "inProgress" }
@@ -175,7 +165,6 @@ function PedidosLavanderia() {
       );
 
       setPedidos(updatedPedidos);
-
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "inProgress",
@@ -205,6 +194,7 @@ function PedidosLavanderia() {
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
 
+      setShowDryerSelection(true);
       setIsDryingProcessConfirmed(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -220,16 +210,61 @@ function PedidosLavanderia() {
         return;
       }
 
+      // Si hay una lavadora seleccionada, cambiar su estado a true
+      if (selectedMachine.machineType === "secadora") {
+        const selectedWasher = availableMachines.find(
+          (machine) => machine.machineType === "lavadora"
+        );
+
+        if (selectedWasher) {
+          const updatedWashers = availableMachines.map((machine) =>
+            machine.id_machine === selectedWasher.id_machine
+              ? { ...machine, freeForUse: true }
+              : machine
+          );
+          setAvailableMachines(updatedWashers);
+
+          // También actualizar la base de datos
+          await api.patch(`/machines/${selectedWasher.id_machine}`, {
+            freeForUse: true,
+          });
+        }
+      }
+
+      // Cambiar el estado de la secadora seleccionada a false
+      const updatedDryers = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedDryers);
+
+      // Actualizar la base de datos
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
+
       setShowDryerSelection(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);
 
+      // Update the isDryingConfirmed property for the selected order
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === selectedPedido.id_order
+          ? { ...p, isDryingConfirmed: true }
+          : p
+      );
+      setPedidos(updatedPedidos);
+
       setIsDryingProcessConfirmed(true);
       setIsDryingProcessConfirmedInModal(true);
+  
+      localStorage.setItem("isDryingProcessConfirmedInModal", true);
+      localStorage.setItem("isDryingProcessConfirmed", true);
+  
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
-
   const handleFinishProcess = async () => {
     try {
       if (!selectedPedido) {
@@ -401,17 +436,15 @@ function PedidosLavanderia() {
                   {pedido.orderStatus === "inProgress" && (
                     <button
                       onClick={() => {
-                        if (isDryingProcessConfirmedInModal) {
-                          // If the drying process is confirmed, finish the order
+                        if (pedido.isDryingConfirmed) {
                           handleFinishProcess();
                         } else {
-                          // Otherwise, open the dryer selection modal
                           handleStartDryerProcess(pedido);
                         }
                       }}
                       className="btn-primary ml-2 mt-1"
                     >
-                      {isDryingProcessConfirmedInModal ? "Terminar" : "Secado"}
+                      {pedido.isDryingConfirmed ? "Terminar" : "Secado"}
                     </button>
                   )}
                 </td>

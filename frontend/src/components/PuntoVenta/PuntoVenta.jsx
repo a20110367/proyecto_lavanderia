@@ -45,6 +45,8 @@ export default function PuntoVenta() {
     if (serviceType === 'autoservicio') {
       setCategoryId(1)
       setUrl('/ordersSelfService')
+      setPayStatus('paid')
+      setPayForm('advance')
     } else if (serviceType === 'encargo') {
       setCategoryId(2)
       setUrl('/ordersLaundryService')
@@ -86,7 +88,7 @@ export default function PuntoVenta() {
           );
           setCart(updatedCart);
         } else {
-          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: 0 }]);
+          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price }]);
         }
       }
     } else {
@@ -143,6 +145,10 @@ export default function PuntoVenta() {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+
+  const handleCancelar = () => {
+    window.history.back();
   };
 
   const handleSaveAndGenerateTicket = async () => {
@@ -297,9 +303,11 @@ export default function PuntoVenta() {
         }
         return false;
       });
+
+    
   return (
     <div>
-      <div className="basic-container w-5/12">
+      <div className="title-container">
         <strong className="title-strong">
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
@@ -349,7 +357,7 @@ export default function PuntoVenta() {
           <div className="col-md-4">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
-                <p className="font-bold">Cliente seleccionado: <p className="text-xl text-IndigoDye">{clientName}</p></p>
+                <p className="font-bold">Cliente seleccionado:</p> <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
               </h3>
               <ul className="divide-y divide-gray-300">
                 {cart.map((service) => (
@@ -384,6 +392,12 @@ export default function PuntoVenta() {
                   onClick={showModal}
                 >
                   Guardar Compra
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleCancelar}
+                >
+                  Cancelar
                 </button>
 
                 <Modal

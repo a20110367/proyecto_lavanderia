@@ -146,13 +146,11 @@ function Clients() {
             <thead>
               <tr>
                 <th>No. Cliente</th>
-                <th>Nombre de usuario</th>
                 <th>Nombre del cliente</th>
                 <th>Apellido Paterno</th>
                 <th>Apellido Materno</th>
                 <th>Email</th>
                 <th>Telefono</th>
-                <th>Contraseña</th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -165,15 +163,11 @@ function Clients() {
                 .map((client, index) => (
                   <tr key={client.id_client}>
                     <td>{index + 1}</td>
-                    <td className="font-semibold text-slate-700">
-                      {client.username}
-                    </td>
                     <td>{client.name}</td>
                     <td>{client.firstLN}</td>
                     <td>{client.secondLN}</td>
                     <td>{client.email}</td>
                     <td>{client.phone}</td>
-                    <td>{client.pass || "N/A"}</td>
                     <td>
                       <button
                         onClick={() =>

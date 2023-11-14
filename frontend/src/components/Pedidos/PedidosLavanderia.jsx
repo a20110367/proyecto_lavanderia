@@ -247,7 +247,7 @@ useEffect(() => {
       setShowDryerSelection(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);
 
-      // Update the isDryingConfirmed property for the selected order
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, isDryingConfirmed: true }

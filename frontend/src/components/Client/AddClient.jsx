@@ -9,24 +9,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import api from '../../api/api'
 
-const USER_REGEX = /^[A-z][A-z0-9_ -]{3,23}$/;
-
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$*]).{8,24}$/;
 
 function AddClient() {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [userName, setUserName] = useState("");
-  const [validUserName, setValidUserName] = useState(false);
-  const [userNameFocus, setUserNameFocus] = useState(false);
 
   const [name, setName] = useState("");
   const [firstLN, setFirstLN] = useState("");
   const [secondLN, setSecondLN] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [pass, setPass] = useState("");
+
   const [validName, setValidName] = useState(false);
   const [nameFocus, setNameFocus] = useState(false);
 
@@ -39,17 +33,10 @@ function AddClient() {
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
-  const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
-
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setValidUserName(USER_REGEX.test(userName));
-  }, [userName]);
 
   useEffect(() => {
     userRef.current.focus();
@@ -71,13 +58,10 @@ function AddClient() {
     setValidEmail(email.trim().length > 0);
   }, [email]);
 
-  useEffect(() => {
-    setValidPwd(PWD_REGEX.test(pass));
-  }, [pass]);
 
   useEffect(() => {
     setErrMsg("");
-  }, [name, firstLN, secondLN, email, pass]);
+  }, [name, firstLN, secondLN, email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -86,8 +70,7 @@ function AddClient() {
       !validName ||
       !validFirstName ||
       !validSecondName ||
-      !validEmail ||
-      !validPwd
+      !validEmail 
     ) {
       setErrMsg("Invalid Entry");
       return;
@@ -95,13 +78,13 @@ function AddClient() {
 
     try {
       await api.post("/clients", {
-        username: userName,
         name: name,
+        username: "",
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
         phone: phone,
-        pass: pass,
+        pass: "",
       });
 
       setSuccess(true);
@@ -110,7 +93,6 @@ function AddClient() {
       setSecondLN("");
       setEmail("");
       setPhone("");
-      setPass("");
       navigate("/clients");
     } catch (err) {
       if (!err?.response) {
@@ -190,55 +172,7 @@ function AddClient() {
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
               />
-              {/**Nombre Usuario */}
-              <label className="form-lbl" htmlFor="username">
-                Nombre de usuario:
-                {validUserName ? (
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className="ml-3 text-green-500"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
-                )}
-              </label>
-              <input
-                className="form-input"
-                type="text"
-                id="username"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUserName(e.target.value)}
-                value={userName}
-                required
-                aria-invalid={validUserName ? "false" : "true"}
-                aria-describedby="uidnote"
-                onFocus={() => setUserNameFocus(true)}
-                onBlur={() => setUserNameFocus(false)}
-              />
-              <div className="group">
-                <p
-                  id="uidnote"
-                  className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
-                    }`}
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
-                  <br />
-                  Debera iniciar con una letra.
-                  <br />
-                  Caracteres Permitidos:
-                  <br />
-                  Letras, p. ej. L
-                  <br />
-                  Números, p. ej. 4
-                  <br />
-                  Guiones, p. ej. -
-                  <br />
-                  Guiones Bajos p. ej. _
-                  <br />
-                </p>
-              </div>
-
+             
               {/* First Name */}
               <label className="form-lbl" htmlFor="firstName">
                 Apellido Paterno:
@@ -303,53 +237,7 @@ function AddClient() {
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
               />
-              {/* Password */}
-              <label className="form-lbl" htmlFor="password">
-                Contraseña:
-                {validPwd ? (
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className="ml-3 text-green-500"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
-                )}
-              </label>
-              <input
-                className="form-input"
-                type="password"
-                id="password"
-                onChange={(e) => setPass(e.target.value)}
-                value={pass}
-                required
-                aria-invalid={validPwd ? "false" : "true"}
-                onFocus={() => setPwdFocus(true)}
-                onBlur={() => setPwdFocus(false)}
-              />
-              <div className="group">
-                <p
-                  id="pwdnote"
-                  className={`instructions text-sm text-red-600 ${pwdFocus && !validPwd ? "block" : "hidden"
-                    }`}
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 8 a 24 characters.
-                  <br />
-                  Debera incluir al menos una
-                  <br />
-                  Mayuscula, Minuscula,
-                  <br />
-                  un Número y un caracter Especial
-                  <br />
-                  Caracteres Especiales Permitidos:{" "}
-                  <span aria-label="exclamation mark">!</span>{" "}
-                  <span aria-label="at symbol">@</span>{" "}
-                  <span aria-label="hashtag">#</span>{" "}
-                  <span aria-label="dollar sign">$</span>{" "}
-                  <span aria-label="percent">%</span>
-                  <span aria-label="percent">?</span>
-                  <span aria-label="percent">=</span>
-                  <span aria-label="percent">*</span>
-                </p>
+            
                 {/* Phone */}
                 <label className="form-lbl" htmlFor="phone">
                   Telefono:
@@ -371,8 +259,7 @@ function AddClient() {
                       !validName ||
                       !validFirstName ||
                       !validSecondName ||
-                      !validEmail ||
-                      !validPwd
+                      !validEmail 
                     }
                   >
                     Registrar Cliente
@@ -384,7 +271,6 @@ function AddClient() {
                     Cancelar
                   </button>
                 </div>
-              </div>
             </form>
           </section>
         )}

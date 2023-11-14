@@ -93,7 +93,7 @@ export default function PuntoVenta() {
       }
     } else {
       if (cart.length === 0) {
-        const serviceToAdd = { ...service, quantity: 1, price: service.price };
+        const serviceToAdd = { ...service, quantity: 1, price: service.price, totalPrice: service.price };
         if (serviceToAdd) {
           setCart([serviceToAdd]);
           setSelectedServiceId(serviceId);

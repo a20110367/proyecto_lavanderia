@@ -56,7 +56,7 @@ export const createDepositPettyCash = async (req, res) =>{
             }             
         });
 
-        const balance = await prisma.pettyCash.get({
+        const balance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max,
             },
@@ -65,7 +65,7 @@ export const createDepositPettyCash = async (req, res) =>{
             }
         });
 
-        req.body.balance = balance + req.body.balance;
+        req.body.balance = balance + req.body.amount;
 
         const response = await prisma.pettyCash.create({
             data:req.body                 
@@ -86,7 +86,7 @@ export const createWithdrawalPettyCash = async (req, res) =>{
             }             
         });
 
-        const balance = await prisma.pettyCash.get({
+        const balance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max,
             },
@@ -95,7 +95,7 @@ export const createWithdrawalPettyCash = async (req, res) =>{
             }
         });
 
-        req.body.balance = balance - req.body.balance;
+        req.body.balance = balance - req.body.amount;
 
         
         const response = await prisma.pettyCash.create({

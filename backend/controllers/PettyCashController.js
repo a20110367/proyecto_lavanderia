@@ -11,8 +11,9 @@ export const getPettyCash = async (req, res) =>{
                 balance:true,
                 id_movement:true,
                 movementDate:true,
-                cuase:true,
-                pettyCashType:true,
+                cause:true,
+                user:true,
+                pettyCashType:true
             },               
                 
         });

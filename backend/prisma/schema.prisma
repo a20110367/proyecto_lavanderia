@@ -23,6 +23,7 @@ model User {
   CashWhithdrawal CashWhithdrawal[]
   DeliveryDetail  DeliveryDetail[]
   ServiceOrders   ServiceOrder[]
+  PettyCash       PettyCash[]
 }
 
 model Client {
@@ -323,10 +324,12 @@ model PettyCash {
   pettyCashType PettyCashType @default(withdrawal)
   amount        Float
   balance       Float
-  cuase         String
+  cause         String
   movementDate  DateTime      @db.Date
   created       DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  fk_user       Int?
+  user          User?         @relation(fields: [fk_user], references: [id_user], onDelete: SetNull, onUpdate: Cascade)
 }
 
 enum Role {

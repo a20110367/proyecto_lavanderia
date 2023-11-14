@@ -140,7 +140,7 @@ function CajaChica() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Registro de Retiros</strong>
+          <strong className="title-strong">Caja Chica</strong>
         </div>
       </div>
       <div className="flex items-center">
@@ -159,7 +159,7 @@ function CajaChica() {
       </div>
       <div className="flex">
   <div className="mt-3 mb-3 mr-2">
-    <button onClick={handleRetiro} className="btn-primary">
+    <button onClick={handleRetiro} className="btn-primary bg-FireBrick hover:bg-RedPantone">
       Registrar Retiro
     </button>
   </div>
@@ -182,7 +182,6 @@ function CajaChica() {
             <th>Monto</th>
             <th>Motivo</th>
             <th>Usuario</th>
-            <th>Detalle</th>
             <th>Saldo <br />Caja    </th>
           </tr>
         </thead>

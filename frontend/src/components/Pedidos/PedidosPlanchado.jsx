@@ -120,57 +120,51 @@ function PedidosPlanchado() {
     }
   };
 
-  const handleFinishProcess = async () => {
-    try {
-      setLoading(true);
-  
-      if (!selectedPedido) {
-        console.error("El pedido seleccionado es indefinido.");
-        return;
-      }
-  
-      // Update the order status locally first
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
-      );
-  
-      setPedidos(updatedPedidos);
-  
-      // Then update the order status in the database
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
-      });
+  const handleFinishProcess = async (selectedPedido) => {
+    setLoading(true);
 
-      try {
-        setShowMachineName(false);
-        showNotification("NOTIFICACIÓN ENVIADA...");
-        await api.post("/sendMessage", {
-          id_order: selectedPedido.id_order,
-          name: selectedPedido.client.name,
-          email: selectedPedido.client.email,
-          tel: "521" + selectedPedido.client.phone,
-          message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-        });
-        console.log("NOTIFICACIÓN ENVIADA...");
-      } catch (err) {
-        if (!err?.response) {
-          setErrMsg("No hay respuesta del servidor.");
-        } else {
-          setErrMsg("Error al mandar la notificación");
-        }
-      }
-  
-      setShowMachineName(false);
-      showNotification(`Pedido finalizado`);
-    } catch (error) {
-      console.error("Error al finalizar el pedido:", error);
-    } finally {
-      setLoading(false);
+    if (!selectedPedido) {
+      console.error("El pedido seleccionado es indefinido.");
+      return;
     }
+
+    // Update the order status locally first
+    const updatedPedidos = pedidos.map((p) =>
+      p.id_order === selectedPedido.id_order
+        ? { ...p, orderStatus: "finished" }
+        : p
+    );
+
+    setPedidos(updatedPedidos);
+
+    // Then update the order status in the database
+    await api.patch(`/orders/${selectedPedido.id_order}`, {
+      orderStatus: "finished",
+    });
+
+      // try {
+      //   setShowMachineName(false);
+      //   showNotification("NOTIFICACIÓN ENVIADA...");
+      //   await api.post("/sendMessage", {
+      //     id_order: selectedPedido.id_order,
+      //     name: selectedPedido.client.name,
+      //     email: selectedPedido.client.email,
+      //     tel: "521" + selectedPedido.client.phone,
+      //     message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      //   });
+      //   console.log("NOTIFICACIÓN ENVIADA...");
+      // } catch (err) {
+      //   if (!err?.response) {
+      //     setErrMsg("No hay respuesta del servidor.");
+      //   } else {
+      //     setErrMsg("Error al mandar la notificación");
+      //   }
+      // }
+
+    setShowMachineName(false);
+    showNotification(`Pedido finalizado`);
   };
-  
+
 
   const handleConfirmMachineSelection = async () => {
     try {
@@ -333,7 +327,7 @@ function PedidosPlanchado() {
                   )}
                   {pedido.orderStatus === "inProgress" && (
                     <button
-                      onClick={() => handleFinishProcess()}
+                      onClick={() => handleFinishProcess(pedido)}
                       className="btn-primary ml-2 mt-1"
                     >
                       Terminar
@@ -400,11 +394,10 @@ function PedidosPlanchado() {
                   <td>{machine.cicleTime}</td>
                   <td>{machine.weight}</td>
                   <td
-                    className={`${
-                      machine.status === "available"
+                    className={`${machine.status === "available"
                         ? "text-green-500"
                         : "text-red-500"
-                    }`}
+                      }`}
                   >
                     {machine.status === "available"
                       ? "Disponible"

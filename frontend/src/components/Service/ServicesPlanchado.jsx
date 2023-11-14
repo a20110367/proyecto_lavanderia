@@ -78,7 +78,7 @@ function ServicesPlanchado() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Planchaduria</strong>
+        <strong className="title-strong">Servicios de Planchaduria</strong>
       </div>
       <div className="w-full pt-4">
         <button

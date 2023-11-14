@@ -38,7 +38,6 @@ function PedidosLavanderia() {
   const [isDryingProcessConfirmed, setIsDryingProcessConfirmed] = useState(
     localStorage.getItem("isDryingProcessConfirmed") === "true"
   );
-  
 
   const [isDryingProcessConfirmedInModal, setIsDryingProcessConfirmedInModal] =
     useState(false);
@@ -50,14 +49,19 @@ function PedidosLavanderia() {
 
   const { data } = useSWR("ordersLaundry", fetcher);
 
+  useEffect(() => {
+    const storedConfirmationStatus = localStorage.getItem(
+      "isDryingProcessConfirmed"
+    );
+    setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
 
-useEffect(() => {
-  const storedConfirmationStatus = localStorage.getItem("isDryingProcessConfirmed");
-  setIsDryingProcessConfirmed(storedConfirmationStatus === "true");
-
-  const storedModalConfirmationStatus = localStorage.getItem("isDryingProcessConfirmedInModal");
-  setIsDryingProcessConfirmedInModal(storedModalConfirmationStatus === "true");
-}, []);
+    const storedModalConfirmationStatus = localStorage.getItem(
+      "isDryingProcessConfirmedInModal"
+    );
+    setIsDryingProcessConfirmedInModal(
+      storedModalConfirmationStatus === "true"
+    );
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -247,7 +251,6 @@ useEffect(() => {
       setShowDryerSelection(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);
 
-
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, isDryingConfirmed: true }
@@ -255,36 +258,52 @@ useEffect(() => {
       );
       setPedidos(updatedPedidos);
 
-      setIsDryingProcessConfirmed(true);
-      setIsDryingProcessConfirmedInModal(true);
-  
-      localStorage.setItem("isDryingProcessConfirmedInModal", true);
-      localStorage.setItem("isDryingProcessConfirmed", true);
-  
+      // Almacenar el estado específico del pedido en localStorage
+      localStorage.setItem(
+        `isDryingProcessConfirmed_${selectedPedido.id_order}`,
+        true
+      );
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
   const handleFinishProcess = async () => {
     try {
-      if (!selectedPedido) {
-        console.error("El pedido seleccionado es indefinido.");
-        return;
-      }
+    if (!selectedPedido) {
+      console.error("El pedido seleccionado es indefinido.");
+      return;
+    }
 
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
+    // Liberar la secadora seleccionada
+    if (selectedMachine && selectedMachine.machineType === "secadora") {
+      const updatedDryers = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: true }
+          : machine
       );
+      setAvailableMachines(updatedDryers);
 
-      setPedidos(updatedPedidos);
-
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
+      // También actualizar la base de datos
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: true,
       });
+    }
 
-      setShowMachineName(false);
+    // Actualizar el estado del pedido a "finish"
+    const updatedPedidos = pedidos.map((p) =>
+      p.id_order === selectedPedido.id_order
+        ? { ...p, orderStatus: "finished" }
+        : p
+    );
+
+    setPedidos(updatedPedidos);
+
+    await api.patch(`/orders/${selectedPedido.id_order}`, {
+      orderStatus: "finished",
+    });
+
+    setShowMachineName(false);
+
       // showNotification("NOTIFICACIÓN ENVIADA...");
       // await api.post("/sendMessage", {
       //   id_order: selectedPedido.id_order,
@@ -294,6 +313,7 @@ useEffect(() => {
       //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
       // });
       // console.log("NOTIFICACIÓN ENVIADA...");
+
       // showNotification(`Pedido finalizado correctamente`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
@@ -436,7 +456,12 @@ useEffect(() => {
                   {pedido.orderStatus === "inProgress" && (
                     <button
                       onClick={() => {
-                        if (pedido.isDryingConfirmed) {
+                        const isConfirmedFromLocalStorage =
+                          localStorage.getItem(
+                            `isDryingProcessConfirmed_${pedido.id_order}`
+                          ) === "true";
+
+                        if (isConfirmedFromLocalStorage) {
                           handleFinishProcess();
                         } else {
                           handleStartDryerProcess(pedido);
@@ -444,7 +469,11 @@ useEffect(() => {
                       }}
                       className="btn-primary ml-2 mt-1"
                     >
-                      {pedido.isDryingConfirmed ? "Terminar" : "Secado"}
+                      {localStorage.getItem(
+                        `isDryingProcessConfirmed_${pedido.id_order}`
+                      ) === "true"
+                        ? "Terminar"
+                        : "Secado"}
                     </button>
                   )}
                 </td>

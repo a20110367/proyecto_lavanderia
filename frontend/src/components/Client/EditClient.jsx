@@ -187,36 +187,53 @@ function EditClient() {
                 onBlur={() => setSecondNameFocus(false)}
               />
 
+              {/* Email */}
+              <label className="form-lbl" htmlFor="email">
+                Email:
+              </label>
+              <input
+                className="form-input"
+                type="email"
+                id="email"
+                autoComplete="off"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
+                aria-invalid={validEmail ? "false" : "true"}
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
+              />
 
-                {/* Teléfono */}
-                <label className="form-lbl" htmlFor="phone">
-                  Teléfono:
-                </label>
-                <input
-                  className="form-input"
-                  type="tel"
-                  id="phone"
-                  onChange={(e) => setPhone(e.target.value)}
-                  value={phone}
-                  required
-                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                />
-                <div className="float-right">
-                  {/* Botón para actualizar */}
-                  <button
-                    className="btn-edit"
-                    disabled={!validName ? true : false}
-                    type='submit'
-                  >
-                    Actualizar
-                  </button>
-                  <button
-                    className="btn-cancel"
-                    onClick={() => navigate("/clients")}
-                  >
-                    Cancelar
-                  </button>
-                </div>
+
+              {/* Teléfono */}
+              <label className="form-lbl" htmlFor="phone">
+                Teléfono:
+              </label>
+              <input
+                className="form-input"
+                type="tel"
+                id="phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+              />
+              <div className="float-right">
+                {/* Botón para actualizar */}
+                <button
+                  className="btn-edit"
+                  disabled={!validName ? true : false}
+                  type='submit'
+                >
+                  Actualizar
+                </button>
+                <button
+                  className="btn-cancel"
+                  onClick={() => navigate("/clients")}
+                >
+                  Cancelar
+                </button>
+              </div>
             </form>
           </section>
         )}

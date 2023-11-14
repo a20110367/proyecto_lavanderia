@@ -63,7 +63,7 @@ function ServicesAutoservicio() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Autoservicio</strong>
+        <strong className="title-strong">Servicios de Autoservicio</strong>
       </div>
       <div className="w-full pt-4">
         <button

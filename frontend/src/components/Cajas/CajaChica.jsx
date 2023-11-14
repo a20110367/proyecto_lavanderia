@@ -27,17 +27,17 @@ function CajaChica() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/cashWhithdrawals");
+    const response = await api.get("/pettyCash");
     return response.data;
   };
 
-  const { data } = useSWR("cashWhithdrawals", fetcher);
+  const { data } = useSWR("pettyCash", fetcher);
 
   useEffect(() => {
     if (data) {
-      const retirosFiltrados = data.filter((retiro) => retiro.cashWhithdrawalType === "withdrawal");
-      setRetiros(retirosFiltrados);
-      setFilteredRetiros(retirosFiltrados);
+      // const retirosFiltrados = data.filter((pettyCash) => pettyCash.PettyCashType === "deposit");
+      setRetiros(data);
+      setFilteredRetiros(data);
     }
   }, [data]);
 
@@ -57,7 +57,7 @@ function CajaChica() {
     setVisible(true);
   };
 
-  const handleAbono = () =>{
+  const handleAbono = () => {
     setVisibleAbono(true)
   }
 
@@ -67,6 +67,61 @@ function CajaChica() {
 
   const handleMontoInput = () => {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
+  };
+
+  const handleConfirmAbono = () => {
+    let isValid = true;
+
+    if (!monto) {
+      setMontoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMontoError("");
+    }
+
+    if (!motivo) {
+      setMotivoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
+    if (!localStorage.getItem("cashCutId")) {
+      setMotivoError("No se ha inicializado la caja");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
+    if (isValid) {
+      try {
+        const date = moment().format();
+
+        api.post("/pettyCashWithdrawal", {
+          pettyCashType: "withdrawal",
+          amount: parseFloat(monto),
+          fk_user: cookies.token,
+          balance: parseFloat(100),
+          cuase: motivo,
+          movementDate: date,
+        });
+        setVisible(false);
+
+        const nuevoRetiro = {
+          pettyCashType: "withdrawal",
+          amount: parseFloat(monto),
+          fk_user: cookies.token,
+          balance: parseFloat(100),
+          cuase: motivo,
+          movementDate: date,
+        };
+
+        setRetiros([...retiros, nuevoRetiro]);
+        setFilteredRetiros([...retiros, nuevoRetiro]);
+      } catch (err) {
+        console.log(err)
+      }
+    }
   };
 
   const handleConfirmRetiro = () => {
@@ -94,28 +149,33 @@ function CajaChica() {
     }
 
     if (isValid) {
-      const date = moment().format();
+      try {
+        const date = moment().format();
 
-      api.post("/cashWhithdrawals", {
-        cashWhithdrawalType: "withdrawal",
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        fk_user: cookies.token,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-      });
-      setVisible(false);
+        api.post("/pettyCashWithdrawal", {
+          pettyCashType: "withdrawal",
+          amount: parseFloat(monto),
+          fk_user: cookies.token,
+          balance: parseFloat(100),
+          cuase: motivo,
+          movementDate: date,
+        });
+        setVisible(false);
 
-      const nuevoRetiro = {
-        id_cashWhithdrawal: retiros.length + 1,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-        user: { name: cookies.username },
-      };
+        const nuevoRetiro = {
+          pettyCashType: "withdrawal",
+          amount: parseFloat(monto),
+          fk_user: cookies.token,
+          balance: parseFloat(100),
+          cuase: motivo,
+          movementDate: date,
+        };
 
-      setRetiros([...retiros, nuevoRetiro]);
-      setFilteredRetiros([...retiros, nuevoRetiro]);
+        setRetiros([...retiros, nuevoRetiro]);
+        setFilteredRetiros([...retiros, nuevoRetiro]);
+      } catch (err) {
+        console.log(err)
+      }
     }
   };
 
@@ -158,18 +218,18 @@ function CajaChica() {
         </div>
       </div>
       <div className="flex">
-  <div className="mt-3 mb-3 mr-2">
-    <button onClick={handleRetiro} className="btn-primary bg-FireBrick hover:bg-RedPantone">
-      Registrar Retiro
-    </button>
-  </div>
+        <div className="mt-3 mb-3 mr-2">
+          <button onClick={handleRetiro} className="btn-primary bg-FireBrick hover:bg-RedPantone">
+            Registrar Retiro
+          </button>
+        </div>
 
-  <div className="mt-3 mb-3">
-    <button onClick={handleAbono} className="btn-primary">
-      Registrar Abono 
-    </button>
-  </div>
-</div>
+        <div className="mt-3 mb-3">
+          <button onClick={handleAbono} className="btn-primary">
+            Registrar Abono
+          </button>
+        </div>
+      </div>
 
 
 
@@ -188,15 +248,17 @@ function CajaChica() {
         <tbody>
           {filteredRetiros
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((retiro) => (
-              <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>
+            .map((pettyCash) => (
+              <tr className="bg-white border-b" key={pettyCash.id_movement}>
                 <td className="py-3 px-1 text-center">
-                  {retiro.id_cashWhithdrawal}
+                  {pettyCash.id_movement}
                 </td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(retiro.date)}</td>
-                <td className="py-3 px-6">{"$" + retiro.amount}</td>
-                <td className="py-3 px-6">{retiro.cause}</td>
-                <td className="py-3 px-6">{retiro.user.name}</td>
+                <td className="py-3 px-6">{pettyCash.pettyCashType === 'withdrawal' ? 'Retiro' : 'Abono'}</td>
+                <td className="py-3 px-6">{formatDateToGMTMinus6(pettyCash.movementDate)}</td>
+                <td className="py-3 px-6">{"$" + pettyCash.amount}</td>
+                <td className="py-3 px-6">{pettyCash.cuase}</td>
+                <td className="py-3 px-6">{pettyCash.user}</td>
+                <td className="py-3 px-6">{pettyCash.balance}</td>
               </tr>
             ))}
         </tbody>

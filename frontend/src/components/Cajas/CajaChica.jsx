@@ -101,7 +101,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: parseFloat(100),
+          balance: 0,
           cause: motivo,
           movementDate: date,
         });
@@ -112,7 +112,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: parseFloat(100),
+          balance: res.data.balance,
           cause: motivo,
           movementDate: date,
           user: {
@@ -176,7 +176,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: parseFloat(100),
+          balance:0,
           cause: motivo,
           movementDate: date,
         });
@@ -187,7 +187,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: parseFloat(100),
+          balance: res.data.balance,
           cause: motivo,
           movementDate: date,
           user: {

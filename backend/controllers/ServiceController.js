@@ -572,7 +572,7 @@ export const updateSelfServiceDryService = async (req, res) =>{
         
     try {
         const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
-        const service = await prisma.service.create({
+        const service = await prisma.service.update({
             where:{
                 id_service:Number(req.params.id),
             },
@@ -609,7 +609,7 @@ export const updateIronService = async (req, res) =>{
         
     try {
         const{description,price,ironPieces, ironCycleTime }=req.body;
-        const service = await prisma.service.create({
+        const service = await prisma.service.update({
             where:{
                 id_service:Number(req.params.id),
             },

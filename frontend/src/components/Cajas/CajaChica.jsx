@@ -140,7 +140,7 @@ function CajaChica() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Registro de Retiros</strong>
+          <strong className="title-strong">Caja Chica</strong>
         </div>
       </div>
       <div className="flex items-center">

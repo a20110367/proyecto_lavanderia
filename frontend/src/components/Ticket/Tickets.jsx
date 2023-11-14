@@ -28,6 +28,7 @@ const formatTime = (dateStr) => {
 async function ticket(order) {
     const date = moment().format("DD / MM / YYYY")
     const hour = moment().format("LT");
+    console.log(order.cart)
     let word = 'w'
     try {
         const res = await api.post("/numberToWord", {
@@ -57,15 +58,16 @@ async function ticket(order) {
         }                    
                 <hr class="hr-header">  
                 <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
-                    <p>Color</p>
-                    <p>Estampado</p>
-                    <p>Fibra</p>
+                        <!--<p>Color</p>-->
+                        <!--<p>Estampado</p>-->
+                        <!--<p>Fibra</p>-->
                     <p>Cant.</p>
                     <p>Producto</p>
-                    <p>Precio</p>           
-                    <p>1</p>
-                    <p>EDREDON MATRIMONIAL</p>
-                    <p>95.00</p>
+                    <p>Precio</p>
+                    ${order.cart.map(detail => `<p>${detail.quantity}</p><p>${detail.description}</p><p>$${detail.totalPrice}</p>`)}  
+                        <!--<p>1</p>-->
+                        <!--<p>EDREDON MATRIMONIAL</p>-->
+                        <!--<p>95.00</p>-->
                 </div>
                 <hr class="hr-header">       
                     <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>

@@ -13,6 +13,10 @@ import {
     createIronService,
     createServiceMany,
     updateService,
+    updateLaundryService,
+    updateSelfServiceWashService,
+    updateSelfServiceDryService,
+    updateIronService,
     deleteService,
     
 } from "../controllers/ServiceController.js";
@@ -34,6 +38,10 @@ router.post('/servicesDrySelfService', createSelfServiceDryService);
 router.post('/servicesIron', createIronService);
 router.post('/servicesMany', createServiceMany);
 
+router.patch('/servicesUpdateLaundry/:id', updateLaundryService);
+router.patch('/servicesUpdateWashSelfService/:id', updateSelfServiceWashService);
+router.patch('/servicesUpdateDrySelfService/:id', updateSelfServiceDryService);
+router.patch('/servicesUpdateIron/:id', updateIronService);
 
 router.patch('/services/:id', updateService);
 router.delete('/services/:id', deleteService);

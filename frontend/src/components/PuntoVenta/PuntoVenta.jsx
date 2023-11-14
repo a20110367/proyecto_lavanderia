@@ -136,7 +136,6 @@ export default function PuntoVenta() {
         text: 'Intenta añadir un servicio a la lista.',
         confirmButtonColor: '#034078'
       });
-      setIsModalVisible(false);
       return
     }
     setIsModalVisible(true);
@@ -198,7 +197,8 @@ export default function PuntoVenta() {
         client: clientName,
         scheduledDeliveryDate: deliveryDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
         scheduledDeliveryTime: "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
-        notes: ''
+        notes: '',
+        cart: cart
       }
       ticket(order)
       const idOrder = res.data.serviceOrder.id_order

@@ -67,7 +67,7 @@ function EditServiceLavanderia() {
     }
 
     try {
-      await api.patch(`/services/${id}`, {
+      await api.patch(`/servicesUpdateLaundry/${id}`, {
         description: description,
         price: parseFloat(price),
         washWeight: parseInt(washWeight),
@@ -79,6 +79,7 @@ function EditServiceLavanderia() {
       navigate("/servicesLavanderia");
       setSuccess(true);
     } catch (err) {
+      console.log(err)
       setErrMsg("Error al actualizar el servicio.");
     }
   };

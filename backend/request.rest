@@ -361,6 +361,69 @@ Content-Type: application/json
 }
 
 ###
+GET  http://localhost:5000/services
+###
+
+GET http://localhost:5000/servicesLaundry
+###
+
+
+GET  http://localhost:5000/servicesById/1
+
+###
+PATCH  http://localhost:5000/services/8
+Content-Type: application/json
+
+{
+    "description": "Lavado 25Kg",
+    "category_id" : 3,
+    "price": 250.0,
+}
+###
+
+PATCH  http://localhost:5000/services/1
+Content-Type: application/json
+
+{
+    "category_id": 1
+}
+
+###
+
+PATCH  http://localhost:5000/servicesUpdateLaundry/43
+Content-Type: application/json
+
+{
+"description":"lavado 10 kilos encargo",
+"price":100.00 ,
+"category_id":2,
+"washWeight":20,
+"washCycleTime":45,
+"dryWeight":20,
+"dryCycleTime":60
+}
+
+###
+
+PATCH  http://localhost:5000/servicesUpdateWashSelfService/48
+Content-Type: application/json
+
+{
+"description":"Lavado autoservicio 15 kilos",
+"price":130.00 ,
+"category_id":1,
+"washWeight":10,
+"washCycleTime":10
+}
+
+###
+
+
+DELETE   http://localhost:5000/services/28
+
+###
+
+###
 GET http://localhost:5000/servicesIronService
 
 ###
@@ -504,38 +567,6 @@ Content-Type: application/json
 }
 ###
 
-GET  http://localhost:5000/services
-###
-
-GET http://localhost:5000/servicesLaundry
-###
-
-
-GET  http://localhost:5000/servicesById/1
-
-###
-PATCH  http://localhost:5000/services/8
-Content-Type: application/json
-
-{
-    "description": "Lavado 25Kg",
-    "category_id" : 3,
-    "price": 250.0,
-}
-###
-
-PATCH  http://localhost:5000/services/1
-Content-Type: application/json
-
-{
-    "category_id": 1
-}
-
-###
-
-DELETE   http://localhost:5000/services/28
-
-###
 
 //CRUD DE ORDENES
 GET http://localhost:5000/orders

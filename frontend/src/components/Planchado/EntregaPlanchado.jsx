@@ -26,6 +26,7 @@ function EntregaPlanchado() {
   });
 
   const [entregando, setEntregando] = useState(false);
+  const [fkPayment, setFkPayment] = useState(0)
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
@@ -102,7 +103,7 @@ function EntregaPlanchado() {
     setVisible(false);
 
     try {
-      await api.post('/paymentsDelivery', {
+      const res = await api.post('/paymentsDelivery', {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,
@@ -118,7 +119,9 @@ function EntregaPlanchado() {
           fk_idOrder: pedido.id_order
         }
       })
-    }catch(err){
+      setFkPayment(res.data.id_payment)
+      console.log(res.data.id_payment)
+    } catch (err) {
       console.log(err)
     }
 
@@ -126,24 +129,22 @@ function EntregaPlanchado() {
     doc.text(`Detalles del Pedido`, 10, 10);
     doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
     doc.text(
-      `Pedido: ${
-        pedido.ServiceOrderDetail.find(
-          (service) => service.id_serviceOrderDetail
-        ) != undefined
-          ? pedido.ServiceOrderDetail.length
-          : 0
+      `Pedido: ${pedido.ServiceOrderDetail.find(
+        (service) => service.id_serviceOrderDetail
+      ) != undefined
+        ? pedido.ServiceOrderDetail.length
+        : 0
       }`,
       10,
       30
     );
     doc.text(`Estatus: Adeudo`, 10, 40);
     doc.text(
-      `Método de Pago: ${
-        pedido.payment
-          ? pedido.payment.payMethod === "cash"
-            ? "Efectivo"
-            : "Tarjeta"
-          : "N/A"
+      `Método de Pago: ${pedido.payment
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : "Tarjeta"
+        : "N/A"
       }`,
       10,
       50
@@ -162,36 +163,48 @@ function EntregaPlanchado() {
     setSelectedPedido(null);
   };
 
-  const handleEntregar = (pedido) => {
+  const handleEntregar = async (pedido) => {
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 
+      console.log(pedido)
+
+      try {
+        const res = await api.get('/')
+        await api.post('/deliveryDetails', {
+          fk_idOrder: pedido.id_order,
+          fk_idPayment: fkPayment,
+          fk_userCashier: cookies.token,
+          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+        })
+      } catch (err) {
+        console.log(err)
+      }
+
       setEntregando(true);
-      console.log(pedido);
       setTimeout(() => {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
         doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
         doc.text(
-          `Pedido: ${
-            pedido.ServiceOrderDetail.find(
-              (service) => service.id_serviceOrderDetail
-            ) != undefined
-              ? pedido.ServiceOrderDetail.length
-              : 0
+          `Pedido: ${pedido.ServiceOrderDetail.find(
+            (service) => service.id_serviceOrderDetail
+          ) != undefined
+            ? pedido.ServiceOrderDetail.length
+            : 0
           }`,
           10,
           30
         );
         doc.text(`Estatus: Entregado`, 10, 40);
         doc.text(
-          `Método de Pago: ${
-            pedido.payment
-              ? pedido.payment.payMethod === "cash"
-                ? "Efectivo"
-                : "Tarjeta"
-              : "N/A"
+          `Método de Pago: ${pedido.payment
+            ? pedido.payment.payMethod === "cash"
+              ? "Efectivo"
+              : "Tarjeta"
+            : "N/A"
           }`,
           10,
           50
@@ -279,8 +292,8 @@ function EntregaPlanchado() {
                   </td>
                   <td
                     className={`py-3 px-6 ${pedido.payStatus === "unpaid"
-                        ? "text-red-600"
-                        : "text-green-600"
+                      ? "text-red-600"
+                      : "text-green-600"
                       }`}
                   >
                     {pedido.payStatus === "unpaid" ? (

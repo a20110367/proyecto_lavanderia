@@ -23,6 +23,7 @@ model User {
   CashWhithdrawal CashWhithdrawal[]
   DeliveryDetail  DeliveryDetail[]
   ServiceOrders   ServiceOrder[]
+  PettyCash       PettyCash[]
 }
 
 model Client {
@@ -34,7 +35,7 @@ model Client {
   created       DateTime       @default(now())
   firstLN       String
   secondLN      String?
-  username      String?         @unique
+  username      String?        @unique
   updatedAt     DateTime       @updatedAt
   ServiceOrders ServiceOrder[]
 }
@@ -297,6 +298,7 @@ model CashCut {
   totalOtros          Float?            @default(0)
   totalPlanchado      Float?
   totalIncome         Float?
+  pettyCashBalance    Float?
   user                User              @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   cashWhithdrawal     CashWhithdrawal[]
   payment             Payment[]
@@ -315,6 +317,19 @@ model CashWhithdrawal {
   updatedAt           DateTime           @updatedAt
   cashCut             CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
   user                User               @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model PettyCash {
+  id_movement   Int           @id @default(autoincrement())
+  pettyCashType PettyCashType @default(withdrawal)
+  amount        Float
+  balance       Float
+  cause         String
+  movementDate  DateTime      @db.Date
+  created       DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  fk_user       Int?
+  user          User?         @relation(fields: [fk_user], references: [id_user], onDelete: SetNull, onUpdate: Cascade)
 }
 
 enum Role {
@@ -364,4 +379,9 @@ enum CashCutStatus {
 enum CashWithdrawalType {
   withdrawal
   refound
+}
+
+enum PettyCashType {
+  withdrawal
+  deposit
 }

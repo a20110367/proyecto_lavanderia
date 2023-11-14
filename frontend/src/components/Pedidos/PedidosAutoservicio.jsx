@@ -223,7 +223,10 @@ function PedidosAutoservicio() {
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
+          {filteredPedidos
+  .filter((pedido) => pedido.orderStatus !== 'delivered') // Filtrar pedidos que no tienen estado "finished"
+  .slice(startIndex, endIndex)
+  .map((pedido) => (
               <tr key={pedido.id_order}>
                 <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                 <td className="py-3 px-6 font-medium text-gray-900">
@@ -342,26 +345,24 @@ function PedidosAutoservicio() {
                   <td>{machine.cicleTime}</td>
                   <td>{machine.weight}</td>
                   <td
-                    className={`${
-                      machine.status === "available"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {machine.status === "available"
-                      ? "Disponible"
-                      : "No Disponible"}
-                  </td>
-                  <td>
-                    <div className="flex flex-col items-center">
-                      <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedMachine === machine}
-                        onChange={() => handleSelectMachine(machine)}
-                        className="mb-2"
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
+
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_machine}`}
+                          checked={selectedMachine === machine}
+                          onChange={() => handleSelectMachine(machine)}
+                          className="mb-2"
+                          disabled={!machine.freeForUse}
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
                   </td>
                 </tr>
               ))}

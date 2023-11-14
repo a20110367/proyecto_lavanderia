@@ -42,6 +42,14 @@ function PedidosPlanchado() {
   const { data } = useSWR("ordersIron", fetcher);
 
   useEffect(() => {
+    // Recuperar la máquina seleccionada de localStorage
+    const storedMachine = localStorage.getItem('selectedMachine');
+    if (storedMachine) {
+      setSelectedMachine(JSON.parse(storedMachine));
+    }
+  }, []);
+
+  useEffect(() => {
     if (data) {
       setPedidos(data);
       setFilteredPedidos(data);
@@ -98,6 +106,8 @@ function PedidosPlanchado() {
 
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
+    // Guardar la máquina seleccionada en localStorage
+  localStorage.setItem('selectedMachine', JSON.stringify(machine));
   };
 
   const handleStartProcess = async (pedido) => {
@@ -113,6 +123,7 @@ function PedidosPlanchado() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowMachineName(true);
+
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -120,50 +131,88 @@ function PedidosPlanchado() {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
   const handleFinishProcess = async (selectedPedido) => {
     setLoading(true);
-
+  
+    // Recuperar la máquina seleccionada de localStorage
+    const storedMachine = localStorage.getItem('selectedMachine');
+    const selectedMachine = storedMachine ? JSON.parse(storedMachine) : null;
+  
     if (!selectedPedido) {
       console.error("El pedido seleccionado es indefinido.");
+      setLoading(false);
       return;
     }
-
-    // Update the order status locally first
-    const updatedPedidos = pedidos.map((p) =>
-      p.id_order === selectedPedido.id_order
-        ? { ...p, orderStatus: "finished" }
-        : p
-    );
-
-    setPedidos(updatedPedidos);
-
-    // Then update the order status in the database
-    await api.patch(`/orders/${selectedPedido.id_order}`, {
-      orderStatus: "finished",
-    });
-
-      // try {
-      //   setShowMachineName(false);
-      //   showNotification("NOTIFICACIÓN ENVIADA...");
-      //   await api.post("/sendMessage", {
-      //     id_order: selectedPedido.id_order,
-      //     name: selectedPedido.client.name,
-      //     email: selectedPedido.client.email,
-      //     tel: "521" + selectedPedido.client.phone,
-      //     message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-      //   });
-      //   console.log("NOTIFICACIÓN ENVIADA...");
-      // } catch (err) {
-      //   if (!err?.response) {
-      //     setErrMsg("No hay respuesta del servidor.");
-      //   } else {
-      //     setErrMsg("Error al mandar la notificación");
-      //   }
-      // }
-
-    setShowMachineName(false);
-    showNotification(`Pedido finalizado`);
+  
+    if (!selectedMachine) {
+      console.error("No se ha seleccionado ninguna máquina.");
+      setLoading(false);
+      return;
+    }
+    try {
+      // Actualizar localmente el estado del pedido a "finished"
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === selectedPedido.id_order
+          ? { ...p, orderStatus: "finished" }
+          : p
+      );
+      setPedidos(updatedPedidos);
+  
+      // Actualizar en la base de datos el estado del pedido a "finished"
+      await api.patch(`/orders/${selectedPedido.id_order}`, {
+        orderStatus: "finished",
+      });
+  
+      // Actualizar localmente el estado de la máquina a "freeForUse"
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_ironStation === selectedMachine.id_ironStation
+          ? { ...machine, freeForUse: true }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+  
+      // Actualizar en la base de datos el estado de la máquina a "freeForUse"
+      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+        freeForUse: true,
+      });
+  
+      setShowMachineName(false);
+      showNotification(`Pedido finalizado`);
+    } catch (error) {
+      console.error("Error al finalizar el pedido:", error);
+    } finally {
+      setLoading(false);
+      localStorage.removeItem('selectedMachine');
+    }
   };
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
 
 
   const handleConfirmMachineSelection = async () => {
@@ -173,6 +222,17 @@ function PedidosPlanchado() {
         return;
       }
 
+      // Modificar el estado local de la lavadora seleccionada
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_ironStation === selectedMachine.id_ironStation
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
+      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+        freeForUse: false,
+      });
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
           ? { ...p, orderStatus: "inProgress" }
@@ -186,11 +246,13 @@ function PedidosPlanchado() {
         assignedMachine: selectedMachine.id,
       });
       setShowMachineName(false);
-
+      showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
+      // Actualizar datos
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
   };
+
 
   return (
     <div>
@@ -267,7 +329,10 @@ function PedidosPlanchado() {
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
+          {filteredPedidos
+  .filter((pedido) => pedido.orderStatus !== 'finished') // Filtrar pedidos que no tienen estado "finished"
+  .slice(startIndex, endIndex)
+  .map((pedido) => (
               <tr key={pedido.id_order}>
                 <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                 <td className="py-3 px-6 font-medium text-gray-900">
@@ -379,40 +444,35 @@ function PedidosPlanchado() {
             <thead className="bg-gray-200">
               <tr>
                 <th>Tipo de Máquina</th>
-                <th>Modelo</th>
-                <th>Tiempo de Ciclo</th>
-                <th>Peso</th>
+                <th>piezas</th>
                 <th>Estado de la Máquina</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {availableMachines.map((machine) => (
-                <tr key={machine.id_machine}>
+                <tr key={machine.id_ironStation}>
                   <td>{machine.machineType}</td>
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
+                  <td>{machine.pieces}</td>
                   <td
-                    className={`${machine.status === "available"
-                        ? "text-green-500"
-                        : "text-red-500"
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
                       }`}
-                  >
-                    {machine.status === "available"
-                      ? "Disponible"
-                      : "No Disponible"}
-                  </td>
-                  <td>
-                    <div className="flex flex-col items-center">
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
+
+                    <td>
+                      <div className="flex flex-col items-center">
                       <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedMachine === machine}
-                        onChange={() => handleSelectMachine(machine)}
-                        className="mb-2"
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
+  key={`checkbox_${machine.id_ironStation}`}
+  checked={selectedMachine === machine}
+  onChange={() => handleSelectMachine(machine)}
+  className="mb-2"
+  disabled={!machine.freeForUse}
+/>
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
                   </td>
                 </tr>
               ))}

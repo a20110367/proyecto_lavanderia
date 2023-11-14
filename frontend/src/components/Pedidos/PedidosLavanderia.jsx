@@ -120,6 +120,7 @@ function PedidosLavanderia() {
 
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
+    localStorage.setItem('selectedMachine', JSON.stringify(machine));
   };
 
   const handleStartProcess = async (pedido) => {
@@ -315,7 +316,9 @@ function PedidosLavanderia() {
       // console.log("NOTIFICACIÓN ENVIADA...");
 
       // showNotification(`Pedido finalizado correctamente`);
+      localStorage.removeItem('selectedMachine');
     } catch (error) {
+      
       console.error("Error al actualizar el pedido:", error);
     }
   };
@@ -395,7 +398,10 @@ function PedidosLavanderia() {
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
+          {filteredPedidos
+  .filter((pedido) => pedido.orderStatus !== 'finished') // Filtrar pedidos que no tienen estado "finished"
+  .slice(startIndex, endIndex)
+  .map((pedido) => (
               <tr key={pedido.id_order}>
                 <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                 <td className="py-3 px-6 font-medium text-gray-900">

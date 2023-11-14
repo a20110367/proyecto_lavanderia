@@ -590,7 +590,7 @@ GET http://localhost:5000/ordersLaundryFinished
 ###
 
 
-GET http://localhost:5000/ordersIron
+GET http://localhost:5000/ordersIronFinished
 
 ###
 
@@ -901,5 +901,22 @@ DELETE   http://localhost:5000/orderIronServiceDetails/17
 
 ###
 
-GET   http://localhost:5000/pettyCash
 
+//CRUD PRETTY CASH
+
+POST http://localhost:5000/pettyCashDeposit 
+
+ Content-Type: application/json
+
+{
+    "amount": 100.00,
+    "balance": 0.00,
+    "movementDate": "2023-11-14T00:00:00.000Z",
+    "cause": "Hialuronato de Sodio2",
+    "fk_user" :2,
+    "pettyCashType": "deposit"
+  }
+
+###
+GET   http://localhost:5000/pettyCash
+####

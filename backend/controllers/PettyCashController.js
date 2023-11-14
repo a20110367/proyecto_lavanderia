@@ -12,7 +12,12 @@ export const getPettyCash = async (req, res) =>{
                 id_movement:true,
                 movementDate:true,
                 cause:true,
-                user:true,
+                user:{
+                    select:{
+                        id_user:true,
+                        name:true,
+                    },
+                },
                 pettyCashType:true
             },               
                 
@@ -49,7 +54,7 @@ export const getPettyCashBalance = async (req, res) =>{
 
 export const createDepositPettyCash = async (req, res) =>{
     try {
-        
+        const{amount,balance,cause,movementDate,fk_user,pettyCashType}=req.body;
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max:{
                 id_movement:true,
@@ -59,7 +64,7 @@ export const createDepositPettyCash = async (req, res) =>{
         
         console.log(lastPettyCash);
 
-        const balance = await prisma.pettyCash.findFirst({
+        const currentBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:Number(lastPettyCash._max.id_movement),
             },
@@ -68,12 +73,18 @@ export const createDepositPettyCash = async (req, res) =>{
             }
         });
 
-        console.log(balance);
-
-        req.body.balance = balance + req.body.amount;
-
+        
+        const newBalance = currentBalance + amount;
+        console.log(newBalance);
         const response = await prisma.pettyCash.create({
-            data:req.body                 
+            data:{
+                balance:newBalance,
+                amount:amount,
+                cause:cause,
+                fk_user:fk_user,
+                movementDate:movementDate,
+                pettyCashType:pettyCashType,
+            }              
         });
 
         res.status(200).json(response);

@@ -150,6 +150,7 @@ export const getOrdersSelfService = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                payment:true,
             },            
         });
         res.status(201).json(response);
@@ -183,6 +184,7 @@ export const getOrdersLaundry = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                payment:true,
             },            
         });
         res.status(201).json(response);
@@ -262,6 +264,7 @@ export const getOrdersLaundryFinished = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                payment:true,
             },            
         });
         res.status(201).json(response);
@@ -302,6 +305,7 @@ export const getOrdersIronFinished = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                payment:true,
             },            
         });
         res.status(201).json(response);

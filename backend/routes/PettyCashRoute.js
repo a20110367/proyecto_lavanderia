@@ -12,8 +12,10 @@ const router = express.Router();
 
 router.get('/pettyCash', getPettyCash);
 router.get('/pettyCashBalance', getPettyCashBalance);
+
 router.post('/pettyCashDeposit', createDepositPettyCash);
 router.post('/pettyCashWithdrawal', createWithdrawalPettyCash);
+
 router.patch('/pettyCash/:id', updatePettyCash);
 router.delete('/pettyCash/:id', deletePettyCash);
 

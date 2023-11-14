@@ -54,7 +54,7 @@ function EditServiceAutoservicio() {
 
     if (service == 'laundry') {
       try {
-        await api.patch(`/services/${id}`, {
+        await api.patch(`/servicesUpdateWashSelfService/${id}`, {
           description: description,
           price: parseFloat(price),
           washWeight: parseInt(weight),
@@ -70,7 +70,7 @@ function EditServiceAutoservicio() {
       }
     } else if (service == 'dry') {
       try {
-        await api.patch(`/services/${id}`, {
+        await api.patch(`/servicesUpdateDrySelfService/${id}`, {
           description: description,
           price: parseFloat(price),
           category_id: 1,
@@ -161,7 +161,7 @@ function EditServiceAutoservicio() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="type">
+              {/* <label className="form-lbl" htmlFor="type">
                 Tipo de Servicio
               </label>
               <Select
@@ -171,7 +171,7 @@ function EditServiceAutoservicio() {
               >
                 <Option value="laundry">Lavado</Option>
                 <Option value="dry">Secado</Option>
-              </Select>
+              </Select> */}
 
               {/* {service == 'dry' ?
                 <div>

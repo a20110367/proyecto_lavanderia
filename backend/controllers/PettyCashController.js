@@ -31,7 +31,7 @@ export const getPettyCashBalance = async (req, res) =>{
             }             
         });
 
-        const response = await prisma.pettyCash.get({
+        const response = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max.id_movement,
             },

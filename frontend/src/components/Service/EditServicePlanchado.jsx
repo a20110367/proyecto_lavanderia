@@ -11,6 +11,8 @@ function EditServicePlanchado() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [pieces, setPieces] = useState(0)
+  const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -27,6 +29,8 @@ function EditServicePlanchado() {
       const response = await api.get(`/servicesById/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
+      setPieces(response.data.IronService[0].pieces)
+      setTime(response.data.IronService[0].cycleTime)
       setCategory("Planchado");
     };
     getServiceById();
@@ -50,19 +54,22 @@ function EditServicePlanchado() {
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-        setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
-        return;
-      }
+      setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
+      return;
+    }
 
     try {
-      await api.patch(`/services/${id}`, {
+      await api.patch(`/servicesUpdateIron/${id}`, {
         description: description,
-        category_id: 3,
         price: parseFloat(price),
+        ironPieces: parseInt(pieces),
+        ironCycleTime: parseInt(time),
+        category_id: 3,
       });
       navigate("/servicesPlanchado");
       setSuccess(true);
     } catch (err) {
+      console.error(err);
       setErrMsg("Error al actualizar el servicio.");
     }
   };
@@ -104,6 +111,30 @@ function EditServicePlanchado() {
                   <p className="errmsg text-red-500">{errMsg}</p>
                 </div>
               )}
+
+              <label className="form-lbl" htmlFor="pieces">
+                No. Piezas:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="pieces"
+                onChange={(e) => setPieces(e.target.value)}
+                value={pieces}
+                required
+              />
+
+              <label className="form-lbl" htmlFor="time">
+                Tiempo del Ciclo de Planchado:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="time"
+                onChange={(e) => setTime(e.target.value)}
+                value={time}
+                required
+              />
 
               <label className="form-lbl" htmlFor="price">
                 Precio Unitario:

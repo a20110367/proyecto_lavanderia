@@ -254,6 +254,22 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
+        const lastPettyCash = await prisma.pettyCash.aggregate({
+            _max:{
+                id_movement:true,
+            }             
+        });
+
+        const pettyCashBalance = await prisma.pettyCash.get({
+            where:{
+                id_movement:lastPettyCash._max,
+            },
+            select:{
+                balance:true,
+            }
+        });
+        
+
 
 
         const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
@@ -282,6 +298,7 @@ export const calculateCashCut = async (req, res) => {
             "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
             "cashCutD": today,
+            "pettyCashBalance":pettyCashBalance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -474,6 +491,20 @@ export const closeCashCut = async (req, res) => {
 
         });
 
+        const lastPettyCash = await prisma.pettyCash.aggregate({
+            _max:{
+                id_movement:true,
+            }             
+        });
+
+        const pettyCashBalance = await prisma.pettyCash.get({
+            where:{
+                id_movement:lastPettyCash._max,
+            },
+            select:{
+                balance:true,
+            }
+        });
 
         const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
 
@@ -501,7 +532,8 @@ export const closeCashCut = async (req, res) => {
             "ordersPayed": orders.length,
             "cashCutStatus": "closed",
             "cashCutD": today,
-            "cashCutT": time
+            "cashCutT": time,
+            "pettyCashBalance":pettyCashBalance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -523,7 +555,8 @@ export const closeCashCut = async (req, res) => {
                 "ordersPayed": orders.length,
                 "cashCutStatus": "closed",
                 "cashCutD": today,
-                "cashCutT": time
+                "cashCutT": time,
+                "pettyCashBalace":pettyCashBalance
 
             }
         });

@@ -14,6 +14,9 @@ import {
     createServiceMany,
     updateService,
     updateLaundryService,
+    updateSelfServiceWashService,
+    updateSelfServiceDryService,
+    updateIronService,
     deleteService,
     
 } from "../controllers/ServiceController.js";
@@ -36,6 +39,9 @@ router.post('/servicesIron', createIronService);
 router.post('/servicesMany', createServiceMany);
 
 router.patch('/servicesUpdateLaundry/:id', updateLaundryService);
+router.patch('/servicesUpdateWashSelfService/:id', updateLaundryService);
+router.patch('/servicesUpdateDrySelfService/:id', updateLaundryService);
+router.patch('/servicesUpdateIron/:id', updateLaundryService);
 
 router.patch('/services/:id', updateService);
 router.delete('/services/:id', deleteService);

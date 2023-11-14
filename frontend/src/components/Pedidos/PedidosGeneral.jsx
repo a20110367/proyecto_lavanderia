@@ -100,6 +100,9 @@ function PedidosGeneral() {
         email: pedido.client.email,
         tel: "521" + pedido.client.phone,
         message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        subject: 'Tu Ropa esta Lista',
+        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+        warning: false,
       });
       console.log("NOTIFICACIÓN ENVIADA...");
     } catch (err) {

@@ -16,8 +16,13 @@ export const n2word = async (req, res) => {
 }
 
 export const sendMessage = async (req, res) => {
-    const {id_order, name, email, tel, message} = req.body
-    const output = `
+    const {id_order, name, email, tel, message, subject, text, warning } = req.body
+    let output = ''
+    warning ?  
+    output = `
+        <h2>${message}</h2>
+    ` : 
+    output = `
         <h3>Detalles del Pedido:</h3>
         <ul>  
             <li>Folio: ${id_order}</li> 
@@ -26,14 +31,14 @@ export const sendMessage = async (req, res) => {
         </ul>
         <h3>Cuerpo</h3>
         <p>${message}</p>
-    `;
+    ` 
 
     try {
         const info = await transporter.sendMail({
-            from: '"Tu Ropa esta Lista 👻" <pyrop59@gmail.com>', // sender address
+            from: `"${subject}👻" <pyrop59@gmail.com>`, // sender address
             to: email, // list of receivers
-            subject: "Tu Ropa esta Lista", // Subject line
-            text: "Tu ropa esta lista, esperamos que la recojas a su brevedad", // plain text body
+            subject: subject, // Subject line
+            text: text, // plain text body
             // html: "<b>Tamal</b>", // html body
             html: output,
         });

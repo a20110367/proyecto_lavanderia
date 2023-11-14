@@ -97,7 +97,7 @@ function CajaChica() {
       try {
         const date = moment().format();
 
-        await api.post("/pettyCashDeposit", {
+        const res = await api.post("/pettyCashDeposit", {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
@@ -108,16 +108,36 @@ function CajaChica() {
         setVisible(false);
 
         const nuevoRetiro = {
+          id_movement: res.data.id_movement,
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
           cause: motivo,
           movementDate: date,
+          user: {
+            name: cookies.username
+          }
         };
 
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
+
+        await api.post("/sendMessage", {
+          id_order: nuevoRetiro.id_movement,
+          name: 'Rafa',
+          email: 'a20110347@ceti.mx',
+          tel: "5213321817496",
+          message: `Se ha realizado un ABONO en la CAJA CHICA 
+          con monto de: ${monto}, 
+          con el motivo de: ${motivo}. 
+          Realizadas por el cajero: ${cookies.username} 
+          el dia de ${formatDateToGMTMinus6(date)}`,
+          subject: 'Se ha realizado un ABONO en la CAJA CHICA',
+          text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
+          warning: true
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
       } catch (err) {
         console.log(err)
       }
@@ -152,7 +172,7 @@ function CajaChica() {
       try {
         const date = moment().format();
 
-        await api.post("/pettyCashWithdrawal", {
+        const res = await api.post("/pettyCashWithdrawal", {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
@@ -163,16 +183,37 @@ function CajaChica() {
         setVisible(false);
 
         const nuevoRetiro = {
+          id_movement: res.data.id_movement,
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
           cause: motivo,
           movementDate: date,
+          user: {
+            name: cookies.username
+          }
         };
 
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
+
+        await api.post("/sendMessage", {
+          id_order: nuevoRetiro.id_movement,
+          name: 'Rafa',
+          email: 'a20110341@ceti.mx',
+          tel: "5213313839768",
+          message: `Se ha realizado un RETIRO en la CAJA CHICA 
+          con monto de: ${monto}, 
+          con el motivo de: ${motivo}. 
+          Realizadas por el cajero: ${cookies.username} 
+          el dia de ${formatDateToGMTMinus6(date)}`,
+          subject: 'Se ha realizado un RETIRO en la CAJA CHICA',
+          text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
+          warning: true
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
+
       } catch (err) {
         console.log(err)
       }

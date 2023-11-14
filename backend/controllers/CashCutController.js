@@ -271,7 +271,7 @@ export const calculateCashCut = async (req, res) => {
             }
         });
         
-        console.log(pettyCashBalance);
+        console.log(pettyCashBalance.balance);
 
 
 
@@ -301,7 +301,7 @@ export const calculateCashCut = async (req, res) => {
             "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
             "cashCutD": today,
-            "pettyCashBalance":pettyCashBalance
+            "pettyCashBalance":pettyCashBalance.balance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -536,7 +536,7 @@ export const closeCashCut = async (req, res) => {
             "cashCutStatus": "closed",
             "cashCutD": today,
             "cashCutT": time,
-            "pettyCashBalance":pettyCashBalance
+            "pettyCashBalance":pettyCashBalance.balance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -559,7 +559,7 @@ export const closeCashCut = async (req, res) => {
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
-                "pettyCashBalace":pettyCashBalance
+                "pettyCashBalace":pettyCashBalance.balance
 
             }
         });

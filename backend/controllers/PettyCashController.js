@@ -60,10 +60,6 @@ export const createDepositPettyCash = async (req, res) =>{
                 id_movement:true,
             }             
         });
-
-        
-        console.log(lastPettyCash);
-
         const currentBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:Number(lastPettyCash._max.id_movement),
@@ -73,9 +69,8 @@ export const createDepositPettyCash = async (req, res) =>{
             }
         });
 
-        
-        const newBalance = currentBalance + amount;
-        console.log(newBalance);
+        const newBalance = currentBalance.balance + amount;
+ 
         const response = await prisma.pettyCash.create({
             data:{
                 balance:newBalance,
@@ -96,15 +91,13 @@ export const createDepositPettyCash = async (req, res) =>{
 export const createWithdrawalPettyCash = async (req, res) =>{
     try {
         
+        const{amount,balance,cause,movementDate,fk_user,pettyCashType}=req.body;
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max:{
                 id_movement:true,
             }             
         });
-
-        console.log(lastPettyCash);
-
-        const balance = await prisma.pettyCash.findFirst({
+        const currentBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:Number(lastPettyCash._max.id_movement),
             },
@@ -113,14 +106,19 @@ export const createWithdrawalPettyCash = async (req, res) =>{
             }
         });
 
-        console.log(balance);
-
-        req.body.balance = balance - req.body.amount;
-
-        
+        const newBalance = currentBalance.balance - amount;
+ 
         const response = await prisma.pettyCash.create({
-            data:req.body                 
+            data:{
+                balance:newBalance,
+                amount:amount,
+                cause:cause,
+                fk_user:fk_user,
+                movementDate:movementDate,
+                pettyCashType:pettyCashType,
+            }              
         });
+        
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});

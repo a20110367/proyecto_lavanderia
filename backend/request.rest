@@ -684,7 +684,7 @@ GET http://localhost:5000/lastCashCut
 GET http://localhost:5000/cashCuts/1
 
 ###
-GET  http://localhost:5000/calculateCashCut/10
+GET  http://localhost:5000/calculateCashCut/48
 
 ###
 
@@ -711,7 +711,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:5000/cashCuts/1
+DELETE http://localhost:5000/cashCuts/48
 
 ### 
 
@@ -904,17 +904,16 @@ DELETE   http://localhost:5000/orderIronServiceDetails/17
 
 //CRUD PRETTY CASH
 
-POST http://localhost:5000/pettyCashDeposit 
-
- Content-Type: application/json
+POST http://localhost:5000/pettyCashWithdrawal 
+Content-Type: application/json
 
 {
-    "amount": 100.00,
-    "balance": 0.00,
+    "amount": 100,
+    "balance": 0,
     "movementDate": "2023-11-14T00:00:00.000Z",
     "cause": "Hialuronato de Sodio2",
     "fk_user" :2,
-    "pettyCashType": "deposit"
+    "pettyCashType": "withdrawal"
   }
 
 ###

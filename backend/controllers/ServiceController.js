@@ -532,6 +532,109 @@ export const updateLaundryService = async (req, res) =>{
     }
 }
 
+export const updateSelfServiceWashService = async (req, res) =>{
+        
+    try {
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
+        const service = await  prisma.service.update({
+            data:{
+                description:description,
+                price:price,
+                category_id:1,
+                WashService:{
+                    updateMany:{
+                        data:{
+                            weight:washWeight,
+                            cycleTime:washCycleTime,
+                        },
+                        where:{
+                            fk_idService:{
+                              equals:Number(req.params.id),  
+                            },
+                        }
+                    }, 
+                },
+
+            },
+        });
+        
+        res.status(201).json(service);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const updateSelfServiceDryService = async (req, res) =>{
+        
+    try {
+        const{description,price,washWeight, washCycleTime,dryWeight,dryCycleTime }=req.body;
+        const service = await prisma.service.create({
+            data:{
+                description:description,
+                price:price,
+                category_id:1,
+                DryService:{
+                    updateMany:{
+                        data:{
+                            weight:dryWeight,
+                            cycleTime:dryCycleTime,
+                        },
+                        where:{
+                            fk_idService:{
+                              equals:Number(req.params.id),  
+                            },
+                        }
+                    },
+                },
+
+            },
+            include:{
+                DryService:true,
+            },
+        });
+
+        res.status(201).json(service);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
+export const updateIronService = async (req, res) =>{
+        
+    try {
+        const{description,price,ironPieces, ironCycleTime }=req.body;
+        const service = await prisma.service.create({
+            data:{
+                description:description,
+                price:price,
+                category_id:3,
+                IronService:{
+                    updateMany:{
+                        data:{
+                            pieces:ironPieces,
+                            cycleTime:ironCycleTime,
+                        },
+                        where:{
+                            fk_idService:{
+                              equals:Number(req.params.id),  
+                            },
+                        }
+                    }, 
+                },
+            },
+        });
+
+        res.status(201).json(service);
+
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+
 export const deleteService =  async (req, res) =>{
 
     try {

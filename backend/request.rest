@@ -405,6 +405,19 @@ Content-Type: application/json
 
 ###
 
+PATCH  http://localhost:5000/servicesUpdateWashSelfService/48
+Content-Type: application/json
+
+{
+"description":"Lavado autoservicio 15 kilos",
+"price":130.00 ,
+"category_id":1,
+"washWeight":10,
+"washCycleTime":10
+}
+
+###
+
 
 DELETE   http://localhost:5000/services/28
 

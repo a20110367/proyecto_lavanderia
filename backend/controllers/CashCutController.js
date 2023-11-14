@@ -260,7 +260,7 @@ export const calculateCashCut = async (req, res) => {
             }             
         });
 
-        const pettyCashBalance = await prisma.pettyCash.get({
+        const pettyCashBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max,
             },
@@ -497,7 +497,7 @@ export const closeCashCut = async (req, res) => {
             }             
         });
 
-        const pettyCashBalance = await prisma.pettyCash.get({
+        const pettyCashBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max,
             },

@@ -86,7 +86,7 @@ export default function PuntoVenta() {
           );
           setCart(updatedCart);
         } else {
-          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: 0 }]);
+          setCart([...cart, { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price }]);
         }
       }
     } else {
@@ -267,7 +267,7 @@ export default function PuntoVenta() {
     localStorage.setItem("returningFromPuntoVenta", "true");
 
     // Regresar a la página anterior
-    window.history.back();
+    // window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
@@ -349,7 +349,7 @@ export default function PuntoVenta() {
           <div className="col-md-4">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
-                <p className="font-bold">Cliente seleccionado: <p className="text-xl text-IndigoDye">{clientName}</p></p>
+                <p className="font-bold">Cliente seleccionado:</p> <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
               </h3>
               <ul className="divide-y divide-gray-300">
                 {cart.map((service) => (

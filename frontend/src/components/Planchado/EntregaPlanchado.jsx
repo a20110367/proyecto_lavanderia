@@ -37,7 +37,7 @@ function EntregaPlanchado() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get("/ordersIron"); // Assuming your API endpoint is /orders
+        const response = await api.get("/ordersIron"); 
         const ordersData = response.data;
 
         setPedidos(ordersData);

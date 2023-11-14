@@ -43,7 +43,7 @@ function PedidosPlanchado() {
 
   useEffect(() => {
     // Recuperar la máquina seleccionada de localStorage
-    const storedMachine = localStorage.getItem('selectedMachine');
+    const storedMachine = localStorage.getItem("selectedMachine");
     if (storedMachine) {
       setSelectedMachine(JSON.parse(storedMachine));
     }
@@ -107,7 +107,7 @@ function PedidosPlanchado() {
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
     // Guardar la máquina seleccionada en localStorage
-  localStorage.setItem('selectedMachine', JSON.stringify(machine));
+    localStorage.setItem("selectedMachine", JSON.stringify(machine));
   };
 
   const handleStartProcess = async (pedido) => {
@@ -123,7 +123,6 @@ function PedidosPlanchado() {
       setSelectedMachine(null);
       setSelectedPedido(pedido);
       setShowMachineName(true);
-
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -131,29 +130,19 @@ function PedidosPlanchado() {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
   const handleFinishProcess = async (selectedPedido) => {
     setLoading(true);
-  
+
     // Recuperar la máquina seleccionada de localStorage
-    const storedMachine = localStorage.getItem('selectedMachine');
+    const storedMachine = localStorage.getItem("selectedMachine");
     const selectedMachine = storedMachine ? JSON.parse(storedMachine) : null;
-  
+
     if (!selectedPedido) {
       console.error("El pedido seleccionado es indefinido.");
       setLoading(false);
       return;
     }
-  
+
     if (!selectedMachine) {
       console.error("No se ha seleccionado ninguna máquina.");
       setLoading(false);
@@ -167,12 +156,12 @@ function PedidosPlanchado() {
           : p
       );
       setPedidos(updatedPedidos);
-  
+
       // Actualizar en la base de datos el estado del pedido a "finished"
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
-  
+
       // Actualizar localmente el estado de la máquina a "freeForUse"
       const updatedMachines = availableMachines.map((machine) =>
         machine.id_ironStation === selectedMachine.id_ironStation
@@ -180,40 +169,32 @@ function PedidosPlanchado() {
           : machine
       );
       setAvailableMachines(updatedMachines);
-  
+
       // Actualizar en la base de datos el estado de la máquina a "freeForUse"
       await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
         freeForUse: true,
       });
-  
+
       setShowMachineName(false);
+      // showNotification("NOTIFICACIÓN ENVIADA...");
+      // await api.post("/sendMessage", {
+      //   id_order: selectedPedido.id_order,
+      //   name: selectedPedido.client.name,
+      //   email: selectedPedido.client.email,
+      //   tel: "521" + selectedPedido.client.phone,
+      //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      // });
+      // console.log("NOTIFICACIÓN ENVIADA...");
+
+      // showNotification(`Pedido finalizado correctamente`);
       showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     } finally {
       setLoading(false);
-      localStorage.removeItem('selectedMachine');
+      localStorage.removeItem("selectedMachine");
     }
   };
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-
-
-
 
   const handleConfirmMachineSelection = async () => {
     try {
@@ -252,7 +233,6 @@ function PedidosPlanchado() {
       console.error("Error al actualizar el pedido:", error);
     }
   };
-
 
   return (
     <div>
@@ -329,78 +309,78 @@ function PedidosPlanchado() {
             </tr>
           </thead>
           <tbody>
-          {filteredPedidos
-  .filter((pedido) => pedido.orderStatus !== 'finished') // Filtrar pedidos que no tienen estado "finished"
-  .slice(startIndex, endIndex)
-  .map((pedido) => (
-              <tr key={pedido.id_order}>
-                <td className="py-3 px-1 text-center">{pedido.id_order}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.client.name}
-                </td>
-                <td className="py-3 px-6">
-                  {pedido.ServiceOrderDetail.find(
-                    (service) => service.id_serviceOrderDetail
-                  ) != undefined
-                    ? pedido.ServiceOrderDetail.length
-                    : 0}
-                </td>
-                <td className="py-3 px-6">
-                  {formatDate(pedido.scheduledDeliveryDate)}
-                </td>
-                <td className="py-3 px-6 font-bold ">
-                  {pedido.orderStatus === "pending" ? (
-                    <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined /> Pendiente
-                    </span>
-                  ) : pedido.orderStatus === "stored" ? (
-                    <span className="text-fuchsia-600 pl-1">
-                      <DropboxOutlined /> Almacenado
-                    </span>
-                  ) : pedido.orderStatus === "inProgress" ? (
-                    <span className="text-yellow-600 pl-1">
-                      <ClockCircleOutlined /> En Proceso
-                    </span>
-                  ) : pedido.orderStatus === "finished" ? (
-                    <span className="text-blue-600 pl-1">
-                      <IssuesCloseOutlined /> Finalizado no entregado
-                    </span>
-                  ) : pedido.orderStatus === "delivered" ? (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Finalizado Entregado
-                    </span>
-                  ) : (
-                    <span className="text-red-600 pl-1">
-                      <StopOutlined /> Cancelado
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {pedido.orderStatus === "pending" && (
-                    <button
-                      onClick={() => handleStartProcess(pedido)}
-                      className="btn-primary ml-2 mt-1"
-                    >
-                      Iniciar
-                    </button>
-                  )}
-                  {pedido.orderStatus === "inProgress" && (
-                    <button
-                      onClick={() => handleFinishProcess(pedido)}
-                      className="btn-primary ml-2 mt-1"
-                    >
-                      Terminar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {filteredPedidos
+              .filter((pedido) => pedido.orderStatus !== "finished") // Filtrar pedidos que no tienen estado "finished"
+              .slice(startIndex, endIndex)
+              .map((pedido) => (
+                <tr key={pedido.id_order}>
+                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.user.name}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.user.name}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.client.name}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.ServiceOrderDetail.find(
+                      (service) => service.id_serviceOrderDetail
+                    ) != undefined
+                      ? pedido.ServiceOrderDetail.length
+                      : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.scheduledDeliveryDate)}
+                  </td>
+                  <td className="py-3 px-6 font-bold ">
+                    {pedido.orderStatus === "pending" ? (
+                      <span className="text-gray-600 pl-1">
+                        <MinusCircleOutlined /> Pendiente
+                      </span>
+                    ) : pedido.orderStatus === "stored" ? (
+                      <span className="text-fuchsia-600 pl-1">
+                        <DropboxOutlined /> Almacenado
+                      </span>
+                    ) : pedido.orderStatus === "inProgress" ? (
+                      <span className="text-yellow-600 pl-1">
+                        <ClockCircleOutlined /> En Proceso
+                      </span>
+                    ) : pedido.orderStatus === "finished" ? (
+                      <span className="text-blue-600 pl-1">
+                        <IssuesCloseOutlined /> Finalizado no entregado
+                      </span>
+                    ) : pedido.orderStatus === "delivered" ? (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Finalizado Entregado
+                      </span>
+                    ) : (
+                      <span className="text-red-600 pl-1">
+                        <StopOutlined /> Cancelado
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {pedido.orderStatus === "pending" && (
+                      <button
+                        onClick={() => handleStartProcess(pedido)}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Iniciar
+                      </button>
+                    )}
+                    {pedido.orderStatus === "inProgress" && (
+                      <button
+                        onClick={() => handleFinishProcess(pedido)}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Terminar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -455,24 +435,24 @@ function PedidosPlanchado() {
                   <td>{machine.machineType}</td>
                   <td>{machine.pieces}</td>
                   <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {machine.freeForUse ? "Libre" : "Ocupado"}
-                    </td>
+                    className={`${
+                      machine.freeForUse ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {machine.freeForUse ? "Libre" : "Ocupado"}
+                  </td>
 
-                    <td>
-                      <div className="flex flex-col items-center">
+                  <td>
+                    <div className="flex flex-col items-center">
                       <Checkbox
-  key={`checkbox_${machine.id_ironStation}`}
-  checked={selectedMachine === machine}
-  onChange={() => handleSelectMachine(machine)}
-  className="mb-2"
-  disabled={!machine.freeForUse}
-/>
-                        <span className="text-blue-500">Seleccionar</span>
-                      </div>
+                        key={`checkbox_${machine.id_ironStation}`}
+                        checked={selectedMachine === machine}
+                        onChange={() => handleSelectMachine(machine)}
+                        className="mb-2"
+                        disabled={!machine.freeForUse}
+                      />
+                      <span className="text-blue-500">Seleccionar</span>
+                    </div>
                   </td>
                 </tr>
               ))}

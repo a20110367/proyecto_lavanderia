@@ -34,7 +34,7 @@ model Client {
   created       DateTime       @default(now())
   firstLN       String
   secondLN      String?
-  username      String         @unique
+  username      String?         @unique
   updatedAt     DateTime       @updatedAt
   ServiceOrders ServiceOrder[]
 }

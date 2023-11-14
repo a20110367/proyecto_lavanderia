@@ -73,7 +73,7 @@ function CorteCaja() {
     const pdf = new jsPDF();
 
     pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
     pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
@@ -138,7 +138,7 @@ function CorteCaja() {
 
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${cashCutId}`, 10, 20);
+    pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
     pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
@@ -188,7 +188,7 @@ function CorteCaja() {
 
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
-      pdf.text(`ID: ${cashCutId}`, 10, 20);
+      pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20)
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
       pdf.text(
@@ -291,8 +291,10 @@ function CorteCaja() {
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
               {Cortes.map((corte) => (
-                <tr className="bg-white border-b" key={cashCutId}>
-                  <td className="py-3 px-1 text-center">{cashCutId}</td>
+                <tr className="bg-white border-b" key={localStorage.getItem("lastCashCut").id}>
+                <td className="py-3 px-1 text-center">
+                  {localStorage.getItem("lastCashCut").id}
+                </td>
                   <td className="py-3 px-6">
                     {formatDateToGMTMinus6(corte.cashCutD)}
                   </td>
@@ -402,7 +404,7 @@ function CorteCaja() {
             <div className="flex">
               <div className="w-1/2">
                 <p className="text-lg">
-                  <span className="font-bold">ID:</span> {cashCutId}
+                  <span className="font-bold">ID:</span> {localStorage.getItem("lastCashCut").id}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Usuario:</span> {cookies.username}

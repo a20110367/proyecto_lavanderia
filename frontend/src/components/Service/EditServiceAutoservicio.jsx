@@ -59,13 +59,13 @@ function EditServiceAutoservicio() {
           price: parseFloat(price),
           washWeight: parseInt(weight),
           washCycleTime: parseInt(time),
-          category_id: 1,
           dryWeight: parseInt(weight),
           dryCycleTime: parseInt(time)
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);
       } catch (err) {
+        console.log(err)
         setErrMsg("Error al actualizar el servicio lavado.");
       }
     } else if (service == 'dry') {
@@ -73,13 +73,13 @@ function EditServiceAutoservicio() {
         await api.patch(`/servicesUpdateDrySelfService/${id}`, {
           description: description,
           price: parseFloat(price),
-          category_id: 1,
           dryWeight: parseInt(weight),
           dryCycleTime: parseInt(time)
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);
       } catch (err) {
+        console.log(err)
         setErrMsg("Error al actualizar el servicio lavanderia.");
       }
     }

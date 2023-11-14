@@ -101,7 +101,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: 0,
+          balance: parseFloat(0),
           cause: motivo,
           movementDate: date,
         });
@@ -112,7 +112,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: res.data.balance,
+          balance: parseFloat(res.data.balance),
           cause: motivo,
           movementDate: date,
           user: {
@@ -176,7 +176,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance:0,
+          balance: parseFloat(0),
           cause: motivo,
           movementDate: date,
         });
@@ -187,7 +187,7 @@ function CajaChica() {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
-          balance: res.data.balance,
+          balance: parseFloat(res.data.balance),
           cause: motivo,
           movementDate: date,
           user: {
@@ -296,7 +296,7 @@ function CajaChica() {
                 </td>
                 <td className="py-3 px-6">{pettyCash.pettyCashType === 'withdrawal' ? 'Retiro' : 'Abono'}</td>
                 <td className="py-3 px-6">{formatDateToGMTMinus6(pettyCash.movementDate)}</td>
-                <td className="py-3 px-6">{"$" + pettyCash.amount}</td>
+                <td className="py-3 px-6">${pettyCash.amount}</td>
                 <td className="py-3 px-6">{pettyCash.cause}</td>
                 <td className="py-3 px-6">{pettyCash.user.name}</td>
                 <td className="py-3 px-6">{pettyCash.balance}</td>
@@ -370,13 +370,13 @@ function CajaChica() {
       <Modal
         title="Registrar Abono"
         open={visibleAbono}
-        onOk={handleConfirmRetiro}
+        onOk={handleConfirmAbono}
         onCancel={handleAbonoClose}
         width={600}
         footer={[
           <Button
             key="confirmar"
-            onClick={handleConfirmRetiro}
+            onClick={handleConfirmAbono}
             className="btn-print text-white"
           >
             Confirmar Abono de Caja chica

@@ -260,6 +260,8 @@ export const calculateCashCut = async (req, res) => {
             }             
         });
 
+        console.log(lastPettyCash);
+
         const pettyCashBalance = await prisma.pettyCash.findFirst({
             where:{
                 id_movement:lastPettyCash._max,
@@ -269,6 +271,7 @@ export const calculateCashCut = async (req, res) => {
             }
         });
         
+        console.log(pettyCashBalance);
 
 
 

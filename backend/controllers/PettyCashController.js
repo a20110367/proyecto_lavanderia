@@ -56,14 +56,19 @@ export const createDepositPettyCash = async (req, res) =>{
             }             
         });
 
+        
+        console.log(lastPettyCash);
+
         const balance = await prisma.pettyCash.findFirst({
             where:{
-                id_movement:lastPettyCash._max,
+                id_movement:Number(lastPettyCash._max),
             },
             select:{
                 balance:true,
             }
         });
+
+        console.log(balance);
 
         req.body.balance = balance + req.body.amount;
 
@@ -86,14 +91,18 @@ export const createWithdrawalPettyCash = async (req, res) =>{
             }             
         });
 
+        console.log(lastPettyCash);
+
         const balance = await prisma.pettyCash.findFirst({
             where:{
-                id_movement:lastPettyCash._max,
+                id_movement:Number(lastPettyCash._max),
             },
             select:{
                 balance:true,
             }
         });
+
+        console.log(balance);
 
         req.body.balance = balance - req.body.amount;
 

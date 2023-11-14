@@ -216,6 +216,7 @@ export const getOrdersIron = async (req, res) =>{
                     },
                 },
                 ServiceOrderDetail:true,
+                Payment:true,
             },            
         });
         res.status(201).json(response);

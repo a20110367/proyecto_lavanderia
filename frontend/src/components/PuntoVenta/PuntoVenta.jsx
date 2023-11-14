@@ -216,6 +216,7 @@ export default function PuntoVenta() {
         }
       });
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
       } else {

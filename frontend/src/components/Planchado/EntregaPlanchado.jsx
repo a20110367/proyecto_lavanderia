@@ -172,7 +172,7 @@ function EntregaPlanchado() {
       try {
         await api.post('/deliveryDetails', {
           fk_idOrder: pedido.id_order,
-          fk_idPayment: fkPayment,
+          fk_idPayment: pedido.payment.id_payment,
           fk_userCashier: cookies.token,
           deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
           deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],

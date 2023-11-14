@@ -182,7 +182,6 @@ function CajaChica() {
             <th>Monto</th>
             <th>Motivo</th>
             <th>Usuario</th>
-            <th>Detalle</th>
             <th>Saldo <br />Caja    </th>
           </tr>
         </thead>

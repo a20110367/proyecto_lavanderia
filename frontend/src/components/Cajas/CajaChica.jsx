@@ -69,7 +69,7 @@ function CajaChica() {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
 
-  const handleConfirmAbono = () => {
+  const handleConfirmAbono = async () => {
     let isValid = true;
 
     if (!monto) {
@@ -97,12 +97,12 @@ function CajaChica() {
       try {
         const date = moment().format();
 
-        api.post("/pettyCashWithdrawal", {
+        await api.post("/pettyCashDeposit", {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
-          cuase: motivo,
+          cause: motivo,
           movementDate: date,
         });
         setVisible(false);
@@ -112,7 +112,7 @@ function CajaChica() {
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
-          cuase: motivo,
+          cause: motivo,
           movementDate: date,
         };
 
@@ -124,7 +124,7 @@ function CajaChica() {
     }
   };
 
-  const handleConfirmRetiro = () => {
+  const handleConfirmRetiro = async () => {
     let isValid = true;
 
     if (!monto) {
@@ -152,12 +152,12 @@ function CajaChica() {
       try {
         const date = moment().format();
 
-        api.post("/pettyCashWithdrawal", {
+        await api.post("/pettyCashWithdrawal", {
           pettyCashType: "withdrawal",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
-          cuase: motivo,
+          cause: motivo,
           movementDate: date,
         });
         setVisible(false);
@@ -167,7 +167,7 @@ function CajaChica() {
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(100),
-          cuase: motivo,
+          cause: motivo,
           movementDate: date,
         };
 
@@ -256,8 +256,8 @@ function CajaChica() {
                 <td className="py-3 px-6">{pettyCash.pettyCashType === 'withdrawal' ? 'Retiro' : 'Abono'}</td>
                 <td className="py-3 px-6">{formatDateToGMTMinus6(pettyCash.movementDate)}</td>
                 <td className="py-3 px-6">{"$" + pettyCash.amount}</td>
-                <td className="py-3 px-6">{pettyCash.cuase}</td>
-                <td className="py-3 px-6">{pettyCash.user}</td>
+                <td className="py-3 px-6">{pettyCash.cause}</td>
+                <td className="py-3 px-6">{pettyCash.user.name}</td>
                 <td className="py-3 px-6">{pettyCash.balance}</td>
               </tr>
             ))}

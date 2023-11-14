@@ -170,7 +170,6 @@ function EntregaPlanchado() {
       console.log(pedido)
 
       try {
-        const res = await api.get('/')
         await api.post('/deliveryDetails', {
           fk_idOrder: pedido.id_order,
           fk_idPayment: fkPayment,

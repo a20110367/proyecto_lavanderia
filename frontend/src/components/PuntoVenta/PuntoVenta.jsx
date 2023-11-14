@@ -45,6 +45,8 @@ export default function PuntoVenta() {
     if (serviceType === 'autoservicio') {
       setCategoryId(1)
       setUrl('/ordersSelfService')
+      setPayStatus('paid')
+      setPayForm('advance')
     } else if (serviceType === 'encargo') {
       setCategoryId(2)
       setUrl('/ordersLaundryService')
@@ -271,7 +273,7 @@ export default function PuntoVenta() {
     localStorage.setItem("returningFromPuntoVenta", "true");
 
     // Regresar a la página anterior
-    // window.history.back();
+    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
@@ -305,7 +307,7 @@ export default function PuntoVenta() {
     
   return (
     <div>
-      <div className="basic-container w-5/12">
+      <div className="title-container">
         <strong className="title-strong">
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"

@@ -559,7 +559,7 @@ export const closeCashCut = async (req, res) => {
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
-                "pettyCashBalace":pettyCashBalance.balance
+                "pettyCashBalance":pettyCashBalance.balance
 
             }
         });

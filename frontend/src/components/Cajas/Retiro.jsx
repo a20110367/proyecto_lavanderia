@@ -5,9 +5,13 @@ import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 import api from '../../api/api'
 
 function Retiro() {
+
+  const navigate = useNavigate()
   const [retiros, setRetiros] = useState([]);
   const [filteredRetiros, setFilteredRetiros] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -53,6 +57,16 @@ function Retiro() {
   };
 
   const handleRetiro = () => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
     setVisible(true);
   };
 

@@ -10,7 +10,6 @@ import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";
-import useSWR from "swr";
 
 function EntregaLavanderia() {
   const { cookies } = useAuth();
@@ -79,6 +78,17 @@ function EntregaLavanderia() {
   };
 
   const handleGuardarCobro = async (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
+
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
       .format("DD/MM/YYYY")
@@ -162,6 +172,17 @@ function EntregaLavanderia() {
   };
 
   const handleEntregar = async (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
+
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 

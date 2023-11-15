@@ -141,7 +141,7 @@ export default function PuntoVenta() {
       return
     }else if(!localStorage.getItem('cashCutId')){
       Swal.fire({
-        icon: "error",
+        icon: "warning",
         title: "No haz inicializado caja!",
         text: 'Ve al apartado Caja, Inicio de caja y posteriormente da click en Iniciar Caja.',
         confirmButtonColor: '#034078'

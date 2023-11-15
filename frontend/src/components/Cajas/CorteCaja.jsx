@@ -136,11 +136,20 @@ function CorteCaja() {
   /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
 
   const handlePartialCorteConfirm = async () => {
-    if(!localStorage.getItem('cashCutId')){ 
+    if(localStorage.getItem('lastCashCut')){ 
       Swal.fire({
         icon: "error",
         title: "Ya haz Cerrado Caja",
         text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      return
+    }else if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No se ha Inicializado Caja",
+        text: 'Ve al apartado Caja, Inicio de caja y posteriormente da click en Iniciar Caja.',
         confirmButtonColor: '#034078'
       });
       setPartialCorteDialogVisible(false)

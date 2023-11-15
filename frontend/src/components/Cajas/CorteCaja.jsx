@@ -61,6 +61,7 @@ function CorteCaja() {
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
+    try{
     const now = new Date();
     const horaActual = now.getHours();
 
@@ -113,6 +114,9 @@ function CorteCaja() {
     setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
     setDialogVisible(false);
+    }catch(err){
+      console.log(err)
+    }
   };
 
   const handleDetallesClick = (corte) => {

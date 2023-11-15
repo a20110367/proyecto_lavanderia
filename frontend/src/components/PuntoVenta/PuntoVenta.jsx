@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
 import useSWR from "swr";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Select } from "antd";
 import Swal from 'sweetalert2'
 import moment from "moment";
@@ -18,6 +18,7 @@ const { Option } = Select;
 export default function PuntoVenta() {
   const { cookies } = useAuth();
 
+  const navigate = useNavigate();
   const [cart, setCart] = useState([]);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -143,9 +144,10 @@ export default function PuntoVenta() {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",
-        text: 'Ve al apartado Caja, Inicio de caja y posteriormente da click en Iniciar Caja.',
+        text: 'Da click en Iniciar Caja.',
         confirmButtonColor: '#034078'
       });
+      navigate('/inicioCaja')
       return
     }
     setIsModalVisible(true);

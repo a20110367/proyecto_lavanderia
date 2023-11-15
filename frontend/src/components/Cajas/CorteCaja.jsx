@@ -74,7 +74,7 @@ function CorteCaja() {
     const pdf = new jsPDF();
 
     pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
+    // pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
     pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
@@ -142,7 +142,7 @@ function CorteCaja() {
 
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
+    // pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
     pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);

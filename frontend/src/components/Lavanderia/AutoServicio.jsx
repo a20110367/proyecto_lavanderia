@@ -3,12 +3,15 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
 import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
+import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
 import api from '../../api/api'
 
 function AutoServicio() {
+
+  const navigate = useNavigate()
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
     const response = await api.get("/clients");
@@ -17,13 +20,13 @@ function AutoServicio() {
 
   const filteredClients = clients
     ? clients.filter((client) => {
-        const searchTerm = filtro.toLowerCase();
-        return (
-          client.name.toLowerCase().includes(searchTerm) ||
-          client.email.toLowerCase().includes(searchTerm) ||
-          client.phone.toLowerCase().includes(searchTerm)
-        );
-      })
+      const searchTerm = filtro.toLowerCase();
+      return (
+        client.name.toLowerCase().includes(searchTerm) ||
+        client.email.toLowerCase().includes(searchTerm) ||
+        client.phone.toLowerCase().includes(searchTerm)
+      );
+    })
     : [];
 
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
@@ -33,6 +36,23 @@ function AutoServicio() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
+
+  const launchModal = (url) => {
+    Swal.fire({
+      title: "Iras a Añadir un Cliente",
+      text: "Estas seguro de añadir un cliente?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(url)
+      }
+    });
+  }
 
   useEffect(() => {
     // Verificar si estamos regresando desde PuntoVenta
@@ -155,12 +175,9 @@ function AutoServicio() {
       <div className="fcol-container">
         <div className="flex justify-between items-center">
           <div>
-          <Link to="/addClient?source=autoservicio">
-  <button className="btn-big-light">
-    <div className="subtitle m-1">Añadir Cliente</div>
-  </button>
-</Link>
-
+            <button className="btn-big-light" onClick={() => launchModal('/addClient?source=autoservicio')}>
+              <div className="subtitle m-1">Añadir Cliente</div>
+            </button>
             <div className="text-IndigoDye font-semibold mt-2">
               ¿El cliente no está registrado? ¡Regístralo!
             </div>

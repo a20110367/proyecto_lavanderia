@@ -139,6 +139,14 @@ export default function PuntoVenta() {
         confirmButtonColor: '#034078'
       });
       return
+    }else if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "error",
+        title: "No haz inicializado caja!",
+        text: 'Ve al apartado Caja, Inicio de caja y posteriormente da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      return
     }
     setIsModalVisible(true);
   };

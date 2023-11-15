@@ -4,6 +4,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import Swal from 'sweetalert2'
 import api from '../../api/api'
 
 function CorteCaja() {
@@ -61,60 +62,63 @@ function CorteCaja() {
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
-    try{
-    const now = new Date();
-    const horaActual = now.getHours();
+    try {
+      const now = new Date();
+      const horaActual = now.getHours();
 
-    setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const response = await api.get(`/closeCashCut/${cashCutId}`);
+      const response = await api.get(`/closeCashCut/${cashCutId}`);
 
-    const nuevoCorte = response.data;
+      const corte = response.data;
 
-    const pdf = new jsPDF();
+      const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
 
-    pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    // pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
-    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-    pdf.text(`Turno: ${turno}`, 10, 40);
-    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
-    //Separación
-    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.totalAutoservicio
-      ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
-      : pdf.text("Autoservicio: $0", 10, 90);
-    nuevoCorte.totalEncargo
-      ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
-      : pdf.text("Lavado por Encargo: $0", 10, 100);
-    nuevoCorte.totalPlanchado
-      ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
-      : pdf.text("Planchado: $0", 10, 110);
-    pdf.text(
-      `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-      10,
-      120
-    );
-    nuevoCorte.totalCash
-      ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130)
-      : pdf.text("Ingreso en Efectivo: $0", 10, 130);
-    nuevoCorte.totalCredit
-      ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
-      : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
-    //Separación
-    pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
-    pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
-    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      const pdf = new jsPDF();
 
-    localStorage.setItem("lastCashCut", JSON.stringify(nuevoCorte));
-    localStorage.removeItem("initialCash");
-    localStorage.removeItem("cashCutId");
-    setLastCashCut(nuevoCorte);
-    setCortes([nuevoCorte]);
-    setMostrarTabla(true); // Muestra la tabla después de hacer el corte
+      pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
+      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
+      //Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      nuevoCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
+        : pdf.text("Autoservicio: $0", 10, 90);
+      nuevoCorte.totalEncargo
+        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        : pdf.text("Lavado por Encargo: $0", 10, 100);
+      nuevoCorte.totalPlanchado
+        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
+        : pdf.text("Planchado: $0", 10, 110);
+      pdf.text(
+        `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+        10,
+        120
+      );
+      nuevoCorte.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 130);
+      nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
+      //Separación
+      pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
+      pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
+      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-    setDialogVisible(false);
-    }catch(err){
+      setLastCashCut(nuevoCorte);
+      setCortes([nuevoCorte]);
+
+      localStorage.setItem("lastCashCut", JSON.stringify(nuevoCorte));
+      localStorage.removeItem("initialCash");
+      localStorage.removeItem("cashCutId");
+      setMostrarTabla(true); // Muestra la tabla después de hacer el corte
+
+      setDialogVisible(false);
+    } catch (err) {
       console.log(err)
     }
   };
@@ -122,6 +126,7 @@ function CorteCaja() {
   const handleDetallesClick = (corte) => {
     setSelectedCorte(corte);
     setModalVisible(true);
+    console.log(corte)
   };
 
   const handlePartialCorteCaja = () => {
@@ -131,6 +136,16 @@ function CorteCaja() {
   /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
 
   const handlePartialCorteConfirm = async () => {
+    if(!localStorage.getItem('cashCutId')){ 
+      Swal.fire({
+        icon: "error",
+        title: "Ya haz Cerrado Caja",
+        text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      return
+    }
     const now = new Date();
     const horaActual = now.getHours();
 
@@ -138,11 +153,13 @@ function CorteCaja() {
 
     const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
-    const nuevoCorte = response.data;
+    const corte = response.data;
+
+    const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
 
     const pdf = new jsPDF();
     pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    // pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20);
+    pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
     pdf.text(`Usuario: ${cookies.username}`, 10, 30);
     pdf.text(`Turno: ${turno}`, 10, 40);
     pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
@@ -163,10 +180,10 @@ function CorteCaja() {
       : pdf.text("Planchado: $0", 10, 110);
     nuevoCorte.totalIncome
       ? pdf.text(
-          `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-          10,
-          120
-        )
+        `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+        10,
+        120
+      )
       : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
     // Separación
     nuevoCorte.totalCash
@@ -192,7 +209,7 @@ function CorteCaja() {
 
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
-      pdf.text(`ID: ${localStorage.getItem("lastCashCut").id}`, 10, 20)
+      pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20)
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
       pdf.text(
@@ -211,20 +228,20 @@ function CorteCaja() {
         : pdf.text("Autoservicio: $0", 10, 90);
       selectedCorte.totalEncargo
         ? pdf.text(
-            `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
-            10,
-            100
-          )
+          `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
+          10,
+          100
+        )
         : pdf.text("Lavado por Encargo: $0", 10, 100);
       selectedCorte.totalPlanchado
         ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
         : pdf.text("Planchado: $0", 10, 110);
       selectedCorte.totalIncome
         ? pdf.text(
-            `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
-            10,
-            120
-          )
+          `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
+          10,
+          120
+        )
         : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
       // Separación
       selectedCorte.totalCash
@@ -235,10 +252,10 @@ function CorteCaja() {
         : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
       selectedCorte.totalCashWithdrawal
         ? pdf.text(
-            `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
-            10,
-            160
-          )
+          `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
+          10,
+          160
+        )
         : pdf.text("Retiros Totales: $0", 10, 160);
       selectedCorte.total
         ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170)
@@ -295,10 +312,10 @@ function CorteCaja() {
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
               {Cortes.map((corte) => (
-                <tr className="bg-white border-b" key={localStorage.getItem("lastCashCut").id}>
-                <td className="py-3 px-1 text-center">
-                  {localStorage.getItem("lastCashCut").id}
-                </td>
+                <tr className="bg-white border-b" key={corte.id_cashCut}>
+                  <td className="py-3 px-1 text-center">
+                    {corte.id_cashCut}
+                  </td>
                   <td className="py-3 px-6">
                     {formatDateToGMTMinus6(corte.cashCutD)}
                   </td>

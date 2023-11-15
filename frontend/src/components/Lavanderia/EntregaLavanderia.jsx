@@ -161,9 +161,25 @@ function EntregaLavanderia() {
     setSelectedPedido(null);
   };
 
-  const handleEntregar = (pedido) => {
+  const handleEntregar = async (pedido) => {
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
+
+      try {
+        await api.post('/deliveryDetails', {
+          fk_idOrder: pedido.id_order,
+          fk_idPayment: pedido.payment.id_payment,
+          fk_userCashier: cookies.token,
+          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+        })
+        const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+          return order.id_order !== pedido.id_order;
+        })
+        setFilteredPedidos(updatedFilteredPedidos);
+      } catch (err) {
+        console.log(err)
+      }
 
       setEntregando(true);
       console.log(pedido);

@@ -7,12 +7,15 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
-import useSWR from "swr";
 import { useAuth } from "../../hooks/auth/auth";
 
 function EntregaPlanchado() {
+
+  const navigate = useNavigate()
   const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -66,6 +69,16 @@ function EntregaPlanchado() {
   };
 
   const handleCobrar = (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
     console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
     setVisible(true);
@@ -167,6 +180,17 @@ function EntregaPlanchado() {
   };
 
   const handleEntregar = async (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
+
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 

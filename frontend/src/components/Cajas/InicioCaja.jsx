@@ -34,54 +34,53 @@ function InicioCaja() {
   const handleIniciarCaja = async (e) => {
     e.preventDefault();
 
+    if (cajaIniciada) {
+      setErrMsg("La caja ya ha sido inicializada.");
+      return;
+    }
+
+    if (!nombreUsuario && !dineroInicio) {
+      setErrMsg("Algun campo vacio");
+      return
+    }
     try {
-    const res = await api.get("/cashCutStatus")
-
-    if (res.data.cashCutStatus === 'closed') {
-      if (cajaIniciada) {
-        setErrMsg("La caja ya ha sido inicializada.");
-        return;
-      }
-
-      if (!nombreUsuario && !dineroInicio) {
-        setErrMsg("Algun campo vacio");
-        return
-      }
-      try {
-        const response = await api.post("/cashCuts", {
-          initialCash: parseFloat(dineroInicio),
-          fk_user: parseInt(cookies.token),
-          cashCutD: dateD.toJSON(),
-          cashCutT: dateT.toJSON()
-        });
-        localStorage.setItem("cashCutId", response.data.id_cashCut);
-        localStorage.setItem("initialCash", response.data.initialCash)
-        localStorage.removeItem('lastCashCut')
-        setCajaIniciada(true);
-        setVisible(false);
-      } catch (err) {
-        if (!err?.response) {
-          setErrMsg("No hay respuesta del servidor.");
-        } else {
-          setErrMsg("Error al hacer corte de caja.");
-        }
-      }
-    }else if(res.data.cashCutStatus === 'open'){
-      localStorage.setItem("cashCutId", res.data.id_cashCut)
+      const response = await api.post("/cashCuts", {
+        initialCash: parseFloat(dineroInicio),
+        fk_user: parseInt(cookies.token),
+        cashCutD: dateD.toJSON(),
+        cashCutT: dateT.toJSON()
+      });
+      localStorage.setItem("cashCutId", response.data.id_cashCut);
+      localStorage.setItem("initialCash", response.data.initialCash)
+      localStorage.removeItem('lastCashCut')
       setCajaIniciada(true);
       setVisible(false);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No hay respuesta del servidor.");
+      } else {
+        setErrMsg("Error al hacer corte de caja.");
+      }
     }
-  }catch(err){
-    console.log(err)
-    console.err('No entiendo como sucedio esto')
-  }
   };
   const handleDineroInicioInput = () => {
     setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
   };
 
-  const handleAbrirFormulario = () => {
-    setVisible(true);
+  const handleAbrirFormulario = async () => {
+    try {
+      const res = await api.get("/cashCutStatus")
+      if (res.data.cashCutStatus === 'closed') {
+        setVisible(true);
+      } else if (res.data.cashCutStatus === 'open') {
+        localStorage.setItem("cashCutId", res.data.id_cashCut)
+        setCajaIniciada(true);
+        setVisible(false);
+      }
+    } catch (err) { 
+      console.log(err)
+      console.err('No entiendo como sucedio esto')
+    }
   };
 
   const handleCloseDialog = () => {

@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -31,8 +31,6 @@ function HistorialCaja() {
     }
   };
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,7 +44,7 @@ function HistorialCaja() {
 
     fetchData();
   }, []);
-  
+
   const { data } = useSWR("cashCuts", fetchCashCuts);
   if (!data) return <h2>Loading...</h2>;
 
@@ -73,35 +71,39 @@ function HistorialCaja() {
       // Separación
       doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
       selectedCorte.totalAutoservicio
-      ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
-      : doc.text("Autoservicio: $0", 10, 90);
+        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
+        : doc.text("Autoservicio: $0", 10, 90);
       selectedCorte.totalEncargo
-      ? doc.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 100)
-      : doc.text("Lavado por Encargo: $0", 10, 100);
+        ? doc.text(
+            `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
+            10,
+            100
+          )
+        : doc.text("Lavado por Encargo: $0", 10, 100);
       selectedCorte.totalPlanchado
-      ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
-      : doc.text("Planchado: $0", 10, 110);
+        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
+        : doc.text("Planchado: $0", 10, 110);
       doc.text(
         `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
         10,
         120
       );
       selectedCorte.totalCash
-      ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 130)
-      : doc.text("Ingreso en Efectivo: $0", 10, 130);
+        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 130)
+        : doc.text("Ingreso en Efectivo: $0", 10, 130);
 
       // Separación
       selectedCorte.totalCredit
-      ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150)
-      : doc.text("Ingreso en Tarjeta: $0", 10, 150);
+        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150)
+        : doc.text("Ingreso en Tarjeta: $0", 10, 150);
 
       selectedCorte.totalCashWithdrawal
-      ? doc.text(
-        `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
-        10,
-        160
-      )
-      : doc.text("Retiros Totales: $0", 10, 160);
+        ? doc.text(
+            `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
+            10,
+            160
+          )
+        : doc.text("Retiros Totales: $0", 10, 160);
       doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170);
 
       doc.save("detalle_corte.pdf");
@@ -111,33 +113,45 @@ function HistorialCaja() {
   const handleFiltroPorFecha = () => {
     if (dateRange.length === 2) {
       const [startDate, endDate] = dateRange.map((date) => date.toDate());
-  
-      const startDateStr = startDate.toISOString().split('T')[0];
-      const endDateStr = endDate.toISOString().split('T')[0];
-  
+
+      const startDateStr = startDate.toISOString().split("T")[0];
+      const endDateStr = endDate.toISOString().split("T")[0];
+
       const filtered = Cortes.filter((corte) => {
-        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        const corteDateStr = new Date(corte.cashCutD)
+          .toISOString()
+          .split("T")[0];
         return corteDateStr >= startDateStr && corteDateStr <= endDateStr;
       });
-  
+
       const startCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        const corteDateStr = new Date(corte.cashCutD)
+          .toISOString()
+          .split("T")[0];
         return corteDateStr === startDateStr;
       });
-  
+
       const endCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD).toISOString().split('T')[0];
+        const corteDateStr = new Date(corte.cashCutD)
+          .toISOString()
+          .split("T")[0];
         return corteDateStr === endDateStr;
       });
-  
-      if (startCorte && !filtered.some((c) => c.id_cashCut === startCorte.id_cashCut)) {
+
+      if (
+        startCorte &&
+        !filtered.some((c) => c.id_cashCut === startCorte.id_cashCut)
+      ) {
         filtered.push(startCorte);
       }
-  
-      if (endCorte && !filtered.some((c) => c.id_cashCut === endCorte.id_cashCut)) {
+
+      if (
+        endCorte &&
+        !filtered.some((c) => c.id_cashCut === endCorte.id_cashCut)
+      ) {
         filtered.push(endCorte);
       }
-  
+
       setFilteredCortes(filtered);
       setDatesSelected(true);
     } else {
@@ -146,7 +160,7 @@ function HistorialCaja() {
       }
     }
   };
-  
+
   const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
     date.setHours(date.getHours() - 6);
@@ -204,7 +218,8 @@ function HistorialCaja() {
             </thead>
             <tbody>
               {filteredCortes
-              
+                .slice()
+                .reverse()
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage

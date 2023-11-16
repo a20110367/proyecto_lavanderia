@@ -414,12 +414,11 @@ function PedidosLavanderia() {
                   {pedido.client.name}
                 </td>
                 <td className="py-3 px-6">
-                  {pedido.ServiceOrderDetail.find(
-                    (service) => service.id_serviceOrderDetail
-                  ) != undefined
-                    ? pedido.ServiceOrderDetail.length
-                    : 0}
-                </td>
+                    {pedido.category.categoryDescription === "encargo"
+                      ? "Encargo"
+                      : pedido.category.categoryDescription}
+                  </td>
+
                 <td className="py-3 px-6">
                   {formatDate(pedido.scheduledDeliveryDate)}
                 </td>

@@ -17,6 +17,11 @@ export const getOrders = async (req, res) =>{
                         phone:true,
                     },
                 },
+                category:{
+                    select:{
+                        categoryDescription: true,
+                    }
+                },
                 user:{
                     select:{
                         name:true,
@@ -142,6 +147,11 @@ export const getOrdersSelfService = async (req, res) =>{
                         secondLN:true,
                     },
                 },
+                category:{
+                    select:{
+                        categoryDescription: true,
+                    }
+                },
                 user:{
                     select:{
                         name:true,
@@ -176,6 +186,11 @@ export const getOrdersLaundry = async (req, res) =>{
                         phone: true,
                     },
                 },
+                category:{
+                    select:{
+                        categoryDescription: true,
+                    }
+                },
                 user:{
                     select:{
                         name:true,
@@ -209,6 +224,11 @@ export const getOrdersIron = async (req, res) =>{
                         email: true,
                         phone: true,
                     },
+                },
+                category:{
+                    select:{
+                        categoryDescription: true,
+                    }
                 },
                 user:{
                     select:{

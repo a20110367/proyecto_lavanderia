@@ -325,12 +325,11 @@ function PedidosPlanchado() {
                     {pedido.client.name}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.ServiceOrderDetail.find(
-                      (service) => service.id_serviceOrderDetail
-                    ) != undefined
-                      ? pedido.ServiceOrderDetail.length
-                      : 0}
+                    {pedido.category.categoryDescription === "planchado"
+                      ? "Planchado"
+                      : pedido.category.categoryDescription}
                   </td>
+
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>

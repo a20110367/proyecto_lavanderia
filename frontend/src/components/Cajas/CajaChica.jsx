@@ -348,13 +348,23 @@ function CajaChica() {
                 <td className="py-3 px-6">{pettyCash.cause}</td>
                 <td className="py-3 px-6">{pettyCash.user.name}</td>
                 <td
-                  className={`py-3 px-6 font-semibold ${
+                  className={`py-3 px-6 ${
                     pettyCash.pettyCashType === "withdrawal"
                       ? "text-red-500"
                       : "text-green-500"
                   }`}
                 >
-                  {pettyCash.balance}
+                  {pettyCash.pettyCashType === "withdrawal" ? (
+                    <>
+                      <FaArrowTrendDown className="inline-block mr-1" />
+                      {pettyCash.balance}
+                    </>
+                  ) : (
+                    <>
+                      <FaArrowTrendUp className="inline-block mr-1" />
+                      {pettyCash.balance}
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

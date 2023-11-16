@@ -8,10 +8,9 @@ import {
 import moment from "moment";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
-import Swal from 'sweetalert2'
-import { useAuth } from "../../hooks/auth/auth";
-import ticket from "../Ticket/Tickets";
 import api from "../../api/api";
+import useSWR from "swr";
+import { useAuth } from "../../hooks/auth/auth";
 
 function EntregaPlanchado() {
   const { cookies } = useAuth();
@@ -37,7 +36,7 @@ function EntregaPlanchado() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get("/ordersIron");
+        const response = await api.get("/ordersIron"); 
         const ordersData = response.data;
 
         setPedidos(ordersData);
@@ -81,16 +80,6 @@ function EntregaPlanchado() {
   };
 
   const handleGuardarCobro = async (pedido) => {
-    if (!localStorage.getItem('cashCutId')) {
-      Swal.fire({
-        icon: "warning",
-        title: "No haz inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
-      });
-      navigate('/inicioCaja')
-      return
-    }
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
       .format("DD/MM/YYYY")
@@ -105,8 +94,8 @@ function EntregaPlanchado() {
 
     console.log("Pedido actualizado:", updatedPedido);
 
-    const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-      return order.id_order !== pedido.id_order;
+    const updatedFilteredPedidos = filteredPedidos.map((p) =>
+      p.id_order === updatedPedido.id_order ? updatedPedido : p
     );
     setFilteredPedidos(updatedFilteredPedidos);
 
@@ -129,28 +118,12 @@ function EntregaPlanchado() {
           fk_idOrder: pedido.id_order
         }
       })
-      ///////////////////////////// TICKET //////////////////////////////////
-      const cart = []
-      cart.push({
-        description: 'FALTA TRAER BACK',
-        id_service: pedido.ServiceOrderDetail[0].fk_Service,
-        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
-        quantity: pedido.ServiceOrderDetail[0].units
+      setFkPayment(res.data.id_payment)
+      console.log(res.data.id_payment)
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
       })
-      const order = {
-        id_order: pedido.id_order,
-        payForm: pedido.payForm,
-        payStatus: 'paid',
-        payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
-        casher: pedido.user.name,
-        client: pedido.client.name,
-        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        notes: '',
-        cart: cart
-      }
-      ticket(order)
+      setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
       console.log(err)
     }
@@ -194,17 +167,6 @@ function EntregaPlanchado() {
   };
 
   const handleEntregar = async (pedido) => {
-    if (!localStorage.getItem('cashCutId')) {
-      Swal.fire({
-        icon: "warning",
-        title: "No haz inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
-      });
-      navigate('/inicioCaja')
-      return
-    }
-
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 
@@ -218,6 +180,8 @@ function EntregaPlanchado() {
           deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
           deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
         })
+        // const updatedFilteredPedidos = filteredPedidos.filter(detail => detail.idOrder != pedido.idOrder)
+        // setFilteredPedidos(updatedFilteredPedidos)
         const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
           return order.id_order !== pedido.id_order;
         })

@@ -9,7 +9,6 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
-import ticket from "../Ticket/Tickets";
 import api from "../../api/api";
 
 function EntregaLavanderia() {
@@ -104,8 +103,8 @@ function EntregaLavanderia() {
 
     console.log("Pedido actualizado:", updatedPedido);
 
-    const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-      return order.id_order !== pedido.id_order;
+    const updatedFilteredPedidos = filteredPedidos.map((p) =>
+      p.id_order === updatedPedido.id_order ? updatedPedido : p
     );
     setFilteredPedidos(updatedFilteredPedidos);
 
@@ -128,28 +127,10 @@ function EntregaLavanderia() {
           fk_idOrder: pedido.id_order
         }
       })
-      ///////////////////////////// TICKET //////////////////////////////////
-      const cart = []
-      cart.push({
-        description: 'FALTA TRAER BACK',
-        id_service: pedido.ServiceOrderDetail[0].fk_Service,
-        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
-        quantity: pedido.ServiceOrderDetail[0].units 
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
       })
-      const order = {
-        id_order: pedido.id_order,
-        payForm: pedido.payForm,
-        payStatus: 'paid',
-        payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
-        casher: pedido.user.name,
-        client: pedido.client.name,
-        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        notes: '',
-        cart: cart
-      }
-      ticket(order)
+      setFilteredPedidos(updatedFilteredPedidos);
     }catch(err){
       console.log(err)
     }

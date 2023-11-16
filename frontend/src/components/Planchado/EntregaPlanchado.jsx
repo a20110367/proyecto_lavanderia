@@ -10,6 +10,7 @@ import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import Swal from 'sweetalert2'
 import { useAuth } from "../../hooks/auth/auth";
+import ticket from "../Ticket/Tickets";
 import api from "../../api/api";
 
 function EntregaPlanchado() {
@@ -36,7 +37,7 @@ function EntregaPlanchado() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get("/ordersIron"); 
+        const response = await api.get("/ordersIron");
         const ordersData = response.data;
 
         setPedidos(ordersData);
@@ -80,7 +81,7 @@ function EntregaPlanchado() {
   };
 
   const handleGuardarCobro = async (pedido) => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",
@@ -128,8 +129,28 @@ function EntregaPlanchado() {
           fk_idOrder: pedido.id_order
         }
       })
-      setFkPayment(res.data.id_payment)
-      console.log(res.data.id_payment)
+      ///////////////////////////// TICKET //////////////////////////////////
+      const cart = []
+      cart.push({
+        description: 'FALTA TRAER BACK',
+        id_service: pedido.ServiceOrderDetail[0].fk_Service,
+        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
+        quantity: pedido.ServiceOrderDetail[0].units
+      })
+      const order = {
+        id_order: pedido.id_order,
+        payForm: pedido.payForm,
+        payStatus: 'paid',
+        payMethod: cobroInfo.metodoPago,
+        subtotal: pedido.totalPrice,
+        casher: pedido.user.name,
+        client: pedido.client.name,
+        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        notes: '',
+        cart: cart
+      }
+      ticket(order)
     } catch (err) {
       console.log(err)
     }
@@ -173,7 +194,7 @@ function EntregaPlanchado() {
   };
 
   const handleEntregar = async (pedido) => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",

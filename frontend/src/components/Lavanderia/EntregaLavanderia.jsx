@@ -104,8 +104,8 @@ function EntregaLavanderia() {
 
     console.log("Pedido actualizado:", updatedPedido);
 
-    const updatedFilteredPedidos = filteredPedidos.map((p) =>
-      p.id_order === updatedPedido.id_order ? updatedPedido : p
+    const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+      return order.id_order !== pedido.id_order;
     );
     setFilteredPedidos(updatedFilteredPedidos);
 

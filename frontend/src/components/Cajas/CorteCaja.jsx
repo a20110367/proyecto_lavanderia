@@ -316,6 +316,7 @@ function CorteCaja() {
                 <th>INGRESOS <br />TOTALES</th>
                 <th>RETIROS <br />TOTALES</th>
                 <th>FINAL <br />TOTAL CAJA</th>
+                <th></th>
               </tr>
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}

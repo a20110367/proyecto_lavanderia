@@ -223,70 +223,69 @@ function PedidosAutoservicio() {
             </tr>
           </thead>
           <tbody>
-          {filteredPedidos
-  .filter((pedido) => pedido.orderStatus !== 'delivered') // Filtrar pedidos que no tienen estado "finished"
-  .slice(startIndex, endIndex)
-  .map((pedido) => (
-              <tr key={pedido.id_order}>
-                <td className="py-3 px-1 text-center">{pedido.id_order}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.client.name}
-                </td>
-                <td className="py-3 px-6">
-                  {pedido.ServiceOrderDetail.find(
-                    (service) => service.id_serviceOrderDetail
-                  ) != undefined
-                    ? pedido.ServiceOrderDetail.length
-                    : 0}
-                </td>
-                <td className="py-3 px-6">
-                  {formatDate(pedido.scheduledDeliveryDate)}
-                </td>
-                <td className="py-3 px-6 font-bold ">
-                  {pedido.orderStatus === "pending" ? (
-                    <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined /> Pendiente
-                    </span>
-                  ) : pedido.orderStatus === "stored" ? (
-                    <span className="text-fuchsia-600 pl-1">
-                      <DropboxOutlined /> Almacenado
-                    </span>
-                  ) : pedido.orderStatus === "inProgress" ? (
-                    <span className="text-yellow-600 pl-1">
-                      <ClockCircleOutlined /> En Proceso
-                    </span>
-                  ) : pedido.orderStatus === "finished" ? (
-                    <span className="text-blue-600 pl-1">
-                      <IssuesCloseOutlined /> Finalizado no entregado
-                    </span>
-                  ) : pedido.orderStatus === "delivered" ? (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Finalizado Entregado
-                    </span>
-                  ) : (
-                    <span className="text-red-600 pl-1">
-                      <StopOutlined /> Cancelado
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {pedido.orderStatus === "pending" && (
-                    <button
-                      onClick={() => handleStartProcess(pedido)}
-                      className="btn-primary ml-2 mt-1"
-                    >
-                      Iniciar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
+            {filteredPedidos
+              .filter((pedido) => pedido.orderStatus !== "delivered") // Filtrar pedidos que no tienen estado "finished"
+              .slice(startIndex, endIndex)
+              .map((pedido) => (
+                <tr key={pedido.id_order}>
+                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.user.name}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.user.name}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.client.name}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.category.categoryDescription === "autoservicio"
+                      ? "Autoservicio"
+                      : pedido.category.categoryDescription}
+                  </td>
+
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.scheduledDeliveryDate)}
+                  </td>
+                  <td className="py-3 px-6 font-bold ">
+                    {pedido.orderStatus === "pending" ? (
+                      <span className="text-gray-600 pl-1">
+                        <MinusCircleOutlined /> Pendiente
+                      </span>
+                    ) : pedido.orderStatus === "stored" ? (
+                      <span className="text-fuchsia-600 pl-1">
+                        <DropboxOutlined /> Almacenado
+                      </span>
+                    ) : pedido.orderStatus === "inProgress" ? (
+                      <span className="text-yellow-600 pl-1">
+                        <ClockCircleOutlined /> En Proceso
+                      </span>
+                    ) : pedido.orderStatus === "finished" ? (
+                      <span className="text-blue-600 pl-1">
+                        <IssuesCloseOutlined /> Finalizado no entregado
+                      </span>
+                    ) : pedido.orderStatus === "delivered" ? (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Finalizado Entregado
+                      </span>
+                    ) : (
+                      <span className="text-red-600 pl-1">
+                        <StopOutlined /> Cancelado
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {pedido.orderStatus === "pending" && (
+                      <button
+                        onClick={() => handleStartProcess(pedido)}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Iniciar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -295,7 +294,11 @@ function PedidosAutoservicio() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          pageCount={Math.ceil(filteredPedidos .filter((pedido) => pedido.orderStatus !== 'delivered').length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) => pedido.orderStatus !== "delivered"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
@@ -345,24 +348,24 @@ function PedidosAutoservicio() {
                   <td>{machine.cicleTime}</td>
                   <td>{machine.weight}</td>
                   <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
-                    >
-                      {machine.freeForUse ? "Libre" : "Ocupado"}
-                    </td>
+                    className={`${
+                      machine.freeForUse ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {machine.freeForUse ? "Libre" : "Ocupado"}
+                  </td>
 
-                    <td>
-                      <div className="flex flex-col items-center">
-                        <Checkbox
-                          key={`checkbox_${machine.id_machine}`}
-                          checked={selectedMachine === machine}
-                          onChange={() => handleSelectMachine(machine)}
-                          className="mb-2"
-                          disabled={!machine.freeForUse}
-                        />
-                        <span className="text-blue-500">Seleccionar</span>
-                      </div>
+                  <td>
+                    <div className="flex flex-col items-center">
+                      <Checkbox
+                        key={`checkbox_${machine.id_machine}`}
+                        checked={selectedMachine === machine}
+                        onChange={() => handleSelectMachine(machine)}
+                        className="mb-2"
+                        disabled={!machine.freeForUse}
+                      />
+                      <span className="text-blue-500">Seleccionar</span>
+                    </div>
                   </td>
                 </tr>
               ))}

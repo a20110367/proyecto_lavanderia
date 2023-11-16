@@ -6,6 +6,7 @@ import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext
 import api from '../../api/api'
 
 function InicioCaja() {
+
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
@@ -62,12 +63,24 @@ function InicioCaja() {
       }
     }
   };
-    const handleDineroInicioInput = () => {
-      setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
-    };
+  const handleDineroInicioInput = () => {
+    setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
+  };
 
-  const handleAbrirFormulario = () => {
-    setVisible(true);
+  const handleAbrirFormulario = async () => {
+    try {
+      const res = await api.get("/cashCutStatus")
+      if (res.data.cashCutStatus === 'closed') {
+        setVisible(true);
+      } else if (res.data.cashCutStatus === 'open') {
+        localStorage.setItem("cashCutId", res.data.id_cashCut)
+        setCajaIniciada(true);
+        setVisible(false);
+      }
+    } catch (err) { 
+      console.log(err)
+      console.err('No entiendo como sucedio esto')
+    }
   };
 
   const handleCloseDialog = () => {
@@ -98,7 +111,7 @@ function InicioCaja() {
           <button
             onClick={handleAbrirFormulario}
             className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
-            >
+          >
             Iniciar Caja
           </button>
         </div>

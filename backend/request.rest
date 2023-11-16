@@ -585,12 +585,12 @@ GET http://localhost:5000/ordersByClient/1
 
 ###
 
-GET http://localhost:5000/ordersLaundryFinished
+GET http://localhost:5000/ordersLaundry
 
 ###
 
 
-GET http://localhost:5000/ordersIronFinished
+GET http://localhost:5000/ordersIron
 
 ###
 

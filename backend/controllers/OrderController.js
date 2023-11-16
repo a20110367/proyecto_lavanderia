@@ -149,7 +149,19 @@ export const getOrdersSelfService = async (req, res) =>{
                         secondLN:true,
                     },
                 },
-                ServiceOrderDetail:true,
+                ServiceOrderDetail:{
+                    select:{
+                        units:true,
+                        subtotal:true,
+                        service:{
+                            select:{
+                                description:true,
+                                price:true,
+                            },
+                        },                        
+                    },
+                },
+                payment:true,
                 payment:true,
             },            
         });
@@ -183,7 +195,18 @@ export const getOrdersLaundry = async (req, res) =>{
                         secondLN:true,
                     },
                 },
-                ServiceOrderDetail:true,
+                ServiceOrderDetail:{
+                    select:{
+                        units:true,
+                        subtotal:true,
+                        service:{
+                            select:{
+                                description:true,
+                                price:true,
+                            },
+                        },                        
+                    },
+                },
                 payment:true,
             },            
         });
@@ -217,9 +240,20 @@ export const getOrdersIron = async (req, res) =>{
                         secondLN:true,
                     },
                 },
-                ServiceOrderDetail:true,
+                ServiceOrderDetail:{
+                    select:{
+                        units:true,
+                        subtotal:true,
+                        service:{
+                            select:{
+                                description:true,
+                                price:true,
+                            },
+                        },                        
+                    },
+                },
                 payment:true,
-            },            
+            },          
         });
         res.status(201).json(response);
     }catch(e){

@@ -81,10 +81,10 @@ export default function PuntoVenta() {
           const updatedCart = cart.map((item) =>
             item.id_service === serviceId
               ? {
-                  ...item,
-                  quantity: item.quantity + 1,
-                  totalPrice: item.price * (item.quantity + 1),
-                }
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: item.price * (item.quantity + 1),
+              }
               : item
           );
           setCart(updatedCart);
@@ -132,7 +132,7 @@ export default function PuntoVenta() {
   };
 
   const showModal = () => {
-    if(cart.length === 0){ 
+    if (cart.length === 0) {
       Swal.fire({
         icon: "error",
         title: "La lista de servicios esta vacia!",
@@ -140,7 +140,7 @@ export default function PuntoVenta() {
         confirmButtonColor: '#034078'
       });
       return
-    }else if(!localStorage.getItem('cashCutId')){
+    } else if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",
@@ -175,8 +175,6 @@ export default function PuntoVenta() {
         fk_Service: detail.id_service,
       })
     );
-
-
 
     try {
       const res = await api.post(url, {
@@ -215,16 +213,18 @@ export default function PuntoVenta() {
       ticket(order)
       const idOrder = res.data.serviceOrder.id_order
       console.log(idOrder)
-      const resPayment = await api.post('/paymentsAdvance', {
-        payment: {
-          fk_idOrder: idOrder,
-          payMethod: payMethod,
-          payDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-          fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
-          payTotal: calculateSubtotal()
-        }
-      });
+      if (payForm === 'advance') {
+        await api.post('/paymentsAdvance', {
+          payment: {
+            fk_idOrder: idOrder,
+            payMethod: payMethod,
+            payDate: purchaseDate.toISOString().split("T")[0] + 'T00:00:00.000Z',
+            payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
+            fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
+            payTotal: calculateSubtotal()
+          }
+        });
+      }
     } catch (err) {
       console.log(err)
       if (!err?.response) {
@@ -235,7 +235,7 @@ export default function PuntoVenta() {
         );
       }
     }
-    
+
 
 
     const doc = new jsPDF();
@@ -249,8 +249,7 @@ export default function PuntoVenta() {
 
     cart.forEach((service) => {
       doc.text(
-        `${service.description} x ${service.quantity} - $${
-          service.price * service.quantity
+        `${service.description} x ${service.quantity} - $${service.price * service.quantity
         }`,
         10,
         y
@@ -290,32 +289,32 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
 
-    
+
   return (
     <div>
       <div className="title-container">
@@ -323,10 +322,10 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-            ? "Lista de Servicios de Autoservicio"
-            : serviceType === "planchado"
-            ? "Lista de Servicios de Planchado"
-            : "Lista de Servicios"}
+              ? "Lista de Servicios de Autoservicio"
+              : serviceType === "planchado"
+                ? "Lista de Servicios de Planchado"
+                : "Lista de Servicios"}
         </strong>
       </div>
       <div className="container pt-4">
@@ -349,11 +348,10 @@ export default function PuntoVenta() {
                     </h3>
                     <h5 className="text-gray-600">${service.price}</h5>
                     <button
-                      className={`${
-                        isAddButtonDisabled
-                          ? "bg-gray-400"
-                          : "bg-blue-500 hover:bg-blue-700"
-                      } text-white font-bold py-2 px-4 rounded mt-2`}
+                      className={`${isAddButtonDisabled
+                        ? "bg-gray-400"
+                        : "bg-blue-500 hover:bg-blue-700"
+                        } text-white font-bold py-2 px-4 rounded mt-2`}
                       onClick={() => addToCart(service.id_service, service)}
                       disabled={isAddButtonDisabled}
                     >
@@ -517,20 +515,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

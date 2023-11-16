@@ -3,11 +3,15 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
+import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import Swal from 'sweetalert2'
 import api from '../../api/api'
 
 function CajaChica() {
+
+  const navigate = useNavigate()
   const [retiros, setRetiros] = useState([]);
   const [filteredRetiros, setFilteredRetiros] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -54,10 +58,30 @@ function CajaChica() {
   };
 
   const handleRetiro = () => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
     setVisible(true);
   };
 
   const handleAbono = () => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
     setVisibleAbono(true)
   }
 
@@ -98,18 +122,18 @@ function CajaChica() {
         const date = moment().format();
 
         const res = await api.post("/pettyCashDeposit", {
-          pettyCashType: "withdrawal",
+          pettyCashType: "deposit",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(0),
           cause: motivo,
           movementDate: date,
         });
-        setVisible(false);
+        setVisibleAbono(true)
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
-          pettyCashType: "withdrawal",
+          pettyCashType: "deposit",
           amount: parseFloat(monto),
           fk_user: cookies.token,
           balance: parseFloat(res.data.balance),
@@ -126,8 +150,8 @@ function CajaChica() {
         await api.post("/sendMessage", {
           id_order: nuevoRetiro.id_movement,
           name: 'Rafa',
-          email: 'a20110347@ceti.mx',
-          tel: "5213321817496",
+          email: 'a20110341@ceti.mx',
+          tel: "5213313839768",
           message: `Se ha realizado un ABONO en la CAJA CHICA 
           con monto de: ${monto}, 
           con el motivo de: ${motivo}. 

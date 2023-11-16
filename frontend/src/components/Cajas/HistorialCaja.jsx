@@ -204,6 +204,7 @@ function HistorialCaja() {
             </thead>
             <tbody>
               {filteredCortes
+              
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage

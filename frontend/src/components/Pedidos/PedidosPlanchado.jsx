@@ -310,7 +310,7 @@ function PedidosPlanchado() {
           </thead>
           <tbody>
             {filteredPedidos
-              .filter((pedido) => pedido.orderStatus !== "finished") // Filtrar pedidos que no tienen estado "finished"
+              .filter((pedido) => pedido.orderStatus !== "finished" && pedido.orderStatus !== 'delivered') // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
                 <tr key={pedido.id_order}>

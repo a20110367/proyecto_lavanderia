@@ -69,7 +69,7 @@ function PedidosAutoservicio() {
 
     setFilteredPedidos(textFiltered);
   }, [filtro, filtroEstatus, pedidos]);
-
+  
   if (!data) return <h2>Loading...</h2>;
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
@@ -127,26 +127,68 @@ function PedidosAutoservicio() {
         console.error("El pedido o la máquina seleccionada son indefinidos.");
         return;
       }
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "delivered" }
-          : p
+  
+      setLoading(true);
+  
+      
+      // Obtener datos de las máquinas y estaciones de planchado
+      const [machinesResponse] = await Promise.all([api.get("/machines")]);
+  
+      const allMachines = [...machinesResponse.data];
+      setAvailableMachines(allMachines);
+  
+      // Cambiar el estado local del equipo seleccionado a ocupado (freeForUse: false)
+      const updatedAvailableMachines = allMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine ? { ...machine, freeForUse: false } : machine
       );
-
+      setAvailableMachines(updatedAvailableMachines);
+  
+      // Actualizar el estado del equipo en la base de datos
+      await api.patch(`/machines/${selectedMachine.id_machine}`, { freeForUse: false });
+  
+      // Cambiar el estado del pedido a 'inProgress'
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === selectedPedido.id_order ? { ...p, orderStatus: "inProgress" } : p
+      );
       setPedidos(updatedPedidos);
-
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "delivered",
-        assignedMachine: selectedMachine.id,
-      });
+  
+      // Actualizar el estado del pedido en la base de datos
+      await api.patch(`/orders/${selectedPedido.id_order}`, { orderStatus: "inProgress" });
+  
+      // Configurar temporizador de 30 minutos
+      setTimeout(async () => {
+        try {
+          // Actualizar el estado del pedido a 'delivered' después de 30 minutos
+          const updatedPedidosAfterTimer = updatedPedidos.map((p) =>
+            p.id_order === selectedPedido.id_order ? { ...p, orderStatus: "delivered" } : p
+          );
+          setPedidos(updatedPedidosAfterTimer);
+  
+          // Actualizar el estado del pedido a 'delivered' en la base de datos
+          await api.patch(`/orders/${selectedPedido.id_order}`, { orderStatus: "delivered" });
+  
+          // Cambiar el estado del equipo a libre (freeForUse: true) después de 30 minutos
+          await api.patch(`/machines/${selectedMachine.id_machine}`, { freeForUse: true });
+  
+          // Actualizar el estado local del equipo a libre (freeForUse: true)
+          const updatedAvailableMachinesAfterTimer = updatedAvailableMachines.map((machine) =>
+            machine.id_machine === selectedMachine.id_machine ? { ...machine, freeForUse: true } : machine
+          );
+          setAvailableMachines(updatedAvailableMachinesAfterTimer);
+        } catch (error) {
+          console.error("Error al actualizar el pedido o la máquina después del temporizador:", error);
+        }
+      }, 10 * 1000); // 30 minutos en milisegundos 10 * 1000); // 10 segundos en milisegundos 30 * 60 * 1000);
+  
       setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedMachine.model}`);
-      // Actualizar datos
     } catch (error) {
-      console.error("Error al actualizar el pedido:", error);
+      console.error("Error al confirmar la selección de la máquina:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  
+  
 
   return (
     <div>

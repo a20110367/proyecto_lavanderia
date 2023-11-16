@@ -295,7 +295,7 @@ function PedidosAutoservicio() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          pageCount={Math.ceil(filteredPedidos .filter((pedido) => pedido.orderStatus !== 'delivered').length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

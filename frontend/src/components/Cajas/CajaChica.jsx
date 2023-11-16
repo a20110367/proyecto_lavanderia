@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
+import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
-import Swal from 'sweetalert2'
-import api from '../../api/api'
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function CajaChica() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [retiros, setRetiros] = useState([]);
   const [filteredRetiros, setFilteredRetiros] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -58,32 +58,32 @@ function CajaChica() {
   };
 
   const handleRetiro = () => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
     setVisible(true);
   };
 
   const handleAbono = () => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No haz inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
-    setVisibleAbono(true)
-  }
+    setVisibleAbono(true);
+  };
 
   const handleMotivoInput = () => {
     setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
@@ -129,7 +129,7 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
         });
-        setVisibleAbono(true)
+        setVisibleAbono(true);
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
@@ -140,8 +140,8 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
           user: {
-            name: cookies.username
-          }
+            name: cookies.username,
+          },
         };
 
         setRetiros([...retiros, nuevoRetiro]);
@@ -149,21 +149,21 @@ function CajaChica() {
 
         await api.post("/sendMessage", {
           id_order: nuevoRetiro.id_movement,
-          name: 'Rafa',
-          email: 'a20110341@ceti.mx',
+          name: "Rafa",
+          email: "a20110341@ceti.mx",
           tel: "5213313839768",
           message: `Se ha realizado un ABONO en la CAJA CHICA 
           con monto de: ${monto}, 
           con el motivo de: ${motivo}. 
           Realizadas por el cajero: ${cookies.username} 
           el dia de ${formatDateToGMTMinus6(date)}`,
-          subject: 'Se ha realizado un ABONO en la CAJA CHICA',
+          subject: "Se ha realizado un ABONO en la CAJA CHICA",
           text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
-          warning: true
+          warning: true,
         });
         console.log("NOTIFICACIÓN ENVIADA...");
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     }
   };
@@ -215,8 +215,8 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
           user: {
-            name: cookies.username
-          }
+            name: cookies.username,
+          },
         };
 
         setRetiros([...retiros, nuevoRetiro]);
@@ -224,22 +224,21 @@ function CajaChica() {
 
         await api.post("/sendMessage", {
           id_order: nuevoRetiro.id_movement,
-          name: 'Rafa',
-          email: 'a20110341@ceti.mx',
+          name: "Rafa",
+          email: "a20110341@ceti.mx",
           tel: "5213313839768",
           message: `Se ha realizado un RETIRO en la CAJA CHICA 
           con monto de: ${monto}, 
           con el motivo de: ${motivo}. 
           Realizadas por el cajero: ${cookies.username} 
           el dia de ${formatDateToGMTMinus6(date)}`,
-          subject: 'Se ha realizado un RETIRO en la CAJA CHICA',
+          subject: "Se ha realizado un RETIRO en la CAJA CHICA",
           text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
-          warning: true
+          warning: true,
         });
         console.log("NOTIFICACIÓN ENVIADA...");
-
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
     }
   };
@@ -284,7 +283,10 @@ function CajaChica() {
       </div>
       <div className="flex">
         <div className="mt-3 mb-3 mr-2">
-          <button onClick={handleRetiro} className="btn-primary bg-FireBrick hover:bg-RedPantone">
+          <button
+            onClick={handleRetiro}
+            className="btn-primary bg-FireBrick hover:bg-RedPantone"
+          >
             Registrar Retiro
           </button>
         </div>
@@ -296,8 +298,6 @@ function CajaChica() {
         </div>
       </div>
 
-
-
       <table className="w-full text-sm text-left text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
@@ -307,23 +307,65 @@ function CajaChica() {
             <th>Monto</th>
             <th>Motivo</th>
             <th>Usuario</th>
-            <th>Saldo <br />Caja    </th>
+            <th>
+              Saldo <br />
+              Caja{" "}
+            </th>
           </tr>
         </thead>
         <tbody>
           {filteredRetiros
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .reverse()
             .map((pettyCash) => (
               <tr className="bg-white border-b" key={pettyCash.id_movement}>
                 <td className="py-3 px-1 text-center">
                   {pettyCash.id_movement}
                 </td>
-                <td className="py-3 px-6">{pettyCash.pettyCashType === 'withdrawal' ? 'Retiro' : 'Abono'}</td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(pettyCash.movementDate)}</td>
+                <td
+                  className={`font-semibold ${
+                    pettyCash.pettyCashType === "withdrawal"
+                      ? "text-red-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  {pettyCash.pettyCashType === "withdrawal" ? (
+                    <>
+                      <FaArrowTrendDown className="inline-block mr-1" />
+                      Retiro
+                    </>
+                  ) : (
+                    <>
+                      <FaArrowTrendUp className="inline-block mr-1" />
+                      Abono
+                    </>
+                  )}
+                </td>
+                <td className="py-3 px-6">
+                  {formatDateToGMTMinus6(pettyCash.movementDate)}
+                </td>
                 <td className="py-3 px-6">${pettyCash.amount}</td>
                 <td className="py-3 px-6">{pettyCash.cause}</td>
                 <td className="py-3 px-6">{pettyCash.user.name}</td>
-                <td className="py-3 px-6">{pettyCash.balance}</td>
+                <td
+                  className={`py-3 px-6 ${
+                    pettyCash.pettyCashType === "withdrawal"
+                      ? "text-red-500"
+                      : "text-green-500"
+                  }`}
+                >
+                  {pettyCash.pettyCashType === "withdrawal" ? (
+                    <>
+                      <FaArrowTrendDown className="inline-block mr-1" />
+                      {pettyCash.balance}
+                    </>
+                  ) : (
+                    <>
+                      <FaArrowTrendUp className="inline-block mr-1" />
+                      {pettyCash.balance}
+                    </>
+                  )}
+                </td>
               </tr>
             ))}
         </tbody>

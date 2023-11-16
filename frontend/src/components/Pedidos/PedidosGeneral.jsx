@@ -4,6 +4,7 @@ import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import Swal from 'sweetalert2'
 import api from "../../api/api";
 
 import {
@@ -123,6 +124,38 @@ function PedidosGeneral() {
     }, 2000);
   };
 
+  const notifyAll = async () => {
+    Swal.fire({
+      title: "Notificar a todos los clientes?",
+      text: "Estas seguro de notificar a todos los clientes?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const filteredOrder = pedidos.filter((pedido) => pedido.orderStatus === "finished")
+        try {
+          await api.post("/notifyAll", {
+            filteredOrder: filteredOrder,
+          });
+          setShowMachineName(false);
+          showNotification("NOTIFICACIONES ENVIADAS...");
+          console.log("NOTIFICACIONES ENVIADAS...");
+        } catch (err) {
+          if (!err?.response) {
+            setErrMsg("No hay respuesta del servidor.");
+          } else {
+            setErrMsg("Error al mandar la notificación");
+            console.log(err)
+          }
+        }
+      }
+    });
+  };
+
   const handleSeleccionarPedido = (pedido, pedidoId) => {
     const pedidoSeleccionado = pedido;
 
@@ -162,7 +195,7 @@ function PedidosGeneral() {
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
           </div>
         ),
-        onOk() {},
+        onOk() { },
         footer: null,
       });
 
@@ -173,7 +206,7 @@ function PedidosGeneral() {
       const modal = Modal.error({
         title: "Error",
         content: "No se puede cambiar el estado de este pedido.",
-        onOk() {},
+        onOk() { },
       });
 
       setTimeout(() => {
@@ -211,6 +244,7 @@ function PedidosGeneral() {
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
+        <button className="btn-primary text-xs" onClick={() => notifyAll()}>Notificar a todos los Clientes</button>
         <select
           className="select-category"
           value={filtroEstatus}

@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import Swal from 'sweetalert2'
 import api from '../../api/api'
 
 function Reembolso() {
+
+  const navigate = useNavigate()
   const [reembolsos, setReembolsos] = useState([]);
   const [filteredReembolsos, setFilteredReembolsos] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -55,6 +59,16 @@ function Reembolso() {
   };
 
   const handleReembolso = () => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
     setVisible(true);
   };
 

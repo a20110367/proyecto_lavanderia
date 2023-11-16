@@ -10,7 +10,6 @@ import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";
-import useSWR from "swr";
 
 function EntregaLavanderia() {
   const { cookies } = useAuth();
@@ -79,6 +78,17 @@ function EntregaLavanderia() {
   };
 
   const handleGuardarCobro = async (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
+
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
       .format("DD/MM/YYYY")
@@ -161,9 +171,36 @@ function EntregaLavanderia() {
     setSelectedPedido(null);
   };
 
-  const handleEntregar = (pedido) => {
+  const handleEntregar = async (pedido) => {
+    if(!localStorage.getItem('cashCutId')){
+      Swal.fire({
+        icon: "warning",
+        title: "No haz inicializado caja!",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      navigate('/inicioCaja')
+      return
+    }
+
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
+
+      try {
+        await api.post('/deliveryDetails', {
+          fk_idOrder: pedido.id_order,
+          fk_idPayment: pedido.payment.id_payment,
+          fk_userCashier: cookies.token,
+          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
+          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+        })
+        const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+          return order.id_order !== pedido.id_order;
+        })
+        setFilteredPedidos(updatedFilteredPedidos);
+      } catch (err) {
+        console.log(err)
+      }
 
       setEntregando(true);
       console.log(pedido);

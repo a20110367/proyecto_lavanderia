@@ -68,6 +68,8 @@ function InicioCaja() {
       }
     }else if(res.data.cashCutStatus === 'open'){
       localStorage.setItem("cashCutId", res.data.id_cashCut)
+      setCajaIniciada(true);
+      setVisible(false);
     }
   }catch(err){
     console.log(err)

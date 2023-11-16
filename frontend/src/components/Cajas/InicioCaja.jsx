@@ -6,6 +6,7 @@ import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext
 import api from '../../api/api'
 
 function InicioCaja() {
+
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
@@ -33,38 +34,49 @@ function InicioCaja() {
   const handleIniciarCaja = async (e) => {
     e.preventDefault();
 
-    if (cajaIniciada) {
-      setErrMsg("La caja ya ha sido inicializada.");
-      return;
-    }
-
-    if (!nombreUsuario && !dineroInicio) {
-      setErrMsg("Algun campo vacio");
-      return
-    }
     try {
-      const response = await api.post("/cashCuts", {
-        initialCash: parseFloat(dineroInicio),
-        fk_user: parseInt(cookies.token),
-        cashCutD: dateD.toJSON(),
-        cashCutT: dateT.toJSON()
-      });
-      localStorage.setItem("cashCutId", response.data.id_cashCut);
-      localStorage.setItem("initialCash", response.data.initialCash)
-      localStorage.removeItem('lastCashCut')
-      setCajaIniciada(true);
-      setVisible(false);
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("No hay respuesta del servidor.");
-      } else {
-        setErrMsg("Error al hacer corte de caja.");
+    const res = await api.get("/cashCutStatus")
+
+    if (res.data.cashCutStatus === 'closed') {
+      if (cajaIniciada) {
+        setErrMsg("La caja ya ha sido inicializada.");
+        return;
       }
+
+      if (!nombreUsuario && !dineroInicio) {
+        setErrMsg("Algun campo vacio");
+        return
+      }
+      try {
+        const response = await api.post("/cashCuts", {
+          initialCash: parseFloat(dineroInicio),
+          fk_user: parseInt(cookies.token),
+          cashCutD: dateD.toJSON(),
+          cashCutT: dateT.toJSON()
+        });
+        localStorage.setItem("cashCutId", response.data.id_cashCut);
+        localStorage.setItem("initialCash", response.data.initialCash)
+        localStorage.removeItem('lastCashCut')
+        setCajaIniciada(true);
+        setVisible(false);
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("No hay respuesta del servidor.");
+        } else {
+          setErrMsg("Error al hacer corte de caja.");
+        }
+      }
+    }else if(res.data.cashCutStatus === 'open'){
+      localStorage.setItem("cashCutId", res.data.id_cashCut)
     }
+  }catch(err){
+    console.log(err)
+    console.err('No entiendo como sucedio esto')
+  }
   };
-    const handleDineroInicioInput = () => {
-      setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
-    };
+  const handleDineroInicioInput = () => {
+    setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
+  };
 
   const handleAbrirFormulario = () => {
     setVisible(true);
@@ -98,7 +110,7 @@ function InicioCaja() {
           <button
             onClick={handleAbrirFormulario}
             className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
-            >
+          >
             Iniciar Caja
           </button>
         </div>

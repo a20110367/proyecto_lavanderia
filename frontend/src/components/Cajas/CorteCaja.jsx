@@ -310,12 +310,12 @@ function CorteCaja() {
               <tr>
                 <th>No. Corte</th>
                 <th>FECHA</th>
-                <th>DINERO EN FONDO</th>
-                <th>INGRESO EN EFECTIVO</th>
-                <th>INGRESO EN TARJETA</th>
-                <th>INGRESOS TOTALES</th>
-                <th>RETIROS TOTALES</th>
-                <th>FINAL TOTAL CAJA</th>
+                <th>DINERO <br />EN FONDO</th>
+                <th>INGRESO <br />EN EFECTIVO</th>
+                <th>INGRESO <br />EN TARJETA</th>
+                <th>INGRESOS <br />TOTALES</th>
+                <th>RETIROS <br />TOTALES</th>
+                <th>FINAL <br />TOTAL CAJA</th>
               </tr>
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}

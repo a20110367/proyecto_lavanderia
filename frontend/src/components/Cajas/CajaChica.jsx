@@ -153,10 +153,10 @@ function CajaChica() {
           email: "a20110341@ceti.mx",
           tel: "5213313839768",
           message: `Se ha realizado un ABONO en la CAJA CHICA 
-          con monto de: ${monto}, 
-          con el motivo de: ${motivo}. 
-          Realizadas por el cajero: ${cookies.username} 
-          el dia de ${formatDateToGMTMinus6(date)}`,
+          Monto: ${monto}, 
+          Motivo: ${motivo}. 
+          Cajero: ${cookies.username} 
+          Fecha: ${formatDateToGMTMinus6(date)}`,
           subject: "Se ha realizado un ABONO en la CAJA CHICA",
           text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
           warning: true,
@@ -228,10 +228,10 @@ function CajaChica() {
           email: "a20110341@ceti.mx",
           tel: "5213313839768",
           message: `Se ha realizado un RETIRO en la CAJA CHICA 
-          con monto de: ${monto}, 
-          con el motivo de: ${motivo}. 
-          Realizadas por el cajero: ${cookies.username} 
-          el dia de ${formatDateToGMTMinus6(date)}`,
+          Monto: ${monto}, 
+          Motivo: ${motivo}. 
+          Cajero: ${cookies.username} 
+          Fecha: ${formatDateToGMTMinus6(date)}`,
           subject: "Se ha realizado un RETIRO en la CAJA CHICA",
           text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
           warning: true,

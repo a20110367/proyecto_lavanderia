@@ -590,6 +590,7 @@ export const getCashCutStatus = async (req, res) => {
 
             select: {
                 cashCutStatus: true,
+                id_cashCut:true,
             }
 
         })

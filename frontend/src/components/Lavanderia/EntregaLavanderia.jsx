@@ -222,6 +222,7 @@ function EntregaLavanderia() {
           deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
           deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
         })
+        // PIENSO ENVIAR EL TICKET PDF AL CLIENTE
         const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
           return order.id_order !== pedido.id_order;
         })

@@ -333,7 +333,7 @@ export default function PuntoVenta() {
       <div className="container pt-4">
         <div className="row">
           <div className="col-md-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               {filteredServices.map((service) => (
                 <div
                   key={service.id_service}
@@ -344,7 +344,7 @@ export default function PuntoVenta() {
                     alt={`Imagen de ${service.description}`}
                     className="img-pos"
                   />
-                  <div className="p-4">
+                  <div className="p-3">
                     <h3 className="text-xl font-semibold">
                       {service.description}
                     </h3>
@@ -365,7 +365,7 @@ export default function PuntoVenta() {
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p> <p className="text-xl font-bold text-IndigoDye">{clientName}</p>

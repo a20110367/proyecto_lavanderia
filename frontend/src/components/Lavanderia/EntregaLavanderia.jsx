@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
 import { useNavigate } from "react-router-dom";
-import { ticket } from '../Ticket/Tickets'
+import ticket from '../Ticket/Tickets'
 import api from "../../api/api";
 
 function EntregaLavanderia() {

@@ -9,7 +9,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
-import { ticket } from '../Ticket/Tickets'
+import ticket from '../Ticket/Tickets'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";

@@ -176,17 +176,16 @@ function PedidosPlanchado() {
       });
 
       setShowMachineName(false);
-      // showNotification("NOTIFICACIÓN ENVIADA...");
-      // await api.post("/sendMessage", {
-      //   id_order: selectedPedido.id_order,
-      //   name: selectedPedido.client.name,
-      //   email: selectedPedido.client.email,
-      //   tel: "521" + selectedPedido.client.phone,
-      //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-      // });
-      // console.log("NOTIFICACIÓN ENVIADA...");
-
-      // showNotification(`Pedido finalizado correctamente`);
+      showNotification("NOTIFICACIÓN ENVIADA...");
+      await api.post("/sendMessage", {
+        id_order: selectedPedido.id_order,
+        name: selectedPedido.client.name,
+        email: selectedPedido.client.email,
+        tel: "521" + selectedPedido.client.phone,
+        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      });
+      console.log("NOTIFICACIÓN ENVIADA...");
+      showNotification(`Pedido finalizado correctamente`);
       showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);

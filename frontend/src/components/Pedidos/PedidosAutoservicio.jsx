@@ -88,14 +88,15 @@ function PedidosAutoservicio() {
     }, 2000);
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
+
 
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
@@ -245,7 +246,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (
@@ -323,6 +324,13 @@ function PedidosAutoservicio() {
           >
             Confirmar
           </button>,
+              <button
+              key="cancel"
+              className="btn-primary-cancel ml-2"
+              onClick={() => setShowMachineName(false)}
+            >
+              Cancelar
+            </button>,
         ]}
         width={800}
         style={{ padding: "20px" }}

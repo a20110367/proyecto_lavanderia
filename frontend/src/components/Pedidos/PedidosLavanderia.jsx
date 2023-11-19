@@ -126,14 +126,19 @@ function PedidosLavanderia() {
     }
 
     const confirmedDryerProcessesFromStorage = {};
-    data.forEach((pedido) => {
-      const confirmedDryerProcess = localStorage.getItem(`confirmedDryerProcess_${pedido.id_order}`);
-      if (confirmedDryerProcess !== null) {
-        confirmedDryerProcessesFromStorage[pedido.id_order] = confirmedDryerProcess === "true";
-      }
-    });
-  
-    setConfirmedDryerProcesses(confirmedDryerProcessesFromStorage);
+    if (data) {
+      data.forEach((pedido) => {
+        const confirmedDryerProcess = localStorage.getItem(
+          `confirmedDryerProcess_${pedido.id_order}`
+        );
+        if (confirmedDryerProcess !== null) {
+          confirmedDryerProcessesFromStorage[pedido.id_order] =
+            confirmedDryerProcess === "true";
+        }
+      });
+
+      setConfirmedDryerProcesses(confirmedDryerProcessesFromStorage);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -175,12 +180,12 @@ function PedidosLavanderia() {
     }, 2000);
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -275,7 +280,7 @@ function PedidosLavanderia() {
         ...confirmedDryerProcesses,
         [pedido.id_order]: false, // Establecer el estado del pedido actual como no confirmado para secado
       });
-  
+
       localStorage.setItem(`confirmedDryerProcess_${pedido.id_order}`, "false");
     } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -337,12 +342,15 @@ function PedidosLavanderia() {
       setShowDryerSelection(false); // Ocultar la selección de secadora
       setIsDryingProcessConfirmedInModal(true);
       localStorage.setItem("showDryerSelection", "false");
-      localStorage.setItem(`confirmedDryerProcess_${selectedPedido.id_order}`, "true");
+      localStorage.setItem(
+        `confirmedDryerProcess_${selectedPedido.id_order}`,
+        "true"
+      );
 
-    setConfirmedDryerProcesses({
-      ...confirmedDryerProcesses,
-      [selectedPedido.id_order]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
-    });
+      setConfirmedDryerProcesses({
+        ...confirmedDryerProcesses,
+        [selectedPedido.id_order]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+      });
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
@@ -505,7 +513,7 @@ function PedidosLavanderia() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (
@@ -544,26 +552,25 @@ function PedidosLavanderia() {
                       </button>
                     )}
 
-{pedido.orderStatus === "inProgress" && !confirmedDryerProcesses[pedido.id_order] && (
-  <button
-    onClick={() => handleStartDryerProcess(pedido)}
-    className="btn-primary ml-2 mt-1"
-  >
-    Secado
-  </button>
-)}
+                    {pedido.orderStatus === "inProgress" &&
+                      !confirmedDryerProcesses[pedido.id_order] && (
+                        <button
+                          onClick={() => handleStartDryerProcess(pedido)}
+                          className="btn-primary ml-2 mt-1"
+                        >
+                          Secado
+                        </button>
+                      )}
 
-{pedido.orderStatus === "inProgress" && confirmedDryerProcesses[pedido.id_order] && (
-  <button
-    onClick={handleFinishProcess}
-    className="btn-primary ml-2 mt-1"
-  >
-    Terminar
-  </button>
-)}
-
-
-
+                    {pedido.orderStatus === "inProgress" &&
+                      confirmedDryerProcesses[pedido.id_order] && (
+                        <button
+                          onClick={handleFinishProcess}
+                          className="btn-primary ml-2 mt-1"
+                        >
+                          Terminar
+                        </button>
+                      )}
                   </td>
                 </tr>
               ))}
@@ -605,6 +612,14 @@ function PedidosLavanderia() {
             disabled={!selectedWashMachine}
           >
             Confirmar
+          </button>,
+
+          <button
+            key="cancel"
+            className="btn-primary-cancel ml-2"
+            onClick={() => setShowMachineName(false)}
+          >
+            Cancelar
           </button>,
         ]}
         width={800}
@@ -670,6 +685,13 @@ function PedidosLavanderia() {
             disabled={!selectedDryMachine}
           >
             Confirmar
+          </button>,
+          <button
+            key="cancel"
+            className="btn-primary-cancel ml-2"
+            onClick={() => setShowMachineName(false)}
+          >
+            Cancelar
           </button>,
         ]}
         width={800}

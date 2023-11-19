@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
-import ticket from "../Ticket/Tickets";
+import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 
 const { Option } = Select;
@@ -212,7 +212,7 @@ export default function PuntoVenta() {
         notes: '',
         cart: cart
       }
-      ticket(order)
+      orderTicket(order)
       const idOrder = res.data.serviceOrder.id_order
       console.log(idOrder)
       if (payForm === 'advance') {

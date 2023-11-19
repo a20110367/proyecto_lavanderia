@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
 import { useNavigate } from "react-router-dom";
-import ticket from '../Ticket/Tickets'
+import { orderTicket } from '../Ticket/Tickets'
 import api from "../../api/api";
 
 function EntregaLavanderia() {
@@ -152,7 +152,7 @@ function EntregaLavanderia() {
         notes: '',
         cart: cart
       }
-      ticket(order)
+      orderTicket(order)
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
         return order.id_order !== pedido.id_order;
       })

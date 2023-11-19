@@ -25,7 +25,7 @@ const formatTime = (dateStr) => {
     return strTime
 }
 
-async function ticket(order) {
+export const orderTicket = async (order) => {
     const date = moment().format("DD / MM / YYYY")
     const hour = moment().format("LT");
 
@@ -66,7 +66,7 @@ async function ticket(order) {
                 <hr class="hr-header">       
                     <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
                     <p style="text-align:center;">${word}</p> 
-                    ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <!--<p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p>--> <p>Cajero: ${order.casher}</p></div>` : '' }
+                    ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <!--<p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p>--> <p>Cajero: ${order.casher}</p></div>` : ''}
                 <hr class="hr-header">   
                     <p>Cliente: ${order.client}</p>         
                     <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
@@ -86,7 +86,6 @@ async function ticket(order) {
     </form>
     `;
 
-
     //----------------------IMPRIMIR--------------------------//
     printJS({
         printable: html,
@@ -96,4 +95,73 @@ async function ticket(order) {
     })
 }
 
-export default ticket
+export const cashWithdrawalTicket = async (withdrawal) => {
+
+    const date = moment().format("DD / MM / YYYY")
+    const hour = moment().format("LT");
+
+    let word = 'w'
+    try {
+        const res = await api.post("/numberToWord", {
+            number: order.subtotal,
+        });
+        word = res.data
+    } catch (e) {
+        console.log('Error al convertir de número a letra')
+    }
+    const html = `
+    <form class="form-container" id="container" style="font-size:small">
+        <div class="PrintOnly">
+            <div class="info" style="text-align: center;"> 
+                <img src="${IMAGES.caprelogo
+        }" width="150" height="100" alt="logo" class="logo">
+                <p>**CAPREL**</p>
+                <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
+                <p>TLAQUEPAQUE, JALISCO</p>
+                <p>TEL. (33) 30001789</p>
+                <p>RFC: RORS010912QZ6</p>
+            </div>
+            <hr class="hr-header">
+            <div style=" padding-top: 0px">                    
+                <h2>FOLIO No.: ${order.id_order} </h2>
+                <h2>TIPO PAGO: ${order.payForm === 'advance' ? "Anticipado" : "A la Entrega"}</h2>                     
+                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"
+        }                    
+                <hr class="hr-header">  
+                <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">
+                    <p>Cant.</p>
+                    <p>Servicio</p>
+                    <p>Precio</p>
+                    ${order.cart.map(detail => `<p>${detail.quantity}</p><p>${detail.description}</p><p>$${detail.totalPrice}</p>`).join('')}  
+                </div>
+                <hr class="hr-header">       
+                    <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
+                    <p style="text-align:center;">${word}</p> 
+                    ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <!--<p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p>--> <p>Cajero: ${order.casher}</p></div>` : ''}
+                <hr class="hr-header">   
+                    <p>Cliente: ${order.client}</p>         
+                    <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
+                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${order.scheduledDeliveryTime}</h4>        
+                    <hr class="hr-header">
+                <p>Observaciones Generales: ${order.notes}</p>
+                <hr class="hr-header">
+                <div style="text-align:center;">
+                    <p>PROFECO N. REGISTRO: 4390/2013</p>
+                    <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
+                    <p>FECHA: ${date}</p>
+                    <p>HORA: ${hour}</p>                    
+                    <p>GRACIAS POR SU VISITA</p>
+                </div>
+            </div>
+        </div>
+    </form>
+    `;
+
+    //----------------------IMPRIMIR--------------------------//
+    printJS({
+        printable: html,
+        type: "raw-html",
+        header: "PrintJS - Form Element Selection"
+        // css: './ticket.css'
+    })
+}

@@ -9,7 +9,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
-import ticket from '../Ticket/Tickets'
+import { orderTicket } from '../Ticket/Tickets'
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";
@@ -154,7 +154,7 @@ function EntregaPlanchado() {
         notes: '',
         cart: cart
       }
-      ticket(order)
+      orderTicket(order)
       setFkPayment(res.data.id_payment)
       console.log(res.data.id_payment)
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {

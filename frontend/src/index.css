@@ -157,6 +157,9 @@ thead th {
   .btn-primary {
     @apply text-xl md:text-base py-1 md:py-2 px-1 md:px-2 bg-IndigoDye text-white font-semibold rounded-lg shadow-md hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-opacity-75 ;
   }
+  .btn-primary-cancel {
+    @apply text-xl md:text-base py-1 md:py-2 px-1 md:px-2 bg-RedPantone text-white font-semibold rounded-lg shadow-md hover:bg-FireBrick focus:outline-none focus:ring-2 focus:ring-sky-700 focus:ring-opacity-75 ;
+  }
 
   .btn-print {
     @apply bg-Cerulean hover:bg-Moonstone hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-sm mr-2 text-white hover:text-white;

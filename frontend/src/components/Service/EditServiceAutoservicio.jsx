@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Select } from "antd";
 const { Option } = Select;
 import { AiOutlineExclamationCircle } from "react-icons/ai";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function EditServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -16,7 +16,7 @@ function EditServiceAutoservicio() {
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState();
   const [category, setCategory] = useState("Autoservicio");
-  const [service, setService] = useState('laundry')
+  const [service, setService] = useState("laundry");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -24,21 +24,20 @@ function EditServiceAutoservicio() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-
   useEffect(() => {
     const getServiceById = async () => {
       const response = await api.get(`/servicesById/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");
-      if(response.data.WashService.length === 0){
+      if (response.data.WashService.length === 0) {
         setTime(response.data.DryService[0].cycleTime);
         setWeight(response.data.DryService[0].weight);
-        setService('dry')
-      }else{
+        setService("dry");
+      } else {
         setTime(response.data.WashService[0].cycleTime);
         setWeight(response.data.WashService[0].weight);
-        setService('laundry')
+        setService("laundry");
       }
     };
     getServiceById();
@@ -48,11 +47,13 @@ function EditServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
-      setErrMsg("Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio).");
+      setErrMsg(
+        "Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio)."
+      );
       return;
     }
 
-    if (service == 'laundry') {
+    if (service == "laundry") {
       try {
         await api.patch(`/servicesUpdateWashSelfService/${id}`, {
           description: description,
@@ -60,26 +61,26 @@ function EditServiceAutoservicio() {
           washWeight: parseInt(weight),
           washCycleTime: parseInt(time),
           dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time)
+          dryCycleTime: parseInt(time),
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);
       } catch (err) {
-        console.log(err)
+        console.log(err);
         setErrMsg("Error al actualizar el servicio lavado.");
       }
-    } else if (service == 'dry') {
+    } else if (service == "dry") {
       try {
         await api.patch(`/servicesUpdateDrySelfService/${id}`, {
           description: description,
           price: parseFloat(price),
           dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time)
+          dryCycleTime: parseInt(time),
         });
         navigate("/servicesAutoservicio");
         setSuccess(true);
       } catch (err) {
-        console.log(err)
+        console.log(err);
         setErrMsg("Error al actualizar el servicio lavanderia.");
       }
     }
@@ -89,7 +90,9 @@ function EditServiceAutoservicio() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">Editando el Servicio de Autoservicio:</p>
+          <p className="title text-white">
+            Editando el Servicio de Autoservicio:
+          </p>
           <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
@@ -160,6 +163,19 @@ function EditServiceAutoservicio() {
                 onChange={(e) => setWeight(e.target.value)}
                 value={weight}
               />
+
+              <label className="form-lbl" htmlFor="type">
+                Tipo de Servicio
+              </label>
+              <Select
+                id="type"
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setService(value)}
+                value={service}
+              >
+                <Select.Option value="laundry">Lavado</Select.Option>
+                <Select.Option value="dry">Secado</Select.Option>
+              </Select>
 
               {/* <label className="form-lbl" htmlFor="type">
                 Tipo de Servicio

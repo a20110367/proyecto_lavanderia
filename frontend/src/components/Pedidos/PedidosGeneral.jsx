@@ -217,12 +217,12 @@ function PedidosGeneral() {
     }
   };
 
-  const formatDate = (dateStr) => {
+  const formatDateToGMTMinus6 = (dateStr) => {
     const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
@@ -310,7 +310,11 @@ function PedidosGeneral() {
           </thead>
           <tbody>
             {filteredPedidos
-              .filter((pedido) => pedido.orderStatus !== "finished")
+              .filter(
+                (pedido) =>
+                  pedido.orderStatus === "finished" ||
+                  pedido.orderStatus === "delivered"
+              )
               .slice(startIndex, endIndex)
               .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_order}>
@@ -337,7 +341,7 @@ function PedidosGeneral() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
@@ -407,7 +411,13 @@ function PedidosGeneral() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          pageCount={Math.ceil(filteredPedidos.filter((pedido) => pedido.orderStatus !== "finished").length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) =>
+                pedido.orderStatus === "finished" ||
+                pedido.orderStatus === "delivered"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

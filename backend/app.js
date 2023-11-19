@@ -18,7 +18,7 @@ import DeliveryDetailRoute from './routes/DeliveryDetailRoute.js'
 import SelfServiceQueueRoute from './routes/SelfServiceQueueRoute.js'
 import ServiceDetailRoute from './routes/ServiceDetailRoute.js'
 import ServiceOrderDetailRoute from './routes/ServiceOrderDetailRoute.js'
-import CashWhithdrawalRoute from './routes/CashWithdrawalRoute.js'
+import CashWithdrawalRoute from './routes/CashWithdrawalRoute.js'
 import PettyCashRoute from './routes/PettyCashRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 
@@ -45,7 +45,7 @@ app.use(LaundryQueueRoute)
 app.use(SelfServiceQueueRoute)
 app.use(ServiceDetailRoute)
 app.use(ServiceOrderDetailRoute)
-app.use(CashWhithdrawalRoute)
+app.use(CashWithdrawalRoute)
 app.use(PettyCashRoute)
 app.use(MessageRoute)
 

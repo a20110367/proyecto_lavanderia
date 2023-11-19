@@ -31,15 +31,15 @@ function Reembolso() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/cashWhithdrawals");
+    const response = await api.get("/cashWithdrawals");
     return response.data;
   };
 
-  const { data } = useSWR("cashWhithdrawals", fetcher);
+  const { data } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
-      const reembolsosFiltrados = data.filter((reembolso) => reembolso.cashWhithdrawalType === "refound");
+      const reembolsosFiltrados = data.filter((reembolso) => reembolso.cashWithdrawalType === "refound");
       setReembolsos(reembolsosFiltrados);
       setFilteredReembolsos(reembolsosFiltrados);
     }
@@ -119,8 +119,8 @@ function Reembolso() {
     if (isValid) {
       const date = moment().format(); 
 
-      api.post("/cashWhithdrawals", {
-        cashWhithdrawalType : "refound",
+      api.post("/cashWithdrawals", {
+        cashWithdrawalType : "refound",
         fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
         fk_user:cookies.token,
         amount : parseInt(monto),
@@ -129,8 +129,8 @@ function Reembolso() {
       });
 
       const nuevoReembolso = {
-        id_cashWhithdrawal: reembolsos.length + 1,
-        cashWhithdrawalType : "refound",
+        id_cashWithdrawal: reembolsos.length + 1,
+        cashWithdrawalType : "refound",
         numeroPedido: numeroPedido,
         amount: parseInt(monto),
         cause: motivo,
@@ -201,8 +201,8 @@ function Reembolso() {
           {filteredReembolsos
         .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
         .map((reembolso) => (
-              <tr className="bg-white border-b" key={reembolso.id_cashWhithdrawal}>
-                <td className="py-3 px-1 text-center">{reembolso.id_cashWhithdrawal}</td>
+              <tr className="bg-white border-b" key={reembolso.id_cashWithdrawal}>
+                <td className="py-3 px-1 text-center">{reembolso.id_cashWithdrawal}</td>
                 <td className="py-3 px-6">{reembolso.id_order}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>

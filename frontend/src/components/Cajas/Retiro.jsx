@@ -30,15 +30,15 @@ function Retiro() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/cashWhithdrawals");
+    const response = await api.get("/cashWithdrawals");
     return response.data;
   };
 
-  const { data } = useSWR("cashWhithdrawals", fetcher);
+  const { data } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
-      const retirosFiltrados = data.filter((retiro) => retiro.cashWhithdrawalType === "withdrawal");
+      const retirosFiltrados = data.filter((retiro) => retiro.cashWithdrawalType === "withdrawal");
       setRetiros(retirosFiltrados);
       setFilteredRetiros(retirosFiltrados);
     }
@@ -105,8 +105,8 @@ function Retiro() {
     if (isValid) {
       const date = moment().format();
 
-      api.post("/cashWhithdrawals", {
-        cashWhithdrawalType: "withdrawal",
+      api.post("/cashWithdrawals", {
+        cashWithdrawalType: "withdrawal",
         fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
         fk_user: cookies.token,
         amount: parseInt(monto),
@@ -116,7 +116,7 @@ function Retiro() {
       setVisible(false);
 
       const nuevoRetiro = {
-        id_cashWhithdrawal: retiros.length + 1,
+        id_cashWithdrawal: retiros.length + 1,
         amount: parseInt(monto),
         cause: motivo,
         date: date,
@@ -182,9 +182,9 @@ function Retiro() {
           {filteredRetiros
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
-              <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>
+              <tr className="bg-white border-b" key={retiro.id_cashWithdrawal}>
                 <td className="py-3 px-1 text-center">
-                  {retiro.id_cashWhithdrawal}
+                  {retiro.id_cashWithdrawal}
                 </td>
                 <td className="py-3 px-6">{formatDateToGMTMinus6(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>

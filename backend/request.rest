@@ -837,15 +837,15 @@ DELETE http://localhost:5000/deliveryDetails/7
 
 //CRUD DE CASH WHITHDRAWALS
 
-GET http://localhost:5000/cashWhithdrawals
+GET http://localhost:5000/cashWithdrawals
 
 ###
 
-GET http://localhost:5000/cashWhithdrawals/1
+GET http://localhost:5000/cashWithdrawals/1
 
 ###
 
-POST http://localhost:5000/cashWhithdrawals
+POST http://localhost:5000/cashWithdrawals
 Content-Type: application/json
 
 {
@@ -856,14 +856,14 @@ Content-Type: application/json
   "date" :"2023-10-15T00:00:00.000Z"
 }
 ###
-PATCH  http://localhost:5000/cashWhithdrawals/1
+PATCH  http://localhost:5000/cashWithdrawals/1
 Content-Type: application/json
 
 {
     "amount":400.00
 }
 ###
-DELETE   http://localhost:5000/cashWhithdrawals/19
+DELETE   http://localhost:5000/cashWithdrawals/19
 
 
 //CRUD DE IRON SERVICE DETAILS

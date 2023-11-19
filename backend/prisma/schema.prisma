@@ -8,22 +8,22 @@ datasource db {
 }
 
 model User {
-  id_user         Int               @id @default(autoincrement())
-  name            String
-  email           String            @unique
-  phone           String            @unique
-  pass            String
-  role            Role              @default(employee)
-  created         DateTime          @default(now())
-  firstLN         String
-  secondLN        String
-  username        String            @unique
-  updatedAt       DateTime          @updatedAt
-  CashCut         CashCut[]
-  CashWhithdrawal CashWhithdrawal[]
-  DeliveryDetail  DeliveryDetail[]
-  ServiceOrders   ServiceOrder[]
-  PettyCash       PettyCash[]
+  id_user        Int              @id @default(autoincrement())
+  name           String
+  email          String           @unique
+  phone          String           @unique
+  pass           String
+  role           Role             @default(employee)
+  created        DateTime         @default(now())
+  firstLN        String
+  secondLN       String
+  username       String           @unique
+  updatedAt      DateTime         @updatedAt
+  CashCut        CashCut[]
+  CashWithdrawal CashWithdrawal[]
+  DeliveryDetail DeliveryDetail[]
+  ServiceOrders  ServiceOrder[]
+  PettyCash      PettyCash[]
 }
 
 model Client {
@@ -282,41 +282,41 @@ model StaffMember {
 model CashCut {
   fk_user             Int
   total               Float?
-  created             DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  cashCutD            DateTime?         @db.Date
-  cashCutT            DateTime?         @db.Time(0)
-  id_cashCut          Int               @id @default(autoincrement())
-  cashCutStatus       CashCutStatus     @default(open)
-  initialCash         Float?            @default(0)
+  created             DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  cashCutD            DateTime?        @db.Date
+  cashCutT            DateTime?        @db.Time(0)
+  id_cashCut          Int              @id @default(autoincrement())
+  cashCutStatus       CashCutStatus    @default(open)
+  initialCash         Float?           @default(0)
   ordersPayed         Int?
   totalAutoservicio   Float?
   totalCash           Float?
   totalCashWithdrawal Float?
   totalCredit         Float?
   totalEncargo        Float?
-  totalOtros          Float?            @default(0)
+  totalOtros          Float?           @default(0)
   totalPlanchado      Float?
   totalIncome         Float?
   pettyCashBalance    Float?
-  user                User              @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  cashWhithdrawal     CashWhithdrawal[]
+  user                User             @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  cashWithdrawal      CashWithdrawal[]
   payment             Payment[]
 }
 
-model CashWhithdrawal {
-  id_cashWhithdrawal  Int                @id @default(autoincrement())
-  fk_cashCut          Int
-  fk_user             Int
-  cashWhithdrawalType CashWithdrawalType @default(withdrawal)
-  amount              Float
-  cause               String
-  serviceOrder        Int?
-  date                DateTime?          @db.Date
-  created             DateTime           @default(now())
-  updatedAt           DateTime           @updatedAt
-  cashCut             CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
-  user                User               @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+model CashWithdrawal {
+  id_cashWithdrawal  Int                @id @default(autoincrement())
+  fk_cashCut         Int
+  fk_user            Int
+  cashWithdrawalType CashWithdrawalType @default(withdrawal)
+  amount             Float
+  cause              String
+  serviceOrder       Int?
+  date               DateTime?          @db.Date
+  created            DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  cashCut            CashCut            @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
+  user               User               @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PettyCash {

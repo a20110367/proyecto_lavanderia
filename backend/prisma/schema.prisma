@@ -87,6 +87,7 @@ model IronService {
   price              Float
   pieces             Int
   cycleTime          Int
+  token_id           Int?
   category_id        Int
   Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail ServiceOrderDetail[]
@@ -94,7 +95,7 @@ model IronService {
 }
 
 model SelfService {
-  id_SelfService     Int                  @id @default(autoincrement())
+  id_selfService     Int                  @id @default(autoincrement())
   description        String               @unique
   price              Float
   weight             Int
@@ -109,7 +110,7 @@ model SelfService {
 }
 
 model LaundryService {
-  id_LaundryService  Int                  @id @default(autoincrement())
+  id_laundryService  Int                  @id @default(autoincrement())
   description        String               @unique
   price              Float
   washWeight         Int
@@ -158,73 +159,75 @@ model ServiceOrderDetail {
   subtotal              Float    @default(0.00)
   created               DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  fk_ServiceOrder       Int
-  fk_LaundryService     Int?
-  fk_SelfService        Int?
-  fk_IronService        Int?
+  fk_serviceOrder       Int
+  fk_laundryService     Int?
+  fk_selfService        Int?
+  fk_ironService        Int?
 
-  serviceOrder   ServiceOrder    @relation(fields: [fk_ServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
-  LaundryService LaundryService? @relation(fields: [fk_LaundryService], references: [id_LaundryService])
-  SelfService    SelfService?    @relation(fields: [fk_SelfService], references: [id_SelfService])
-  IronService    IronService?    @relation(fields: [fk_IronService], references: [id_ironService])
+  serviceOrder   ServiceOrder    @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  LaundryService LaundryService? @relation(fields: [fk_laundryService], references: [id_laundryService])
+  SelfService    SelfService?    @relation(fields: [fk_selfService], references: [id_selfService])
+  IronService    IronService?    @relation(fields: [fk_ironService], references: [id_ironService])
 }
 
 model LaundryQueue {
   id_laundryEvent   Int           @id @default(autoincrement())
-  id_description    String
+  id_description    String?
   fk_laundryService Int?
   fk_idServiceOrder Int
   fk_washDetail     Int?
   fk_dryDetail      Int?
+  token_id           Int?
   serviceStatus     ServiceStatus @default(pending)
 
   serviceOrder   ServiceOrder    @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
-  LaundryService LaundryService? @relation(fields: [fk_laundryService], references: [id_LaundryService], onDelete: SetNull, onUpdate: Cascade)
+  LaundryService LaundryService? @relation(fields: [fk_laundryService], references: [id_laundryService], onDelete: SetNull, onUpdate: Cascade)
   WashDetail     WashDetail?
   DryDetail      DryDetail?
 }
 
 model WashDetail {
-  id_washDetail        Int  @id @default(autoincrement())
-  fk_idWashStaffMember Int?
-  fk_idWashMachine     Int?
-  fk_idStaffMember     Int?
-  fk_laundryEvent      Int? @unique
+  id_washDetail    Int  @id @default(autoincrement())
+  fk_idWashMachine Int?
+  fk_idStaffMember Int?
+  fk_laundryEvent  Int? @unique
 
   LaundryQueue LaundryQueue? @relation(fields: [fk_laundryEvent], references: [id_laundryEvent], onDelete: SetNull, onUpdate: Cascade)
   StaffMember  StaffMember?  @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model DryDetail {
-  id_dryDetail        Int  @id @default(autoincrement())
-  fk_idDryStaffMember Int?
-  fk_idDryMachine     Int?
-  fk_idStaffMember    Int?
-  fk_laundryEvent     Int? @unique
+  id_dryDetail     Int  @id @default(autoincrement())
+  fk_idDryMachine  Int?
+  fk_idStaffMember Int?
+  fk_laundryEvent  Int? @unique
 
   LaundryQueue LaundryQueue? @relation(fields: [fk_laundryEvent], references: [id_laundryEvent], onDelete: SetNull, onUpdate: Cascade)
   StaffMember  StaffMember?  @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model SelfServiceQueue {
-  id_SelfServiceEvent Int           @id @default(autoincrement())
-  id_description      String
+  id_selfServiceEvent Int           @id @default(autoincrement())
+  id_description      String?
   fk_idServiceOrder   Int
-  fk_SelfService      Int?
+  fk_selfService      Int?
   fk_idMachine        Int?
+  token_id           Int?
   serviceStatus       ServiceStatus @default(pending)
 
   machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
   serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
-  SelfService  SelfService? @relation(fields: [fk_SelfService], references: [id_SelfService], onDelete: SetNull, onUpdate: Cascade)
+  SelfService  SelfService? @relation(fields: [fk_selfService], references: [id_selfService], onDelete: SetNull, onUpdate: Cascade)
 }
 
 model IronQueue {
   id_ironEvent      Int           @id @default(autoincrement())
+  id_description    String?
   fk_idIronService  Int
   fk_idServiceOrder Int
   fk_idStaffMember  Int?
   fk_idIronStation  Int?
+  token_id           Int?
   serviceStatus     ServiceStatus @default(pending)
 
   ironStation  IronStation? @relation(fields: [fk_idIronStation], references: [id_ironStation], onDelete: Cascade, onUpdate: Cascade)

@@ -5,7 +5,11 @@ import dotenv from "dotenv";
 //Rutas de los modelos
 import UserRoute from './routes/UserRoute.js';
 import ClientRoute from './routes/ClientRoute.js'
-import ServiceRoute from './routes/ServiceRoute.js'
+//import ServiceRoute from './routes/ServiceRoute.js'
+import QueueRoute from './routes/QueueRoute.js'
+import ServiceLaundryRoute from './routes/ServiceLaundryRoute.js'
+import ServiceIronRoute from './routes/ServiceIronRoute.js'
+import ServiceSelfServiceRoute from './routes/ServiceSelfServiceRoute.js'
 import MachineRoute from './routes/MachineRoute.js'
 import IronStationRoute from './routes/IronStationRoute.js'
 import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
@@ -32,7 +36,11 @@ app.use(express.json());
 //Uso de rutas de por la aplicación
 app.use(UserRoute)
 app.use(ClientRoute)
-app.use(ServiceRoute)
+app.use(QueueRoute)
+//app.use(ServiceRoute)
+app.use(ServiceLaundryRoute)
+app.use(ServiceIronRoute)
+app.use(ServiceSelfServiceRoute)
 app.use(MachineRoute)
 app.use(IronStationRoute)
 app.use(OrderRoute)

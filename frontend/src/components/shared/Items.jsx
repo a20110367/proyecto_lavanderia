@@ -139,7 +139,6 @@ const items2 = [
 
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
     getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 

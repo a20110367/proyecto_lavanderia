@@ -49,9 +49,7 @@ import InicioCaja from "./components/Cajas/InicioCaja"
 import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 
-
-
-
+import Settings from './routes/Settings'
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/auth/auth';
 import Logout from './routes/Logout'
@@ -68,7 +66,6 @@ import Retiro from "./components/Cajas/Retiro"
 import CajaChica from "./components/Cajas/CajaChica"
 import Reembolso from "./components/Cajas/Reembolso"
 
-import Settings from "./components/Settings"
 import ServicesPlanchado from "./components/Service/ServicesPlanchado"
 import AddServicePlanchado from "./components/Service/AddServicePlanchado"
 import EditServicePlanchado from "./components/Service/EditServicePlanchado"
@@ -190,6 +187,13 @@ function App() {
                             isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <Users />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/settings" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
+                        >
+                            <Settings />
                         </ProtectedRoute>
                     } />
                 </Route>

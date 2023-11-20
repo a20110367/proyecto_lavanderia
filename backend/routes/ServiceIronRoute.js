@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     getIronServices,
+    getIronServicesById,
     createIronService,
     createIronServiceMany,
     updateIronService,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 //router.get('/servicesIronById/:id', getServicesById);
 router.get('/servicesIron', getIronServices);
+router.get('/servicesIron/:id', getIronServicesById);
 
 router.post('/servicesIron', createIronService);
 router.post('/servicesIronMany', createIronServiceMany);

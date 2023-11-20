@@ -51,15 +51,18 @@ function PedidosLavanderia() {
   const { data } = useSWR("ordersLaundry", fetcher);
 
   useEffect(() => {
-    // Si hay datos y no existen estados confirmados para los pedidos, inicializa los estados
     if (data && Object.keys(confirmedDryerProcesses).length === 0) {
       const initialStates = {};
       data.forEach((pedido) => {
         initialStates[pedido.id_order] = false;
       });
-      setConfirmedDryerProcesses(initialStates);
+      // Actualizar los estados solo si hay cambios
+      if (Object.keys(initialStates).length > 0) {
+        setConfirmedDryerProcesses(initialStates);
+      }
     }
   }, [data, confirmedDryerProcesses]);
+  
 
   useEffect(() => {
     const storedConfirmationStatus = localStorage.getItem(

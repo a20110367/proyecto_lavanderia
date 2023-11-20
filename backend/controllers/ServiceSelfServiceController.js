@@ -7,7 +7,38 @@ export const getSelfServices = async (req, res) => {
         const response = await prisma.selfService.findMany({
             select: {
 
-                id_SelfService: true,
+                id_selfService: true,
+                description: true,
+                price: true,
+                weight: true,
+                cycleTime: true,
+                Category: {
+                    select: {
+                        categoryDescription: true,
+                        id_category: true
+                    },
+                },
+                
+            },
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+export const getSelfServicesById = async (req, res) => {
+    try {
+        const response = await prisma.selfService.findUnique({
+           
+            where: {
+                id_selfService: Number(req.body.id)
+            },
+        
+            select: {
+
+                id_selfService: true,
                 description: true,
                 price: true,
                 weight: true,

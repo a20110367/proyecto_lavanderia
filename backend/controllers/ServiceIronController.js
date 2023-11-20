@@ -27,6 +27,35 @@ export const getIronServices = async (req, res) => {
     }
 }
 
+export const getIronServicesById = async (req, res) => {
+    try {
+        const response = await prisma.ironService.findMany({
+            
+            where: {
+                id_ironService: Number(req.body.id)
+            },
+            
+            select: {
+                id_ironService: true,
+                description: true,
+                price: true,
+                pieces: true,
+                cycleTime: true,
+                Category: {
+                    select: {
+                        categoryDescription: true,
+                        id_category: true
+                    },
+                },
+            },
+
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
 
 export const createIronService = async (req, res) => {
 

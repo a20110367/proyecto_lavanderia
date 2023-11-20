@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     getSelfServices,
+    getSelfServicesById,
     createSelfService,
     createSelfServiceMany,
     updateSelfService,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 //router.get('/servicesSelfServiceById/:id', getServicesById);
 router.get('/servicesSelfService', getSelfServices);
+router.get('/servicesSelfService/:id', getSelfServicesById);
 
 router.post('/servicesSelfService', createSelfService);
 router.post('/servicesSelfServiceMany', createSelfServiceMany);

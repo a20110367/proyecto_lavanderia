@@ -29,6 +29,39 @@ export const getLaundryServices = async (req, res) => {
     }
 }
 
+export const getLaundryServicesById = async (req, res) => {
+    try {
+        const response = await prisma.laundryService.findUnique({
+            
+            
+            where: {
+                id_laundryService: Number(req.body.id)
+            },
+              
+            select: {
+
+                id_laundryService: true,
+                description: true,
+                price: true,
+                washWeight: true,
+                washCycleTime: true,
+                dryWeight: true,
+                dryCycleTime: true,
+                Category: {
+                    select: {
+                        categoryDescription: true,
+                        id_category: true
+                    },
+                },
+            },
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
 
 export const createLaundryService = async (req, res) => {
 

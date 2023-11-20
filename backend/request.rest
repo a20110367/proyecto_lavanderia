@@ -930,5 +930,5 @@ GET   http://localhost:5000/laundryQueue
 GET   http://localhost:5000/servicesLaundry
 ####
 
-GET   http://localhost:5000/servicesSelfService
+GET   http://localhost:5000/servicesIron
 ####

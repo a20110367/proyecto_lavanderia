@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import jsPDF from "jspdf";
 import useSWR from "swr";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Select } from "antd";
@@ -238,49 +237,6 @@ export default function PuntoVenta() {
       }
     }
 
-
-
-    const doc = new jsPDF();
-
-    doc.text(`Ticket de Compra de: ${clientName}`, 10, 10);
-
-    doc.text(`Le atendió:  ${cookies.username}`, 10, 20);
-
-    doc.text("Productos:", 10, 30);
-    let y = 40;
-
-    cart.forEach((service) => {
-      doc.text(
-        `${service.description} x ${service.quantity} - $${service.price * service.quantity
-        }`,
-        10,
-        y
-      );
-      y += 10;
-    });
-
-    doc.text(`Subtotal: $${calculateSubtotal()}`, 10, y + 10);
-    doc.text(
-      `Fecha de Recepcion: ${purchaseDate.format("DD/MM/YYYY HH:mm:ss")}`,
-      10,
-      y + 20
-    );
-
-    // Agregar el campo "Fecha de Entrega" al ticket
-    doc.text(
-      `Fecha de Entrega: ${deliveryDate.format("DD/MM/YYYY HH:mm:ss")}`,
-      10,
-      y + 30
-    );
-
-    doc.text(`Forma de Pago: ${payForm}`, 10, y + 40);
-
-    if (payForm === "advance") {
-      doc.text(`Método de Pago Anticipado: ${payMethod}`, 10, y + 50);
-    }
-
-    doc.save("ticket_compra.pdf");
-
     localStorage.setItem("lastSelectedClient", clientName);
     localStorage.setItem("returningFromPuntoVenta", "true");
 
@@ -485,7 +441,7 @@ export default function PuntoVenta() {
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Subtotal:
                     </p>
-                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>
+                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>                
                   </div>
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>

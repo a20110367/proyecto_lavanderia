@@ -44,8 +44,8 @@ function AddServicePlanchado() {
       await api.post("/servicesIron", {
         description: description,
         price: parseFloat(price),
-        ironPieces: parseInt(pieces),
-        ironCycleTime: parseInt(time),
+        cycleTime: parseInt(time),
+        pieces: parseInt(pieces),
         category_id: 3,
       });
       setDescription("");
@@ -55,6 +55,7 @@ function AddServicePlanchado() {
 
       navigate("/servicesPlanchado");
     } catch (err) {
+      console.info(err)
       setErrMsg("Failed to add service.");
     }
   };

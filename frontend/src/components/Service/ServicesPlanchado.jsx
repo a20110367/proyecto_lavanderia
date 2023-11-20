@@ -28,7 +28,7 @@ function ServicesPlanchado() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/servicesIronService");
+    const response = await api.get("/servicesIron");
     return response.data;
   };
 

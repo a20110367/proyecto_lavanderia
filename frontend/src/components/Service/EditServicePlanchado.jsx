@@ -26,7 +26,7 @@ function EditServicePlanchado() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await api.get(`/servicesById/${id}`);
+      const response = await api.get(`/servicesUpdateIron/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setPieces(response.data.IronService[0].pieces)

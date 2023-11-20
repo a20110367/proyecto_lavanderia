@@ -428,7 +428,10 @@ export default function PuntoVenta() {
                 </div>
                 {categoryId === 3 ? (
                   <div className="flex items-center">
-                    <BsFillLightningFill className="text-yellow-500 mr-1" fontSize={19}/>
+                    <BsFillLightningFill
+                      className="text-yellow-500 mr-1"
+                      fontSize={19}
+                    />
                     <strong>Servicio Express</strong>
                     <input
                       type="checkbox"
@@ -509,22 +512,24 @@ export default function PuntoVenta() {
                       </div>
                     </div>{" "}
                   </div>
-                  <div>
-                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                      Fecha de Entrega:
-                    </p>
-                    <DatePicker
-                      selected={moment(deliveryDate).toDate()}
-                      showTimeSelect
-                      timeFormat="HH:mm"
-                      timeIntervals={15}
-                      dateFormat={customDateFormat}
-                      onChange={(date) => setDeliveryDate(moment(date))}
-                      locale={es}
-                      timeCaption="Hora"
-                      className="form-control border-black"
-                    />
-                  </div>
+                  {!shouldShowAllServices && serviceType !== "autoservicio" && (
+                    <div>
+                      <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                        Fecha de Entrega:
+                      </p>
+                      <DatePicker
+                        selected={moment(deliveryDate).toDate()}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        dateFormat={customDateFormat}
+                        onChange={(date) => setDeliveryDate(moment(date))}
+                        locale={es}
+                        timeCaption="Hora"
+                        className="form-control border-black"
+                      />
+                    </div>
+                  )}
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Subtotal:

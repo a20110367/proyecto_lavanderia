@@ -7,7 +7,7 @@ export const getLaundryServices = async (req, res) => {
         const response = await prisma.laundryService.findMany({
             select: {
 
-                id_LaundryService: true,
+                id_laundryService: true,
                 description: true,
                 price: true,
                 washWeight: true,

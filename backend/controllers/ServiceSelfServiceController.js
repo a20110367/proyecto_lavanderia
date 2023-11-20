@@ -7,7 +7,7 @@ export const getSelfServices = async (req, res) => {
         const response = await prisma.selfService.findMany({
             select: {
 
-                id_SelfService: true,
+                id_selfService: true,
                 description: true,
                 price: true,
                 weight: true,

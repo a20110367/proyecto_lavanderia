@@ -39,6 +39,7 @@ export default function PuntoVenta() {
   const [payMethod, setPayMethod] = useState('cash');
   const [categoryId, setCategoryId] = useState(0)
   const [isSaved, setIsSaved] = useState(false)
+  const [isExpress, setIsExpress] = useState(false)
   const [url, setUrl] = useState('')
 
   useEffect(() => {
@@ -105,6 +106,9 @@ export default function PuntoVenta() {
   };
 
   const removeFromCart = (serviceId) => {
+    if(cart.length === 1){
+      setIsExpress(false)
+    }
     const updatedCart = cart
       .map((item) => {
         if (item.id_service === serviceId) {
@@ -272,6 +276,51 @@ export default function PuntoVenta() {
       return false;
     });
 
+  const handleOnChange = () => {
+    if (cart.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "La lista de servicios esta vacia!",
+        text: 'Intenta añadir un servicio a la lista.',
+        confirmButtonColor: '#034078'
+      });
+      return console.log('carrito vacio weon')
+    } else {
+      if (!isExpress) {
+        Swal.fire({
+          title: "Esta seguro de poner el pedido como Servicio Express?",
+          text: "El Precio sera uno mayor a lo habitual en caso de confirmar",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Si",
+          cancelButtonText: "Cancelar",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            setIsExpress(!isExpress);
+            changePrice()
+          }
+        });
+      } else {
+        setIsExpress(!isExpress);
+        changePrice()
+      }
+    }
+  };
+
+  const changePrice = () => {
+
+    const expressMultiplier = localStorage.getItem('expressMultiplier') ? localStorage.getItem('expressMultiplier') : 2
+
+    if (isExpress) {
+      const updatedCart = cart.map((detail) => ({ ...detail, price: detail.price / expressMultiplier, totalPrice: detail.price / expressMultiplier }))
+      setCart(updatedCart)
+    } else {
+      const updatedCart = cart.map((detail) => ({ ...detail, price: detail.price * expressMultiplier, totalPrice: detail.price * expressMultiplier }))
+      setCart(updatedCart)
+    }
+  }
 
   return (
     <div>
@@ -350,8 +399,16 @@ export default function PuntoVenta() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-4">
-                <strong>Subtotal:</strong> ${calculateSubtotal()}
+              <div className="flex mt-4 justify-between">
+                <div>
+                  <strong>Subtotal:</strong> ${calculateSubtotal()}
+                </div>
+                {categoryId === 3 ? (
+                  <div>
+                    <strong>Servicio Express</strong>
+                    <input type="checkbox" className="ml-2" checked={isExpress} onChange={handleOnChange} />
+                  </div>
+                ) : ''}
               </div>
               <div className="mt-4 flex justify-between">
                 <button
@@ -376,7 +433,7 @@ export default function PuntoVenta() {
                       key="submit"
                       className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                       onClick={handleSaveAndGenerateTicket}
-                      disabled = {isSaved}
+                      disabled={isSaved}
                     >
                       Guardar
                     </button>,
@@ -441,7 +498,7 @@ export default function PuntoVenta() {
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Subtotal:
                     </p>
-                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>                
+                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>
                   </div>
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>

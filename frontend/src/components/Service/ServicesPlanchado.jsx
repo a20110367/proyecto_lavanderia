@@ -56,7 +56,7 @@ function ServicesPlanchado() {
 
   const deleteService = async (serviceId) => {
     console.log(serviceId)
-    await api.delete(`/services/${serviceId}`);
+    await api.delete(`/servicesIron/${serviceId}`);
     mutate("servicesIron");
   };
 
@@ -107,7 +107,7 @@ function ServicesPlanchado() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_service}>
+                  <tr key={service.id_ironService}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
@@ -116,7 +116,7 @@ function ServicesPlanchado() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServicePlanchado/${service.id_service}`
+                            `/editServicePlanchado/${service.id_ironService}`
                           )
                         }
                         className="btn-edit"
@@ -127,7 +127,7 @@ function ServicesPlanchado() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_service
+                            service.id_ironService
                           )
                         }
                         className="btn-cancel"

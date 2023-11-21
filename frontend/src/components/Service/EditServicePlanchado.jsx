@@ -26,11 +26,11 @@ function EditServicePlanchado() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await api.get(`/servicesUpdateIron/${id}`);
+      const response = await api.get(`/servicesIron/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
-      setPieces(response.data.IronService[0].pieces)
-      setTime(response.data.IronService[0].cycleTime)
+      setPieces(response.data.pieces)
+      setTime(response.data.cycleTime)
       setCategory("Planchado");
     };
     getServiceById();
@@ -62,8 +62,8 @@ function EditServicePlanchado() {
       await api.patch(`/servicesUpdateIron/${id}`, {
         description: description,
         price: parseFloat(price),
-        ironPieces: parseInt(pieces),
-        ironCycleTime: parseInt(time),
+        pieces: parseInt(pieces),
+        cycleTime: parseInt(time),
         category_id: 3,
       });
       navigate("/servicesPlanchado");

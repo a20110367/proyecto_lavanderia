@@ -394,18 +394,18 @@ function PedidosLavanderia() {
 
       setShowMachineName(false);
 
-      // showNotification("NOTIFICACIÓN ENVIADA...");
-      // await api.post("/sendMessage", {
-      //   id_order: selectedPedido.id_order,
-      //   name: selectedPedido.client.name,
-      //   email: selectedPedido.client.email,
-      //   tel: "521" + selectedPedido.client.phone,
-      //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-      //   subject: "Tu Ropa esta Lista",
-      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-      //   warning: false,
-      // });
-      // console.log("NOTIFICACIÓN ENVIADA...");
+      showNotification("NOTIFICACIÓN ENVIADA...");
+      await api.post("/sendMessage", {
+        id_order: selectedPedido.id_order,
+        name: selectedPedido.client.name,
+        email: selectedPedido.client.email,
+        tel: "521" + selectedPedido.client.phone,
+        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        subject: "Tu Ropa esta Lista",
+        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+        warning: false,
+      });
+      console.log("NOTIFICACIÓN ENVIADA...");
       showNotification(`Pedido finalizado correctamente`);
       localStorage.removeItem("selectedMachine");
     } catch (error) {
@@ -479,7 +479,6 @@ function PedidosLavanderia() {
             <tr>
               <th>No. Folio</th>
               <th>Recibió</th>
-              <th>Entregó</th>
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
@@ -501,9 +500,7 @@ function PedidosLavanderia() {
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.user.name}
                   </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
-                  </td>
+
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.client.name}
                   </td>

@@ -93,6 +93,7 @@ function RecepcionPlanchado() {
             </thead>
             <tbody>
               {filteredClients
+                .filter((client) => client.id_client !== 1)
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage

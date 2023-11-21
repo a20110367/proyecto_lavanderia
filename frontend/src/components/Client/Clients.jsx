@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from '../../api/api'
+import api from "../../api/api";
 import useSWR, { useSWRConfig } from "swr";
 import printJS from "print-js";
 import moment from "moment";
@@ -23,7 +23,7 @@ function Clients() {
   const [word, setWord] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const date = moment().format("DD / MM / YYYY")
+  const date = moment().format("DD / MM / YYYY");
   const hour = moment().format("LT");
   const [paid, setPaid] = useState(true);
   1;
@@ -156,6 +156,7 @@ function Clients() {
             </thead>
             <tbody>
               {data
+                .filter((client) => client.id_client !== 1)
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage

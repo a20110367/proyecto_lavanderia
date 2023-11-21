@@ -43,7 +43,6 @@ export default function PuntoVenta() {
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
   const [getUrl, setGetUrl] = useState('')
-  const [fetch, setFetch] = useState('')
 
   useEffect(() => {
     // Definir el category_id
@@ -51,19 +50,16 @@ export default function PuntoVenta() {
       setCategoryId(1);
       setGetUrl('/servicesSelfService')
       setPostUrl("/ordersSelfService");
-      setFetch('servicesSelfService')
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
       setCategoryId(2);
       setGetUrl('/servicesLaundry')
       setPostUrl("/ordersLaundryService");
-      setFetch('servicesLaundry')
     } else {
       setCategoryId(3);
       setGetUrl('/servicesIron')
       setPostUrl("/ordersIronService");
-      setFetch('servicesIron')
     }
   }, [serviceType]);
 
@@ -72,12 +68,18 @@ export default function PuntoVenta() {
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
   const [errMsg, setErrMsg] = useState("");
 
+  function getData(fetcher) {
+    const { data } = useSWR('services', fetcher);
+    return data
+  }
+
   const fetcher = async () => {
     const response = await api.get(getUrl);
     return response.data;
   };
 
-  const { data } = useSWR(fetch, fetcher);
+  const data = getData(fetcher)
+  
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {

@@ -5,25 +5,13 @@ import jsPDF from "jspdf";
 import api from '../../api/api'
 
 const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
-    return `${day}/${month}/${year}`;
+    const date = moment(dateStr).format("DD / MM / YYYY")
+    return date;
 };
 
 const formatTime = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    var hours = date.getUTCHours();
-    var minutes = date.getUTCMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime
+    const date =  moment(dateStr).format("LT");
+    return date
 }
 
 export const orderTicket = async (order) => {
@@ -70,8 +58,8 @@ export const orderTicket = async (order) => {
                     ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <!--<p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p>--> <p>Cajero: ${order.casher}</p></div>` : ''}
                 <hr class="hr-header">   
                     <p>Cliente: ${order.client}</p>         
-                    <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
-                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${order.scheduledDeliveryTime}</h4>        
+                    <p>F. Recepción: ${formatDate(order.receptionDate)} JUEVES ${formatTime(order.receptionTime)}</p>
+                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${formatTime(order.scheduledDeliveryTime)}</h4>        
                     <hr class="hr-header">
                 <p>Observaciones Generales: ${order.notes}</p>
                 <hr class="hr-header">

@@ -119,15 +119,15 @@ function EntregaLavanderia() {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,
-          payDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          payTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          payDate: cobroInfo.fechaPago.toISOString(),
+          payTime: cobroInfo.fechaPago.toISOString(),
           fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
           payTotal: pedido.totalPrice
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
-          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          deliveryDate: cobroInfo.fechaPago.toISOString(),
+          deliveryTime: cobroInfo.fechaPago.toISOString(),
           fk_idOrder: pedido.id_order
         }
       })
@@ -149,6 +149,8 @@ function EntregaLavanderia() {
         client: pedido.client.name,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        receptionDate: pedido.receptionDate,
+        receptionTime: pedido.receptionTime,
         notes: '',
         cart: cart
       }
@@ -219,8 +221,8 @@ function EntregaLavanderia() {
           fk_idOrder: pedido.id_order,
           fk_idPayment: pedido.payment.id_payment,
           fk_userCashier: cookies.token,
-          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          deliveryDate: cobroInfo.fechaPago.toISOString(),
+          deliveryTime: cobroInfo.fechaPago.toISOString(),
         })
         // PIENSO ENVIAR EL TICKET PDF AL CLIENTE
         const updatedFilteredPedidos = filteredPedidos.filter(function (order) {

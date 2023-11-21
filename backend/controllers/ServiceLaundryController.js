@@ -7,7 +7,7 @@ export const getLaundryServices = async (req, res) => {
         const response = await prisma.laundryService.findMany({
             select: {
 
-                id_laundryService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 washWeight: true,
@@ -32,15 +32,15 @@ export const getLaundryServices = async (req, res) => {
 export const getLaundryServicesById = async (req, res) => {
     try {
         const response = await prisma.laundryService.findUnique({
-            
-            
+
+
             where: {
-                id_laundryService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
-              
+
             select: {
 
-                id_laundryService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 washWeight: true,
@@ -91,7 +91,7 @@ export const updateLaundryService = async (req, res) => {
     try {
         const laundryService = await prisma.laundryService.update({
             where: {
-                id_laundryService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
             data: req.body
         });
@@ -106,7 +106,7 @@ export const deleteLaundryService = async (req, res) => {
     try {
         const laundryService = await prisma.laundryService.delete({
             where: {
-                id_laundryService: Number(req.params.id)
+                id_service: Number(req.params.id)
             }
 
         });

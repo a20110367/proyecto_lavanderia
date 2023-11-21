@@ -692,7 +692,7 @@ export const createIronServiceOrder = async (req, res) => {
 
 //             data: {
 //                 ironService: {
-//                     connect: { id_ironService: service.IronService.at(0).id_ironService },
+//                     connect: { id_service: service.IronService.at(0).id_service },
 //                 },
 //                 serviceOrder: {
 //                     connect: { id_order: serviceOrder.id_order },

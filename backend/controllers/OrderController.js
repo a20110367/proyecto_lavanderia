@@ -34,7 +34,13 @@ export const getOrders = async (req, res) => {
                 payment: true,
                 deliveryDetail: {
                     select: {
-                        fk_userCashier: true,
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
                     },
                 },
             },

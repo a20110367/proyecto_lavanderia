@@ -3,16 +3,7 @@ import printJS from "print-js";
 import moment from "moment";
 import jsPDF from "jspdf";
 import api from '../../api/api'
-
-const formatDate = (dateStr) => {
-    const date = moment(dateStr).format("DD / MM / YYYY")
-    return date;
-};
-
-const formatTime = (dateStr) => {
-    const date =  moment(dateStr).format("LT");
-    return date
-}
+import { formatDate, formatTime } from "../../utils/format";
 
 export const orderTicket = async (order) => {
     const date = moment().format("DD / MM / YYYY")

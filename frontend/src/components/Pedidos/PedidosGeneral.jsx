@@ -323,7 +323,7 @@ function PedidosGeneral() {
                     {pedido.user.name}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.deliveryDetail ? pedido.deliveryDetail.user.name : ''}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.client.name}

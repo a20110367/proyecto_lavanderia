@@ -89,10 +89,10 @@ export default function PuntoVenta() {
           const updatedCart = cart.map((item) =>
             item.id_service === serviceId
               ? {
-                  ...item,
-                  quantity: item.quantity + 1,
-                  totalPrice: item.price * (item.quantity + 1),
-                }
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: item.price * (item.quantity + 1),
+              }
               : item
           );
           setCart(updatedCart);
@@ -205,14 +205,10 @@ export default function PuntoVenta() {
           payForm: payForm,
           payStatus: payStatus,
           fk_user: cookies.token,
-          receptionDate:
-            purchaseDate.toISOString().split("T")[0] + "T00:00:00.000Z",
-          receptionTime:
-            "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
-          scheduledDeliveryDate:
-            deliveryDate.toISOString().split("T")[0] + "T00:00:00.000Z",
-          scheduledDeliveryTime:
-            "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
+          receptionDate: purchaseDate.toISOString(),
+          receptionTime: purchaseDate.toISOString(),
+          scheduledDeliveryDate: deliveryDate.toISOString(),
+          scheduledDeliveryTime: deliveryDate.toISOString(),
           fk_categoryId: categoryId,
         },
         services: arrayService,
@@ -225,10 +221,10 @@ export default function PuntoVenta() {
         subtotal: calculateSubtotal(),
         casher: cookies.username,
         client: clientName,
-        scheduledDeliveryDate:
-          deliveryDate.toISOString().split("T")[0] + "T00:00:00.000Z",
-        scheduledDeliveryTime:
-          "1970-01-01T" + deliveryDate.toISOString().split("T")[1],
+        receptionDate: purchaseDate.toISOString(),
+        receptionTime: purchaseDate.toISOString(),
+        scheduledDeliveryDate:deliveryDate.toISOString(),
+        scheduledDeliveryTime: deliveryDate.toISOString(),
         notes: "",
         cart: cart,
       };
@@ -269,30 +265,30 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -356,10 +352,10 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-            ? "Lista de Servicios de Autoservicio"
-            : serviceType === "planchado"
-            ? "Lista de Servicios de Planchado"
-            : "Lista de Servicios"}
+              ? "Lista de Servicios de Autoservicio"
+              : serviceType === "planchado"
+                ? "Lista de Servicios de Planchado"
+                : "Lista de Servicios"}
         </strong>
       </div>
       <div className="container pt-4">
@@ -382,11 +378,10 @@ export default function PuntoVenta() {
                     </h3>
                     <h5 className="text-gray-600">${service.price}</h5>
                     <button
-                      className={`${
-                        isAddButtonDisabled
+                      className={`${isAddButtonDisabled
                           ? "bg-gray-400"
                           : "bg-blue-500 hover:bg-blue-700"
-                      } text-white font-bold py-2 px-4 rounded mt-2`}
+                        } text-white font-bold py-2 px-4 rounded mt-2`}
                       onClick={() => addToCart(service.id_service, service)}
                       disabled={isAddButtonDisabled}
                     >
@@ -573,20 +568,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

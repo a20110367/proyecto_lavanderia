@@ -121,22 +121,22 @@ function EntregaPlanchado() {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,
-          payDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          payTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          payDate: cobroInfo.fechaPago.toISOString(),
+          payTime: cobroInfo.fechaPago.toISOString(),
           fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
           payTotal: pedido.totalPrice
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
-          deliveryDate: pedido.scheduledDeliveryDate,
-          deliveryTime: pedido.scheduledDeliveryTime,
+          deliveryDate: cobroInfo.fechaPago.toISOString(),
+          deliveryTime: cobroInfo.fechaPago.toISOString(),
           fk_idOrder: pedido.id_order
         }
       })
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = []
       cart.push({
-        description: 'FALTA TRAER BACK',
+        description:  pedido.ServiceOrderDetail[0].IronService ?  pedido.ServiceOrderDetail[0].IronService.description : 'ERROR',
         id_service: pedido.ServiceOrderDetail[0].fk_Service,
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
         quantity: pedido.ServiceOrderDetail[0].units
@@ -151,6 +151,8 @@ function EntregaPlanchado() {
         client: pedido.client.name,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        receptionDate: pedido.receptionDate,
+        receptionTime: pedido.receptionTime,
         notes: '',
         cart: cart
       }

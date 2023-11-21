@@ -39,8 +39,8 @@ function AutoServicio() {
 
   const launchModal = (url) => {
     Swal.fire({
-      title: "Iras a Añadir un Cliente",
-      text: "Estas seguro de añadir un cliente?",
+      title: "Estas a punto de añadir un cliente",
+      text: "¿Estas seguro?",
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

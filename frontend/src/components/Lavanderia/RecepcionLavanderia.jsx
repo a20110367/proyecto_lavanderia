@@ -3,12 +3,14 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
 import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
-import api from '../../api/api'
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function RecepcionLavanderia() {
+  const navigate = useNavigate();
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
     const response = await api.get("/clients");
@@ -51,6 +53,23 @@ function RecepcionLavanderia() {
       localStorage.removeItem("returningFromPuntoVenta");
     }
   }, []);
+
+  const launchModal = (url) => {
+    Swal.fire({
+      title: "Estas a punto de añadir un cliente",
+      text: "¿Estas seguro?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(url)
+      }
+    });
+  }
 
   return (
     <div>
@@ -154,11 +173,12 @@ function RecepcionLavanderia() {
       )}
 
       <div className="fcol-container">
-        <Link to="/addClient?source=encargo">
-          <button className="btn-big-light">
-            <div className="subtitle m-1">Añadir Cliente</div>
-          </button>
-        </Link>
+        <button
+          className="btn-big-light"
+          onClick={() => launchModal("/addClient?source=encargo")}
+        >
+          <div className="subtitle m-1">Añadir Cliente</div>
+        </button>
         <div className="text-IndigoDye font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!
         </div>

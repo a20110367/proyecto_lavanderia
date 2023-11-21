@@ -302,6 +302,8 @@ function PedidosGeneral() {
           </thead>
           <tbody>
             {filteredPedidos
+              .slice()
+              .reverse()
               .filter(
                 (pedido) =>
                   pedido.orderStatus === "finished" ||

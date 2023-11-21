@@ -141,7 +141,13 @@ function CajaPedidos() {
           </thead>
           <tbody>
             {filteredPedidos
-              .filter(pedido => pedido.orderStatus === 'finished' || pedido.orderStatus === 'delivered')
+              .slice()
+              .reverse()
+              .filter(
+                (pedido) =>
+                  pedido.orderStatus === "finished" ||
+                  pedido.orderStatus === "delivered"
+              )
               .slice(
                 currentPage * itemsPerPage,
                 (currentPage + 1) * itemsPerPage
@@ -157,10 +163,10 @@ function CajaPedidos() {
                       ? pedido.category.categoryDescription === "autoservicio"
                         ? "Autoservicio"
                         : pedido.category.categoryDescription === "planchado"
-                          ? "Planchado"
-                          : pedido.category.categoryDescription === "encargo"
-                            ? "Encargo"
-                            : "Otro" // Si el texto no coincide con ninguna categoría específica
+                        ? "Planchado"
+                        : pedido.category.categoryDescription === "encargo"
+                        ? "Encargo"
+                        : "Otro" // Si el texto no coincide con ninguna categoría específica
                       : "Categoría no definida"}
                   </td>
                   <td className="py-3 px-6 font-bold">
@@ -189,7 +195,14 @@ function CajaPedidos() {
                   <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
                   </td>
-                  <td className="py-3 px-6"> {pedido.payment ? (pedido.payment.payMethod === 'cash' ? 'Efectivo' : 'Tarjeta') : 'N/A'}</td>
+                  <td className="py-3 px-6">
+                    {" "}
+                    {pedido.payment
+                      ? pedido.payment.payMethod === "cash"
+                        ? "Efectivo"
+                        : "Tarjeta"
+                      : "N/A"}
+                  </td>
                   <td className="py-3 px-6">${pedido.totalPrice}</td>
                 </tr>
               ))}
@@ -214,7 +227,13 @@ function CajaPedidos() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          pageCount={Math.ceil(filteredPedidos.filter(pedido => pedido.orderStatus === 'finished' || pedido.orderStatus === 'delivered').length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) =>
+                pedido.orderStatus === "finished" ||
+                pedido.orderStatus === "delivered"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

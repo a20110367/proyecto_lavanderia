@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/api";
 import useSWR, { useSWRConfig } from "swr";
-import printJS from "print-js";
 import moment from "moment";
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";

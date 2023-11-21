@@ -6,6 +6,7 @@ import {
   ExclamationCircleOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
+import useSWR from "swr";
 import moment from "moment";
 import jsPDF from "jspdf";
 import Swal from 'sweetalert2'
@@ -37,21 +38,19 @@ function EntregaLavanderia() {
     setCurrentPage(selectedPage.selected);
   };
 
+  const fetcher = async () => {
+    const response = await api.get("/ordersLaundry");
+    return response.data;
+  };
+
+  const { data } = useSWR("ordersDeliveryLaundry", fetcher);
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await api.get("/ordersLaundry"); // Assuming your API endpoint is /orders
-        const ordersData = response.data;
-
-        setPedidos(ordersData);
-        setFilteredPedidos(ordersData);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
-    };
-
-    fetchOrders();
-  }, []);
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
+  }, [data]);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);

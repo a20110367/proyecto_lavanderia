@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import useSWR from "swr";
 import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
 import { orderTicket } from '../Ticket/Tickets'
@@ -39,21 +40,19 @@ function EntregaPlanchado() {
     setCurrentPage(selectedPage.selected);
   };
 
+  const fetcher = async () => {
+    const response = await api.get("/ordersIron");
+    return response.data;
+  };
+
+  const { data } = useSWR("ordersDeliveryIron", fetcher);
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await api.get("/ordersIron");
-        const ordersData = response.data;
-
-        setPedidos(ordersData);
-        setFilteredPedidos(ordersData);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
+      if(data) {
+        setPedidos(data);
+        setFilteredPedidos(data);
       }
-    };
-
-    fetchOrders();
-  }, []);
+  }, [data]);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);

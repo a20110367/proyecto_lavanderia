@@ -236,9 +236,8 @@ export default function PuntoVenta() {
           payment: {
             fk_idOrder: idOrder,
             payMethod: payMethod,
-            payDate:
-              purchaseDate.toISOString().split("T")[0] + "T00:00:00.000Z",
-            payTime: "1970-01-01T" + purchaseDate.toISOString().split("T")[1],
+            payDate: purchaseDate.toISOString(),
+            payTime: purchaseDate.toISOString(),
             fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
             payTotal: calculateSubtotal(),
           },

@@ -127,7 +127,7 @@ function AutoServicio() {
                     <td className="th2">{client.email}</td>
                     <td>
                       <Link
-                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Autoservicio`}
+                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Autoservicio&geturl=/servicesSelfService`}
                       >
                         <button className="btn-generate">
                           <div className="subtitle m-1">Generar pedido</div>

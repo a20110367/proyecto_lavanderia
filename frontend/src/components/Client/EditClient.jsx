@@ -22,6 +22,10 @@ function EditClient() {
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
+
   const [firstLN, setFirstLN] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [firstnameFocus, setFirstNameFocus] = useState(false);

@@ -107,7 +107,7 @@ function ServicesPlanchado() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_ironService}>
+                  <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
@@ -116,7 +116,7 @@ function ServicesPlanchado() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServicePlanchado/${service.id_ironService}`
+                            `/editServicePlanchado/${service.id_service}`
                           )
                         }
                         className="btn-edit"
@@ -127,7 +127,7 @@ function ServicesPlanchado() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_ironService
+                            service.id_service
                           )
                         }
                         className="btn-cancel"

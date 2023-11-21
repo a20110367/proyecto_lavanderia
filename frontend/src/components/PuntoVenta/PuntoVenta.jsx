@@ -31,6 +31,7 @@ export default function PuntoVenta() {
   const queryParams = new URLSearchParams(location.search);
   const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
+  const getUrl = queryParams.get("geturl")
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";
 
@@ -41,21 +42,26 @@ export default function PuntoVenta() {
   const [categoryId, setCategoryId] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
-  const [url, setUrl] = useState("");
+  const [postUrl, setPostUrl] = useState("");
+  const [fetch, setFetch] = useState('')
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === "autoservicio") {
+      setFetch('selfService')
       setCategoryId(1);
-      setUrl("/ordersSelfService");
+      setPostUrl("/ordersSelfService");
+
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
+      setFetch('laundryService')
       setCategoryId(2);
-      setUrl("/ordersLaundryService");
+      setPostUrl("/ordersLaundryService");
     } else {
+      setFetch('ironService')
       setCategoryId(3);
-      setUrl("/ordersIronService");
+      setPostUrl("/ordersIronService");
     }
   }, [serviceType]);
 
@@ -65,11 +71,11 @@ export default function PuntoVenta() {
   const [errMsg, setErrMsg] = useState("");
 
   const fetcher = async () => {
-    const response = await api.get("/services");
+    const response = await api.get(getUrl);
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
@@ -191,7 +197,7 @@ export default function PuntoVenta() {
     );
 
     try {
-      const res = await api.post(url, {
+      const res = await api.post(postUrl, {
         serviceOrder: {
           totalPrice: calculateSubtotal(),
           fk_client: parseInt(clientId),
@@ -392,7 +398,7 @@ export default function PuntoVenta() {
             </div>
           </div>
 
-          <div className="col-md-3">
+          <div className="col-md-3 ml-10">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}

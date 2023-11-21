@@ -31,6 +31,7 @@ export default function PuntoVenta() {
   const queryParams = new URLSearchParams(location.search);
   const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
+  const getUrl = queryParams.get("geturl")
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";
 
@@ -42,23 +43,24 @@ export default function PuntoVenta() {
   const [isSaved, setIsSaved] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
-  const [getUrl, setGetUrl] = useState('')
+  const [fetch, setFetch] = useState('')
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === "autoservicio") {
+      setFetch('selfService')
       setCategoryId(1);
-      setGetUrl('/servicesSelfService')
       setPostUrl("/ordersSelfService");
+
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
+      setFetch('laundryService')
       setCategoryId(2);
-      setGetUrl('/servicesLaundry')
       setPostUrl("/ordersLaundryService");
     } else {
+      setFetch('ironService')
       setCategoryId(3);
-      setGetUrl('/servicesIron')
       setPostUrl("/ordersIronService");
     }
   }, [serviceType]);
@@ -68,18 +70,12 @@ export default function PuntoVenta() {
   const customDateFormat = "dd/MM/yyyy HH:mm:ss";
   const [errMsg, setErrMsg] = useState("");
 
-  function getData(fetcher) {
-    const { data } = useSWR('services', fetcher);
-    return data
-  }
-
   const fetcher = async () => {
     const response = await api.get(getUrl);
     return response.data;
   };
 
-  const data = getData(fetcher)
-  
+  const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {

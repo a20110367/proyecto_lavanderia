@@ -12,13 +12,14 @@ export const getSelfServices = async (req, res) => {
                 price: true,
                 weight: true,
                 cycleTime: true,
+                machineType: true,
                 Category: {
                     select: {
                         categoryDescription: true,
                         id_category: true
                     },
                 },
-                
+
             },
         });
 
@@ -31,11 +32,11 @@ export const getSelfServices = async (req, res) => {
 export const getSelfServicesById = async (req, res) => {
     try {
         const response = await prisma.selfService.findUnique({
-           
+
             where: {
                 id_selfService: Number(req.params.id)
             },
-        
+
             select: {
 
                 id_selfService: true,
@@ -43,14 +44,14 @@ export const getSelfServicesById = async (req, res) => {
                 price: true,
                 weight: true,
                 cycleTime: true,
-                machineType:true,
+                machineType: true,
                 Category: {
                     select: {
                         categoryDescription: true,
                         id_category: true
                     },
                 },
-                
+
             },
         });
 

@@ -30,7 +30,7 @@ model Client {
   id_client     Int            @id @default(autoincrement())
   name          String
   email         String         @unique
-  phone         String         @unique
+  phone         String         
   pass          String?
   created       DateTime       @default(now())
   firstLN       String

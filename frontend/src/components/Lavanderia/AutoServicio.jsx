@@ -113,6 +113,7 @@ function AutoServicio() {
             </thead>
             <tbody>
               {filteredClients
+                .filter((client) => client.id_client !== 1)
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
@@ -184,7 +185,7 @@ function AutoServicio() {
           </div>
           <div className="text-center ml-96">
             <Link
-              to={`/puntoVenta?clientName=Público en General&serviceType=Autoservicio`}
+              to={`/puntoVenta?clientId=${1}&clientName=Publico en General&serviceType=autoservicio&geturl=/servicesSelfService`}
             >
               <button className="btn-big-light">
                 <div className="subtitle m-1">Público en General</div>

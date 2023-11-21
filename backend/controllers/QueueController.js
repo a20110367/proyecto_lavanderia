@@ -5,7 +5,14 @@ const prisma = new PrismaClient();
 ///Revisar comprotamiento y dependencias
 export const getLaundryQueue = async (req, res) =>{
     try {
-        const response = await prisma.laundryQueue.findMany();
+        const response = await prisma.laundryQueue.findMany({
+            include:{
+                LaundryService:true,
+                WashDetail:true,
+                DryDetail:true
+            },
+
+        });
 
         
 

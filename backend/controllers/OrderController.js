@@ -32,6 +32,11 @@ export const getOrders = async (req, res) => {
                 },
                 ServiceOrderDetail: true,
                 payment: true,
+                deliveryDetail: {
+                    select: {
+                        fk_userCashier: true,
+                    },
+                },
             },
         });
 

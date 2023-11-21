@@ -382,14 +382,12 @@ function PedidosLavanderia() {
       }
 
       // Actualizar el estado del pedido a "finish"
+      const updatedPedido = { ...selectedPedido, orderStatus: "finished" };
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
+        p.id_order === selectedPedido.id_order ? updatedPedido : p
       );
-
       setPedidos(updatedPedidos);
-
+  
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
@@ -481,7 +479,6 @@ function PedidosLavanderia() {
             <tr>
               <th>No. Folio</th>
               <th>Recibió</th>
-              <th>Entregó</th>
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
@@ -503,9 +500,7 @@ function PedidosLavanderia() {
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.user.name}
                   </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
-                  </td>
+
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.client.name}
                   </td>

@@ -215,7 +215,6 @@ function PedidosAutoservicio() {
             <tr>
               <th>No. Folio</th>
               <th>Recibió</th>
-              <th>Entregó</th>
               <th>Cliente</th>
               <th>Detalle</th>
               <th>Fecha de Entrega</th>
@@ -230,9 +229,6 @@ function PedidosAutoservicio() {
               .map((pedido) => (
                 <tr key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
-                  </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.user.name}
                   </td>

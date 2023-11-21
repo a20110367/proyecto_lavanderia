@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
+import { formatDate } from "../../utils/format";
 import useSWR from "swr";
 import Swal from 'sweetalert2'
 import api from '../../api/api'
@@ -148,15 +149,6 @@ function Reembolso() {
     setVisible(false);
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div>
       <div className="mb-3">
@@ -206,7 +198,7 @@ function Reembolso() {
                 <td className="py-3 px-6">{reembolso.id_order}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(reembolso.date)}</td>
+                <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
               </tr>
             ))}
           </tbody>

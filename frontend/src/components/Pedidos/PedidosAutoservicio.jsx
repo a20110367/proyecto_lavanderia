@@ -3,6 +3,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
+import { formatDate } from "../../utils/format";
 import api from "../../api/api";
 
 import {
@@ -87,16 +88,6 @@ function PedidosAutoservicio() {
       setNotificationVisible(false);
     }, 2000);
   };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
 
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
@@ -242,7 +233,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                    {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (

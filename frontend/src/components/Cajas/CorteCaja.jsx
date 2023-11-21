@@ -4,6 +4,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { formatDate } from "../../utils/format";
 import Swal from 'sweetalert2'
 import api from '../../api/api'
 
@@ -222,7 +223,7 @@ function CorteCaja() {
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
       pdf.text(
-        `Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,
+        `Fecha: ${formatDate(selectedCorte.cashCutD)}`,
         10,
         50
       );
@@ -273,15 +274,6 @@ function CorteCaja() {
     }
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div className="text-center mt-4">
       <h1 className="text-4xl">
@@ -327,7 +319,7 @@ function CorteCaja() {
                     {corte.id_cashCut}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(corte.cashCutD)}
+                    {formatDate(corte.cashCutD)}
                   </td>
                   <td className="py-3 px-6">
                     ${initialCash ? initialCash : 0}
@@ -445,7 +437,7 @@ function CorteCaja() {
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}
-                  {formatDateToGMTMinus6(selectedCorte.cashCutD)}
+                  {formatDate(selectedCorte.cashCutD)}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Dinero en Fondo:</span> $

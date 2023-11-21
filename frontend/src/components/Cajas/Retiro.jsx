@@ -5,6 +5,7 @@ import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import { formatDate } from "../../utils/format";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2'
 import api from '../../api/api'
@@ -132,15 +133,6 @@ function Retiro() {
     setVisible(false);
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div>
       <div className="mb-3">
@@ -186,7 +178,7 @@ function Retiro() {
                 <td className="py-3 px-1 text-center">
                   {retiro.id_cashWithdrawal}
                 </td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(retiro.date)}</td>
+                <td className="py-3 px-6">{formatDate(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>
                 <td className="py-3 px-6">{retiro.cause}</td>
                 <td className="py-3 px-6">{retiro.user.name}</td>

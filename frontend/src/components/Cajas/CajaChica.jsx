@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/auth/auth";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
+import { formatDate } from "../../utils/format";
 import Swal from "sweetalert2";
 import api from "../../api/api";
 
@@ -156,7 +157,7 @@ function CajaChica() {
           Monto: ${monto}, 
           Motivo: ${motivo}. 
           Cajero: ${cookies.username} 
-          Fecha: ${formatDateToGMTMinus6(date)}`,
+          Fecha: ${formatDate(date)}`,
           subject: "Se ha realizado un ABONO en la CAJA CHICA",
           text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
           warning: true,
@@ -231,7 +232,7 @@ function CajaChica() {
           Monto: ${monto}, 
           Motivo: ${motivo}. 
           Cajero: ${cookies.username} 
-          Fecha: ${formatDateToGMTMinus6(date)}`,
+          Fecha: ${formatDate(date)}`,
           subject: "Se ha realizado un RETIRO en la CAJA CHICA",
           text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
           warning: true,
@@ -249,15 +250,6 @@ function CajaChica() {
 
   const handleAbonoClose = () => {
     setVisibleAbono(false);
-  };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -342,7 +334,7 @@ function CajaChica() {
                   )}
                 </td>
                 <td className="py-3 px-6">
-                  {formatDateToGMTMinus6(pettyCash.movementDate)}
+                  {formatDate(pettyCash.movementDate)}
                 </td>
                 <td className="py-3 px-6">${pettyCash.amount}</td>
                 <td className="py-3 px-6">{pettyCash.cause}</td>

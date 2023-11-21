@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
+import { formatDate } from "../../utils/format";
 import {
   ExclamationCircleOutlined,
   CheckCircleOutlined,
@@ -192,7 +193,7 @@ function EntregaPlanchado() {
       50
     );
     doc.text(
-      `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
+      `Fecha de Pago: ${formatDate(pedido.receptionTime)}`,
       10,
       60
     );
@@ -267,7 +268,7 @@ function EntregaPlanchado() {
           50
         );
         doc.text(
-          `Fecha de Pago: ${formatDateToGMTMinus6(pedido.receptionTime)}`,
+          `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
           10,
           60
         );
@@ -275,15 +276,6 @@ function EntregaPlanchado() {
         doc.save(`pedido_${pedido.id_order}.pdf`);
       }, 1500);
     }
-  };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -345,7 +337,7 @@ function EntregaPlanchado() {
                       : 0}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.receptionTime)}
+                    {formatDate(pedido.receptionDate)}
                   </td>
                   <td
                     className={`py-3 px-6 ${pedido.payStatus === "unpaid"
@@ -365,7 +357,7 @@ function EntregaPlanchado() {
                     )}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                    {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td>
                     {pedido.payStatus === "paid" ? (

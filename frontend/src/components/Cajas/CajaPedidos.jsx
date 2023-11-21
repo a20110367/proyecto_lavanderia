@@ -141,7 +141,7 @@ function CajaPedidos() {
           </thead>
           <tbody>
             {filteredPedidos
-             .filter(pedido => pedido.orderStatus === 'finished' || pedido.orderStatus === 'delivered')
+              .filter(pedido => pedido.orderStatus === 'finished' || pedido.orderStatus === 'delivered')
               .slice(
                 currentPage * itemsPerPage,
                 (currentPage + 1) * itemsPerPage
@@ -157,10 +157,10 @@ function CajaPedidos() {
                       ? pedido.category.categoryDescription === "autoservicio"
                         ? "Autoservicio"
                         : pedido.category.categoryDescription === "planchado"
-                        ? "Planchado"
-                        : pedido.category.categoryDescription === "encargo"
-                        ? "Encargo"
-                        : "Otro" // Si el texto no coincide con ninguna categoría específica
+                          ? "Planchado"
+                          : pedido.category.categoryDescription === "encargo"
+                            ? "Encargo"
+                            : "Otro" // Si el texto no coincide con ninguna categoría específica
                       : "Categoría no definida"}
                   </td>
                   <td className="py-3 px-6 font-bold">

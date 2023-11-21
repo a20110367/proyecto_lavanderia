@@ -74,7 +74,7 @@ export const orderTicket = async (order) => {
         },
         x: 15,
         y: 15,
-        w: 170,
+        width: 170,
         windowWidth: 750,
     });
     // pdf.autoPrint()

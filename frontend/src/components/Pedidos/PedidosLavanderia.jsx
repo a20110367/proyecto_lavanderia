@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
+import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
 
@@ -181,15 +182,6 @@ function PedidosLavanderia() {
     setTimeout(() => {
       setNotificationVisible(false);
     }, 2000);
-  };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   const handleSelectMachine = (machine) => {
@@ -511,7 +503,7 @@ function PedidosLavanderia() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                    {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (

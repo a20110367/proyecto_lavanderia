@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
+import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import Swal from "sweetalert2";
@@ -217,15 +218,6 @@ function PedidosGeneral() {
     }
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div>
       <div className="mb-3">
@@ -341,7 +333,7 @@ function PedidosGeneral() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                    {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}

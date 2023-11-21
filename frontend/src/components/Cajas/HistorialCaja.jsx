@@ -3,6 +3,7 @@ import locale from "antd/es/date-picker/locale/es_ES";
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
 import ReactPaginate from "react-paginate";
+import { formatDate } from "../../utils/format";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
@@ -62,7 +63,7 @@ function HistorialCaja() {
       doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
       doc.text(
-        `Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,
+        `Fecha: ${formatDate(selectedCorte.cashCutD)}`,
         10,
         50
       );
@@ -161,15 +162,6 @@ function HistorialCaja() {
     }
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div className="text-center mt-4">
       <div>
@@ -228,7 +220,7 @@ function HistorialCaja() {
                   <tr className="bg-white border-b" key={corte.id_cashCut}>
                     <td className="">{corte.id_cashCut}</td>
                     <td className="">
-                      {formatDateToGMTMinus6(corte.cashCutD)}
+                      {formatDate(corte.cashCutD)}
                     </td>
                     <td className="">
                       ${corte.initialCash ? corte.initialCash : 0}
@@ -304,7 +296,7 @@ function HistorialCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}
-                    {formatDateToGMTMinus6(selectedCorte.cashCutD)}
+                    {formatDate(selectedCorte.cashCutD)}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Dinero en Fondo:</span> $

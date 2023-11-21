@@ -347,7 +347,6 @@ function PedidosAutoservicio() {
               {availableMachines
                 .filter(
                   (machine) =>
-                    machine.machineType === "lavadora" &&
                     machine.status === "available"
                 )
                 .map((machine) => (

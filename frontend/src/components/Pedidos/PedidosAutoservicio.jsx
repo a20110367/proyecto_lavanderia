@@ -3,7 +3,6 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
-import { formatDate } from "../../utils/format";
 import api from "../../api/api";
 
 import {
@@ -87,6 +86,15 @@ function PedidosAutoservicio() {
     setTimeout(() => {
       setNotificationVisible(false);
     }, 2000);
+  };
+
+  const formatDateToGMTMinus6 = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   const handleSelectMachine = (machine) => {
@@ -233,7 +241,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (
@@ -311,13 +319,13 @@ function PedidosAutoservicio() {
           >
             Confirmar
           </button>,
-              <button
-              key="cancel"
-              className="btn-primary-cancel ml-2"
-              onClick={() => setShowMachineName(false)}
-            >
-              Cancelar
-            </button>,
+          <button
+            key="cancel"
+            className="btn-primary-cancel ml-2"
+            onClick={() => setShowMachineName(false)}
+          >
+            Cancelar
+          </button>,
         ]}
         width={800}
         style={{ padding: "20px" }}
@@ -336,34 +344,40 @@ function PedidosAutoservicio() {
               </tr>
             </thead>
             <tbody>
-              {availableMachines.map((machine) => (
-                <tr key={machine.id_machine}>
-                  <td>{machine.machineType}</td>
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
-                  <td
-                    className={`${
-                      machine.freeForUse ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {machine.freeForUse ? "Libre" : "Ocupado"}
-                  </td>
+              {availableMachines
+                .filter(
+                  (machine) =>
+                    machine.machineType === "lavadora" &&
+                    machine.status === "available"
+                )
+                .map((machine) => (
+                  <tr key={machine.id_machine}>
+                    <td>{machine.machineType}</td>
+                    <td>{machine.model}</td>
+                    <td>{machine.cicleTime}</td>
+                    <td>{machine.weight}</td>
+                    <td
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
 
-                  <td>
-                    <div className="flex flex-col items-center">
-                      <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedMachine === machine}
-                        onChange={() => handleSelectMachine(machine)}
-                        className="mb-2"
-                        disabled={!machine.freeForUse}
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_machine}`}
+                          checked={selectedMachine === machine}
+                          onChange={() => handleSelectMachine(machine)}
+                          className="mb-2"
+                          disabled={!machine.freeForUse}
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

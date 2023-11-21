@@ -436,7 +436,7 @@ function PedidosPlanchado() {
               </tr>
             </thead>
             <tbody>
-              {availableMachines.map((machine) => (
+              {availableMachines .filter((machine) => machine.status === "available").map((machine) => (
                 <tr key={machine.id_ironStation}>
                   <td>{machine.machineType}</td>
                   <td>{machine.pieces}</td>

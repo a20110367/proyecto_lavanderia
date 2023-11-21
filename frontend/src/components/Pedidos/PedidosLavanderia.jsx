@@ -633,7 +633,7 @@ const handleSelectDryMachine = (machine) => {
             </thead>
             <tbody>
               {availableMachines
-                .filter((machine) => machine.machineType === "lavadora")
+                .filter((machine) => machine.machineType === "lavadora" && machine.status === "available")
                 .map((machine) => (
                   <tr key={machine.id_machine}>
                     <td>{machine.machineType}</td>
@@ -705,7 +705,7 @@ const handleSelectDryMachine = (machine) => {
             </thead>
             <tbody>
               {availableMachines
-                .filter((machine) => machine.machineType === "secadora")
+                .filter((machine) => machine.machineType === "secadora"&& machine.status === "available")
                 .map((machine) => (
                   <tr key={machine.id_machine}>
                     <td>{machine.machineType}</td>

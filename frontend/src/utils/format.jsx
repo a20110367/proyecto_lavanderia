@@ -1,4 +1,6 @@
-export const formatDate = (dateStr) => {
+import moment from "moment";
+
+const formatDate = (dateStr) => {
     const date = moment(dateStr).format("DD / MM / YYYY")
     return date;
 };

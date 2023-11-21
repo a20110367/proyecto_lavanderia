@@ -33,7 +33,7 @@ export const getSelfServicesById = async (req, res) => {
         const response = await prisma.selfService.findUnique({
            
             where: {
-                id_selfService: Number(req.body.id)
+                id_selfService: Number(req.params.id)
             },
         
             select: {

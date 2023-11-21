@@ -35,7 +35,7 @@ export const getLaundryServicesById = async (req, res) => {
             
             
             where: {
-                id_laundryService: Number(req.body.id)
+                id_laundryService: Number(req.params.id)
             },
               
             select: {

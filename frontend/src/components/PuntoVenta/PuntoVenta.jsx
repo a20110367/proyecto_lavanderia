@@ -402,7 +402,7 @@ export default function PuntoVenta() {
             </div>
           </div>
 
-          <div className="col-md-3">
+          <div className="col-md-3 ml-10">
             <div className="card card-body mt-5">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}

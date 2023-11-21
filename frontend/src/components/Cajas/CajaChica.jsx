@@ -130,7 +130,7 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
         });
-        setVisibleAbono(true);
+        setVisibleAbono(false);
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,

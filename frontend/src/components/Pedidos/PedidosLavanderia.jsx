@@ -194,13 +194,13 @@ function PedidosLavanderia() {
 
   const handleSelectMachine = (machine) => {
     setSelectedWashMachine(machine);
-    localStorage.setItem("selectedWashMachine", JSON.stringify(machine));
+    localStorage.setItem("selectedWashMachineId", machine.id_machine);
   };
 
-  const handleSelectDryMachine = (machine) => {
-    setSelectedDryMachine(machine);
-    localStorage.setItem("selectedDryMachine", JSON.stringify(machine));
-  };
+const handleSelectDryMachine = (machine) => {
+  setSelectedDryMachine(machine);
+  localStorage.setItem("selectedDryMachineId", machine.id_machine);
+};
 
   const handleStartProcess = async (pedido) => {
     try {
@@ -214,6 +214,7 @@ function PedidosLavanderia() {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
+      localStorage.setItem("selectedPedidoId", pedido.id_order);  
       setShowMachineName(true);
       setShowDryerSelection(false);
       localStorage.setItem("selectedPedido", JSON.stringify(pedido));
@@ -278,6 +279,7 @@ function PedidosLavanderia() {
       // Cambiar el estado de confirmación de secado a false
       setIsDryingProcessConfirmedInModal(false);
       localStorage.setItem("isDryingProcessConfirmedInModal", "false");
+      localStorage.setItem("selectedPedidoId", pedido.id_order);
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
@@ -391,21 +393,22 @@ function PedidosLavanderia() {
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
+      localStorage.setItem("selectedPedidoId", selectedPedido.id_order);
 
       setShowMachineName(false);
 
-      showNotification("NOTIFICACIÓN ENVIADA...");
-      await api.post("/sendMessage", {
-        id_order: selectedPedido.id_order,
-        name: selectedPedido.client.name,
-        email: selectedPedido.client.email,
-        tel: "521" + selectedPedido.client.phone,
-        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-        subject: "Tu Ropa esta Lista",
-        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-        warning: false,
-      });
-      console.log("NOTIFICACIÓN ENVIADA...");
+      // showNotification("NOTIFICACIÓN ENVIADA...");
+      // await api.post("/sendMessage", {
+      //   id_order: selectedPedido.id_order,
+      //   name: selectedPedido.client.name,
+      //   email: selectedPedido.client.email,
+      //   tel: "521" + selectedPedido.client.phone,
+      //   message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+      //   subject: "Tu Ropa esta Lista",
+      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+      //   warning: false,
+      // });
+      // console.log("NOTIFICACIÓN ENVIADA...");
       showNotification(`Pedido finalizado correctamente`);
       localStorage.removeItem("selectedMachine");
     } catch (error) {

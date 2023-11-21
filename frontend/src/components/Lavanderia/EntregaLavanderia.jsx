@@ -134,7 +134,7 @@ function EntregaLavanderia() {
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = []
       cart.push({
-        description: 'FALTA TRAER BACK',
+        description: pedido.ServiceOrderDetail[0].LaundryService ? pedido.ServiceOrderDetail[0].LaundryService.description : 'ERROR',
         id_service: pedido.ServiceOrderDetail[0].fk_Service,
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
         quantity: pedido.ServiceOrderDetail[0].units

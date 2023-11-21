@@ -255,22 +255,22 @@ export const calculateCashCut = async (req, res) => {
         });
 
         const lastPettyCash = await prisma.pettyCash.aggregate({
-            _max:{
-                id_movement:true,
-            }             
+            _max: {
+                id_movement: true,
+            }
         });
 
         console.log(lastPettyCash);
 
         const pettyCashBalance = await prisma.pettyCash.findFirst({
-            where:{
-                id_movement:lastPettyCash._max.id_movement,
+            where: {
+                id_movement: lastPettyCash._max.id_movement,
             },
-            select:{
-                balance:true,
+            select: {
+                balance: true,
             }
         });
-        
+
         console.log(pettyCashBalance.balance);
 
 
@@ -301,7 +301,7 @@ export const calculateCashCut = async (req, res) => {
             "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
             "cashCutD": today,
-            "pettyCashBalance":pettyCashBalance.balance
+            "pettyCashBalance": pettyCashBalance.balance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -495,17 +495,17 @@ export const closeCashCut = async (req, res) => {
         });
 
         const lastPettyCash = await prisma.pettyCash.aggregate({
-            _max:{
-                id_movement:true,
-            }             
+            _max: {
+                id_movement: true,
+            }
         });
 
         const pettyCashBalance = await prisma.pettyCash.findFirst({
-            where:{
-                id_movement:lastPettyCash._max.id_movement,
+            where: {
+                id_movement: lastPettyCash._max.id_movement,
             },
-            select:{
-                balance:true,
+            select: {
+                balance: true,
             }
         });
 
@@ -536,7 +536,7 @@ export const closeCashCut = async (req, res) => {
             "cashCutStatus": "closed",
             "cashCutD": today,
             "cashCutT": time,
-            "pettyCashBalance":pettyCashBalance.balance
+            "pettyCashBalance": pettyCashBalance.balance
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -559,7 +559,7 @@ export const closeCashCut = async (req, res) => {
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
-                "pettyCashBalance":pettyCashBalance.balance
+                "pettyCashBalance": pettyCashBalance.balance
 
             }
         });
@@ -582,18 +582,31 @@ export const getCashCutStatus = async (req, res) => {
 
         });
 
-        const lastCashCutStatus = await prisma.cashCut.findUnique({
+        if (lastCashCut._max.id_cashCut === null) {
 
-            where: {
-                id_cashCut: lastCashCut._max.id_cashCut,
-            },
-
-            select: {
-                cashCutStatus: true,
-                id_cashCut:true,
+            const lastCashCutStatus = {
+                cashCutStatus: "closed",
+                id_cashCut: 0,
             }
 
-        })
+        }
+        else {
+
+            const lastCashCutStatus = await prisma.cashCut.findUnique({
+
+                where: {
+                    id_cashCut: lastCashCut._max.id_cashCut,
+                },
+
+                select: {
+                    cashCutStatus: true,
+                    id_cashCut: true,
+                }
+
+            })
+
+        }
+
 
         console.log(lastCashCut);
 

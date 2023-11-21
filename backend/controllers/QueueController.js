@@ -5,17 +5,7 @@ const prisma = new PrismaClient();
 ///Revisar comprotamiento y dependencias
 export const getLaundryQueue = async (req, res) =>{
     try {
-        const response = await prisma.laundryQueue.findMany({
-
-            include:{
-                LaundryService:{
-                    select:{
-                        
-                    },
-                },
-            },
-
-        });
+        const response = await prisma.laundryQueue.findMany();
 
         
 
@@ -41,7 +31,7 @@ export const getLaundryQueueById = async (req, res) =>{
 
 export const getLaundryQueueByOrderId = async (req, res) =>{
     try {
-        const response = await prisma.laundryWashQueue.findMany({
+        const response = await prisma.laundryQueue.findMany({
             where:{
                 fk_idServiceOrder: Number(req.params.fk_ServiceOrder)
             }
@@ -55,7 +45,7 @@ export const getLaundryQueueByOrderId = async (req, res) =>{
 export const createManyLaundryQueue = async (req, res) =>{
    
     try {
-        const id_washEvent = await prisma.laundryWashQueue.createMany({
+        const id_washEvent = await prisma.laundryQueue.createMany({
             data: req.body
        
         });
@@ -67,7 +57,7 @@ export const createManyLaundryQueue = async (req, res) =>{
 
 export const updateLaundryQueue =  async (req, res) =>{
     try {
-        const id_washEvent = await prisma.laundryWashQueue.update({
+        const id_washEvent = await prisma.laundryQueue.update({
             where:{
                 id_washEvent: Number(req.params.id)
             },
@@ -82,7 +72,7 @@ export const updateLaundryQueue =  async (req, res) =>{
 
 export const deleteLaundryQueue =  async (req, res) =>{
     try {
-        const id_washEvent = await prisma.laundryWashQueue.delete({
+        const id_washEvent = await prisma.laundryQueue.delete({
             where:{
                 id_washEvent: Number(req.params.id)
             }

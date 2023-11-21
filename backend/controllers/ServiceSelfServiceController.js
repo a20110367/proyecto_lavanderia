@@ -43,6 +43,7 @@ export const getSelfServicesById = async (req, res) => {
                 price: true,
                 weight: true,
                 cycleTime: true,
+                machineType:true,
                 Category: {
                     select: {
                         categoryDescription: true,

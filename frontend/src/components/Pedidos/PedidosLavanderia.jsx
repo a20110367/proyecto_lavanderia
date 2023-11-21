@@ -692,7 +692,7 @@ function PedidosLavanderia() {
           <button
             key="cancel"
             className="btn-primary-cancel ml-2"
-            onClick={() => setShowMachineName(false)}
+            onClick={() => setShowDryerSelection(false)}
           >
             Cancelar
           </button>,

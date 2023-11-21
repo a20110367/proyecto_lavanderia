@@ -38,7 +38,7 @@ function EditUser() {
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [rol, setRol] = useState("cajero");
+  const [rol, setRol] = useState("employee");
 
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
@@ -106,12 +106,12 @@ function EditUser() {
     try {
       await Axios.patch(`http://localhost:5000/users/${id}`, {
         name: name,
-        userName: userName,
+        username: userName,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
         phone: phone,
-        rol: rol,
+        role: rol,
         pass: pwd,
       });
 
@@ -397,7 +397,7 @@ function EditUser() {
                   name="rol"
                   id="rol"
                 >
-                  <option value="cajero">Cajero</option>
+                  <option value="employee">Cajero</option>
                   <option value="admin">Administrador</option>
                 </select>
                 <div className="float-right">

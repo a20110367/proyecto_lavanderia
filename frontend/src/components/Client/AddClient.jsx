@@ -79,7 +79,7 @@ function AddClient() {
     try {
       await api.post("/clients", {
         name: name,
-        username: "",
+        username: name,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
@@ -95,6 +95,7 @@ function AddClient() {
       setPhone("");
       navigate("/clients");
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {

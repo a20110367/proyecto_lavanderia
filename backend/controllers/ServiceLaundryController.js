@@ -91,7 +91,7 @@ export const updateLaundryService = async (req, res) => {
     try {
         const laundryService = await prisma.laundryService.update({
             where: {
-                id_LaundryService: Number(req.params.id)
+                id_laundryService: Number(req.params.id)
             },
             data: req.body
         });
@@ -106,7 +106,7 @@ export const deleteLaundryService = async (req, res) => {
     try {
         const laundryService = await prisma.laundryService.delete({
             where: {
-                id_LaundryService: Number(req.params.id)
+                id_laundryService: Number(req.params.id)
             }
 
         });

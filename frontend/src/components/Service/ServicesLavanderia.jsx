@@ -56,7 +56,7 @@ function ServicesLavanderia() {
   });
 
   const deleteService = async (serviceId) => {
-    await api.delete(`/services/${serviceId}`);
+    await api.delete(`/servicesLaundry/${serviceId}`);
     mutate("servicesLaundry");
   };
 
@@ -107,7 +107,7 @@ function ServicesLavanderia() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_service}>
+                  <tr key={service.id_laundryService}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
@@ -116,7 +116,7 @@ function ServicesLavanderia() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServiceLavanderia/${service.id_service}`
+                            `/editServiceLavanderia/${service.id_laundryService}`
                           )
                         }
                         className=" btn-edit"
@@ -127,7 +127,7 @@ function ServicesLavanderia() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_service
+                            service.id_laundryService
                           )
                         }
                         className="btn-cancel"

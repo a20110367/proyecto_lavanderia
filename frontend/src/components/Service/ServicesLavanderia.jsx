@@ -107,7 +107,7 @@ function ServicesLavanderia() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_laundryService}>
+                  <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
@@ -116,7 +116,7 @@ function ServicesLavanderia() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServiceLavanderia/${service.id_laundryService}`
+                            `/editServiceLavanderia/${service.id_service}`
                           )
                         }
                         className=" btn-edit"
@@ -127,7 +127,7 @@ function ServicesLavanderia() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_laundryService
+                            service.id_service
                           )
                         }
                         className="btn-cancel"

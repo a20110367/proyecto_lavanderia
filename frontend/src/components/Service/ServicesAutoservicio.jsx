@@ -93,7 +93,7 @@ function ServicesAutoservicio() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_selfService}>
+                  <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
@@ -103,7 +103,7 @@ function ServicesAutoservicio() {
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServiceAutoservicio/${service.id_selfService}`
+                            `/editServiceAutoservicio/${service.id_service}`
                           )
                         }
                         className="btn-edit btn-edit"
@@ -114,7 +114,7 @@ function ServicesAutoservicio() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_selfService
+                            service.id_service
                           )
                         }
                         className="btn-cancel"

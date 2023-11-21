@@ -7,7 +7,7 @@ export const getSelfServices = async (req, res) => {
         const response = await prisma.selfService.findMany({
             select: {
 
-                id_selfService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 weight: true,
@@ -34,12 +34,12 @@ export const getSelfServicesById = async (req, res) => {
         const response = await prisma.selfService.findUnique({
 
             where: {
-                id_selfService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
 
             select: {
 
-                id_selfService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 weight: true,
@@ -90,7 +90,7 @@ export const updateSelfService = async (req, res) => {
     try {
         const selfService = await prisma.selfService.update({
             where: {
-                id_selfService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
             data: req.body
         });
@@ -105,7 +105,7 @@ export const deleteSelfService = async (req, res) => {
     try {
         const selfService = await prisma.selfService.delete({
             where: {
-                id_selfService: Number(req.params.id)
+                id_service: Number(req.params.id)
             }
 
         });

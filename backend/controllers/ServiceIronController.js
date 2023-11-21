@@ -7,7 +7,7 @@ export const getIronServices = async (req, res) => {
     try {
         const response = await prisma.ironService.findMany({
             select: {
-                id_ironService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 pieces: true,
@@ -30,13 +30,13 @@ export const getIronServices = async (req, res) => {
 export const getIronServicesById = async (req, res) => {
     try {
         const response = await prisma.ironService.findUnique({
-            
+
             where: {
-                id_ironService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
-            
+
             select: {
-                id_ironService: true,
+                id_service: true,
                 description: true,
                 price: true,
                 pieces: true,
@@ -87,7 +87,7 @@ export const updateIronService = async (req, res) => {
     try {
         const service = await prisma.ironService.update({
             where: {
-                id_ironService: Number(req.params.id)
+                id_service: Number(req.params.id)
             },
             data: req.body
         });
@@ -104,7 +104,7 @@ export const deleteIronService = async (req, res) => {
     try {
         const service = await prisma.ironService.delete({
             where: {
-                id_ironService: Number(req.params.id)
+                id_service: Number(req.params.id)
             }
 
         });

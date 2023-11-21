@@ -15,7 +15,7 @@ function AddServiceAutoservicio() {
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState(0);
   const [category, setCategory] = useState("Autoservicio");
-  const [service, setService] = useState('laundry')
+  const [service, setService] = useState('lavadora')
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -29,50 +29,27 @@ function AddServiceAutoservicio() {
       setErrMsg("Error, solo puedes añadir servicios de 'autoservicio' (debe contener la palabra autoservicio).");
       return;
     }
+    try {
+      await api.post("/servicesSelfService", {
+        description: description,
+        price: parseFloat(price),
+        weight: parseInt(weight),
+        cycleTime: parseInt(time),
+        machineType: service,
+        category_id: 1
+      });
 
-    if (service == 'laundry') {
-      try {
-        await api.post("/servicesWashSelfService", {
-          description: description,
-          price: parseFloat(price),
-          washWeight:parseInt(weight),
-          washCycleTime: parseInt(time),
-          dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time)
-        });
-        
-        setDescription("");
-        setPrice(0);
-        setTime(0);
-        setWeight(0);
-        setCategory("Autoservicio");
-        setSuccess(true);
+      setDescription("");
+      setPrice(0);
+      setTime(0);
+      setWeight(0);
+      setCategory("Autoservicio");
+      setSuccess(true);
 
-        navigate("/servicesAutoservicio");
-      } catch (err) {
-        setErrMsg("Failed to add service.");
-        console.log(err)
-      }
-    } else if (service == 'dry') {
-      try {
-        await api.post("/servicesDrySelfService", {
-          description: description,
-          price: parseFloat(price),
-          dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time)
-        });
-        setDescription("");
-        setPrice(0);
-        setTime(0);
-        setWeight("");
-        setCategory("Autoservicio");
-        setSuccess(true);
-
-        navigate("/servicesAutoservicio");
-      } catch (err) {
-        setErrMsg("Failed to add service.");
-        console.log(err)
-      }
+      navigate("/servicesAutoservicio");
+    } catch (err) {
+      setErrMsg("Failed to add service.");
+      console.log(err)
     }
   };
 
@@ -168,8 +145,8 @@ function AddServiceAutoservicio() {
                 onChange={(value) => setService(value)}
                 value={service}
               >
-                <Select.Option value="laundry">Lavado</Select.Option>
-                <Select.Option value="dry">Secado</Select.Option>
+                <Select.Option value="lavadora">Lavado</Select.Option>
+                <Select.Option value="secadora">Secado</Select.Option>
               </Select>
 
               {/* {service == 'dry' ?

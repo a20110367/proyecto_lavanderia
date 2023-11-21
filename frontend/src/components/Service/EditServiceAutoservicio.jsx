@@ -16,7 +16,7 @@ function EditServiceAutoservicio() {
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState();
   const [category, setCategory] = useState("Autoservicio");
-  const [service, setService] = useState("laundry");
+  const [service, setService] = useState("lavadora");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -26,19 +26,13 @@ function EditServiceAutoservicio() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await api.get(`/servicesById/${id}`);
+      const response = await api.get(`/servicesSelfService/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");
-      if (response.data.WashService.length === 0) {
-        setTime(response.data.DryService[0].cycleTime);
-        setWeight(response.data.DryService[0].weight);
-        setService("dry");
-      } else {
-        setTime(response.data.WashService[0].cycleTime);
-        setWeight(response.data.WashService[0].weight);
-        setService("laundry");
-      }
+      setTime(response.data.cycleTime);
+      setWeight(response.data.weight);
+      setService(response.data.machineType);
     };
     getServiceById();
   }, [id]);
@@ -53,36 +47,20 @@ function EditServiceAutoservicio() {
       return;
     }
 
-    if (service == "laundry") {
-      try {
-        await api.patch(`/servicesUpdateWashSelfService/${id}`, {
-          description: description,
-          price: parseFloat(price),
-          washWeight: parseInt(weight),
-          washCycleTime: parseInt(time),
-          dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time),
-        });
-        navigate("/servicesAutoservicio");
-        setSuccess(true);
-      } catch (err) {
-        console.log(err);
-        setErrMsg("Error al actualizar el servicio lavado.");
-      }
-    } else if (service == "dry") {
-      try {
-        await api.patch(`/servicesUpdateDrySelfService/${id}`, {
-          description: description,
-          price: parseFloat(price),
-          dryWeight: parseInt(weight),
-          dryCycleTime: parseInt(time),
-        });
-        navigate("/servicesAutoservicio");
-        setSuccess(true);
-      } catch (err) {
-        console.log(err);
-        setErrMsg("Error al actualizar el servicio lavanderia.");
-      }
+    try {
+      await api.patch(`/servicesUpdateSelfService/${id}`, {
+        description: description,
+        price: parseFloat(price),
+        weight: parseInt(weight),
+        cycleTime: parseInt(time),
+        machineType: service,
+        category_id: 1
+      });
+      navigate("/servicesAutoservicio");
+      setSuccess(true);
+    } catch (err) {
+      console.log(err);
+      setErrMsg("Error al actualizar el servicio lavado.");
     }
   };
 
@@ -173,8 +151,8 @@ function EditServiceAutoservicio() {
                 onChange={(value) => setService(value)}
                 value={service}
               >
-                <Select.Option value="laundry">Lavado</Select.Option>
-                <Select.Option value="dry">Secado</Select.Option>
+                <Select.Option value="lavadora">Lavado</Select.Option>
+                <Select.Option value="secadora">Secado</Select.Option>
               </Select>
 
               {/* <label className="form-lbl" htmlFor="type">

@@ -90,7 +90,7 @@ export const updateSelfService = async (req, res) => {
     try {
         const selfService = await prisma.selfService.update({
             where: {
-                id_SelfService: Number(req.params.id)
+                id_selfService: Number(req.params.id)
             },
             data: req.body
         });
@@ -105,7 +105,7 @@ export const deleteSelfService = async (req, res) => {
     try {
         const selfService = await prisma.selfService.delete({
             where: {
-                id_SelfService: Number(req.params.id)
+                id_selfService: Number(req.params.id)
             }
 
         });

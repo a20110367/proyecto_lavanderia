@@ -22,8 +22,7 @@ export const orderTicket = async (order) => {
     <form class="form-container" id="container" style="font-size:small">
         <div class="PrintOnly">
             <div class="info" style="text-align: center;"> 
-                <img src="${IMAGES.caprelogo
-        }" width="150" height="100" alt="logo" class="logo">
+                <img src="${IMAGES.caprelogo}" width="150" height="100" alt="logo" class="logo">
                 <p>**CAPREL**</p>
                 <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
                 <p>TLAQUEPAQUE, JALISCO</p>
@@ -34,8 +33,7 @@ export const orderTicket = async (order) => {
             <div style=" padding-top: 0px">                    
                 <h2>FOLIO No.: ${order.id_order} </h2>
                 <h2>TIPO PAGO: ${order.payForm === 'advance' ? "Anticipado" : "A la Entrega"}</h2>                     
-                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"
-        }                    
+                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"}                    
                 <hr class="hr-header">  
                 <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">
                     <p>Cant.</p>
@@ -70,7 +68,7 @@ export const orderTicket = async (order) => {
     doc.html(html, {
         callback: function(doc) {
             // Save the PDF
-            doc.save('sample-document.pdf');
+            doc.save(`${moment().format('YYYY')+order.client+String(order.id_order)}.pdf`);
         },
         x: 15,
         y: 15,

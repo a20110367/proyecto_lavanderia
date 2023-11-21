@@ -56,6 +56,7 @@ function InicioCaja() {
       setCajaIniciada(true);
       setVisible(false);
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
       } else {
@@ -79,7 +80,7 @@ function InicioCaja() {
       }
     } catch (err) { 
       console.log(err)
-      console.err('No entiendo como sucedio esto')
+      console.error('No entiendo como sucedio esto')
     }
   };
 

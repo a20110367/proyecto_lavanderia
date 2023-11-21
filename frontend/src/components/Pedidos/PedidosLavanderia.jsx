@@ -186,13 +186,13 @@ function PedidosLavanderia() {
 
   const handleSelectMachine = (machine) => {
     setSelectedWashMachine(machine);
-    localStorage.setItem("selectedWashMachine", JSON.stringify(machine));
+    localStorage.setItem("selectedWashMachineId", machine.id_machine);
   };
 
-  const handleSelectDryMachine = (machine) => {
-    setSelectedDryMachine(machine);
-    localStorage.setItem("selectedDryMachine", JSON.stringify(machine));
-  };
+const handleSelectDryMachine = (machine) => {
+  setSelectedDryMachine(machine);
+  localStorage.setItem("selectedDryMachineId", machine.id_machine);
+};
 
   const handleStartProcess = async (pedido) => {
     try {
@@ -206,6 +206,7 @@ function PedidosLavanderia() {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
+      localStorage.setItem("selectedPedidoId", pedido.id_order);  
       setShowMachineName(true);
       setShowDryerSelection(false);
       localStorage.setItem("selectedPedido", JSON.stringify(pedido));
@@ -270,6 +271,7 @@ function PedidosLavanderia() {
       // Cambiar el estado de confirmación de secado a false
       setIsDryingProcessConfirmedInModal(false);
       localStorage.setItem("isDryingProcessConfirmedInModal", "false");
+      localStorage.setItem("selectedPedidoId", pedido.id_order);
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
@@ -383,6 +385,7 @@ function PedidosLavanderia() {
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "finished",
       });
+      localStorage.setItem("selectedPedidoId", selectedPedido.id_order);
 
       setShowMachineName(false);
 

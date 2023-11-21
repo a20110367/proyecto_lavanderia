@@ -41,21 +41,29 @@ export default function PuntoVenta() {
   const [categoryId, setCategoryId] = useState(0);
   const [isSaved, setIsSaved] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
-  const [url, setUrl] = useState("");
+  const [postUrl, setPostUrl] = useState("");
+  const [getUrl, setGetUrl] = useState('')
+  const [fetch, setFetch] = useState('')
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === "autoservicio") {
       setCategoryId(1);
-      setUrl("/ordersSelfService");
+      setGetUrl('/servicesSelfService')
+      setPostUrl("/ordersSelfService");
+      setFetch('servicesSelfService')
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
       setCategoryId(2);
-      setUrl("/ordersLaundryService");
+      setGetUrl('/servicesLaundry')
+      setPostUrl("/ordersLaundryService");
+      setFetch('servicesLaundry')
     } else {
       setCategoryId(3);
-      setUrl("/ordersIronService");
+      setGetUrl('/servicesIron')
+      setPostUrl("/ordersIronService");
+      setFetch('servicesIron')
     }
   }, [serviceType]);
 
@@ -65,11 +73,11 @@ export default function PuntoVenta() {
   const [errMsg, setErrMsg] = useState("");
 
   const fetcher = async () => {
-    const response = await api.get("/services");
+    const response = await api.get(getUrl);
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
@@ -191,7 +199,7 @@ export default function PuntoVenta() {
     );
 
     try {
-      const res = await api.post(url, {
+      const res = await api.post(postUrl, {
         serviceOrder: {
           totalPrice: calculateSubtotal(),
           fk_client: parseInt(clientId),

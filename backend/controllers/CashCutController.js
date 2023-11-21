@@ -582,9 +582,11 @@ export const getCashCutStatus = async (req, res) => {
 
         });
 
+        let lastCashCutStatus;
+
         if (lastCashCut._max.id_cashCut === null) {
 
-            const lastCashCutStatus = {
+            lastCashCutStatus = {
                 cashCutStatus: "closed",
                 id_cashCut: 0,
             }
@@ -592,7 +594,7 @@ export const getCashCutStatus = async (req, res) => {
         }
         else {
 
-            const lastCashCutStatus = await prisma.cashCut.findUnique({
+             lastCashCutStatus = await prisma.cashCut.findUnique({
 
                 where: {
                     id_cashCut: lastCashCut._max.id_cashCut,

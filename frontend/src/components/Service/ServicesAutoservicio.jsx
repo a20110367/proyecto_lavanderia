@@ -41,7 +41,7 @@ function ServicesAutoservicio() {
   });
 
   const deleteService = async (serviceId) => {
-    await api.delete(`/services/${serviceId}`);
+    await api.delete(`/servicesSelfService/${serviceId}`);
     mutate("servicesSelfService");
   };
 
@@ -93,17 +93,17 @@ function ServicesAutoservicio() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_service}>
+                  <tr key={service.id_selfService}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
-                    <td>{service.WashService.length === 0 ? 'Secadora' : 'Lavadora'}</td>
+                    <td>{service.machi === 0 ? 'Secadora' : 'Lavadora'}</td>
                     <td> 
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServiceAutoservicio/${service.id_service}`
+                            `/editServiceAutoservicio/${service.id_selfService}`
                           )
                         }
                         className="btn-edit btn-edit"
@@ -114,7 +114,7 @@ function ServicesAutoservicio() {
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_service
+                            service.id_selfService
                           )
                         }
                         className="btn-cancel"

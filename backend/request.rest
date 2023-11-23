@@ -690,7 +690,7 @@ GET  http://localhost:5000/calculateCashCut/48
 
 ###
 
-GET  http://localhost:5000/closeCashCut/10
+GET  http://localhost:5000/closeCashCut/7
 
 ###
 

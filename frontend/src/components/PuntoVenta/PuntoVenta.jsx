@@ -79,45 +79,45 @@ export default function PuntoVenta() {
   if (!data) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
-    if (serviceType === "autoservicio") {
-      const serviceToAdd = service;
-      if (serviceToAdd) {
-        const existingService = cart.find(
-          (item) => item.id_service === serviceId
+    // if (serviceType === "autoservicio") {
+    const serviceToAdd = service;
+    if (serviceToAdd) {
+      const existingService = cart.find(
+        (item) => item.id_service === serviceId
+      );
+      if (existingService) {
+        const updatedCart = cart.map((item) =>
+          item.id_service === serviceId
+            ? {
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
+            : item
         );
-        if (existingService) {
-          const updatedCart = cart.map((item) =>
-            item.id_service === serviceId
-              ? {
-                ...item,
-                quantity: item.quantity + 1,
-                totalPrice: item.price * (item.quantity + 1),
-              }
-              : item
-          );
-          setCart(updatedCart);
-        } else {
-          setCart([
-            ...cart,
-            { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price },
-          ]);
-        }
-      }
-    } else {
-      if (cart.length === 0) {
-        const serviceToAdd = {
-          ...service,
-          quantity: 1,
-          price: service.price,
-          totalPrice: service.price,
-        };
-        if (serviceToAdd) {
-          setCart([serviceToAdd]);
-          setSelectedServiceId(serviceId);
-          setIsAddButtonDisabled(true);
-        }
+        setCart(updatedCart);
+      } else {
+        setCart([
+          ...cart,
+          { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price },
+        ]);
       }
     }
+    // } else {
+    //   if (cart.length === 0) {
+    //     const serviceToAdd = {
+    //       ...service,
+    //       quantity: 1,
+    //       price: service.price,
+    //       totalPrice: service.price,
+    //     };
+    //     if (serviceToAdd) {
+    //       setCart([serviceToAdd]);
+    //       setSelectedServiceId(serviceId);
+    //       setIsAddButtonDisabled(true);
+    //     }
+    //   }
+    // }
   };
 
   const removeFromCart = (serviceId) => {
@@ -223,7 +223,7 @@ export default function PuntoVenta() {
         client: clientName,
         receptionDate: purchaseDate.toISOString(),
         receptionTime: purchaseDate.toISOString(),
-        scheduledDeliveryDate:deliveryDate.toISOString(),
+        scheduledDeliveryDate: deliveryDate.toISOString(),
         scheduledDeliveryTime: deliveryDate.toISOString(),
         notes: "",
         cart: cart,
@@ -378,8 +378,8 @@ export default function PuntoVenta() {
                     <h5 className="text-gray-600">${service.price}</h5>
                     <button
                       className={`${isAddButtonDisabled
-                          ? "bg-gray-400"
-                          : "bg-blue-500 hover:bg-blue-700"
+                        ? "bg-gray-400"
+                        : "bg-blue-500 hover:bg-blue-700"
                         } text-white font-bold py-2 px-4 rounded mt-2`}
                       onClick={() => addToCart(service.id_service, service)}
                       disabled={isAddButtonDisabled}

@@ -8,14 +8,11 @@ export const getLaundryQueue = async (req, res) =>{
         const response = await prisma.laundryQueue.findMany({
             include:{
                 LaundryService:true,
-                WashDetail:true,
-                DryDetail:true
+                //WashDetail:true,
+                //DryDetail:true,
             },
 
         });
-
-        
-
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});

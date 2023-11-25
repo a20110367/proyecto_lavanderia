@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 export const getLaundryWashQueue = async (req, res) =>{
     try {
         const response = await prisma.laundryWashQueue.findMany();
+
+        
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});

@@ -27,7 +27,7 @@ const router = express.Router();
 router.get('/laundryQueue', getLaundryQueue);
 router.get('/laundryQueueById/:id', getLaundryQueueById);
 router.get('/laundryQueueByOrder/:fk_Order', getLaundryQueueByOrderId);
-//router.post('/laundryWashQueue', createManyLaundryQueue);
+router.post('/laundryWashQueue', createManyLaundryQueue);
 router.patch('/laundryQueue/:id', updateLaundryQueue);
 router.delete('/laundryWashQueue/:id', deleteLaundryQueue);
 

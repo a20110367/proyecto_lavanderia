@@ -71,11 +71,7 @@ export const createCashCut = async (req, res) => {
 
             });
         }
-
-             cashCut = await prisma.cashCut.create({
-            data: req.body
-
-        });
+        
         res.status(201).json(cashCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });

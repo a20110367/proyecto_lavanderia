@@ -86,7 +86,7 @@ export const calculateCashCut = async (req, res) => {
                 payTotal: true,
             }
         });
-        total._sum === null ? total._sum = 0 : total._sum + 0;
+        total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
         const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
             where: {
@@ -96,7 +96,7 @@ export const calculateCashCut = async (req, res) => {
                 amount: true,
             }
         });
-        totalCashWithdrawal._sum === null ? totalCashWithdrawal._sum = 0 : totalCashWithdrawal._sum + 0;
+        totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
 
         const cash = await prisma.payment.aggregate({
             where: {
@@ -117,7 +117,7 @@ export const calculateCashCut = async (req, res) => {
                 payTotal: true
             }
         });
-        cash._sum === null ? cash._sum = 0 : cash._sum + 0;
+        cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
 
         const credit = await prisma.payment.aggregate({
             where: {
@@ -139,7 +139,7 @@ export const calculateCashCut = async (req, res) => {
         });
 
 
-        credit._sum === null ? credit._sum = 0 : credit._sum + 0;
+        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
 
         const ordersPayed = await prisma.payment.findMany({
 
@@ -182,7 +182,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalEncargo._sum === null ? totalEncargo._sum = 0 : totalEncargo._sum + 0;
+        totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
 
         const totalAutoservicio = await prisma.serviceOrder.aggregate({
 
@@ -210,7 +210,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalAutoservicio._sum === null ? totalAutoservicio._sum = 0 : totalAutoservicio._sum + 0;
+        totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
 
         const totalPlanchado = await prisma.serviceOrder.aggregate({
 
@@ -238,7 +238,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalPlanchado._sum === null ? totalPlanchado._sum = 0 : totalPlanchado._sum + 0;
+        totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum + 0;
 
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {
@@ -317,7 +317,7 @@ export const closeCashCut = async (req, res) => {
                 payTotal: true,
             }
         });
-        total._sum === null ? total._sum = 0 : total._sum + 0;
+        total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
         const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
             where: {
@@ -327,7 +327,7 @@ export const closeCashCut = async (req, res) => {
                 amount: true,
             }
         });
-        totalCashWithdrawal._sum === null ? totalCashWithdrawal._sum = 0 : totalCashWithdrawal._sum + 0;
+        totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
 
         const cash = await prisma.payment.aggregate({
             where: {
@@ -348,7 +348,7 @@ export const closeCashCut = async (req, res) => {
                 payTotal: true
             }
         });
-        cash._sum === null ? cash._sum = 0 : cash._sum + 0;
+        cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
 
         const credit = await prisma.payment.aggregate({
 
@@ -369,7 +369,7 @@ export const closeCashCut = async (req, res) => {
                 payTotal: true
             }
         });
-        credit._sum === null ? credit._sum = 0 : credit._sum + 0;
+        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
         const ordersPayed = await prisma.payment.findMany({
 
             where: {
@@ -383,7 +383,7 @@ export const closeCashCut = async (req, res) => {
             },
         });
 
-        credit._sum === null ? credit._sum = 0 : credit._sum + 0;
+        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
 
 
         const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
@@ -414,7 +414,7 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        totalEncargo._sum === null ? totalEncargo._sum = 0 : totalEncargo._sum + 0;
+        totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
 
         const totalAutoservicio = await prisma.serviceOrder.aggregate({
 
@@ -441,7 +441,7 @@ export const closeCashCut = async (req, res) => {
             },
 
         });
-        totalAutoservicio._sum === null ? totalAutoservicio._sum = 0 : totalAutoservicio._sum + 0;
+        totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
 
         const totalPlanchado = await prisma.serviceOrder.aggregate({
 
@@ -469,7 +469,7 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        totalPlanchado._sum === null ? totalPlanchado._sum = 0 : totalPlanchado._sum + 0;
+        totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
 
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {

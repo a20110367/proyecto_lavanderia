@@ -229,6 +229,11 @@ export const getIronQueue = async (req, res) => {
                         secondLN: true,
                     },
                 },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
                 user: {
                     select: {
                         name: true,

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { response } from "express";
 
 const prisma = new PrismaClient();
 
@@ -308,233 +309,215 @@ export const calculateCashCut = async (req, res) => {
 export const closeCashCut = async (req, res) => {
 
     try {
-        const total = await prisma.payment.aggregate({
+        var response;
 
-            where: {
-                fk_cashCut: Number(req.params.id)
+        const cashCutStatus = await prisma.cashCut.findFirst({
+            where:{
+                id_cashCut:Number(req.params.id)
             },
-            _sum: {
-                payTotal: true,
-            }
-        });
-        total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
-        const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
-
-            where: {
-                fk_cashCut: Number(req.params.id)
-            },
-            _sum: {
-                amount: true,
-            }
-        });
-        totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
-
-        const cash = await prisma.payment.aggregate({
-            where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id)
-
-                    },
-                    {
-
-                        payMethod: 'cash'
-                    }
-
-                ],
+            
+            select:{
+                cashCutStatus:true,
             },
 
-            _sum: {
-                payTotal: true
-            }
         });
-        cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
 
-        const credit = await prisma.payment.aggregate({
+        if(cashCutStatus==="open"){
 
-            where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id),
+            const total = await prisma.payment.aggregate({
 
-                    },
-                    {
-
-                        payMethod: 'credit',
-                    },
-
-                ],
-            },
-            _sum: {
-                payTotal: true
-            }
-        });
-        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-        const ordersPayed = await prisma.payment.findMany({
-
-            where: {
-                fk_cashCut: Number(req.params.id)
-            }, select: {
-                serviceOrder: {
-                    select: {
-                        id_order: true
+                where: {
+                    fk_cashCut: Number(req.params.id)
+                },
+                _sum: {
+                    payTotal: true,
+                }
+            });
+            total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
+            const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
+    
+                where: {
+                    fk_cashCut: Number(req.params.id)
+                },
+                _sum: {
+                    amount: true,
+                }
+            });
+            totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
+    
+            const cash = await prisma.payment.aggregate({
+                where: {
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id)
+    
+                        },
+                        {
+    
+                            payMethod: 'cash'
+                        }
+    
+                    ],
+                },
+    
+                _sum: {
+                    payTotal: true
+                }
+            });
+            cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
+    
+            const credit = await prisma.payment.aggregate({
+    
+                where: {
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id),
+    
+                        },
+                        {
+    
+                            payMethod: 'credit',
+                        },
+    
+                    ],
+                },
+                _sum: {
+                    payTotal: true
+                }
+            });
+            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+            const ordersPayed = await prisma.payment.findMany({
+    
+                where: {
+                    fk_cashCut: Number(req.params.id)
+                }, select: {
+                    serviceOrder: {
+                        select: {
+                            id_order: true
+                        },
                     },
                 },
-            },
-        });
-
-        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-
-
-        const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
-
-
-        const totalEncargo = await prisma.serviceOrder.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        category: {
-                            categoryDescription: "encargo"
+            });
+    
+            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+    
+    
+            const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
+    
+    
+            const totalEncargo = await prisma.serviceOrder.aggregate({
+    
+                where: {
+                    AND: [
+    
+                        {
+                            category: {
+                                categoryDescription: "encargo"
+                            },
                         },
-                    },
-                    {
-                        id_order: {
-                            in: orders,
+                        {
+                            id_order: {
+                                in: orders,
+                            },
+                        }
+    
+                    ],
+                },
+    
+                _sum: {
+                    totalPrice: true,
+                },
+    
+            });
+    
+            totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
+    
+            const totalAutoservicio = await prisma.serviceOrder.aggregate({
+    
+                where: {
+                    AND: [
+    
+                        {
+                            category: {
+                                categoryDescription: "autoservicio"
+                            },
                         },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                totalPrice: true,
-            },
-
-        });
-
-        totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
-
-        const totalAutoservicio = await prisma.serviceOrder.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        category: {
-                            categoryDescription: "autoservicio"
+                        {
+                            id_order: {
+                                in: orders,
+                            },
+                        }
+    
+                    ],
+    
+                },
+    
+                _sum: {
+                    totalPrice: true,
+                },
+    
+            });
+            totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
+    
+            const totalPlanchado = await prisma.serviceOrder.aggregate({
+    
+    
+                where: {
+                    AND: [
+    
+                        {
+                            category: {
+                                categoryDescription: "planchado"
+                            },
                         },
-                    },
-                    {
-                        id_order: {
-                            in: orders,
-                        },
-                    }
-
-                ],
-
-            },
-
-            _sum: {
-                totalPrice: true,
-            },
-
-        });
-        totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
-
-        const totalPlanchado = await prisma.serviceOrder.aggregate({
-
-
-            where: {
-                AND: [
-
-                    {
-                        category: {
-                            categoryDescription: "planchado"
-                        },
-                    },
-                    {
-                        id_order: {
-                            in: orders,
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                totalPrice: true,
-            },
-
-        });
-
-        totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
-
-        const lastPettyCash = await prisma.pettyCash.aggregate({
-            _max: {
-                id_movement: true,
-            }
-        });
-
-        const pettyCashBalance = await prisma.pettyCash.findFirst({
-            where: {
-                id_movement: lastPettyCash._max.id_movement,
-            },
-            select: {
-                balance: true,
-            }
-        });
-
-        lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
-
-        const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
-
-        if (totalCashWithdrawal._sum.amount === null)
-            totalCashWithdrawal._sum.amount = parseFloat(0.00);
-        const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
-
-        console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice);
-        //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
-
-        const today = new Date().toJSON();
-        const time = new Date().toJSON();
-        const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
-
-        const response = {
-            "totalCash": cash._sum.payTotal,
-            "totalCredit": credit._sum.payTotal,
-            "totalIncome": totalIncome,
-            "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
-            "total": totalC,
-            "totalEncargo": totalEncargo._sum.totalPrice,
-            "totalAutoservicio": totalAutoservicio._sum.totalPrice,
-            "totalPlanchado": totalPlanchado._sum.totalPrice,
-            "totalOtros": otherCategorys,
-            "ordersPayed": orders.length,
-            "cashCutStatus": "closed",
-            "cashCutD": today,
-            "cashCutT": time,
-            "pettyCashBalance": pettyCashBalance.balance
-            //"selfService":selfService
-            //"ordersIds":ordersIds
-        }
-        const closeCash = await prisma.cashCut.update({
-
-            where: {
-                AND: [
-                    {
-                        id_cashCut: Number(req.params.id)
-                    },
-                    {
-                        cashCutStatus: "open"
-                    }
-
-                ]
-
-
-            },
-            data: {
+                        {
+                            id_order: {
+                                in: orders,
+                            },
+                        }
+    
+                    ],
+                },
+    
+                _sum: {
+                    totalPrice: true,
+                },
+    
+            });
+    
+            totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
+    
+            const lastPettyCash = await prisma.pettyCash.aggregate({
+                _max: {
+                    id_movement: true,
+                }
+            });
+    
+            const pettyCashBalance = await prisma.pettyCash.findFirst({
+                where: {
+                    id_movement: lastPettyCash._max.id_movement,
+                },
+                select: {
+                    balance: true,
+                }
+            });
+    
+            lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
+    
+            const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
+    
+            if (totalCashWithdrawal._sum.amount === null)
+                totalCashWithdrawal._sum.amount = parseFloat(0.00);
+            const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
+    
+            console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice);
+            //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
+    
+            const today = new Date().toJSON();
+            const time = new Date().toJSON();
+            const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
+    
+            response = {
                 "totalCash": cash._sum.payTotal,
                 "totalCredit": credit._sum.payTotal,
                 "totalIncome": totalIncome,
@@ -549,9 +532,46 @@ export const closeCashCut = async (req, res) => {
                 "cashCutD": today,
                 "cashCutT": time,
                 "pettyCashBalance": pettyCashBalance.balance
-
+                //"selfService":selfService
+                //"ordersIds":ordersIds
             }
-        });
+        
+            const closeCash = await prisma.cashCut.update({
+    
+                where: {
+    
+                    id_cashCut: Number(req.params.id)
+                },
+                data: {
+                    "totalCash": cash._sum.payTotal,
+                    "totalCredit": credit._sum.payTotal,
+                    "totalIncome": totalIncome,
+                    "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
+                    "total": totalC,
+                    "totalEncargo": totalEncargo._sum.totalPrice,
+                    "totalAutoservicio": totalAutoservicio._sum.totalPrice,
+                    "totalPlanchado": totalPlanchado._sum.totalPrice,
+                    "totalOtros": otherCategorys,
+                    "ordersPayed": orders.length,
+                    "cashCutStatus": "closed",
+                    "cashCutD": today,
+                    "cashCutT": time,
+                    "pettyCashBalance": pettyCashBalance.balance
+    
+                }
+            });
+            
+        }else{
+            response = await prisma.cashCut.findFirst({
+    
+                where: {
+    
+                    id_cashCut: Number(req.params.id)
+                },
+            }); 
+        }
+
+       
 
 
 

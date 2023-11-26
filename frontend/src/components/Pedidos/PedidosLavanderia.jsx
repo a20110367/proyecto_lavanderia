@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
-import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
 
@@ -45,17 +44,17 @@ function PedidosLavanderia() {
     useState(false);
 
   const fetcher = async () => {
-    const response = await api.get("/ordersLaundry");
+    const response = await api.get("/laundryQueue");
     return response.data;
   };
 
-  const { data } = useSWR("ordersLaundry", fetcher);
+  const { data } = useSWR("laundryQueue", fetcher);
 
   useEffect(() => {
     if (data && Object.keys(confirmedDryerProcesses).length === 0) {
       const initialStates = {};
       data.forEach((pedido) => {
-        initialStates[pedido.id_order] = false;
+        initialStates[pedido.id_description] = false;
       });
       // Actualizar los estados solo si hay cambios
       if (Object.keys(initialStates).length > 0) {
@@ -63,7 +62,6 @@ function PedidosLavanderia() {
       }
     }
   }, [data, confirmedDryerProcesses]);
-  
 
   useEffect(() => {
     const storedConfirmationStatus = localStorage.getItem(
@@ -133,10 +131,10 @@ function PedidosLavanderia() {
     if (data) {
       data.forEach((pedido) => {
         const confirmedDryerProcess = localStorage.getItem(
-          `confirmedDryerProcess_${pedido.id_order}`
+          `confirmedDryerProcess_${pedido.id_description}`
         );
         if (confirmedDryerProcess !== null) {
-          confirmedDryerProcessesFromStorage[pedido.id_order] =
+          confirmedDryerProcessesFromStorage[pedido.id_description] =
             confirmedDryerProcess === "true";
         }
       });
@@ -150,16 +148,22 @@ function PedidosLavanderia() {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderStatus === filtroEstatus;
+        return pedido.serviceStatus === filtroEstatus;
       }
     });
 
     const textFiltered = filtered.filter((pedido) => {
       return (
-        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.id_order.toString().includes(filtro)
+        pedido.serviceOrder.client.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.serviceOrder.user.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.serviceOrder.user.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.id_description.toString().includes(filtro)
       );
     });
 
@@ -189,10 +193,10 @@ function PedidosLavanderia() {
     localStorage.setItem("selectedWashMachineId", machine.id_machine);
   };
 
-const handleSelectDryMachine = (machine) => {
-  setSelectedDryMachine(machine);
-  localStorage.setItem("selectedDryMachineId", machine.id_machine);
-};
+  const handleSelectDryMachine = (machine) => {
+    setSelectedDryMachine(machine);
+    localStorage.setItem("selectedDryMachineId", machine.id_machine);
+  };
 
   const handleStartProcess = async (pedido) => {
     try {
@@ -206,7 +210,7 @@ const handleSelectDryMachine = (machine) => {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
-      localStorage.setItem("selectedPedidoId", pedido.id_order);  
+      localStorage.setItem("selectedPedidoId", pedido.id_description);
       setShowMachineName(true);
       setShowDryerSelection(false);
       localStorage.setItem("selectedPedido", JSON.stringify(pedido));
@@ -236,15 +240,15 @@ const handleSelectDryMachine = (machine) => {
         freeForUse: false,
       });
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "inProgress" }
+        p.id_description === selectedPedido.id_description
+          ? { ...p, serviceStatus: "inProgress" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "inProgress",
+      await api.patch(`/laundryQueue/${selectedPedido.id_description}`, {
+        serviceStatus: "inProgress",
       });
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
@@ -271,14 +275,17 @@ const handleSelectDryMachine = (machine) => {
       // Cambiar el estado de confirmación de secado a false
       setIsDryingProcessConfirmedInModal(false);
       localStorage.setItem("isDryingProcessConfirmedInModal", "false");
-      localStorage.setItem("selectedPedidoId", pedido.id_order);
+      localStorage.setItem("selectedPedidoId", pedido.id_description);
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [pedido.id_order]: false, // Establecer el estado del pedido actual como no confirmado para secado
+        [pedido.id_description]: false, // Establecer el estado del pedido actual como no confirmado para secado
       });
 
-      localStorage.setItem(`confirmedDryerProcess_${pedido.id_order}`, "false");
+      localStorage.setItem(
+        `confirmedDryerProcess_${pedido.id_description}`,
+        "false"
+      );
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -330,7 +337,7 @@ const handleSelectDryMachine = (machine) => {
       showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
+        p.id_description === selectedPedido.id_description
           ? { ...p, isDryingConfirmed: true }
           : p
       );
@@ -340,13 +347,13 @@ const handleSelectDryMachine = (machine) => {
       setIsDryingProcessConfirmedInModal(true);
       localStorage.setItem("showDryerSelection", "false");
       localStorage.setItem(
-        `confirmedDryerProcess_${selectedPedido.id_order}`,
+        `confirmedDryerProcess_${selectedPedido.id_description}`,
         "true"
       );
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_order]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [selectedPedido.id_description]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
@@ -376,26 +383,26 @@ const handleSelectDryMachine = (machine) => {
       }
 
       // Actualizar el estado del pedido a "finish"
-      const updatedPedido = { ...selectedPedido, orderStatus: "finished" };
+      const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order ? updatedPedido : p
+        p.id_description === selectedPedido.id_description ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
-  
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
+
+      await api.patch(`/laundryQueue/${selectedPedido.id_description}`, {
+        serviceStatus: "finished",
       });
-      localStorage.setItem("selectedPedidoId", selectedPedido.id_order);
+      localStorage.setItem("selectedPedidoId", selectedPedido.id_description);
 
       setShowMachineName(false);
 
       showNotification("NOTIFICACIÓN ENVIADA...");
       await api.post("/sendMessage", {
-        id_order: selectedPedido.id_order,
+        id_description: selectedPedido.id_description,
         name: selectedPedido.client.name,
         email: selectedPedido.client.email,
         tel: "521" + selectedPedido.client.phone,
-        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        message: `Tu pedido con el folio: ${selectedPedido.id_description} está listo, Ya puedes pasar a recogerlo.`,
         subject: "Tu Ropa esta Lista",
         text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
         warning: false,
@@ -406,6 +413,15 @@ const handleSelectDryMachine = (machine) => {
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
+  };
+
+  const formatDateToGMTMinus6 = (dateStr) => {
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() - 6);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -485,47 +501,49 @@ const handleSelectDryMachine = (machine) => {
             {filteredPedidos
               .filter(
                 (pedido) =>
-                  pedido.orderStatus !== "finished" &&
-                  pedido.orderStatus !== "delivered"
+                  pedido.serviceStatus !== "finished" &&
+                  pedido.serviceStatus !== "delivered"
               ) // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
-                <tr key={pedido.id_order}>
-                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                <tr key={pedido.id_laundryEvent}>
+                  <td className="py-3 px-1 text-center">
+                    {pedido.id_description}
+                  </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.serviceOrder.user.name} <br />{" "}
+                    {pedido.serviceOrder.user.firstLN}
                   </td>
 
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
+                    {pedido.serviceOrder.client.name} <br />{" "}
+                    {pedido.serviceOrder.client.firstLN}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.category.categoryDescription === "encargo"
-                      ? "Encargo"
-                      : pedido.category.categoryDescription}
+                    {pedido.LaundryService.description}
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.LaundryService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
-                    {pedido.orderStatus === "pending" ? (
+                    {pedido.serviceStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">
                         <MinusCircleOutlined /> Pendiente
                       </span>
-                    ) : pedido.orderStatus === "stored" ? (
+                    ) : pedido.serviceStatus === "stored" ? (
                       <span className="text-fuchsia-600 pl-1">
                         <DropboxOutlined /> Almacenado
                       </span>
-                    ) : pedido.orderStatus === "inProgress" ? (
+                    ) : pedido.serviceStatus === "inProgress" ? (
                       <span className="text-yellow-600 pl-1">
                         <ClockCircleOutlined /> En Proceso
                       </span>
-                    ) : pedido.orderStatus === "finished" ? (
+                    ) : pedido.serviceStatus === "finished" ? (
                       <span className="text-blue-600 pl-1">
                         <IssuesCloseOutlined /> Finalizado no entregado
                       </span>
-                    ) : pedido.orderStatus === "delivered" ? (
+                    ) : pedido.serviceStatus === "delivered" ? (
                       <span className="text-green-600 pl-1">
                         <CheckCircleOutlined /> Finalizado Entregado
                       </span>
@@ -536,7 +554,7 @@ const handleSelectDryMachine = (machine) => {
                     )}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.orderStatus === "pending" && (
+                    {pedido.serviceStatus === "pending" && (
                       <button
                         onClick={() => handleStartProcess(pedido)}
                         className="btn-primary ml-2 mt-1"
@@ -545,8 +563,8 @@ const handleSelectDryMachine = (machine) => {
                       </button>
                     )}
 
-                    {pedido.orderStatus === "inProgress" &&
-                      !confirmedDryerProcesses[pedido.id_order] && (
+                    {pedido.serviceStatus === "inProgress" &&
+                      !confirmedDryerProcesses[pedido.id_description] && (
                         <button
                           onClick={() => handleStartDryerProcess(pedido)}
                           className="btn-primary ml-2 mt-1"
@@ -555,8 +573,8 @@ const handleSelectDryMachine = (machine) => {
                         </button>
                       )}
 
-                    {pedido.orderStatus === "inProgress" &&
-                      confirmedDryerProcesses[pedido.id_order] && (
+                    {pedido.serviceStatus === "inProgress" &&
+                      confirmedDryerProcesses[pedido.id_description] && (
                         <button
                           onClick={handleFinishProcess}
                           className="btn-primary ml-2 mt-1"
@@ -578,8 +596,8 @@ const handleSelectDryMachine = (machine) => {
           pageCount={Math.ceil(
             filteredPedidos.filter(
               (pedido) =>
-                pedido.orderStatus !== "finished" &&
-                pedido.orderStatus !== "delivered"
+                pedido.serviceStatus !== "finished" &&
+                pedido.serviceStatus !== "delivered"
             ).length / itemsPerPage
           )}
           marginPagesDisplayed={2}
@@ -633,7 +651,11 @@ const handleSelectDryMachine = (machine) => {
             </thead>
             <tbody>
               {availableMachines
-                .filter((machine) => machine.machineType === "lavadora" && machine.status === "available")
+                .filter(
+                  (machine) =>
+                    machine.machineType === "lavadora" &&
+                    machine.status === "available"
+                )
                 .map((machine) => (
                   <tr key={machine.id_machine}>
                     <td>{machine.machineType}</td>
@@ -705,7 +727,11 @@ const handleSelectDryMachine = (machine) => {
             </thead>
             <tbody>
               {availableMachines
-                .filter((machine) => machine.machineType === "secadora"&& machine.status === "available")
+                .filter(
+                  (machine) =>
+                    machine.machineType === "secadora" &&
+                    machine.status === "available"
+                )
                 .map((machine) => (
                   <tr key={machine.id_machine}>
                     <td>{machine.machineType}</td>

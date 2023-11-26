@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
+import { BsFillLightningFill } from "react-icons/bs";
 import {
   IssuesCloseOutlined,
   CheckCircleOutlined,
@@ -36,11 +37,11 @@ function PedidosPlanchado() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ordersIron");
+    const response = await api.get("/ironQueue");
     return response.data;
   };
 
-  const { data } = useSWR("ordersIron", fetcher);
+  const { data } = useSWR("ironQueue", fetcher);
 
   useEffect(() => {
     // Recuperar la máquina seleccionada de localStorage
@@ -296,6 +297,7 @@ function PedidosPlanchado() {
               <th>Recibió</th>
               <th>Cliente</th>
               <th>Detalles</th>
+              <th>Piezas</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
               <th></th>
@@ -313,17 +315,22 @@ function PedidosPlanchado() {
                 <tr key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.user.name} <br /> {pedido.user.firstLN}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
+                    {pedido.client.name} <br /> {pedido.client.firstLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "planchado"
                       ? "Planchado"
                       : pedido.category.categoryDescription}
+                    {pedido.category.categoryDescription === "planchado" &&
+                      pedido.express && <BsFillLightningFill />}
                   </td>
 
+                  <td className="py-3 px-6">
+                    {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
+                  </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
@@ -436,32 +443,34 @@ function PedidosPlanchado() {
               </tr>
             </thead>
             <tbody>
-              {availableMachines .filter((machine) => machine.status === "available").map((machine) => (
-                <tr key={machine.id_ironStation}>
-                  <td>{machine.machineType}</td>
-                  <td>{machine.pieces}</td>
-                  <td
-                    className={`${
-                      machine.freeForUse ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {machine.freeForUse ? "Libre" : "Ocupado"}
-                  </td>
+              {availableMachines
+                .filter((machine) => machine.status === "available")
+                .map((machine) => (
+                  <tr key={machine.id_ironStation}>
+                    <td>{machine.machineType}</td>
+                    <td>{machine.pieces}</td>
+                    <td
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
 
-                  <td>
-                    <div className="flex flex-col items-center">
-                      <Checkbox
-                        key={`checkbox_${machine.id_ironStation}`}
-                        checked={selectedMachine === machine}
-                        onChange={() => handleSelectMachine(machine)}
-                        className="mb-2"
-                        disabled={!machine.freeForUse}
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_ironStation}`}
+                          checked={selectedMachine === machine}
+                          onChange={() => handleSelectMachine(machine)}
+                          className="mb-2"
+                          disabled={!machine.freeForUse}
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

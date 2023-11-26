@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
+import { HiOutlineSearch } from "react-icons/hi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Select } from "antd";
 import Swal from "sweetalert2";
@@ -20,6 +21,7 @@ export default function PuntoVenta() {
 
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
+  const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [img, setImg] = useState([
@@ -31,7 +33,7 @@ export default function PuntoVenta() {
   const queryParams = new URLSearchParams(location.search);
   const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
-  const getUrl = queryParams.get("geturl")
+  const getUrl = queryParams.get("geturl");
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";
 
@@ -43,23 +45,25 @@ export default function PuntoVenta() {
   const [isSaved, setIsSaved] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
-  const [fetch, setFetch] = useState('')
+  const [fetch, setFetch] = useState("");
+  const [pieces, setPieces] = useState(0)
+  const [numberOfPieces, setNumberOfPieces] = useState(localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0)
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === "autoservicio") {
-      setFetch('selfService')
+      setFetch("selfService");
       setCategoryId(1);
       setPostUrl("/ordersSelfService");
 
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
-      setFetch('laundryService')
+      setFetch("laundryService");
       setCategoryId(2);
       setPostUrl("/ordersLaundryService");
     } else {
-      setFetch('ironService')
+      setFetch("ironService");
       setCategoryId(3);
       setPostUrl("/ordersIronService");
     }
@@ -81,7 +85,7 @@ export default function PuntoVenta() {
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
     const serviceToAdd = service;
-    if (serviceToAdd) {
+    if (serviceToAdd ) {
       const existingService = cart.find(
         (item) => item.id_service === serviceId
       );
@@ -89,10 +93,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-              ...item,
-              quantity: item.quantity + 1,
-              totalPrice: item.price * (item.quantity + 1),
-            }
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: item.price * (item.quantity + 1),
+              }
             : item
         );
         setCart(updatedCart);
@@ -101,6 +105,17 @@ export default function PuntoVenta() {
           ...cart,
           { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price },
         ]);
+      }
+
+      if (categoryId === 3) {
+        setPieces(pieces + serviceToAdd.pieces)
+      } else if (categoryId === 3) {
+        Swal.fire({
+          icon: "error",
+          title: "Se ha superado el No. de Piezas diarias",
+          text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
+          confirmButtonColor: "#034078",
+        })
       }
     }
     // } else {
@@ -128,8 +143,10 @@ export default function PuntoVenta() {
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
+            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
             return { ...item, quantity: item.quantity - 1 };
           } else {
+            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
             return null;
           }
         } else {
@@ -181,113 +198,124 @@ export default function PuntoVenta() {
   };
 
   const handleSaveAndGenerateTicket = async () => {
-    setIsSaved(true);
-    setIsModalVisible(false);
-    const arrayService = [];
+    if ((numberOfPieces + pieces) < 130) {
+      setIsSaved(true);
+      setIsModalVisible(false);
+      const arrayService = [];
 
-    let noOfItems = 0;
-    cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
+      let noOfItems = 0;
+      cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
 
-    cart.map((detail) =>
-      arrayService.push({
-        units: detail.quantity,
-        subtotal: detail.quantity * detail.price,
-        fk_Service: detail.id_service,
-      })
-    );
+      cart.map((detail) =>
+        arrayService.push({
+          units: detail.quantity,
+          subtotal: detail.quantity * detail.price,
+          fk_Service: detail.id_service,
+        })
+      );
 
-    try {
-      const res = await api.post(postUrl, {
-        serviceOrder: {
-          totalPrice: calculateSubtotal(),
-          fk_client: parseInt(clientId),
-          numberOfItems: noOfItems,
+      try {
+        const res = await api.post(postUrl, {
+          serviceOrder: {
+            totalPrice: calculateSubtotal(),
+            fk_client: parseInt(clientId),
+            numberOfItems: noOfItems,
+            payForm: payForm,
+            payStatus: payStatus,
+            fk_user: cookies.token,
+            receptionDate: purchaseDate.toISOString(),
+            receptionTime: purchaseDate.toISOString(),
+            scheduledDeliveryDate: deliveryDate.toISOString(),
+            scheduledDeliveryTime: deliveryDate.toISOString(),
+            fk_categoryId: categoryId,
+          },
+          services: arrayService,
+        });
+        const order = {
+          id_order: res.data.serviceOrder.id_order,
           payForm: payForm,
           payStatus: payStatus,
-          fk_user: cookies.token,
+          payMethod: payMethod,
+          subtotal: calculateSubtotal(),
+          casher: cookies.username,
+          client: clientName,
           receptionDate: purchaseDate.toISOString(),
           receptionTime: purchaseDate.toISOString(),
           scheduledDeliveryDate: deliveryDate.toISOString(),
           scheduledDeliveryTime: deliveryDate.toISOString(),
-          fk_categoryId: categoryId,
-        },
-        services: arrayService,
+          notes: "",
+          cart: cart,
+        };
+        orderTicket(order);
+        const idOrder = res.data.serviceOrder.id_order;
+        console.log(idOrder);
+        if (payForm === "advance") {
+          await api.post("/paymentsAdvance", {
+            payment: {
+              fk_idOrder: idOrder,
+              payMethod: payMethod,
+              payDate: purchaseDate.toISOString(),
+              payTime: purchaseDate.toISOString(),
+              fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+              payTotal: calculateSubtotal(),
+            },
+          });
+        }
+      } catch (err) {
+        console.log(err);
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del Servidor");
+        } else {
+          setErrMsg(
+            "Hubo un error al registrar la Orden, comuniquese con Soporte"
+          );
+        }
+      }
+
+      localStorage.setItem("lastSelectedClient", clientName);
+      localStorage.setItem("returningFromPuntoVenta", "true");
+      localStorage.setItem('numberOfPieces', pieces + (localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0))
+
+      // Regresar a la página anterior
+      window.history.back();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Se ha superado el No. de Piezas diarias",
+        text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
+        confirmButtonColor: "#034078",
       });
-      const order = {
-        id_order: res.data.serviceOrder.id_order,
-        payForm: payForm,
-        payStatus: payStatus,
-        payMethod: payMethod,
-        subtotal: calculateSubtotal(),
-        casher: cookies.username,
-        client: clientName,
-        receptionDate: purchaseDate.toISOString(),
-        receptionTime: purchaseDate.toISOString(),
-        scheduledDeliveryDate: deliveryDate.toISOString(),
-        scheduledDeliveryTime: deliveryDate.toISOString(),
-        notes: "",
-        cart: cart,
-      };
-      orderTicket(order);
-      const idOrder = res.data.serviceOrder.id_order;
-      console.log(idOrder);
-      if (payForm === "advance") {
-        await api.post("/paymentsAdvance", {
-          payment: {
-            fk_idOrder: idOrder,
-            payMethod: payMethod,
-            payDate: purchaseDate.toISOString(),
-            payTime: purchaseDate.toISOString(),
-            fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-            payTotal: calculateSubtotal(),
-          },
-        });
-      }
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del Servidor");
-      } else {
-        setErrMsg(
-          "Hubo un error al registrar la Orden, comuniquese con Soporte"
-        );
-      }
+      setIsModalVisible(false)
     }
-
-    localStorage.setItem("lastSelectedClient", clientName);
-    localStorage.setItem("returningFromPuntoVenta", "true");
-
-    // Regresar a la página anterior
-    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-      // Aquí aplicamos las condiciones para filtrar los servicios
-      if (
-        serviceType === "encargo" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "planchado" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "autoservicio" &&
-        service.description.toLowerCase().includes("autoservicio")
-      ) {
-        return true;
-      }
-      return false;
-    });
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "encargo" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "autoservicio" &&
+          service.description.toLowerCase().includes("autoservicio")
+        ) {
+          return true;
+        }
+        return false;
+      });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -344,56 +372,80 @@ export default function PuntoVenta() {
     }
   };
 
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value);
+  };
+
   return (
     <div>
-      <div className="title-container">
+      <div className="title-container mb-3">
         <strong className="title-strong">
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-              ? "Lista de Servicios de Autoservicio"
-              : serviceType === "planchado"
-                ? "Lista de Servicios de Planchado"
-                : "Lista de Servicios"}
+            ? "Lista de Servicios de Autoservicio"
+            : serviceType === "planchado"
+            ? "Lista de Servicios de Planchado"
+            : "Lista de Servicios"}
         </strong>
+      </div>
+      <div className="relative w-full">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="input-search"
+          value={filtro}
+          onChange={handleFiltroChange}
+        />
+        <div className="absolute top-2.5 left-2.5 text-gray-400">
+          <HiOutlineSearch fontSize={20} className="text-gray-400" />
+        </div>
       </div>
       <div className="container pt-4">
         <div className="row">
           <div className="col-md-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {filteredServices.map((service) => (
-                <div
-                  key={service.id_service}
-                  className="bg-white rounded-lg shadow-lg"
-                >
-                  <img
-                    src={img[0]}
-                    alt={`Imagen de ${service.description}`}
-                    className="img-pos"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-xl font-semibold">
-                      {service.description}
-                    </h3>
-                    <h5 className="text-gray-600">${service.price}</h5>
-                    <button
-                      className={`${isAddButtonDisabled
-                        ? "bg-gray-400"
-                        : "bg-blue-500 hover:bg-blue-700"
+              {filteredServices
+                .filter((service) =>
+                  service.description
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+                )
+                .map((service) => (
+                  <div
+                    key={service.id_service}
+                    className="bg-white rounded-lg shadow-lg"
+                  >
+                    <img
+                      src={img[0]}
+                      alt={`Imagen de ${service.description}`}
+                      className="img-pos"
+                    />
+                    <div className="p-3">
+                      <h3 className="text-xl font-semibold">
+                        {service.description}
+                      </h3>
+                      <h5 className="text-gray-600">${service.price}</h5>
+                      <button
+                        className={`${
+                          isAddButtonDisabled
+                            ? "bg-gray-400"
+                            : "bg-blue-500 hover:bg-blue-700"
                         } text-white font-bold py-2 px-4 rounded mt-2`}
-                      onClick={() => addToCart(service.id_service, service)}
-                      disabled={isAddButtonDisabled}
-                    >
-                      Agregar
-                    </button>
+                        onClick={() => addToCart(service.id_service, service)}
+                        disabled={isAddButtonDisabled}
+                      >
+                        Agregar
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 
           <div className="col-md-3 ml-10">
-            <div className="card card-body mt-5">
+            {categoryId === 3 ? <p className="text-3xl font-semibold text-center">Piezas del Pedido: <span className="text-orange-600">{pieces}</span></p> : ''}
+            <div className="card card-body mt-2">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}
                 <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
@@ -567,28 +619,29 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                        <div>
-                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                            Método de Pago Anticipado:
-                          </p>
-                          <Select
-                            style={{ width: "100%", fontSize: "16px" }}
-                            onChange={(value) => setPayMethod(value)}
-                            value={payMethod}
-                          >
-                            <Option value="credit">Tarjeta</Option>
-                            <Option value="cash">Efectivo</Option>
-                          </Select>
-                        </div>
-                      )}
+                      <div>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Método de Pago Anticipado:
+                        </p>
+                        <Select
+                          style={{ width: "100%", fontSize: "16px" }}
+                          onChange={(value) => setPayMethod(value)}
+                          value={payMethod}
+                        >
+                          <Option value="credit">Tarjeta</Option>
+                          <Option value="cash">Efectivo</Option>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>
             </div>
             <Link
               to="/recepcionLavanderia"
-              className="mt-4 flex text-center text-decoration-none"
+              className="mt-2 flex text-center text-decoration-none"
             ></Link>
+            {categoryId === 3 ? <p className="text-2xl font-semibold text-center">No. Maximo de Piezas: <span className="text-RedPantone">{pieces + parseInt(numberOfPieces)} / 130</span></p> : ''}
           </div>
         </div>
       </div>

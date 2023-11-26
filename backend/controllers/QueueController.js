@@ -112,9 +112,28 @@ export const getSelfServiceQueue = async (req, res) => {
 
             include: {
                 SelfService: true,
+                serviceOrder: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                        client: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
                 //WashDetail:true,
                 //DryDetail:true,
             },
+
         });
         res.status(200).json(response);
     } catch (e) {

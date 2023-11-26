@@ -72,7 +72,7 @@ export const createCashCut = async (req, res) => {
             });
         }
 
-        const cashCut = await prisma.cashCut.create({
+             cashCut = await prisma.cashCut.create({
             data: req.body
 
         });

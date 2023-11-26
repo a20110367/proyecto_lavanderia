@@ -72,7 +72,7 @@ function EntregaLavanderia() {
     if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
-        title: "No haz inicializado caja!",
+        title: "No has inicializado caja!",
         text: 'Da click en Iniciar Caja.',
         confirmButtonColor: '#034078'
       });
@@ -205,7 +205,7 @@ function EntregaLavanderia() {
     if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
-        title: "No haz inicializado caja!",
+        title: "No has inicializado caja!",
         text: 'Da click en Iniciar Caja.',
         confirmButtonColor: '#034078'
       });

@@ -140,7 +140,7 @@ function CorteCaja() {
     if(localStorage.getItem('lastCashCut')){ 
       Swal.fire({
         icon: "error",
-        title: "Ya haz Cerrado Caja",
+        title: "Ya has Cerrado Caja",
         text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
         confirmButtonColor: '#034078'
       });

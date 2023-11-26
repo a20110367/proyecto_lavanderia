@@ -61,7 +61,11 @@ export const createCashCut = async (req, res) => {
 
             cashCut = await prisma.cashCut.findFirst({
                 where: {
-                    id_cashCut: lastCashCut._max
+                    id_cashCut: lastCashCut._max.id_cashCut
+                },
+                select: {
+                    initialCash: true,
+                    id_cashCut: true,
                 },
             });
 
@@ -71,7 +75,7 @@ export const createCashCut = async (req, res) => {
 
             });
         }
-        
+
         res.status(201).json(cashCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });

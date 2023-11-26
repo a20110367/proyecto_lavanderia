@@ -77,6 +77,8 @@ function InicioCaja() {
         localStorage.setItem("cashCutId", res.data.id_cashCut)
         setCajaIniciada(true);
         setVisible(false);
+      } else{
+        setVisible(false)
       }
     } catch (err) { 
       console.log(err)

@@ -83,8 +83,8 @@ const items1 = [
     ]),
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), 
-    getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
+    getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />), 
+    getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
 const items2 = [
@@ -139,7 +139,7 @@ const items2 = [
 
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
+    getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
 

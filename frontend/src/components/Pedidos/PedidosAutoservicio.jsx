@@ -36,11 +36,11 @@ function PedidosAutoservicio() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ordersSelfService");
+    const response = await api.get("/selfServiceQueue");
     return response.data;
   };
 
-  const { data } = useSWR("ordersSelfService", fetcher);
+  const { data } = useSWR("selfServiceQueue", fetcher);
 
   useEffect(() => {
     if (data) {
@@ -54,16 +54,22 @@ function PedidosAutoservicio() {
       if (filtroEstatus === "") {
         return true;
       } else {
-        return pedido.orderStatus === filtroEstatus;
+        return pedido.serviceStatus === filtroEstatus;
       }
     });
 
     const textFiltered = filtered.filter((pedido) => {
       return (
-        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.id_order.toString().includes(filtro)
+        pedido.serviceOrder.client.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.serviceOrder.user.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.serviceOrder.user.name
+          .toLowerCase()
+          .includes(filtro.toLowerCase()) ||
+        pedido.id_description.toString().includes(filtro)
       );
     });
 
@@ -130,14 +136,14 @@ function PedidosAutoservicio() {
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "delivered" }
+          ? { ...p, serviceStatus: "delivered" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "delivered",
+        serviceStatus: "delivered",
         assignedMachine: selectedMachine.id,
       });
       setShowMachineName(false);
@@ -215,7 +221,7 @@ function PedidosAutoservicio() {
               <th>No. Folio</th>
               <th>Recibió</th>
               <th>Cliente</th>
-              <th>Detalle</th>
+              <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
               <th></th>
@@ -223,44 +229,47 @@ function PedidosAutoservicio() {
           </thead>
           <tbody>
             {filteredPedidos
-              .filter((pedido) => pedido.orderStatus !== "delivered") // Filtrar pedidos que no tienen estado "finished"
+              .filter((pedido) => pedido.serviceStatus !== "delivered") // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
-                <tr key={pedido.id_order}>
-                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                <tr key={pedido.id_serviceEvent}>
+                  <td className="py-3 px-1 text-center">
+                    {pedido.id_description}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
+                    {pedido.serviceOrder.user.name} <br />{" "}
+                    {pedido.serviceOrder.user.firstLN}
+                  </td>
+
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.serviceOrder.client.name} <br />{" "}
+                    {pedido.serviceOrder.client.firstLN}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.category.categoryDescription === "autoservicio"
-                      ? "Autoservicio"
-                      : pedido.category.categoryDescription}
+                    {pedido.SelfService.description}
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.scheduledDeliveryDate)}
+                    {formatDateToGMTMinus6(pedido.SelfService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
-                    {pedido.orderStatus === "pending" ? (
+                    {pedido.serviceStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">
                         <MinusCircleOutlined /> Pendiente
                       </span>
-                    ) : pedido.orderStatus === "stored" ? (
+                    ) : pedido.serviceStatus === "stored" ? (
                       <span className="text-fuchsia-600 pl-1">
                         <DropboxOutlined /> Almacenado
                       </span>
-                    ) : pedido.orderStatus === "inProgress" ? (
+                    ) : pedido.serviceStatus === "inProgress" ? (
                       <span className="text-yellow-600 pl-1">
                         <ClockCircleOutlined /> En Proceso
                       </span>
-                    ) : pedido.orderStatus === "finished" ? (
+                    ) : pedido.serviceStatus === "finished" ? (
                       <span className="text-blue-600 pl-1">
                         <IssuesCloseOutlined /> Finalizado no entregado
                       </span>
-                    ) : pedido.orderStatus === "delivered" ? (
+                    ) : pedido.serviceStatus === "delivered" ? (
                       <span className="text-green-600 pl-1">
                         <CheckCircleOutlined /> Finalizado Entregado
                       </span>
@@ -271,7 +280,7 @@ function PedidosAutoservicio() {
                     )}
                   </td>
                   <td>
-                    {pedido.orderStatus === "pending" && (
+                    {pedido.serviceStatus === "pending" && (
                       <button
                         onClick={() => handleStartProcess(pedido)}
                         className="btn-primary ml-2 mt-1"
@@ -292,7 +301,7 @@ function PedidosAutoservicio() {
           breakLabel="..."
           pageCount={Math.ceil(
             filteredPedidos.filter(
-              (pedido) => pedido.orderStatus !== "delivered"
+              (pedido) => pedido.serviceStatus !== "delivered"
             ).length / itemsPerPage
           )}
           marginPagesDisplayed={2}
@@ -345,10 +354,23 @@ function PedidosAutoservicio() {
             </thead>
             <tbody>
               {availableMachines
-                .filter(
-                  (machine) =>
-                    machine.status === "available"
-                )
+                .filter((machine) => machine.status === "available")
+                .filter((machine) => {
+                  if (selectedPedido && selectedPedido.SelfService) {
+                    const serviceDescription =
+                      selectedPedido.SelfService.description.toLowerCase();
+                    if (serviceDescription.includes("lavado")) {
+                      return machine.machineType
+                        .toLowerCase()
+                        .includes("lavadora");
+                    } else if (serviceDescription.includes("secado")) {
+                      return machine.machineType
+                        .toLowerCase()
+                        .includes("secadora");
+                    }
+                  }
+                  return true; // Si no hay pedido seleccionado o descripción, muestra todas las máquinas disponibles
+                })
                 .map((machine) => (
                   <tr key={machine.id_machine}>
                     <td>{machine.machineType}</td>

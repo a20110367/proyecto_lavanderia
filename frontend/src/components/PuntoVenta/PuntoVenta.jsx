@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
+import { HiOutlineSearch } from "react-icons/hi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Select } from "antd";
 import Swal from "sweetalert2";
@@ -20,6 +21,7 @@ export default function PuntoVenta() {
 
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
+  const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [img, setImg] = useState([
@@ -31,7 +33,7 @@ export default function PuntoVenta() {
   const queryParams = new URLSearchParams(location.search);
   const clientId = queryParams.get("clientId");
   const clientName = queryParams.get("clientName");
-  const getUrl = queryParams.get("geturl")
+  const getUrl = queryParams.get("geturl");
   const serviceType = queryParams.get("serviceType")?.toLowerCase();
   const shouldShowAllServices = !serviceType || serviceType === "";
 
@@ -43,23 +45,23 @@ export default function PuntoVenta() {
   const [isSaved, setIsSaved] = useState(false);
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
-  const [fetch, setFetch] = useState('')
+  const [fetch, setFetch] = useState("");
 
   useEffect(() => {
     // Definir el category_id
     if (serviceType === "autoservicio") {
-      setFetch('selfService')
+      setFetch("selfService");
       setCategoryId(1);
       setPostUrl("/ordersSelfService");
 
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
-      setFetch('laundryService')
+      setFetch("laundryService");
       setCategoryId(2);
       setPostUrl("/ordersLaundryService");
     } else {
-      setFetch('ironService')
+      setFetch("ironService");
       setCategoryId(3);
       setPostUrl("/ordersIronService");
     }
@@ -89,10 +91,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-              ...item,
-              quantity: item.quantity + 1,
-              totalPrice: item.price * (item.quantity + 1),
-            }
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: item.price * (item.quantity + 1),
+              }
             : item
         );
         setCart(updatedCart);
@@ -264,30 +266,30 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-      // Aquí aplicamos las condiciones para filtrar los servicios
-      if (
-        serviceType === "encargo" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "planchado" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "autoservicio" &&
-        service.description.toLowerCase().includes("autoservicio")
-      ) {
-        return true;
-      }
-      return false;
-    });
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "encargo" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "autoservicio" &&
+          service.description.toLowerCase().includes("autoservicio")
+        ) {
+          return true;
+        }
+        return false;
+      });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -344,51 +346,74 @@ export default function PuntoVenta() {
     }
   };
 
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value);
+  };
+
   return (
     <div>
-      <div className="title-container">
+      <div className="title-container mb-3">
         <strong className="title-strong">
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-              ? "Lista de Servicios de Autoservicio"
-              : serviceType === "planchado"
-                ? "Lista de Servicios de Planchado"
-                : "Lista de Servicios"}
+            ? "Lista de Servicios de Autoservicio"
+            : serviceType === "planchado"
+            ? "Lista de Servicios de Planchado"
+            : "Lista de Servicios"}
         </strong>
+      </div>
+      <div className="relative w-full">
+        <input
+          type="text"
+          placeholder="Buscar..."
+          className="input-search"
+          value={filtro}
+          onChange={handleFiltroChange}
+        />
+        <div className="absolute top-2.5 left-2.5 text-gray-400">
+          <HiOutlineSearch fontSize={20} className="text-gray-400" />
+        </div>
       </div>
       <div className="container pt-4">
         <div className="row">
           <div className="col-md-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {filteredServices.map((service) => (
-                <div
-                  key={service.id_service}
-                  className="bg-white rounded-lg shadow-lg"
-                >
-                  <img
-                    src={img[0]}
-                    alt={`Imagen de ${service.description}`}
-                    className="img-pos"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-xl font-semibold">
-                      {service.description}
-                    </h3>
-                    <h5 className="text-gray-600">${service.price}</h5>
-                    <button
-                      className={`${isAddButtonDisabled
-                        ? "bg-gray-400"
-                        : "bg-blue-500 hover:bg-blue-700"
+              {filteredServices
+                .filter((service) =>
+                  service.description
+                    .toLowerCase()
+                    .includes(filtro.toLowerCase())
+                )
+                .map((service) => (
+                  <div
+                    key={service.id_service}
+                    className="bg-white rounded-lg shadow-lg"
+                  >
+                    <img
+                      src={img[0]}
+                      alt={`Imagen de ${service.description}`}
+                      className="img-pos"
+                    />
+                    <div className="p-3">
+                      <h3 className="text-xl font-semibold">
+                        {service.description}
+                      </h3>
+                      <h5 className="text-gray-600">${service.price}</h5>
+                      <button
+                        className={`${
+                          isAddButtonDisabled
+                            ? "bg-gray-400"
+                            : "bg-blue-500 hover:bg-blue-700"
                         } text-white font-bold py-2 px-4 rounded mt-2`}
-                      onClick={() => addToCart(service.id_service, service)}
-                      disabled={isAddButtonDisabled}
-                    >
-                      Agregar
-                    </button>
+                        onClick={() => addToCart(service.id_service, service)}
+                        disabled={isAddButtonDisabled}
+                      >
+                        Agregar
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
 
@@ -567,20 +592,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                        <div>
-                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                            Método de Pago Anticipado:
-                          </p>
-                          <Select
-                            style={{ width: "100%", fontSize: "16px" }}
-                            onChange={(value) => setPayMethod(value)}
-                            value={payMethod}
-                          >
-                            <Option value="credit">Tarjeta</Option>
-                            <Option value="cash">Efectivo</Option>
-                          </Select>
-                        </div>
-                      )}
+                      <div>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Método de Pago Anticipado:
+                        </p>
+                        <Select
+                          style={{ width: "100%", fontSize: "16px" }}
+                          onChange={(value) => setPayMethod(value)}
+                          value={payMethod}
+                        >
+                          <Option value="credit">Tarjeta</Option>
+                          <Option value="cash">Efectivo</Option>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>

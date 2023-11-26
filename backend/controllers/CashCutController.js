@@ -37,10 +37,46 @@ export const getCashCutsById = async (req, res) => {
 export const createCashCut = async (req, res) => {
 
     try {
-        const cashCut = await prisma.cashCut.create({
-            data: req.body
+
+        const lastCashCut = await prisma.cashCut.aggregate({
+
+            _max: {
+                id_cashCut: true,
+            }
 
         });
+
+        const cashCutStatus = await prisma.cashCut.findFirst({
+            where: {
+                id_cashCut: lastCashCut._max.id_cashCut,
+            },
+
+            select: {
+                cashCutStatus: true,
+            },
+
+        });
+        var cashCut;
+        if (cashCutStatus.cashCutStatus === "open") {
+
+            console.log(lastCashCut._max.id_cashCut);
+            cashCut = await prisma.cashCut.findFirst({
+                where: {
+                    id_cashCut: lastCashCut._max.id_cashCut
+                },
+                select: {
+                    initialCash: true,
+                    id_cashCut: true,
+                },
+            });
+
+        } else {
+            cashCut = await prisma.cashCut.create({
+                data: req.body
+
+            });
+        }
+
         res.status(201).json(cashCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
@@ -590,6 +626,7 @@ export const getCashCutStatus = async (req, res) => {
             }
 
         });
+
 
         let lastCashCutStatus;
 

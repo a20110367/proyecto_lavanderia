@@ -46,6 +46,8 @@ export default function PuntoVenta() {
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
+  const [pieces, setPieces] = useState(0)
+  const [numberOfPieces, setNumberOfPieces] = useState(localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0)
 
   useEffect(() => {
     // Definir el category_id
@@ -83,7 +85,7 @@ export default function PuntoVenta() {
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
     const serviceToAdd = service;
-    if (serviceToAdd) {
+    if (serviceToAdd ) {
       const existingService = cart.find(
         (item) => item.id_service === serviceId
       );
@@ -103,6 +105,17 @@ export default function PuntoVenta() {
           ...cart,
           { ...serviceToAdd, quantity: 1, totalPrice: serviceToAdd.price },
         ]);
+      }
+
+      if (categoryId === 3) {
+        setPieces(pieces + serviceToAdd.pieces)
+      } else if (categoryId === 3) {
+        Swal.fire({
+          icon: "error",
+          title: "Se ha superado el No. de Piezas diarias",
+          text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
+          confirmButtonColor: "#034078",
+        })
       }
     }
     // } else {
@@ -130,8 +143,10 @@ export default function PuntoVenta() {
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
+            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
             return { ...item, quantity: item.quantity - 1 };
           } else {
+            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
             return null;
           }
         } else {
@@ -183,84 +198,95 @@ export default function PuntoVenta() {
   };
 
   const handleSaveAndGenerateTicket = async () => {
-    setIsSaved(true);
-    setIsModalVisible(false);
-    const arrayService = [];
+    if ((numberOfPieces + pieces) < 130) {
+      setIsSaved(true);
+      setIsModalVisible(false);
+      const arrayService = [];
 
-    let noOfItems = 0;
-    cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
+      let noOfItems = 0;
+      cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
 
-    cart.map((detail) =>
-      arrayService.push({
-        units: detail.quantity,
-        subtotal: detail.quantity * detail.price,
-        fk_Service: detail.id_service,
-      })
-    );
+      cart.map((detail) =>
+        arrayService.push({
+          units: detail.quantity,
+          subtotal: detail.quantity * detail.price,
+          fk_Service: detail.id_service,
+        })
+      );
 
-    try {
-      const res = await api.post(postUrl, {
-        serviceOrder: {
-          totalPrice: calculateSubtotal(),
-          fk_client: parseInt(clientId),
-          numberOfItems: noOfItems,
+      try {
+        const res = await api.post(postUrl, {
+          serviceOrder: {
+            totalPrice: calculateSubtotal(),
+            fk_client: parseInt(clientId),
+            numberOfItems: noOfItems,
+            payForm: payForm,
+            payStatus: payStatus,
+            fk_user: cookies.token,
+            receptionDate: purchaseDate.toISOString(),
+            receptionTime: purchaseDate.toISOString(),
+            scheduledDeliveryDate: deliveryDate.toISOString(),
+            scheduledDeliveryTime: deliveryDate.toISOString(),
+            fk_categoryId: categoryId,
+          },
+          services: arrayService,
+        });
+        const order = {
+          id_order: res.data.serviceOrder.id_order,
           payForm: payForm,
           payStatus: payStatus,
-          fk_user: cookies.token,
+          payMethod: payMethod,
+          subtotal: calculateSubtotal(),
+          casher: cookies.username,
+          client: clientName,
           receptionDate: purchaseDate.toISOString(),
           receptionTime: purchaseDate.toISOString(),
           scheduledDeliveryDate: deliveryDate.toISOString(),
           scheduledDeliveryTime: deliveryDate.toISOString(),
-          fk_categoryId: categoryId,
-        },
-        services: arrayService,
+          notes: "",
+          cart: cart,
+        };
+        orderTicket(order);
+        const idOrder = res.data.serviceOrder.id_order;
+        console.log(idOrder);
+        if (payForm === "advance") {
+          await api.post("/paymentsAdvance", {
+            payment: {
+              fk_idOrder: idOrder,
+              payMethod: payMethod,
+              payDate: purchaseDate.toISOString(),
+              payTime: purchaseDate.toISOString(),
+              fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+              payTotal: calculateSubtotal(),
+            },
+          });
+        }
+      } catch (err) {
+        console.log(err);
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del Servidor");
+        } else {
+          setErrMsg(
+            "Hubo un error al registrar la Orden, comuniquese con Soporte"
+          );
+        }
+      }
+
+      localStorage.setItem("lastSelectedClient", clientName);
+      localStorage.setItem("returningFromPuntoVenta", "true");
+      localStorage.setItem('numberOfPieces', pieces + (localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0))
+
+      // Regresar a la página anterior
+      window.history.back();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Se ha superado el No. de Piezas diarias",
+        text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
+        confirmButtonColor: "#034078",
       });
-      const order = {
-        id_order: res.data.serviceOrder.id_order,
-        payForm: payForm,
-        payStatus: payStatus,
-        payMethod: payMethod,
-        subtotal: calculateSubtotal(),
-        casher: cookies.username,
-        client: clientName,
-        receptionDate: purchaseDate.toISOString(),
-        receptionTime: purchaseDate.toISOString(),
-        scheduledDeliveryDate: deliveryDate.toISOString(),
-        scheduledDeliveryTime: deliveryDate.toISOString(),
-        notes: "",
-        cart: cart,
-      };
-      orderTicket(order);
-      const idOrder = res.data.serviceOrder.id_order;
-      console.log(idOrder);
-      if (payForm === "advance") {
-        await api.post("/paymentsAdvance", {
-          payment: {
-            fk_idOrder: idOrder,
-            payMethod: payMethod,
-            payDate: purchaseDate.toISOString(),
-            payTime: purchaseDate.toISOString(),
-            fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-            payTotal: calculateSubtotal(),
-          },
-        });
-      }
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del Servidor");
-      } else {
-        setErrMsg(
-          "Hubo un error al registrar la Orden, comuniquese con Soporte"
-        );
-      }
+      setIsModalVisible(false)
     }
-
-    localStorage.setItem("lastSelectedClient", clientName);
-    localStorage.setItem("returningFromPuntoVenta", "true");
-
-    // Regresar a la página anterior
-    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
@@ -418,7 +444,8 @@ export default function PuntoVenta() {
           </div>
 
           <div className="col-md-3 ml-10">
-            <div className="card card-body mt-5">
+            {categoryId === 3 ? <p className="text-3xl font-semibold text-center">Piezas del Pedido: <span className="text-orange-600">{pieces}</span></p> : ''}
+            <div className="card card-body mt-2">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}
                 <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
@@ -612,8 +639,9 @@ export default function PuntoVenta() {
             </div>
             <Link
               to="/recepcionLavanderia"
-              className="mt-4 flex text-center text-decoration-none"
+              className="mt-2 flex text-center text-decoration-none"
             ></Link>
+            {categoryId === 3 ? <p className="text-2xl font-semibold text-center">No. Maximo de Piezas: <span className="text-RedPantone">{pieces + parseInt(numberOfPieces)} / 130</span></p> : ''}
           </div>
         </div>
       </div>

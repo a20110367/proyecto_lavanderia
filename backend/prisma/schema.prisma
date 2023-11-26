@@ -62,6 +62,10 @@ model IronStation {
   freeForUse     Boolean     @default(true)
   status         Status      @default(available)
   pieces         Int?
+  // piecesCashcut  Int?
+  // piecesLeft     Int?
+  // piecesToday    Int?
+  // piecesTomorrow Int?
   notes          String
   serialNumber   String      @default("N/A")
 

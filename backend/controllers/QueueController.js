@@ -210,7 +210,35 @@ export const deleteSelfServiceQueue = async (req, res) => {
 
 export const getIronQueue = async (req, res) => {
     try {
-        const response = await prisma.ironQueue.findMany();
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+
+                fk_categoryId: 3
+            },
+
+            select: {
+                id_order: true,
+                orderStatus: true,
+                scheduledDeliveryDate: true,
+                ironPieces: true,
+                express: true,
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+
+            },
+        });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });

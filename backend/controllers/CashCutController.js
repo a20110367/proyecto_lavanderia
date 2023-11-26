@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { CashCutStatus, PrismaClient } from "@prisma/client";
 import { response } from "express";
 
 const prisma = new PrismaClient();
@@ -321,8 +321,8 @@ export const closeCashCut = async (req, res) => {
             },
 
         });
-
-        if (cashCutStatus === "open") {
+        console.log(cashCutStatus.CashCutStatus);
+        if (cashCutStatus.cashCutStatus === "open") {
 
             const total = await prisma.payment.aggregate({
 

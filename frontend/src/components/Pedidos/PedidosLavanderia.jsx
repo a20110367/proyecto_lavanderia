@@ -196,7 +196,7 @@ function PedidosLavanderia() {
 
     try {
       
-      await api.post("/updatewashdetails", {
+      await api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
         fk_idWashMachine: selectedWashMachine.id_machine,
         fk_idStaffMember: cookies.token,
         fk_laundryEvent: selectedPedido.id_laundryEvent,
@@ -329,7 +329,7 @@ function PedidosLavanderia() {
 
     try {
       
-      await api.post("/updateDryDetails", {
+      await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
         fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
         fk_laundryEvent: selectedPedido.id_laundryEvent,
@@ -449,7 +449,7 @@ function PedidosLavanderia() {
         return;
       }
 
-      await api.post("/finishLaundryQueue", {
+      await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
         fk_idDryMachine: selectedWashMachine.id_machine,
         fk_idStaffMember: cookies.token,
         fk_laundryEvent: selectedPedido.id_laundryEvent,

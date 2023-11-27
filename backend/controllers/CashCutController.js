@@ -673,8 +673,21 @@ export const getLastCashCut = async (req, res) => {
             }
         });
 
+        const cashCutStatus = await prisma.cashCut.findFirst({
+
+            where: {
+                id_cashCut: lastCashCutId._max.id_cashCut
+            },
+
+            select: {
+                cashCutStatus: true,
+            },
+
+        });
+
         const response = {
-            "id_cashCut ": lastCashCutId._max.id_cashCut
+            "id_cashCut ": lastCashCutId._max.id_cashCut,
+            "cashCutStatus": cashCutStatus.cashCutStatus
         };
 
 

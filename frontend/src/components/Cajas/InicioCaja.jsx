@@ -74,6 +74,7 @@ function InicioCaja() {
       if (res.data.cashCutStatus === 'closed') {
         setVisible(true);
       } else if (res.data.cashCutStatus === 'open') {
+        localStorage.removeItem('lastCashCut')
         localStorage.setItem("cashCutId", res.data.id_cashCut)
         setCajaIniciada(true);
         setVisible(false);

@@ -28,7 +28,7 @@ export default function Login() {
           <path className="fill-OxfordBlue" d="M0 0h918.9v183.8H0z"></path>
           <path className="fill-Cerulean" d="M86 183.8H0V0h86l97.8 91.9z"></path>
         </svg> */}
-        <svg version="1.1" id="vis_p1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1280 1024" styles="enable-background:new 0 0 1280 1024">
+        <svg className='bg-transparent fill-white' version="1.1" id="vis_p1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1280 1024" styles="enable-background:new 0 0 1280 1024">
           <path className="st0" d="M0 0h918.9v183.8H0z"></path>
           <path className="st1" d="M86 183.8H0V0h86l97.8 91.9z"></path>
           <path className="st2" d="M269.8 183.8h-86V0h86l97.8 91.9z"></path>

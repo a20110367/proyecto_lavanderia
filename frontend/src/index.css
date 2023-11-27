@@ -411,10 +411,37 @@ thead th {
     @apply bg-PennBlue text-white py-2 px-4 rounded-full mx-1
   }
   
-  .std0 {
+  .st0 {
+    @apply fill-OxfordBlue
+  }
+  .st1 {
+    @apply fill-PennBlue
+  }
+  .st2 {
+    @apply fill-IndigoDye
+  }
+  .st3 {
+    @apply fill-Cerulean
+  }
+  .st4 {
+    @apply fill-Moonstone
+  }
+  .st5 {
     @apply fill-white
   }
-  .std1 {
-    @apply fill-PennBlue
+  .st6 {
+    @apply fill-NonPhotoblue
+  }
+  .st7 {
+    @apply fill-RedPantone
+  }
+  .st8 {
+    @apply fill-FireBrick
+  }
+  .st9 {
+    @apply fill-white
+  }
+  .st10 {
+    @apply fill-FireBrick
   }
 }

@@ -42,7 +42,7 @@ export const getLaundryQueueById = async (req, res) => {
     try {
         const response = await prisma.laundryQueue.findUnique({
             where: {
-                id_washEvent: Number(req.params.id)
+                id_laundryEvent: Number(req.params.id)
             }
         });
         res.status(200).json(response);
@@ -67,11 +67,11 @@ export const getLaundryQueueByOrderId = async (req, res) => {
 export const createManyLaundryQueue = async (req, res) => {
 
     try {
-        const id_washEvent = await prisma.laundryQueue.createMany({
+        const laundryEvents = await prisma.laundryQueue.createMany({
             data: req.body
 
         });
-        res.status(201).json(id_washEvent);
+        res.status(201).json(laundryEvents);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -79,14 +79,89 @@ export const createManyLaundryQueue = async (req, res) => {
 
 export const updateLaundryQueue = async (req, res) => {
     try {
-        const id_washEvent = await prisma.laundryQueue.update({
+        const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_washEvent: Number(req.params.id)
+                id_laundryEvent: Number(req.params.id)
             },
 
             data: req.body
         });
-        res.status(200).json(id_washEvent);
+        res.status(200).json(laundryEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const updateWashDetails = async (req, res) => {
+
+    try {
+        const washDetail = await prisma.washDetail.update({
+            where: {
+                fk_laundryEvent: Number(req.params.id)
+            },
+
+            data: req.body
+        });
+
+        const laundryEvent = await prisma.laundryQueue.update({
+            where: {
+                id_laundryEvent: Number(req.params.id)
+            },
+
+            data: {
+                serviceStatus: "inProgress"
+            }
+        });
+
+        res.status(200).json(washDetail);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const updateDryDetails = async (req, res) => {
+
+    try {
+        const dryDetail = await prisma.dryDetail.update({
+            where: {
+                fk_laundryEvent: Number(req.params.id)
+            },
+
+            data: req.body
+        });
+
+        const laundryEvent = await prisma.laundryQueue.update({
+            where: {
+                id_laundryEvent: Number(req.params.id)
+            },
+
+            data: {
+                serviceStatus: "inProgress"
+            }
+        });
+        res.status(200).json(dryDetail);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const finishLaundryQueue = async (req, res) => {
+    try {
+        const laundryEvent = await prisma.laundryQueue.update({
+            where: {
+                id_laundryEvent: Number(req.params.id)
+            },
+
+            data: {
+                serviceStatus: "finished"
+            }
+        });
+
+
+
+        res.status(200).json(laundryEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -104,6 +179,8 @@ export const deleteLaundryQueue = async (req, res) => {
         res.status(400).json({ msg: e.message });
     }
 }
+
+
 
 export const getSelfServiceQueue = async (req, res) => {
     try {
@@ -145,7 +222,7 @@ export const getSelfServiceQueueById = async (req, res) => {
     try {
         const response = await prisma.selfServiceQueue.findUnique({
             where: {
-                id_dryEvent: Number(req.params.id)
+                id_serviceEvent: Number(req.params.id)
             }
         });
         res.status(200).json(response);

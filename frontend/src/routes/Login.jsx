@@ -12,8 +12,9 @@ export default function Login() {
   const { login } = useAuth();
 
   const loginSubmit = () => {
-    if (!!user && !!pass) {
+    if (!!user && !!pass) {      
       login({ user, pass });
+      localStorage.clear()
     } else {
       setErr('Rellene los campos vacios')
     }

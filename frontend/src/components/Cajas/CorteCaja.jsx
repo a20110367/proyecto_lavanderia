@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Input, message } from "antd";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
@@ -18,6 +19,7 @@ function CorteCaja() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [corteActivo, setCorteActivo] = useState(false);
+  const navigate = useNavigate()
 
   const { cookies } = useAuth();
   const [turno, setTurno] = useState("Matutino");
@@ -63,6 +65,27 @@ function CorteCaja() {
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
+    if (localStorage.getItem('lastCashCut')) {
+      Swal.fire({
+        icon: "error",
+        title: "Ya has Cerrado Caja",
+        text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      return
+    } else if (!localStorage.getItem('cashCutId')) {
+      Swal.fire({
+        icon: "warning",
+        title: "No se ha Inicializado Caja",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      navigate('/inicioCaja')
+      return
+    }
+
     try {
       const now = new Date();
       const horaActual = now.getHours();
@@ -137,7 +160,7 @@ function CorteCaja() {
   /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
 
   const handlePartialCorteConfirm = async () => {
-    if(localStorage.getItem('lastCashCut')){ 
+    if (localStorage.getItem('lastCashCut')) {
       Swal.fire({
         icon: "error",
         title: "Ya has Cerrado Caja",
@@ -146,72 +169,79 @@ function CorteCaja() {
       });
       setPartialCorteDialogVisible(false)
       return
-    }else if(!localStorage.getItem('cashCutId')){
+    } else if (!localStorage.getItem('cashCutId')) {
       Swal.fire({
         icon: "warning",
         title: "No se ha Inicializado Caja",
-        text: 'Ve al apartado Caja, Inicio de caja y posteriormente da click en Iniciar Caja.',
+        text: 'Da click en Iniciar Caja.',
         confirmButtonColor: '#034078'
       });
       setPartialCorteDialogVisible(false)
+      navigate('/inicioCaja')
       return
     }
-    const now = new Date();
-    const horaActual = now.getHours();
 
-    setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+    try {
 
-    const response = await api.get(`/calculateCashCut/${cashCutId}`);
+      const now = new Date();
+      const horaActual = now.getHours();
 
-    const corte = response.data;
+      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
+      const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
-    const pdf = new jsPDF();
-    pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
-    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-    pdf.text(`Turno: ${turno}`, 10, 40);
-    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    initialCash
-      ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
-      : pdf.text("Dinero en Fondo: $0", 10, 90);
+      const corte = response.data;
 
-    // Separación
-    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.totalAutoservicio
-      ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
-      : pdf.text("Autoservicio: $0", 10, 90);
-    nuevoCorte.totalEncargo
-      ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
-      : pdf.text("Lavado por Encargo: $0", 10, 100);
-    nuevoCorte.totalPlanchado
-      ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
-      : pdf.text("Planchado: $0", 10, 110);
-    nuevoCorte.totalIncome
-      ? pdf.text(
-        `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-        10,
-        120
-      )
-      : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
-    // Separación
-    nuevoCorte.totalCash
-      ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140)
-      : pdf.text("Ingreso en Efectivo: $0", 10, 140);
-    nuevoCorte.totalCredit
-      ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
-      : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
-    nuevoCorte.totalCashWithdrawal
-      ? pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160)
-      : pdf.text("Retiros Totales: $0", 10, 160);
-    nuevoCorte.total
-      ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170)
-      : pdf.text("Final Total en Caja: $0", 10, 170);
-    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
 
-    setCortes([nuevoCorte]);
-    setPartialCorteDialogVisible(false);
+      const pdf = new jsPDF();
+      pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
+      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      initialCash
+        ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
+        : pdf.text("Dinero en Fondo: $0", 10, 90);
+
+      // Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      nuevoCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
+        : pdf.text("Autoservicio: $0", 10, 90);
+      nuevoCorte.totalEncargo
+        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        : pdf.text("Lavado por Encargo: $0", 10, 100);
+      nuevoCorte.totalPlanchado
+        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
+        : pdf.text("Planchado: $0", 10, 110);
+      nuevoCorte.totalIncome
+        ? pdf.text(
+          `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+          10,
+          120
+        )
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
+      // Separación
+      nuevoCorte.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 140);
+      nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
+      nuevoCorte.totalCashWithdrawal
+        ? pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160)
+        : pdf.text("Retiros Totales: $0", 10, 160);
+      nuevoCorte.total
+        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170)
+        : pdf.text("Final Total en Caja: $0", 10, 170);
+      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+
+      setCortes([nuevoCorte]);
+      setPartialCorteDialogVisible(false);
+    } catch (err) {
+      console.error(err)
+    }
   };
 
   const handleModalPrint = () => {

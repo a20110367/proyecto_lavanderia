@@ -5,6 +5,9 @@ import {
     getLaundryQueueByOrderId,
     createManyLaundryQueue,
     updateLaundryQueue,
+    updateWashDetails,
+    updateDryDetails,
+    finishLaundryQueue,
     deleteLaundryQueue,
 
     getSelfServiceQueue,
@@ -29,6 +32,9 @@ router.get('/laundryQueueById/:id', getLaundryQueueById);
 router.get('/laundryQueueByOrder/:fk_Order', getLaundryQueueByOrderId);
 //router.post('/laundryWashQueue', createManyLaundryQueue);
 router.patch('/laundryQueue/:id', updateLaundryQueue);
+router.patch('/updateWashDetails/:id', updateWashDetails);
+router.patch('/updateDryDetails/:id', updateDryDetails);
+router.patch('/finishLaundryQueue/:id', finishLaundryQueue);
 router.delete('/laundryWashQueue/:id', deleteLaundryQueue);
 
 router.get('/selfServiceQueue', getSelfServiceQueue);
@@ -44,5 +50,7 @@ router.get('/ironQueueByOrder/:fk_Order', getIronQueueByOrderId);
 //router.post('/ironQueue', createManyIronQueue);
 router.patch('/ironQueue/:id', updateIronQueue);
 router.delete('/ironQueue/:id', deleteIronQueue);
+
+router.post('/')
 
 export default router;

@@ -112,10 +112,6 @@ thead th {
     @apply bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1 mr-4 mb-2 w-fit;
   }
 
-  .login-container {
-    @apply bg-white px-4 pt-3 pb-4 rounded-lg border border-gray-200 w-1/3;
-  }
-
   .responsive-bg {
     @apply bg-OxfordBlue w-screen h-screen grid place-items-center;
   }
@@ -443,5 +439,11 @@ thead th {
   }
   .st10 {
     @apply fill-FireBrick
+  }
+  .svg-container {
+    @apply bg-OxfordBlue w-full h-full
+  }
+  .login-container {
+    @apply w-screen h-screen grid-cols-2 grid place-items-center
   }
 }

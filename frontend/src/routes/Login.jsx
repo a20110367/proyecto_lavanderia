@@ -11,25 +11,23 @@ export default function Login() {
   const [success, setSuccess] = useState(false);
   const { login } = useAuth();
 
-  const loginSubmit = () => {
-    if (!!user && !!pass) {      
+  const loginSubmit = (e) => {
+    e.preventDefault();
+    if (!!user && !!pass) {
       login({ user, pass });
       localStorage.clear()
     } else {
       setErr('Rellene los campos vacios')
     }
   }
+  
 
   return (
     // <div className="responsive-bg">
-    <div className="w-screen h-screen grid-cols-2 grid place-items-center">
+    <div className="login-container">
       {/* <div className="login-container"> */}
-      <div className="bg-IndigoDye w-full h-full grid-cols-7 grid-rows-6 place-items-center">
-        {/* <svg width="128" height="128" viewBox="0 0 32 32">
-          <path className="fill-OxfordBlue" d="M0 0h918.9v183.8H0z"></path>
-          <path className="fill-Cerulean" d="M86 183.8H0V0h86l97.8 91.9z"></path>
-        </svg> */}
-        <svg className='bg-transparent fill-white' version="1.1" id="vis_p1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1280 1024" styles="enable-background:new 0 0 1280 1024">
+      <div className="svg-container">
+        <svg className='svg-container' version="1.1" id="vis_p1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1280 1024" styles="enable-background:new 0 0 1280 1024">
           <path className="st0" d="M0 0h918.9v183.8H0z"></path>
           <path className="st1" d="M86 183.8H0V0h86l97.8 91.9z"></path>
           <path className="st2" d="M269.8 183.8h-86V0h86l97.8 91.9z"></path>
@@ -87,12 +85,6 @@ export default function Login() {
           <path className="st4" d="m1076 1024 204-191.6V1024zM200.4 831h317.4v193H200.4z"></path>
           <path className="st6" d="M390.8 975.7v-48.1h-63.5v-48.3h-63.5V831h-63.4v193h253.9v-48.3z"></path>
         </svg>
-        {/* <div className="w-screen h-full grid-cols-4">
-          <div className="bg-Cerulean"></div>
-          <div className="bg-white"></div>
-          <div className="bg-Cerulean"></div>
-          <div className="bg-white"></div>
-        </div> */}
       </div>
       <div className="bg-white w-1/2">
         <h1 className="title">Bienvenido</h1>
@@ -100,43 +92,45 @@ export default function Login() {
           Bienvenido de vuelta! Por favor ingrese sus credenciales
         </p>
         <div className="mt-8">
-          <div>
-            <label className="subtitle" htmlFor="user">Usuario:</label>
-            <input
-              className="input-prim"
-              placeholder="Ingrese su Usuario"
-              type="text" name="user" id="user"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
-            />
-          </div>
-          <div>
-            <label className="subtitle" htmlFor="pass">Contraseña:</label>
-            <input
-              className="input-prim"
-              placeholder="Ingrese su Contraseña"
-              type="password" name="pass" id="pass"
-              onChange={(e) => setPass(e.target.value)}
-              value={pass}
-            />
-          </div>
-          <div className="mt-8 flex justify-between items-center">
+          <form onSubmit={loginSubmit}>
             <div>
-              <input type={"checkbox"} id="recordar" />
-              <label className="ml-2 font-medium text-base" htmlFor="recordar">
-                Recordarme por 12 Horas
-              </label>
+              <label className="subtitle" htmlFor="user">Usuario:</label>
+              <input
+                className="input-prim"
+                placeholder="Ingrese su Usuario"
+                type="text" name="user" id="user"
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+              />
             </div>
-            <button className="link">
-              Olvidaste tu Contraseña
-            </button>
-          </div>
-          <div className="mt-8 flex flex-col gap-y-4">
-            <button onClick={loginSubmit} className="btn-login">
-              Iniciar sesion
-            </button>
-            <p className="instructions font-black">{err}</p>
-          </div>
+            <div>
+              <label className="subtitle" htmlFor="pass">Contraseña:</label>
+              <input
+                className="input-prim"
+                placeholder="Ingrese su Contraseña"
+                type="password" name="pass" id="pass"
+                onChange={(e) => setPass(e.target.value)}
+                value={pass}
+              />
+            </div>
+            <div className="mt-8 flex justify-between items-center">
+              <div>
+                <input type={"checkbox"} id="recordar" />
+                <label className="ml-2 font-medium text-base" htmlFor="recordar">
+                  Recordarme por 12 Horas
+                </label>
+              </div>
+              <button className="link">
+                Olvidaste tu Contraseña
+              </button>
+            </div>
+            <div className="mt-8 flex flex-col gap-y-4">
+              <button type="submit" className="btn-login">
+                Iniciar sesion
+              </button>
+              <p className="instructions font-black">{err}</p>
+            </div>
+          </form>
         </div>
       </div>
     </div>

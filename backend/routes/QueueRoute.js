@@ -51,6 +51,4 @@ router.get('/ironQueueByOrder/:fk_Order', getIronQueueByOrderId);
 router.patch('/ironQueue/:id', updateIronQueue);
 router.delete('/ironQueue/:id', deleteIronQueue);
 
-router.post('/')
-
 export default router;

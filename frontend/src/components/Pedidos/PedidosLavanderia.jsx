@@ -156,39 +156,39 @@ function PedidosLavanderia() {
   };
 
   const handleConfirmMachineSelection = async () => {
-    // try {
-    //   if (!selectedPedido || !selectedWashMachine) {
-    //     console.error("El pedido o la máquina seleccionada son indefinidos.");
-    //     return;
-    //   }
+    try {
+      if (!selectedPedido || !selectedWashMachine) {
+        console.error("El pedido o la máquina seleccionada son indefinidos.");
+        return;
+      }
 
-    //   // Modificar el estado local de la lavadora seleccionada
-    //   const updatedMachines = availableMachines.map((machine) =>
-    //     machine.id_machine === selectedWashMachine.id_machine
-    //       ? { ...machine, freeForUse: false }
-    //       : machine
-    //   );
-    //   setAvailableMachines(updatedMachines);
+      // Modificar el estado local de la lavadora seleccionada
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedWashMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
 
-    //   await api.patch(`/machines/${selectedWashMachine.id_machine}`, {
-    //     freeForUse: false,
-    //   });
-    //   const updatedPedidos = pedidos.map((p) =>
-    //     p.id_laundryEvent === selectedPedido.id_laundryEvent
-    //       ? { ...p, serviceStatus: "inProgress" }
-    //       : p
-    //   );
+      await api.patch(`/machines/${selectedWashMachine.id_machine}`, {
+        freeForUse: false,
+      });
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgress" }
+          : p
+      );
 
-    //   setPedidos(updatedPedidos);
+      setPedidos(updatedPedidos);
 
-    //   await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-    //     serviceStatus: "inProgress",
-    //   });
-    //   setShowMachineName(false);
-    //   showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
-    // } catch (error) {
-    //   console.error("Error al actualizar el pedido:", error);
-    // }
+      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "inProgress",
+      });
+      setShowMachineName(false);
+      showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
+    } catch (error) {
+      console.error("Error al actualizar el pedido:", error);
+    }
     if (!selectedWashMachine || !cookies.token || !selectedPedido) {
       console.error("Datos insuficientes para realizar la actualización.");
       return;
@@ -212,16 +212,16 @@ function PedidosLavanderia() {
         freeForUse: false,
       });
   
-      // const updatedPedidos = pedidos.map((p) =>
-      //   p.id_laundryEvent === selectedPedido.id_laundryEvent
-      //     ? { ...p, serviceStatus: "inProgress" }
-      //     : p
-      // );
-      // setPedidos(updatedPedidos);
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgress" }
+          : p
+      );
+      setPedidos(updatedPedidos);
   
-      // await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-      //   serviceStatus: "inProgress",
-      // });
+      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "inProgress",
+      });
   
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
@@ -261,65 +261,65 @@ function PedidosLavanderia() {
   };
 
   const handleConfirmDryerSelection = async () => {
-    // try {
-    //   if (!selectedPedido || !selectedDryMachine) {
-    //     console.error("El pedido o la secadora seleccionada son indefinidos.");
-    //     return;
-    //   }
+    try {
+      if (!selectedPedido || !selectedDryMachine) {
+        console.error("El pedido o la secadora seleccionada son indefinidos.");
+        return;
+      }
 
-    //   // Si hay una lavadora seleccionada, cambiar su estado a true
-    //   if (selectedDryMachine.machineType === "secadora") {
-    //     const selectedWasher = availableMachines.find(
-    //       (machine) => machine.machineType === "lavadora"
-    //     );
+      // Si hay una lavadora seleccionada, cambiar su estado a true
+      if (selectedDryMachine.machineType === "secadora") {
+        const selectedWasher = availableMachines.find(
+          (machine) => machine.machineType === "lavadora"
+        );
 
-    //     if (selectedWasher) {
-    //       const updatedWashers = availableMachines.map((machine) =>
-    //         machine.id_machine === selectedWasher.id_machine
-    //           ? { ...machine, freeForUse: true }
-    //           : machine
-    //       );
-    //       setAvailableMachines(updatedWashers);
+        if (selectedWasher) {
+          const updatedWashers = availableMachines.map((machine) =>
+            machine.id_machine === selectedWasher.id_machine
+              ? { ...machine, freeForUse: true }
+              : machine
+          );
+          setAvailableMachines(updatedWashers);
 
-    //       // También actualizar la base de datos
-    //       await api.patch(`/machines/${selectedWasher.id_machine}`, {
-    //         freeForUse: true,
-    //       });
-    //     }
-    //   }
+          // También actualizar la base de datos
+          await api.patch(`/machines/${selectedWasher.id_machine}`, {
+            freeForUse: true,
+          });
+        }
+      }
 
-    //   // Cambiar el estado de la secadora seleccionada a false
-    //   const updatedDryers = availableMachines.map((machine) =>
-    //     machine.id_machine === selectedDryMachine.id_machine
-    //       ? { ...machine, freeForUse: false }
-    //       : machine
-    //   );
-    //   setAvailableMachines(updatedDryers);
+      // Cambiar el estado de la secadora seleccionada a false
+      const updatedDryers = availableMachines.map((machine) =>
+        machine.id_machine === selectedDryMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedDryers);
 
-    //   // Actualizar la base de datos
-    //   await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
-    //     freeForUse: false,
-    //   });
+      // Actualizar la base de datos
+      await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
+        freeForUse: false,
+      });
 
-    //   showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
+      showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
 
-    //   const updatedPedidos = pedidos.map((p) =>
-    //     p.id_laundryEvent === selectedPedido.id_laundryEvent
-    //       ? { ...p, isDryingConfirmed: true }
-    //       : p
-    //   );
-    //   setPedidos(updatedPedidos);
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, isDryingConfirmed: true }
+          : p
+      );
+      setPedidos(updatedPedidos);
 
-    //   setShowDryerSelection(false); // Ocultar la selección de secadora
-    //   setIsDryingProcessConfirmedInModal(true);
+      setShowDryerSelection(false); // Ocultar la selección de secadora
+      setIsDryingProcessConfirmedInModal(true);
 
-    //   setConfirmedDryerProcesses({
-    //     ...confirmedDryerProcesses,
-    //     [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
-    //   });
-    // } catch (error) {
-    //   console.error("Error al actualizar el pedido:", error);
-    // }
+      setConfirmedDryerProcesses({
+        ...confirmedDryerProcesses,
+        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+      });
+    } catch (error) {
+      console.error("Error al actualizar el pedido:", error);
+    }
 
     if (!selectedDryMachine || !cookies.token || !selectedPedido) {
       console.error("Datos insuficientes para realizar la actualización.");
@@ -391,38 +391,38 @@ function PedidosLavanderia() {
 
   const handleFinishProcess = async () => {
     // try {
-    //   if (!selectedPedido) {
-    //     console.error("El pedido seleccionado es indefinido.");
-    //     return;
-    //   }
+      if (!selectedPedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        return;
+      }
 
-    //   // Liberar la secadora seleccionada
-    //   if (selectedDryMachine && selectedDryMachine.machineType === "secadora") {
-    //     const updatedDryers = availableMachines.map((machine) =>
-    //       machine.id_machine === selectedDryMachine.id_machine
-    //         ? { ...machine, freeForUse: true }
-    //         : machine
-    //     );
-    //     setAvailableMachines(updatedDryers);
+      // Liberar la secadora seleccionada
+      if (selectedDryMachine && selectedDryMachine.machineType === "secadora") {
+        const updatedDryers = availableMachines.map((machine) =>
+          machine.id_machine === selectedDryMachine.id_machine
+            ? { ...machine, freeForUse: true }
+            : machine
+        );
+        setAvailableMachines(updatedDryers);
 
-    //     // También actualizar la base de datos
-    //     await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
-    //       freeForUse: true,
-    //     });
-    //   }
+        // También actualizar la base de datos
+        await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
+          freeForUse: true,
+        });
+      }
 
-    //   // Actualizar el estado del pedido a "finish"
-    //   const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
-    //   const updatedPedidos = pedidos.map((p) =>
-    //     p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
-    //   );
-    //   setPedidos(updatedPedidos);
+      // Actualizar el estado del pedido a "finish"
+      const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
+      );
+      setPedidos(updatedPedidos);
 
-    //   await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-    //     serviceStatus: "finished",
-    //   });
+      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "finished",
+      });
 
-    //   setShowMachineName(false);
+      setShowMachineName(false);
 
     //   showNotification("NOTIFICACIÓN ENVIADA...");
     //   await api.post("/sendMessage", {
@@ -467,15 +467,15 @@ function PedidosLavanderia() {
         });
       }
   
-      // // Actualizar el estado del pedido a "finish"
-      // const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
-      // const updatedPedidos = pedidos.map((p) =>
-      //   p.id_description === selectedPedido.id_description ? updatedPedido : p
-      // );
-      // setPedidos(updatedPedidos);
-      //   await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-      //     serviceStatus: "finished",
-      //   });
+      // Actualizar el estado del pedido a "finish"
+      const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_description === selectedPedido.id_description ? updatedPedido : p
+      );
+      setPedidos(updatedPedidos);
+        await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+          serviceStatus: "finished",
+        });
 
       setShowMachineName(false);
   

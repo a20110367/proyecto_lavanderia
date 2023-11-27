@@ -173,17 +173,17 @@ function PedidosLavanderia() {
       await api.patch(`/machines/${selectedWashMachine.id_machine}`, {
         freeForUse: false,
       });
-      // const updatedPedidos = pedidos.map((p) =>
-      //   p.id_laundryEvent === selectedPedido.id_laundryEvent
-      //     ? { ...p, serviceStatus: "inProgress" }
-      //     : p
-      // );
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgress" }
+          : p
+      );
 
-      // setPedidos(updatedPedidos);
+      setPedidos(updatedPedidos);
 
-      // await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-      //   serviceStatus: "inProgress",
-      // });
+      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "inProgress",
+      });
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
     } catch (error) {
@@ -212,16 +212,16 @@ function PedidosLavanderia() {
         freeForUse: false,
       });
   
-      // const updatedPedidos = pedidos.map((p) =>
-      //   p.id_laundryEvent === selectedPedido.id_laundryEvent
-      //     ? { ...p, serviceStatus: "inProgress" }
-      //     : p
-      // );
-      // setPedidos(updatedPedidos);
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgress" }
+          : p
+      );
+      setPedidos(updatedPedidos);
   
-      // await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-      //   serviceStatus: "inProgress",
-      // });
+      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "inProgress",
+      });
   
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);

@@ -411,4 +411,10 @@ thead th {
     @apply bg-PennBlue text-white py-2 px-4 rounded-full mx-1
   }
   
+  .std0 {
+    @apply fill-white
+  }
+  .std1 {
+    @apply fill-PennBlue
+  }
 }

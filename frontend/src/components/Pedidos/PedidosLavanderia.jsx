@@ -70,15 +70,6 @@ function PedidosLavanderia() {
       setPedidos(data);
       setFilteredPedidos(data);
     }
-
-    const confirmedDryerProcessesFromStorage = {};
-    if (data) {
-      data.forEach((pedido) => {
-        confirmedDryerProcessesFromStorage[pedido.id_laundryEvent] = false;
-      });
-
-      setConfirmedDryerProcesses(confirmedDryerProcessesFromStorage);
-    }
   }, [data]);
 
   useEffect(() => {

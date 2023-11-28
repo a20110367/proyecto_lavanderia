@@ -137,15 +137,15 @@ function PedidosAutoservicio() {
       }
 
       const updatedMachines = availableMachines.map((machine) =>
-      machine.id_machine === selectedMachine.id_machine
-        ? { ...machine, freeForUse: false }
-        : machine
-    );
-    setAvailableMachines(updatedMachines);
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
 
-    api.patch(`/machines/${selectedMachine.id_machine}`, {
-      freeForUse: false,
-    });
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
@@ -154,11 +154,11 @@ function PedidosAutoservicio() {
       );
 
       setPedidos(updatedPedidos);
- 
-        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
-          fk_idMachine: selectedMachine.id_machine,
-          serviceStatus: "inProgress",
-        });
+
+      await api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+        fk_idMachine: selectedMachine.id_machine,
+        serviceStatus: "inProgress",
+      });
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
@@ -174,22 +174,28 @@ function PedidosAutoservicio() {
         return;
       }
 
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
 
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: true,
+      });
+
       setPedidos(updatedPedidos);
 
-      await Promise.all([
-        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
-          serviceStatus: "finished",
-        }),
-        api.patch(`/machines/${selectedMachine.id_machine}`, {
-          freeForUse: true,
-        }),
-      ]);
+      await api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+        serviceStatus: "finished",
+      });
 
       setShowMachineName(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);

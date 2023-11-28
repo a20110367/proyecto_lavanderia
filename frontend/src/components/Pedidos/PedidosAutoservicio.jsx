@@ -152,12 +152,15 @@ function PedidosAutoservicio() {
           ? { ...p, serviceStatus: "inProgress" }
           : p
       );
-
       setPedidos(updatedPedidos);
 
-      await api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+      await api.patch(`/startSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
         fk_idMachine: selectedMachine.id_machine,
         fk_idStaffMember: cookies.token,
+      });
+
+      await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
+        orderStatus: "inProgress",
       });
 
       setShowMachineName(false);
@@ -167,45 +170,66 @@ function PedidosAutoservicio() {
     }
   };
 
-  const handleFinishProcess = async () => {
-    try {
-      if (!selectedPedido || !selectedMachine) {
-        console.error("El pedido o la máquina seleccionada son indefinidos.");
+  const handleFinishProcess = async (pedido) => {
+
+      if (!pedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        setLoading(false);
         return;
       }
-
-      const updatedMachines = availableMachines.map((machine) =>
-        machine.id_machine === selectedMachine.id_machine
-          ? { ...machine, freeForUse: true }
-          : machine
-      );
-      setAvailableMachines(updatedMachines);
-
-      await api.patch(`/machines/${selectedMachine.id_machine}`, {
-        freeForUse: true,
-      });
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_serviceEvent === selectedPedido.id_serviceEvent
-          ? { ...p, serviceStatus: "finished" }
-          : p
-      );
-
-      setPedidos(updatedPedidos);
-
-      await api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
-        serviceStatus: "finished",
-      });
-
-      setShowMachineName(false);
-      showNotification(`Pedido finalizado en ${selectedMachine.model}`);
-    } catch (error) {
-      console.error(
-        "Error al finalizar el pedido o liberar la máquina:",
-        error
-      );
-    }
-  };
+  
+      if (!selectedMachine) {
+        console.error("No se ha seleccionado ninguna máquina.");
+        setLoading(false);
+        return;
+      }
+  
+      try {
+        // Actualizar localmente el estado del pedido a "finished"
+        const updatedPedidos = pedidos.map((p) =>
+          p.id_serviceEvent === pedido.id_serviceEvent
+            ? { ...p, serviceStatus: "finished" }
+            : p
+        );
+        setPedidos(updatedPedidos);
+  
+        // Actualizar localmente el estado de la máquina a "freeForUse"
+        const updatedMachines = availableMachines.map((machine) =>
+          machine.id_machine === selectedMachine.id_machine
+            ? { ...machine, freeForUse: true }
+            : machine
+        );
+        setAvailableMachines(updatedMachines);
+  
+        await api.patch(`/finishIronQueue/${selectedPedido.id_serviceEvent}`, {
+          fk_idIronStation: selectedMachine.id_machine,
+          fk_idStaffMember: cookies.token,
+        });
+  
+        // Actualizar en la base de datos el estado de la máquina a "freeForUse"
+        await api.patch(`/ironStations/${selectedMachine.id_machine}`, {
+          freeForUse: true,
+        });
+  
+        setShowMachineName(false);
+        // showNotification("NOTIFICACIÓN ENVIADA...");
+        // await api.post("/sendMessage", {
+        //   id_order: selectedPedido.fk_idServiceOrder,
+        //   name: selectedPedido.client.name,
+        //   email: selectedPedido.client.email,
+        //   tel: "521" + selectedPedido.client.phone,
+        //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+        //   subject: "Tu Ropa esta Lista",
+        //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+        //   warning: false,
+        // });
+        // console.log("NOTIFICACIÓN ENVIADA...");
+        // showNotification(`Pedido finalizado correctamente`);
+        // showNotification(`Pedido finalizado`);
+      } catch (error) {
+        console.error("Error al finalizar el pedido:", error);
+      }
+    };
 
   return (
     <div>

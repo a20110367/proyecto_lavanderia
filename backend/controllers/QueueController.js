@@ -333,16 +333,11 @@ export const updateStartSelfServiceQueue = async (req, res) => {
                 id_serviceEvent: Number(req.params.id)
             },
 
-            data: req.body
-        });
-
-        const selfServiceEvent = await prisma.selfServiceQueue.update({
-            where: {
-                id_serviceEvent: Number(req.params.id)
-            },
-
             data: {
+
+                fk_idMachine:req.body.fk_idMachine,
                 serviceStatus: "inProgress"
+
             }
         });
 
@@ -533,7 +528,7 @@ export const updateIronQueue = async (req, res) => {
 export const startIronQueue = async (req, res) => {
 
     try {
-        const { fk_idStaffMember, fk_idIronStation } = req.body;
+        const { fk_idStaffMember, fk_idIronStation} = req.body;
         const startIronQueue = await prisma.ironQueue.updateMany({
             where: {
                 fk_idServiceOrder: Number(req.params.id)

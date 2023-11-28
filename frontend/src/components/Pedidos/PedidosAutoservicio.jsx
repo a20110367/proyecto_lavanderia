@@ -4,8 +4,8 @@ import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import { formatDate } from "../../utils/format";
-import api from "../../api/api";
 import { useAuth } from "../../hooks/auth/auth";
+import api from "../../api/api";
 
 import {
   IssuesCloseOutlined,

@@ -493,7 +493,7 @@ export const getIronQueueByOrderId = async (req, res) => {
     try {
         const response = await prisma.ironQueue.findMany({
             where: {
-                fk_ServiceOrder: Number(req.params.fk_ServiceOrder)
+                fk_idServiceOrder: Number(req.params.fk_Order)
             }
         });
         res.status(200).json(response);

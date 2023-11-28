@@ -294,11 +294,11 @@ export const getSelfServiceQueueByOrderId = async (req, res) => {
 export const createManySelfServiceQueue = async (req, res) => {
 
     try {
-        const id_dryEvent = await prisma.selfServiceQueue.createMany({
+        const selfServiceEvent = await prisma.selfServiceQueue.createMany({
             data: req.body
 
         });
-        res.status(201).json(id_dryEvent);
+        res.status(201).json(selfServiceEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -306,14 +306,14 @@ export const createManySelfServiceQueue = async (req, res) => {
 
 export const updateSelfServiceQueue = async (req, res) => {
     try {
-        const id_dryEvent = await prisma.selfServiceQueue.update({
+        const selfServiceEvent = await prisma.selfServiceQueue.update({
             where: {
                 id_dryEvent: Number(req.params.id)
             },
 
             data: req.body
         });
-        res.status(200).json(id_dryEvent);
+        res.status(200).json(selfServiceEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -545,7 +545,7 @@ export const startIronQueue = async (req, res) => {
             }
         });
 
-        res.status(200).json(washDetail);
+        res.status(200).json(startIronQueue);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -584,7 +584,7 @@ export const finishIronQueue = async (req, res) => {
 
         });
 
-        res.status(200).json(washDetail);
+        res.status(200).json(laundryEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

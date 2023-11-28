@@ -202,7 +202,7 @@ function PedidosAutoservicio() {
         setAvailableMachines(updatedMachines);
   
         await api.patch(`/finishIronQueue/${selectedPedido.id_serviceEvent}`, {
-          fk_idIronStation: selectedMachine.id_machine,
+          fk_idMachine: selectedMachine.id_machine,
           fk_idStaffMember: cookies.token,
         });
   

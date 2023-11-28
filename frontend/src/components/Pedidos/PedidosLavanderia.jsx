@@ -18,8 +18,6 @@ import {
 function PedidosLavanderia() {
   const [pedidos, setPedidos] = useState([]);
   const { cookies } = useAuth();
-  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState({});
-  console.log(confirmedDryerProcesses)
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
@@ -210,11 +208,6 @@ function PedidosLavanderia() {
 
       const availableDryers = dryersResponse.data;
 
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
-      });
-
       setAvailableMachines(availableDryers);
       setSelectedDryMachine(null);
       setSelectedPedido(pedido);
@@ -342,11 +335,6 @@ function PedidosLavanderia() {
       setShowDryerSelection(false); // Ocultar la selección de secadora
       setIsDryingProcessConfirmedInModal(true);
 
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
-      });
-
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
     }
@@ -387,13 +375,6 @@ function PedidosLavanderia() {
         p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
-      
-      console.log(confirmedDryerProcesses)
-
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
-      });
 
       showNotification(`Pedido Finalizado en ${selectedDryMachine.model}`);
 
@@ -568,8 +549,7 @@ function PedidosLavanderia() {
                       </button>
                     )}
 
-                    {pedido.serviceStatus === "inProgress" &&
-                      !confirmedDryerProcesses[pedido.id_laundryEvent] && (
+                    {pedido.serviceStatus === "inProgressWash" && (
                         <button
                           onClick={() => handleStartDryerProcess(pedido)}
                           className="btn-primary ml-2 mt-1"
@@ -578,8 +558,7 @@ function PedidosLavanderia() {
                         </button>
                       )}
 
-                    {pedido.serviceStatus === "inProgress" &&
-                      confirmedDryerProcesses[pedido.id_laundryEvent] && (
+                    {pedido.serviceStatus === "inProgressDry" && (
                         <button
                           onClick={() => handleFinishProcess(pedido)}
                           className="btn-primary ml-2 mt-1"

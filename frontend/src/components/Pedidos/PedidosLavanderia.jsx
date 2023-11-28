@@ -241,7 +241,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [pedido.id_laundryEvent]: false,
+        [pedido.id_laundryEvent]: true,
       });
 
     } catch (error) {

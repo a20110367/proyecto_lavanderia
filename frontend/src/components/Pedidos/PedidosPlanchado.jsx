@@ -104,7 +104,7 @@ function PedidosPlanchado() {
     setSelectedMachine(machine);
   };
 
-  const handleStartProcess = async () => {
+  const handleStartProcess = async (pedido) => {
     try {
       setLoading(true);
 
@@ -168,7 +168,7 @@ function PedidosPlanchado() {
     }
   };
 
-  const handleFinishProcess = async () => {
+  const handleFinishProcess = async (pedido) => {
     setLoading(true);
 
     if (!selectedPedido) {

@@ -4,6 +4,7 @@ import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
+import { formatDate } from "../../utils/format";
 import { useAuth } from "../../hooks/auth/auth";
 
 import {
@@ -305,7 +306,7 @@ function PedidosLavanderia() {
       } else {
         const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`)
         const selectedDryMachine = res.data.DryDetail
-        
+
         await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
           fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
           fk_idStaffMember: cookies.token,
@@ -346,15 +347,6 @@ function PedidosLavanderia() {
     } catch (err) {
       console.log(err)
     }
-  };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -457,7 +449,7 @@ function PedidosLavanderia() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.LaundryService.created)}
+                    {formatDate(pedido.LaundryService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (

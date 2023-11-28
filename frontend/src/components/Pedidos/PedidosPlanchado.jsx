@@ -326,9 +326,15 @@ function PedidosPlanchado() {
                       ? "Planchado"
                       : pedido.category.categoryDescription}
                     {pedido.category.categoryDescription === "planchado" &&
-                      pedido.express && <BsFillLightningFill className="text-yellow-300 ml-11" size={20}/>}
+                      pedido.express && (
+                        <div className="flex justify-center items-center">
+                          <BsFillLightningFill
+                            className="text-yellow-300"
+                            size={20}
+                          />
+                        </div>
+                      )}
                   </td>
-
                   <td className="py-3 px-6">
                     {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
                   </td>
@@ -451,8 +457,9 @@ function PedidosPlanchado() {
                     <td>{machine.machineType}</td>
                     <td>{machine.pieces}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

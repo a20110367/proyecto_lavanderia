@@ -3,6 +3,7 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
+import { formatDate } from "../../utils/format";
 import api from "../../api/api";
 import { useAuth } from "../../hooks/auth/auth";
 
@@ -96,15 +97,6 @@ function PedidosAutoservicio() {
     }, 2000);
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
   };
@@ -154,7 +146,7 @@ function PedidosAutoservicio() {
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/startSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+      await api.patch(`/startSelfServiceQueue/${selectedPedido.x}`, {
         fk_idMachine: selectedMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
@@ -327,7 +319,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.SelfService.created)}
+                    {formatDate(pedido.SelfService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (

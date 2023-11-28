@@ -183,6 +183,8 @@ function PedidosLavanderia() {
 
       await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
         serviceStatus: "inProgress",
+        fk_idWashMachine: selectedWashMachine.id_machine,
+        fk_idStaffMember: cookies.token,  
       });
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
@@ -198,6 +200,7 @@ function PedidosLavanderia() {
       
       await api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
         fk_idWashMachine: selectedWashMachine.id_machine,
+        serviceStatus: "inProgress",
         fk_idStaffMember: cookies.token,
       });
   
@@ -212,17 +215,7 @@ function PedidosLavanderia() {
         freeForUse: false,
       });
   
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent
-          ? { ...p, serviceStatus: "inProgress" }
-          : p
-      );
-      setPedidos(updatedPedidos);
-  
-      await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
-        serviceStatus: "inProgress",
-      });
-  
+
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
     } catch (error) {
@@ -448,9 +441,10 @@ function PedidosLavanderia() {
       }
 
       await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
+        serviceStatus: "finished",
         fk_idDryMachine: selectedWashMachine.id_machine,
         fk_idStaffMember: cookies.token,
-        // fk_serviceOrder: selectedPedido.id_serviceOrder, 
+
       });
   
       // Liberar la secadora seleccionada si corresponde
@@ -475,6 +469,8 @@ function PedidosLavanderia() {
       setPedidos(updatedPedidos);
         await api.patch(`/laundryQueue/${selectedPedido.id_laundryEvent}`, {
           serviceStatus: "finished",
+          fk_idDryMachine: selectedWashMachine.id_machine,
+          fk_idStaffMember: cookies.token,
         });
 
       setShowMachineName(false);

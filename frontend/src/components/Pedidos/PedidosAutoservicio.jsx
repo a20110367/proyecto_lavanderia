@@ -3,8 +3,9 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
-import api from "../../api/api";
+import { formatDate } from "../../utils/format";
 import { useAuth } from "../../hooks/auth/auth";
+import api from "../../api/api";
 
 import {
   IssuesCloseOutlined,
@@ -96,15 +97,6 @@ function PedidosAutoservicio() {
     }, 2000);
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
   };
@@ -137,8 +129,8 @@ function PedidosAutoservicio() {
       }
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_serviceEvent === selectedPedido.id_serviceEvent
-          ? { ...p, serviceStatus: "inProgress" }
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgressWash" }
           : p
       );
 
@@ -149,11 +141,10 @@ function PedidosAutoservicio() {
       ) {
         await Promise.all([
           api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idWashMachine: selectedMachine.id,
-            serviceStatus: "inProgress",
+            fk_idWashMachine: selectedMachine.id_machine,
             fk_idStaffMember: cookies.token,
           }),
-          api.patch(`/machines/${selectedMachine.id}`, {
+          api.patch(`/machines/${selectedMachine.id_machine}`, {
             freeForUse: false,
           }),
         ]);
@@ -162,11 +153,10 @@ function PedidosAutoservicio() {
       ) {
         await Promise.all([
           api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idDryMachine: selectedMachine.id,
-            serviceStatus: "inProgress",
+            fk_idDryMachine: selectedMachine.id_machine,
             fk_idStaffMember: cookies.token,
           }),
-          api.patch(`/machines/${selectedMachine.id}`, {
+          api.patch(`/machines/${selectedMachine.id_machine}`, {
             freeForUse: false,
           }),
         ]);
@@ -187,7 +177,7 @@ function PedidosAutoservicio() {
       }
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_serviceEvent === selectedPedido.id_serviceEvent
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
@@ -195,10 +185,10 @@ function PedidosAutoservicio() {
       setPedidos(updatedPedidos);
 
       await Promise.all([
-        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+        api.patch(`/selfServiceQueue/${selectedPedido.id_laundryEvent}`, {
           serviceStatus: "finished",
         }),
-        api.patch(`/machines/${selectedMachine.id}`, {
+        api.patch(`/machines/${selectedMachine.id_machine}`, {
           freeForUse: true,
         }),
       ]);
@@ -248,7 +238,7 @@ function PedidosAutoservicio() {
             Pendientes
           </option>
           <option
-            value="inProgress"
+            value="inProgressWash"
             className="text-yellow-600 font-semibold text-base"
           >
             En Proceso
@@ -309,7 +299,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDateToGMTMinus6(pedido.SelfService.created)}
+                    {formatDate(pedido.SelfService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
@@ -320,7 +310,7 @@ function PedidosAutoservicio() {
                       <span className="text-fuchsia-600 pl-1">
                         <DropboxOutlined /> Almacenado
                       </span>
-                    ) : pedido.serviceStatus === "inProgress" ? (
+                    ) : pedido.serviceStatus === "inProgressWash" ? (
                       <span className="text-yellow-600 pl-1">
                         <ClockCircleOutlined /> En Proceso
                       </span>
@@ -348,7 +338,7 @@ function PedidosAutoservicio() {
                       </button>
                     )}
 
-                    {pedido.serviceStatus === "inProgress" && (
+                    {pedido.serviceStatus === "inProgressWash" && (
                       <button
                         onClick={() => handleFinishProcess()}
                         className="btn-primary ml-2 mt-1"

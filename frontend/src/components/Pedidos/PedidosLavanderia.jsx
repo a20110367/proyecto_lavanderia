@@ -50,20 +50,6 @@ function PedidosLavanderia() {
 
   const { data } = useSWR("laundryQueue", fetcher);
 
-  useEffect(() => {
-    if (data && Object.keys(confirmedDryerProcesses).length === 0) {
-      const initialStates = {};
-      data.forEach((pedido) => {
-        initialStates[pedido.id_laundryEvent] = false;
-      });
-      // Actualizar los estados solo si hay cambios
-      if (Object.keys(initialStates).length > 0) {
-        setConfirmedDryerProcesses(initialStates);
-      }
-    }
-  }, [data, confirmedDryerProcesses]);
-
-
 
   useEffect(() => {
     if (data) {
@@ -348,7 +334,7 @@ function PedidosLavanderia() {
       showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_description === selectedPedido.id_description
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, isDryingConfirmed: true }
           : p
       );
@@ -359,7 +345,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_description]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
     } catch (error) {
@@ -445,7 +431,7 @@ function PedidosLavanderia() {
       // Actualizar el estado del pedido a "finish"
       const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
       const updatedPedidos = pedidos.map((p) =>
-        p.id_description === selectedPedido.id_description ? updatedPedido : p
+        p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
       

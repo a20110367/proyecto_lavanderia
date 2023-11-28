@@ -50,20 +50,6 @@ function PedidosLavanderia() {
 
   const { data } = useSWR("laundryQueue", fetcher);
 
-  useEffect(() => {
-    if (data && Object.keys(confirmedDryerProcesses).length === 0) {
-      const initialStates = {};
-      data.forEach((pedido) => {
-        initialStates[pedido.id_laundryEvent] = false;
-      });
-      // Actualizar los estados solo si hay cambios
-      if (Object.keys(initialStates).length > 0) {
-        setConfirmedDryerProcesses(initialStates);
-      }
-    }
-  }, [data, confirmedDryerProcesses]);
-
-
 
   useEffect(() => {
     if (data) {

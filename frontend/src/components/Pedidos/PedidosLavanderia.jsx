@@ -224,6 +224,11 @@ function PedidosLavanderia() {
 
       const availableDryers = dryersResponse.data;
 
+      setConfirmedDryerProcesses({
+        ...confirmedDryerProcesses,
+        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+      });
+
       setAvailableMachines(availableDryers);
       setSelectedDryMachine(null);
       setSelectedPedido(pedido);
@@ -246,7 +251,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [selectedPedido.id_description]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
       // Si hay una lavadora seleccionada, cambiar su estado a true
@@ -359,7 +364,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_description]: true,
+        [selectedPedido.id_laundryEvent]: true,
       });
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);

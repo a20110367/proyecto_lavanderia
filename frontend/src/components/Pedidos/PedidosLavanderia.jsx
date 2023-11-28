@@ -230,6 +230,11 @@ function PedidosLavanderia() {
       setShowDryerSelection(true);
       setIsDryingProcessConfirmedInModal(false);
 
+      setConfirmedDryerProcesses({
+        ...confirmedDryerProcesses,
+        [selectedPedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
+      });
+
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -294,6 +299,7 @@ function PedidosLavanderia() {
         ...confirmedDryerProcesses,
         [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
+
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }

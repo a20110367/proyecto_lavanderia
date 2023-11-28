@@ -228,7 +228,7 @@ export default function PuntoVenta() {
             scheduledDeliveryDate: deliveryDate.toISOString(),
             scheduledDeliveryTime: deliveryDate.toISOString(),
             express: isExpress,
-            ironPieces: pieces,
+            ironPieces: pieces ? pieces : null,
             fk_categoryId: categoryId,
           },
           services: arrayService,

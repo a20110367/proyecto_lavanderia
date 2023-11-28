@@ -151,7 +151,7 @@ function PedidosLavanderia() {
       });
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
-          ? { ...p, serviceStatus: "inProgress" }
+          ? { ...p, serviceStatus: "inProgressWash" }
           : p
       );
 
@@ -262,14 +262,6 @@ function PedidosLavanderia() {
         freeForUse: false,
       });
 
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent
-          ? { ...p, isDryingConfirmed: true }
-          : p
-      );
-      setPedidos(updatedPedidos);
-
       setShowDryerSelection(false); // Ocultar la selección de secadora
       setIsDryingProcessConfirmedInModal(true);
 
@@ -327,7 +319,7 @@ function PedidosLavanderia() {
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
-          ? { ...p, isDryingConfirmed: true }
+          ? { ...p, isDryingConfirmed: true, serviceStatus: "inProgressWash"  }
           : p
       );
       setPedidos(updatedPedidos);
@@ -445,7 +437,7 @@ function PedidosLavanderia() {
             Pendientes
           </option>
           <option
-            value="inProgress"
+            value="inProgressWash"
             className="text-yellow-600 font-semibold text-base"
           >
             En Proceso
@@ -521,7 +513,7 @@ function PedidosLavanderia() {
                       <span className="text-fuchsia-600 pl-1">
                         <DropboxOutlined /> Almacenado
                       </span>
-                    ) : pedido.serviceStatus === "inProgress" ? (
+                    ) : pedido.serviceStatus === "inProgressWash" ||  pedido.serviceStatus === "inProgressDry" ? (
                       <span className="text-yellow-600 pl-1">
                         <ClockCircleOutlined /> En Proceso
                       </span>

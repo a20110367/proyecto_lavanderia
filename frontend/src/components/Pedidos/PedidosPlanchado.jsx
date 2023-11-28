@@ -75,7 +75,7 @@ function PedidosPlanchado() {
         pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.fk_idServiceOrder.toString().includes(filtro)
+        pedido.id_order.toString().includes(filtro)
       );
     });
 
@@ -126,42 +126,35 @@ function PedidosPlanchado() {
 
   const handleConfirmMachineSelection = async () => {
     try {
-      if (!selectedPedido || !selectedMachine) {
-        console.error("El pedido o la máquina seleccionada son indefinidos.");
-        return;
+      if (selectedMachine && availableMachines) {
+        // Modificar el estado local de la lavadora seleccionada
+        const updatedMachines = availableMachines.map((machine) =>
+          machine.id_ironStation === selectedMachine.id_ironStation
+            ? { ...machine, freeForUse: false }
+            : machine
+        );
+        setAvailableMachines(updatedMachines);
+
+        await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+          freeForUse: false,
+        });
+        showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
       }
 
-      // Modificar el estado local de la lavadora seleccionada
-      const updatedMachines = availableMachines.map((machine) =>
-        machine.id_ironStation === selectedMachine.id_ironStation
-          ? { ...machine, freeForUse: false }
-          : machine
-      );
-      setAvailableMachines(updatedMachines);
-
-      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
-        freeForUse: false,
-      });
-
       const updatedPedidos = pedidos.map((p) =>
-        p.id_ironEvent === selectedPedido.id_ironEvent
-          ? { ...p, serviceStatus: "inProgress" }
+        p.id_order === selectedPedido.id_order
+          ? { ...p, orderStatus: "inProgress" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
-      await api.patch(`/startIronQueue/${selectedPedido.id_ironEvent}`, {
+      await api.patch(`/startIronQueue/${selectedPedido.id_order}`, {
         fk_idIronStation: selectedMachine.id_ironStation,
         fk_idStaffMember: cookies.token,
       });
 
-      await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
-        orderStatus: "inProgress",
-      });
-
       setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
       // Actualizar datos
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
@@ -177,38 +170,52 @@ function PedidosPlanchado() {
       return;
     }
 
-    if (!selectedMachine) {
-      console.error("No se ha seleccionado ninguna máquina.");
-      setLoading(false);
-      return;
-    }
-
     try {
+      if (selectedMachine && availableMachines) {
+        // Modificar el estado local de la lavadora seleccionada
+        const updatedMachines = availableMachines.map((machine) =>
+          machine.id_ironStation === selectedMachine.id_ironStation
+            ? { ...machine, freeForUse: true }
+            : machine
+        );
+        setAvailableMachines(updatedMachines);
+
+        // Actualizar en la base de datos el estado de la máquina a "freeForUse"
+        await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+          freeForUse: true,
+        });
+        await api.patch(`/finishIronQueue/${pedido.id_order}`, {
+          fk_idIronStation: selectedMachine.id_ironStation,
+          fk_idStaffMember: cookies.token,
+        });
+      } else {
+        const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
+        const availableMachines = [...ironsResponse.data];
+        const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`)
+        const selectedMachine = res.data[0]
+        // Modificar el estado local de la lavadora seleccionada
+        const updatedMachines = availableMachines.map((machine) =>
+          machine.id_ironStation === selectedMachine.fk_idIronStation
+            ? { ...machine, freeForUse: true }
+            : machine
+        );
+        await api.patch(`/ironStations/${selectedMachine.fk_idIronStation}`, {
+          freeForUse: true,
+        });
+        setAvailableMachines(updatedMachines);
+        await api.patch(`/finishIronQueue/${pedido.id_order}`, {
+          fk_idIronStation: selectedMachine.fk_idIronStation,
+          fk_idStaffMember: cookies.token,
+        });
+      }
       // Actualizar localmente el estado del pedido a "finished"
+
       const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === pedido.id_laundryEvent
-          ? { ...p, serviceStatus: "finished" }
+        p.id_order === pedido.id_order
+          ? { ...p, orderStatus: "finished" }
           : p
       );
       setPedidos(updatedPedidos);
-
-      // Actualizar localmente el estado de la máquina a "freeForUse"
-      const updatedMachines = availableMachines.map((machine) =>
-        machine.id_ironStation === selectedMachine.id_ironStation
-          ? { ...machine, freeForUse: true }
-          : machine
-      );
-      setAvailableMachines(updatedMachines);
-
-      await api.patch(`/finishIronQueue/${selectedPedido.id_ironEvent}`, {
-        fk_idIronStation: selectedMachine.id_ironStation,
-        fk_idStaffMember: cookies.token,
-      });
-
-      // Actualizar en la base de datos el estado de la máquina a "freeForUse"
-      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
-        freeForUse: true,
-      });
 
       setShowMachineName(false);
       // showNotification("NOTIFICACIÓN ENVIADA...");
@@ -326,7 +333,7 @@ function PedidosPlanchado() {
                       ? "Planchado"
                       : pedido.category.categoryDescription}
                     {pedido.category.categoryDescription === "planchado" &&
-                      pedido.express && <BsFillLightningFill className="text-yellow-300 ml-11" size={20}/>}
+                      pedido.express && <BsFillLightningFill className="text-yellow-300 ml-11" size={20} />}
                   </td>
 
                   <td className="py-3 px-6">

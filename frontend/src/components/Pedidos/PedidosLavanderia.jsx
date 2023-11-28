@@ -353,7 +353,7 @@ function PedidosLavanderia() {
       showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_description === selectedPedido.id_description
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, isDryingConfirmed: true }
           : p
       );
@@ -364,7 +364,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_description]: true,
+        [selectedPedido.id_laundryEvent]: true,
       });
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
@@ -449,7 +449,7 @@ function PedidosLavanderia() {
       // Actualizar el estado del pedido a "finish"
       const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
       const updatedPedidos = pedidos.map((p) =>
-        p.id_description === selectedPedido.id_description ? updatedPedido : p
+        p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
       

@@ -239,11 +239,6 @@ function PedidosLavanderia() {
       setShowDryerSelection(true);
       setIsDryingProcessConfirmedInModal(false);
 
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [pedido.id_laundryEvent]: true,
-      });
-
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -306,7 +301,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [pedido.id_laundryEvent]: true,
       });
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
@@ -460,7 +455,7 @@ function PedidosLavanderia() {
         p.id_description === selectedPedido.id_description ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
-      
+
       setShowMachineName(false);
 
       showNotification(`Pedido finalizado correctamente`);

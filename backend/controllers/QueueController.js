@@ -26,8 +26,8 @@ export const getLaundryQueue = async (req, res) => {
                         },
                     },
                 },
-                //WashDetail:true,
-                //DryDetail:true,
+                WashDetail: true,
+                DryDetail: true,
             },
 
         });
@@ -43,7 +43,13 @@ export const getLaundryQueueById = async (req, res) => {
         const response = await prisma.laundryQueue.findUnique({
             where: {
                 id_laundryEvent: Number(req.params.id)
-            }
+            },
+
+            include: {
+
+                WashDetail: true,
+                DryDetail: true,
+            },
         });
         res.status(200).json(response);
     } catch (e) {

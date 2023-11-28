@@ -18,13 +18,13 @@ import {
 function PedidosLavanderia() {
   const [pedidos, setPedidos] = useState([]);
   const { cookies } = useAuth();
-  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState(localStorage.getItem('confirmedDryerProcesses') ? JSON.parse(localStorage.getItem('confirmedDryerProcesses')) : {});
+  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState({});
   console.log(confirmedDryerProcesses)
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
-  const [selectedPedido, setSelectedPedido] = useState(localStorage.getItem('selectedPedidoLaundry') ? JSON.parse(localStorage.getItem('selectedPedidoLaundry')) : {});
+  const [selectedPedido, setSelectedPedido] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedWashMachine, setSelectedWashMachine] = useState();
   const [selectedDryMachine, setSelectedDryMachine] = useState();
@@ -347,11 +347,6 @@ function PedidosLavanderia() {
         [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
-      const selPedido = {...selectedPedido}
-
-      localStorage.setItem('confirmedDryerProcesses', JSON.stringify(confirmedDryerProcesses))
-      localStorage.setItem('selectedPedidoLaundry', JSON.stringify(selPedido))
-
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
     }
@@ -399,11 +394,6 @@ function PedidosLavanderia() {
         ...confirmedDryerProcesses,
         [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
-
-      const selPedido = {...selectedPedido}
-
-      localStorage.setItem('confirmedDryerProcesses', JSON.stringify(confirmedDryerProcesses))
-      localStorage.setItem('selectedPedidoLaundry', JSON.stringify(selPedido))
 
       showNotification(`Pedido Finalizado en ${selectedDryMachine.model}`);
 

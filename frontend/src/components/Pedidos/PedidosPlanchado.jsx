@@ -144,7 +144,7 @@ function PedidosPlanchado() {
       });
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent
+        p.id_ironEvent === selectedPedido.id_ironEvent
           ? { ...p, serviceStatus: "inProgress" }
           : p
       );
@@ -171,7 +171,7 @@ function PedidosPlanchado() {
   const handleFinishProcess = async (pedido) => {
     setLoading(true);
 
-    if (!selectedPedido) {
+    if (!pedido) {
       console.error("El pedido seleccionado es indefinido.");
       setLoading(false);
       return;
@@ -186,7 +186,7 @@ function PedidosPlanchado() {
     try {
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent
+        p.id_laundryEvent === pedido.id_laundryEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
@@ -203,7 +203,6 @@ function PedidosPlanchado() {
       await api.patch(`/finishIronQueue/${selectedPedido.id_ironEvent}`, {
         fk_idIronStation: selectedMachine.id_ironStation,
         fk_idStaffMember: cookies.token,
-        // fk_serviceOrder: selectedPedido.id_serviceOrder, 
       });
 
       // Actualizar en la base de datos el estado de la máquina a "freeForUse"
@@ -212,20 +211,20 @@ function PedidosPlanchado() {
       });
 
       setShowMachineName(false);
-      showNotification("NOTIFICACIÓN ENVIADA...");
-      await api.post("/sendMessage", {
-        id_order: selectedPedido.fk_idServiceOrder,
-        name: selectedPedido.client.name,
-        email: selectedPedido.client.email,
-        tel: "521" + selectedPedido.client.phone,
-        message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
-        subject: "Tu Ropa esta Lista",
-        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-        warning: false,
-      });
-      console.log("NOTIFICACIÓN ENVIADA...");
-      showNotification(`Pedido finalizado correctamente`);
-      showNotification(`Pedido finalizado`);
+      // showNotification("NOTIFICACIÓN ENVIADA...");
+      // await api.post("/sendMessage", {
+      //   id_order: selectedPedido.fk_idServiceOrder,
+      //   name: selectedPedido.client.name,
+      //   email: selectedPedido.client.email,
+      //   tel: "521" + selectedPedido.client.phone,
+      //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+      //   subject: "Tu Ropa esta Lista",
+      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+      //   warning: false,
+      // });
+      // console.log("NOTIFICACIÓN ENVIADA...");
+      // showNotification(`Pedido finalizado correctamente`);
+      // showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }

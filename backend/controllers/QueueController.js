@@ -533,21 +533,26 @@ export const updateIronQueue = async (req, res) => {
 export const startIronQueue = async (req, res) => {
 
     try {
+        const { fk_idStaffMember, fk_idIronStation } = req.body;
         const startIronQueue = await prisma.ironQueue.updateMany({
             where: {
-                fk_laundryEvent: Number(req.params.id)
-            },
-
-            data: req.body
-        });
-
-        const laundryEvent = await prisma.laundryQueue.updateMany({
-            where: {
-                id_ironEvent: Number(req.params.id)
+                fk_idServiceOrder: Number(req.params.id)
             },
 
             data: {
+                fk_idIronStation: fk_idIronStation,
+                fk_idStaffMember: fk_idStaffMember,
                 serviceStatus: "inProgress"
+            }
+        });
+
+        const serviceOrder = await prisma.serviceOrder.update({
+            where: {
+                id_order: Number(req.params.id)
+            },
+
+            data: {
+                orderStatus: "inProgress"
             }
         });
 
@@ -562,9 +567,10 @@ export const finishIronQueue = async (req, res) => {
 
     try {
 
-        const laundryEvent = await prisma.laundryQueue.updateMany({
+        const { fk_idStaffMember, fk_idIronStation } = req.body;
+        const finishIronQueue = await prisma.ironQueue.updateMany({
             where: {
-                id_ironEvent: Number(req.params.id)
+                fk_idServiceOrder: Number(req.params.id)
             },
 
             data: {
@@ -572,25 +578,16 @@ export const finishIronQueue = async (req, res) => {
             }
         });
 
-        const laundryOrder = await prisma.laundryQueue.findFirst({
+        const serviceOrder = await prisma.serviceOrder.update({
             where: {
-                id_ironEvent: Number(req.params.id)
+                id_order: Number(req.params.id)
             },
 
-        });
-
-        const serviceIronFinished = await prisma.serviceOrder.update({
-
-            where: {
-                id_order: Number(laundryOrder.fk_idServiceOrder)
-            },
             data: {
                 orderStatus: "finished"
             }
-
         });
-
-        res.status(200).json(laundryEvent);
+        res.status(200).json(finishIronQueue);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

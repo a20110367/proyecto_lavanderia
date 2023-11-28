@@ -150,7 +150,7 @@ function PedidosPlanchado() {
 
       setPedidos(updatedPedidos);
 
-      await api.patch(`/ironQueue/${selectedPedido.id_ironEvent}`, {
+      await api.patch(`/startIronQueue/${selectedPedido.id_ironEvent}`, {
         serviceStatus: "inProgress",
         fk_idIronStation: selectedMachine.id_ironStation,
         fk_idStaffMember: cookies.token,

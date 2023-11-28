@@ -109,7 +109,7 @@ export const updateWashDetails = async (req, res) => {
             },
 
             data: {
-                serviceStatus: "inProgress"
+                serviceStatus: "inProgressWash"
             }
         });
 
@@ -137,7 +137,7 @@ export const updateDryDetails = async (req, res) => {
             },
 
             data: {
-                serviceStatus: "inProgress"
+                serviceStatus: "inProgressDry"
             }
         });
         res.status(200).json(dryDetail);

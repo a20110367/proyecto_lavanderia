@@ -382,6 +382,8 @@ enum OrderStatus {
 enum ServiceStatus {
   pending
   inProgress
+  inProgressWash
+  inProgressDry
   finished
 }
 

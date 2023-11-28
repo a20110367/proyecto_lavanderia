@@ -39,7 +39,7 @@ router.patch('/laundryQueue/:id', updateLaundryQueue);
 router.patch('/updateWashDetails/:id', updateWashDetails);
 router.patch('/updateDryDetails/:id', updateDryDetails);
 router.patch('/finishLaundryQueue/:id', finishLaundryQueue);
-router.delete('/laundryWashQueue/:id', deleteLaundryQueue);
+router.delete('/laundryQueue/:id', deleteLaundryQueue);
 
 router.get('/selfServiceQueue', getSelfServiceQueue);
 router.get('/selfServiceQueueById/:id', getSelfServiceQueueById);

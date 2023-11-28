@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Checkbox } from "antd";
 import { BsFillLightningFill } from "react-icons/bs";
+import { useAuth } from "../../hooks/auth/auth";
+
 import {
   IssuesCloseOutlined,
   CheckCircleOutlined,
@@ -18,6 +20,7 @@ import api from "../../api/api";
 function PedidosPlanchado() {
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
+  const { cookies } = useAuth();
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
@@ -99,11 +102,9 @@ function PedidosPlanchado() {
 
   const handleSelectMachine = (machine) => {
     setSelectedMachine(machine);
-    // Guardar la máquina seleccionada en localStorage
-    localStorage.setItem("selectedMachine", JSON.stringify(machine));
   };
 
-  const handleStartProcess = async (pedido) => {
+  const handleStartProcess = async () => {
     try {
       setLoading(true);
 
@@ -123,12 +124,53 @@ function PedidosPlanchado() {
     }
   };
 
-  const handleFinishProcess = async (selectedPedido) => {
-    setLoading(true);
+  const handleConfirmMachineSelection = async () => {
+    try {
+      if (!selectedPedido || !selectedMachine) {
+        console.error("El pedido o la máquina seleccionada son indefinidos.");
+        return;
+      }
 
-    // Recuperar la máquina seleccionada de localStorage
-    const storedMachine = localStorage.getItem("selectedMachine");
-    const selectedMachine = storedMachine ? JSON.parse(storedMachine) : null;
+      // Modificar el estado local de la lavadora seleccionada
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_ironStation === selectedMachine.id_ironStation
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
+      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+        freeForUse: false,
+      });
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === selectedPedido.id_order
+          ? { ...p, orderStatus: "inProgress" }
+          : p
+      );
+
+      setPedidos(updatedPedidos);
+
+      await api.patch(`/ironQueue/${selectedPedido.id_ironEvent}`, {
+        serviceStatus: "inProgress",
+        fk_idIronStation: selectedMachine.id_ironStation,
+        fk_idStaffMember: cookies.token,
+      });
+
+      await api.patch(`/orders/${selectedPedido.id_order}`, {
+        orderStatus: "inProgress",
+        assignedMachine: selectedMachine.id,
+      });
+
+      setShowMachineName(false);
+      showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
+      // Actualizar datos
+    } catch (error) {
+      console.error("Error al actualizar el pedido:", error);
+    }
+  };
+
+  const handleFinishProcess = async () => {
+    setLoading(true);
 
     if (!selectedPedido) {
       console.error("El pedido seleccionado es indefinido.");
@@ -163,6 +205,12 @@ function PedidosPlanchado() {
       );
       setAvailableMachines(updatedMachines);
 
+      await api.patch(`/finishIronQueue/${selectedPedido.id_ironEvent}`, {
+        fk_idIronStation: selectedMachine.id_ironStation,
+        fk_idStaffMember: cookies.token,
+        // fk_serviceOrder: selectedPedido.id_serviceOrder, 
+      });
+
       // Actualizar en la base de datos el estado de la máquina a "freeForUse"
       await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
         freeForUse: true,
@@ -185,47 +233,6 @@ function PedidosPlanchado() {
       showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
-    } finally {
-      setLoading(false);
-      localStorage.removeItem("selectedMachine");
-    }
-  };
-
-  const handleConfirmMachineSelection = async () => {
-    try {
-      if (!selectedPedido || !selectedMachine) {
-        console.error("El pedido o la máquina seleccionada son indefinidos.");
-        return;
-      }
-
-      // Modificar el estado local de la lavadora seleccionada
-      const updatedMachines = availableMachines.map((machine) =>
-        machine.id_ironStation === selectedMachine.id_ironStation
-          ? { ...machine, freeForUse: false }
-          : machine
-      );
-      setAvailableMachines(updatedMachines);
-
-      await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
-        freeForUse: false,
-      });
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "inProgress" }
-          : p
-      );
-
-      setPedidos(updatedPedidos);
-
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "inProgress",
-        assignedMachine: selectedMachine.id,
-      });
-      setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
-      // Actualizar datos
-    } catch (error) {
-      console.error("Error al actualizar el pedido:", error);
     }
   };
 

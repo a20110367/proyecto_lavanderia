@@ -192,11 +192,6 @@ function PedidosPlanchado() {
       );
       setPedidos(updatedPedidos);
 
-      // Actualizar en la base de datos el estado del pedido a "finished"
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        orderStatus: "finished",
-      });
-
       // Actualizar localmente el estado de la máquina a "freeForUse"
       const updatedMachines = availableMachines.map((machine) =>
         machine.id_ironStation === selectedMachine.id_ironStation

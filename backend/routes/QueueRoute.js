@@ -14,6 +14,8 @@ import {
     getSelfServiceQueueById,
     getSelfServiceQueueByOrderId,
     createManySelfServiceQueue,
+    updateStartSelfServiceQueue,
+    updateFinishSelfServiceQueue,
     updateSelfServiceQueue,
     deleteSelfServiceQueue,
 
@@ -21,6 +23,8 @@ import {
     getIronQueueById,
     getIronQueueByOrderId,
     createManyIronQueue,
+    startIronQueue,
+    finishIronQueue,
     updateIronQueue,
     deleteIronQueue
 } from "../controllers/QueueController.js";
@@ -41,13 +45,16 @@ router.get('/selfServiceQueue', getSelfServiceQueue);
 router.get('/selfServiceQueueById/:id', getSelfServiceQueueById);
 router.get('/selfServiceQueueByOrder/:fk_Order', getSelfServiceQueueByOrderId);
 //router.post('/selfServiceQueue', createManySelfServiceQueue);
-router.patch('/selfServiceQueue/:id', updateSelfServiceQueue);
+router.patch('/startSelfServiceQueue/:id', updateStartSelfServiceQueue);
+router.patch('/finishSelfServiceQueue/:id', updateFinishSelfServiceQueue);
 router.delete('/selfServiceQueue/:id', deleteSelfServiceQueue);
 
 router.get('/ironQueue', getIronQueue);
 router.get('/ironQueueById/:id', getIronQueueById);
 router.get('/ironQueueByOrder/:fk_Order', getIronQueueByOrderId);
 //router.post('/ironQueue', createManyIronQueue);
+router.patch('/startIronQueue/:id', startIronQueue);
+router.patch('/finishIronQueue/:id', finishIronQueue);
 router.patch('/ironQueue/:id', updateIronQueue);
 router.delete('/ironQueue/:id', deleteIronQueue);
 

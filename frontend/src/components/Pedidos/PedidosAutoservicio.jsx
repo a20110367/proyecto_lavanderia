@@ -201,13 +201,13 @@ function PedidosAutoservicio() {
         );
         setAvailableMachines(updatedMachines);
   
-        await api.patch(`/finishIronQueue/${selectedPedido.id_serviceEvent}`, {
+        await api.patch(`/finishSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
           fk_idMachine: selectedMachine.id_machine,
           fk_idStaffMember: cookies.token,
         });
   
         // Actualizar en la base de datos el estado de la máquina a "freeForUse"
-        await api.patch(`/ironStations/${selectedMachine.id_machine}`, {
+        await api.patch(`/machines/${selectedMachine.id_machine}`, {
           freeForUse: true,
         });
   

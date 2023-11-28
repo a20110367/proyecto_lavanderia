@@ -157,7 +157,6 @@ function PedidosPlanchado() {
 
       await api.patch(`/orders/${selectedPedido.id_order}`, {
         orderStatus: "inProgress",
-        assignedMachine: selectedMachine.id,
       });
 
       setShowMachineName(false);

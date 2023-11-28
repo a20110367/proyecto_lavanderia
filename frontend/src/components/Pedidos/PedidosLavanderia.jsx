@@ -193,7 +193,6 @@ function PedidosLavanderia() {
 
     await api.patch(`/orders/${selectedPedido.id_order}`, {
       orderStatus: "inProgress",
-      assignedMachine: selectedWashMachine.id_machine,
     });
 
     try {

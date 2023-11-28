@@ -128,6 +128,17 @@ function PedidosAutoservicio() {
         return;
       }
 
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: false,
+      });
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, serviceStatus: "inProgressWash" }
@@ -136,31 +147,10 @@ function PedidosAutoservicio() {
 
       setPedidos(updatedPedidos);
 
-      if (
-        selectedPedido.SelfService.description.toLowerCase().includes("lavado")
-      ) {
-        await Promise.all([
-          api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idWashMachine: selectedMachine.id_machine,
-            fk_idStaffMember: cookies.token,
-          }),
-          api.patch(`/machines/${selectedMachine.id_machine}`, {
-            freeForUse: false,
-          }),
-        ]);
-      } else if (
-        selectedPedido.SelfService.description.toLowerCase().includes("secado")
-      ) {
-        await Promise.all([
-          api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idDryMachine: selectedMachine.id_machine,
-            fk_idStaffMember: cookies.token,
-          }),
-          api.patch(`/machines/${selectedMachine.id_machine}`, {
-            freeForUse: false,
-          }),
-        ]);
-      }
+      await api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+        fk_idMachine: selectedMachine.id_machine,
+        serviceStatus: "inProgress",
+      });
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
@@ -176,19 +166,30 @@ function PedidosAutoservicio() {
         return;
       }
 
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
 
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: true,
+      });
+
       setPedidos(updatedPedidos);
 
       await Promise.all([
-        api.patch(`/selfServiceQueue/${selectedPedido.id_laundryEvent}`, {
+        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
           serviceStatus: "finished",
         }),
-        api.patch(`/machines/${selectedMachine.id_machine}`, {
+        api.patch(`/machines/${selectedMachine.id}`, {
           freeForUse: true,
         }),
       ]);

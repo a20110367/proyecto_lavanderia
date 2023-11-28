@@ -326,7 +326,7 @@ function PedidosPlanchado() {
                       ? "Planchado"
                       : pedido.category.categoryDescription}
                     {pedido.category.categoryDescription === "planchado" &&
-                      pedido.express && <BsFillLightningFill />}
+                      pedido.express && <BsFillLightningFill className="text-yellow-300 ml-11" size={20}/>}
                   </td>
 
                   <td className="py-3 px-6">

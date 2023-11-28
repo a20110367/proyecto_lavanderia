@@ -168,20 +168,20 @@ function PedidosAutoservicio() {
 
       const updatedMachines = availableMachines.map((machine) =>
         machine.id_machine === selectedMachine.id_machine
-          ? { ...machine, freeForUse: false }
+          ? { ...machine, freeForUse: true }
           : machine
       );
       setAvailableMachines(updatedMachines);
+
+      await api.patch(`/machines/${selectedMachine.id_machine}`, {
+        freeForUse: true,
+      });
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
-
-      await api.patch(`/machines/${selectedMachine.id_machine}`, {
-        freeForUse: true,
-      });
 
       setPedidos(updatedPedidos);
 

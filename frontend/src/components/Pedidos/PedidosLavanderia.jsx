@@ -398,6 +398,8 @@ function PedidosLavanderia() {
         [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
+      localStorage.setItem('confirmedDryerProcesses', confirmedDryerProcesses)
+
       setShowMachineName(false);
 
       //   showNotification("NOTIFICACIÓN ENVIADA...");

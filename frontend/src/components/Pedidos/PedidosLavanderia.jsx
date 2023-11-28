@@ -435,7 +435,7 @@ function PedidosLavanderia() {
       }
 
       await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
-        fk_idDryMachine: selectedWashMachine.id_machine,
+        fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
 
       });

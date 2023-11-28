@@ -146,13 +146,9 @@ function PedidosAutoservicio() {
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/startSelfServiceQueue/${selectedPedido.x}`, {
+      await api.patch(`/startSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
         fk_idMachine: selectedMachine.id_machine,
         fk_idStaffMember: cookies.token,
-      });
-
-      await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
-        orderStatus: "inProgress",
       });
 
       setShowMachineName(false);

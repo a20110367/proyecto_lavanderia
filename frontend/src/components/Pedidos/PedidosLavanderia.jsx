@@ -226,7 +226,7 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
       setAvailableMachines(availableDryers);

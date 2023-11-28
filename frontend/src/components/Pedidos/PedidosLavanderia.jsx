@@ -249,11 +249,6 @@ function PedidosLavanderia() {
         return;
       }
 
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [selectedPedido.id_description]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
-      });
-
       // Si hay una lavadora seleccionada, cambiar su estado a true
       if (selectedDryMachine.machineType === "secadora") {
         const selectedWasher = availableMachines.find(
@@ -364,8 +359,9 @@ function PedidosLavanderia() {
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: true,
+        [selectedPedido.id_description]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
+
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
     }

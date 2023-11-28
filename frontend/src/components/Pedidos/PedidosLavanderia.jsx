@@ -18,7 +18,7 @@ import {
 function PedidosLavanderia() {
   const [pedidos, setPedidos] = useState([]);
   const { cookies } = useAuth();
-  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState({});
+  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState(localStorage.getItem('confirmedDryerProcesses') ? localStorage.getItem('confirmedDryerProcesses') : {});
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
@@ -347,6 +347,8 @@ function PedidosLavanderia() {
         ...confirmedDryerProcesses,
         [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
+
+      localStorage.setItem('confirmedDryerProcesses', confirmedDryerProcesses)
 
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);

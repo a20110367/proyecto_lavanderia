@@ -75,7 +75,7 @@ function PedidosPlanchado() {
         pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
-        pedido.id_order.toString().includes(filtro)
+        pedido.fk_idServiceOrder.toString().includes(filtro)
       );
     });
 
@@ -143,7 +143,7 @@ function PedidosPlanchado() {
         freeForUse: false,
       });
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
+        p.id_order === selectedPedido.fk_idServiceOrder
           ? { ...p, orderStatus: "inProgress" }
           : p
       );
@@ -155,7 +155,7 @@ function PedidosPlanchado() {
         fk_idStaffMember: cookies.token,
       });
 
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
+      await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
         orderStatus: "inProgress",
       });
 
@@ -212,11 +212,11 @@ function PedidosPlanchado() {
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
       await api.post("/sendMessage", {
-        id_order: selectedPedido.id_order,
+        id_order: selectedPedido.fk_idServiceOrder,
         name: selectedPedido.client.name,
         email: selectedPedido.client.email,
         tel: "521" + selectedPedido.client.phone,
-        message: `Tu pedido con el folio: ${selectedPedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
         subject: "Tu Ropa esta Lista",
         text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
         warning: false,

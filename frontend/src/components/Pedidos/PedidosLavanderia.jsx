@@ -191,7 +191,7 @@ function PedidosLavanderia() {
       return;
     }
 
-    await api.patch(`/orders/${selectedPedido.id_order}`, {
+    await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
       orderStatus: "inProgress",
     });
 

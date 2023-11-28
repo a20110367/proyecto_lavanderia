@@ -101,7 +101,7 @@ function PedidosLavanderia() {
 
     setTimeout(() => {
       setNotificationVisible(false);
-    }, 1000);
+    }, 500);
   };
 
   const handleSelectMachine = (machine) => {

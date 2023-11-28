@@ -18,12 +18,13 @@ import {
 function PedidosLavanderia() {
   const [pedidos, setPedidos] = useState([]);
   const { cookies } = useAuth();
-  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState(localStorage.getItem('confirmedDryerProcesses') ? localStorage.getItem('confirmedDryerProcesses') : {});
+  const [confirmedDryerProcesses, setConfirmedDryerProcesses] = useState(localStorage.getItem('confirmedDryerProcesses') ? JSON.parse(localStorage.getItem('confirmedDryerProcesses')) : {});
+  console.log(confirmedDryerProcesses)
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
-  const [selectedPedido, setSelectedPedido] = useState();
+  const [selectedPedido, setSelectedPedido] = useState(localStorage.getItem('selectedPedidoLaundry') ? JSON.parse(localStorage.getItem('selectedPedidoLaundry')) : {});
   const [currentPage, setCurrentPage] = useState(0);
   const [selectedWashMachine, setSelectedWashMachine] = useState();
   const [selectedDryMachine, setSelectedDryMachine] = useState();
@@ -100,7 +101,7 @@ function PedidosLavanderia() {
 
     setTimeout(() => {
       setNotificationVisible(false);
-    }, 2000);
+    }, 1000);
   };
 
   const handleSelectMachine = (machine) => {
@@ -348,7 +349,10 @@ function PedidosLavanderia() {
         [selectedPedido.id_laundryEvent]: true, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
-      localStorage.setItem('confirmedDryerProcesses', confirmedDryerProcesses)
+      const selPedido = {...selectedPedido}
+
+      localStorage.setItem('confirmedDryerProcesses', JSON.stringify(confirmedDryerProcesses))
+      localStorage.setItem('selectedPedidoLaundry', JSON.stringify(selPedido))
 
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
@@ -398,7 +402,10 @@ function PedidosLavanderia() {
         [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
-      localStorage.setItem('confirmedDryerProcesses', confirmedDryerProcesses)
+      const selPedido = {...selectedPedido}
+
+      localStorage.setItem('confirmedDryerProcesses', JSON.stringify(confirmedDryerProcesses))
+      localStorage.setItem('selectedPedidoLaundry', JSON.stringify(selPedido))
 
       setShowMachineName(false);
 

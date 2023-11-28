@@ -4,6 +4,7 @@ import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
+import { useAuth } from "../../hooks/auth/auth";
 
 import {
   IssuesCloseOutlined,
@@ -31,6 +32,7 @@ function PedidosAutoservicio() {
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const { cookies } = useAuth();
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
@@ -135,22 +137,79 @@ function PedidosAutoservicio() {
       }
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, serviceStatus: "delivered" }
+        p.id_serviceEvent === selectedPedido.id_serviceEvent
+          ? { ...p, serviceStatus: "inProgress" }
           : p
       );
 
       setPedidos(updatedPedidos);
 
-      await api.patch(`/orders/${selectedPedido.id_order}`, {
-        serviceStatus: "delivered",
-        assignedMachine: selectedMachine.id,
-      });
+      if (
+        selectedPedido.SelfService.description.toLowerCase().includes("lavado")
+      ) {
+        await Promise.all([
+          api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
+            fk_idWashMachine: selectedMachine.id,
+            serviceStatus: "inProgress",
+            fk_idStaffMember: cookies.token,
+          }),
+          api.patch(`/machines/${selectedMachine.id}`, {
+            freeForUse: false,
+          }),
+        ]);
+      } else if (
+        selectedPedido.SelfService.description.toLowerCase().includes("secado")
+      ) {
+        await Promise.all([
+          api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
+            fk_idDryMachine: selectedMachine.id,
+            serviceStatus: "inProgress",
+            fk_idStaffMember: cookies.token,
+          }),
+          api.patch(`/machines/${selectedMachine.id}`, {
+            freeForUse: false,
+          }),
+        ]);
+      }
+
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
-      // Actualizar datos
     } catch (error) {
-      console.error("Error al actualizar el pedido:", error);
+      console.error("Error al actualizar el pedido o la máquina:", error);
+    }
+  };
+
+  const handleFinishProcess = async () => {
+    try {
+      if (!selectedPedido || !selectedMachine) {
+        console.error("El pedido o la máquina seleccionada son indefinidos.");
+        return;
+      }
+
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_serviceEvent === selectedPedido.id_serviceEvent
+          ? { ...p, serviceStatus: "finished" }
+          : p
+      );
+
+      setPedidos(updatedPedidos);
+
+      await Promise.all([
+        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+          serviceStatus: "finished",
+        }),
+        api.patch(`/machines/${selectedMachine.id}`, {
+          freeForUse: true,
+        }),
+      ]);
+
+      setShowMachineName(false);
+      showNotification(`Pedido finalizado en ${selectedMachine.model}`);
+    } catch (error) {
+      console.error(
+        "Error al finalizar el pedido o liberar la máquina:",
+        error
+      );
     }
   };
 
@@ -286,6 +345,15 @@ function PedidosAutoservicio() {
                         className="btn-primary ml-2 mt-1"
                       >
                         Iniciar
+                      </button>
+                    )}
+
+                    {pedido.serviceStatus === "inProgress" && (
+                      <button
+                        onClick={() => handleFinishProcess()}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Terminar
                       </button>
                     )}
                   </td>

@@ -136,6 +136,17 @@ function PedidosAutoservicio() {
         return;
       }
 
+      const updatedMachines = availableMachines.map((machine) =>
+      machine.id_machine === selectedMachine.id_machine
+        ? { ...machine, freeForUse: false }
+        : machine
+    );
+    setAvailableMachines(updatedMachines);
+
+    api.patch(`/machines/${selectedMachine.id_machine}`, {
+      freeForUse: false,
+    });
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
           ? { ...p, serviceStatus: "inProgress" }
@@ -143,34 +154,11 @@ function PedidosAutoservicio() {
       );
 
       setPedidos(updatedPedidos);
-
-      if (
-        selectedPedido.SelfService.description.toLowerCase().includes("lavado")
-      ) {
-        await Promise.all([
-          api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idWashMachine: selectedMachine.id,
-            serviceStatus: "inProgress",
-            fk_idStaffMember: cookies.token,
-          }),
-          api.patch(`/machines/${selectedMachine.id}`, {
-            freeForUse: false,
-          }),
-        ]);
-      } else if (
-        selectedPedido.SelfService.description.toLowerCase().includes("secado")
-      ) {
-        await Promise.all([
-          api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
-            fk_idDryMachine: selectedMachine.id,
-            serviceStatus: "inProgress",
-            fk_idStaffMember: cookies.token,
-          }),
-          api.patch(`/machines/${selectedMachine.id}`, {
-            freeForUse: false,
-          }),
-        ]);
-      }
+ 
+        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
+          fk_idMachine: selectedMachine.id_machine,
+          serviceStatus: "inProgress",
+        });
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
@@ -198,7 +186,7 @@ function PedidosAutoservicio() {
         api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
           serviceStatus: "finished",
         }),
-        api.patch(`/machines/${selectedMachine.id}`, {
+        api.patch(`/machines/${selectedMachine.id_machine}`, {
           freeForUse: true,
         }),
       ]);

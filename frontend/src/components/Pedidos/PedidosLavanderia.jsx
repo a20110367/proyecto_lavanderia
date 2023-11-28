@@ -355,66 +355,13 @@ function PedidosLavanderia() {
   };
 
   const handleFinishProcess = async () => {
-    // try {
-    if (!selectedPedido) {
-      console.error("El pedido seleccionado es indefinido.");
-      return;
-    }
-
-    // Liberar la secadora seleccionada
-    if (selectedDryMachine && selectedDryMachine.machineType === "secadora") {
-      const updatedDryers = availableMachines.map((machine) =>
-        machine.id_machine === selectedDryMachine.id_machine
-          ? { ...machine, freeForUse: true }
-          : machine
-      );
-      setAvailableMachines(updatedDryers);
-
-      // También actualizar la base de datos
-      await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
-        freeForUse: true,
-      });
-    }
-
-    // Actualizar el estado del pedido a "finish"
-    const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
-    const updatedPedidos = pedidos.map((p) =>
-      p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
-    );
-    setPedidos(updatedPedidos);
-
-    setShowMachineName(false);
-
-    //   showNotification("NOTIFICACIÓN ENVIADA...");
-    //   await api.post("/sendMessage", {
-    //     id_laundryEvent: selectedPedido.id_laundryEvent,
-    //     name: selectedPedido.client.name,
-    //     email: selectedPedido.client.email,
-    //     tel: "521" + selectedPedido.client.phone,
-    //     message: `Tu pedido con el folio: ${selectedPedido.id_laundryEvent} está listo, Ya puedes pasar a recogerlo.`,
-    //     subject: "Tu Ropa esta Lista",
-    //     text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-    //     warning: false,
-    //   });
-    //   console.log("NOTIFICACIÓN ENVIADA...");
-    //   showNotification(`Pedido finalizado correctamente`);
-    // } catch (error) {
-    //   console.error("Error al actualizar el pedido:", error);
-    // }
-
     try {
       if (!selectedPedido) {
         console.error("El pedido seleccionado es indefinido.");
         return;
       }
 
-      await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
-        fk_idDryMachine: selectedDryMachine.id_machine,
-        fk_idStaffMember: cookies.token,
-
-      });
-
-      // Liberar la secadora seleccionada si corresponde
+      // Liberar la secadora seleccionada
       if (selectedDryMachine && selectedDryMachine.machineType === "secadora") {
         const updatedDryers = availableMachines.map((machine) =>
           machine.id_machine === selectedDryMachine.id_machine
@@ -423,10 +370,16 @@ function PedidosLavanderia() {
         );
         setAvailableMachines(updatedDryers);
 
+        // También actualizar la base de datos
         await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
           freeForUse: true,
         });
       }
+
+      await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
+        fk_idDryMachine: selectedDryMachine.id_machine,
+        fk_idStaffMember: cookies.token,
+      });
 
       // Actualizar el estado del pedido a "finish"
       const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
@@ -434,15 +387,28 @@ function PedidosLavanderia() {
         p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
-      
+
       setShowMachineName(false);
 
-      showNotification(`Pedido finalizado correctamente`);
-    } catch (error) {
-      console.error("Error al finalizar el pedido:", error);
+      //   showNotification("NOTIFICACIÓN ENVIADA...");
+      //   await api.post("/sendMessage", {
+      //     id_laundryEvent: selectedPedido.id_laundryEvent,
+      //     name: selectedPedido.client.name,
+      //     email: selectedPedido.client.email,
+      //     tel: "521" + selectedPedido.client.phone,
+      //     message: `Tu pedido con el folio: ${selectedPedido.id_laundryEvent} está listo, Ya puedes pasar a recogerlo.`,
+      //     subject: "Tu Ropa esta Lista",
+      //     text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+      //     warning: false,
+      //   });
+      //   console.log("NOTIFICACIÓN ENVIADA...");
+      //   showNotification(`Pedido finalizado correctamente`);
+      // } catch (error) {
+      //   console.error("Error al actualizar el pedido:", error);
+      // }
+    } catch (err) {
+      console.log(err)
     }
-
-
   };
 
   const formatDateToGMTMinus6 = (dateStr) => {

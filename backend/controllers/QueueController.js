@@ -159,9 +159,56 @@ export const finishLaundryQueue = async (req, res) => {
             }
         });
 
+        const serviceOrderFinished = await prisma.laundryQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        fk_idServiceOrder: laundryEvent.fk_idServiceOrder
+                    },
+                    {
+                        OR: [
+                            {
+                                serviceStatus: "inProgress"
+                            },
+                            {
+                                serviceStatus: "pending"
+                            }
+                        ]
+                    },
+                ],
+            },
+        })
+
+        var response;
+        if (serviceOrderFinished.length === 0) {
+
+            const serviceOrder = await prisma.serviceOrder.update({
+
+                where: {
+                    id_order: laundryEvent.fk_idServiceOrder
+                },
+                data: {
+                    orderStatus: "finished"
+                }
+            });
+
+            response = {
+                "id_order ": serviceOrder.id_order,
+                "orderStatus": "finished"
+            };
+
+        } else {
+
+            response = {
+                "id_order ": laundryEvent.fk_idServiceOrder,
+                "orderStatus": "inProgress"
+            };
+
+        }
+
         ///incluir en response un valor que diga si el pedido termino
 
-        res.status(200).json(laundryEvent);
+        res.status(200).json(response);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -314,7 +361,54 @@ export const updateFinishSelfServiceQueue = async (req, res) => {
             }
         });
 
-        res.status(200).json(selfServiceEvent);
+        const serviceOrderFinished = await prisma.selfServiceQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        fk_idServiceOrder: selfServiceEvent.fk_idServiceOrder
+                    },
+                    {
+                        OR: [
+                            {
+                                serviceStatus: "inProgress"
+                            },
+                            {
+                                serviceStatus: "pending"
+                            }
+                        ]
+                    },
+                ],
+            },
+        })
+
+        var response;
+        if (serviceOrderFinished.length === 0) {
+
+            const serviceOrder = await prisma.serviceOrder.update({
+
+                where: {
+                    id_order: selfServiceEvent.fk_idServiceOrder
+                },
+                data: {
+                    orderStatus: "finished"
+                }
+            });
+
+            response = {
+                "id_order ": serviceOrder.id_order,
+                "orderStatus": "finished"
+            };
+
+        } else {
+
+            response = {
+                "id_order ": selfServiceEvent.fk_idServiceOrder,
+                "orderStatus": "inProgress"
+            };
+
+        }
+
+        res.status(200).json(response);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

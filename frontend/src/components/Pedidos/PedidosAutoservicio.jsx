@@ -135,16 +135,18 @@ function PedidosAutoservicio() {
         console.error("El pedido o la máquina seleccionada son indefinidos.");
         return;
       }
-  
+
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
+        p.id_serviceEvent === selectedPedido.id_serviceEvent
           ? { ...p, serviceStatus: "inProgress" }
           : p
       );
-  
+
       setPedidos(updatedPedidos);
-  
-      if (selectedPedido.SelfService.description.toLowerCase().includes("lavado")) {
+
+      if (
+        selectedPedido.SelfService.description.toLowerCase().includes("lavado")
+      ) {
         await Promise.all([
           api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
             fk_idWashMachine: selectedMachine.id,
@@ -155,7 +157,9 @@ function PedidosAutoservicio() {
             freeForUse: false,
           }),
         ]);
-      } else if (selectedPedido.SelfService.description.toLowerCase().includes("secado")) {
+      } else if (
+        selectedPedido.SelfService.description.toLowerCase().includes("secado")
+      ) {
         await Promise.all([
           api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
             fk_idDryMachine: selectedMachine.id,
@@ -167,42 +171,45 @@ function PedidosAutoservicio() {
           }),
         ]);
       }
-  
+
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
     } catch (error) {
       console.error("Error al actualizar el pedido o la máquina:", error);
     }
   };
-  
+
   const handleFinishProcess = async () => {
     try {
       if (!selectedPedido || !selectedMachine) {
         console.error("El pedido o la máquina seleccionada son indefinidos.");
         return;
       }
-  
+
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
+        p.id_serviceEvent === selectedPedido.id_serviceEvent
           ? { ...p, serviceStatus: "finished" }
           : p
       );
-  
+
       setPedidos(updatedPedidos);
-  
+
       await Promise.all([
-        api.patch(`/orders/${selectedPedido.id_order}`, {
+        api.patch(`/selfServiceQueue/${selectedPedido.id_serviceEvent}`, {
           serviceStatus: "finished",
         }),
         api.patch(`/machines/${selectedMachine.id}`, {
           freeForUse: true,
         }),
       ]);
-  
+
       setShowMachineName(false);
       showNotification(`Pedido finalizado en ${selectedMachine.model}`);
     } catch (error) {
-      console.error("Error al finalizar el pedido o liberar la máquina:", error);
+      console.error(
+        "Error al finalizar el pedido o liberar la máquina:",
+        error
+      );
     }
   };
 
@@ -332,23 +339,23 @@ function PedidosAutoservicio() {
                     )}
                   </td>
                   <td>
-                  {pedido.serviceStatus === "pending" && (
-    <button
-      onClick={() => handleStartProcess(pedido)}
-      className="btn-primary ml-2 mt-1"
-    >
-      Iniciar
-    </button>
-  )}
+                    {pedido.serviceStatus === "pending" && (
+                      <button
+                        onClick={() => handleStartProcess(pedido)}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Iniciar
+                      </button>
+                    )}
 
-  {pedido.serviceStatus === "inProgress" && (
-    <button
-      onClick={() => handleFinishProcess()}
-      className="btn-primary ml-2 mt-1"
-    >
-      Terminar
-    </button>
-  )}
+                    {pedido.serviceStatus === "inProgress" && (
+                      <button
+                        onClick={() => handleFinishProcess()}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Terminar
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

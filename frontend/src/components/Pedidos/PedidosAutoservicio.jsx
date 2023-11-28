@@ -159,65 +159,63 @@ function PedidosAutoservicio() {
   };
 
   const handleFinishProcess = async (pedido) => {
+    if (!pedido) {
+      console.error("El pedido seleccionado es indefinido.");
+      setLoading(false);
+      return;
+    }
 
-      if (!pedido) {
-        console.error("El pedido seleccionado es indefinido.");
-        setLoading(false);
-        return;
-      }
-  
-      if (!selectedMachine) {
-        console.error("No se ha seleccionado ninguna máquina.");
-        setLoading(false);
-        return;
-      }
-  
-      try {
-        // Actualizar localmente el estado del pedido a "finished"
-        const updatedPedidos = pedidos.map((p) =>
-          p.id_serviceEvent === pedido.id_serviceEvent
-            ? { ...p, serviceStatus: "finished" }
-            : p
-        );
-        setPedidos(updatedPedidos);
-  
-        // Actualizar localmente el estado de la máquina a "freeForUse"
-        const updatedMachines = availableMachines.map((machine) =>
-          machine.id_machine === selectedMachine.id_machine
-            ? { ...machine, freeForUse: true }
-            : machine
-        );
-        setAvailableMachines(updatedMachines);
-  
-        await api.patch(`/finishSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
-          fk_idMachine: selectedMachine.id_machine,
-          fk_idStaffMember: cookies.token,
-        });
-  
-        // Actualizar en la base de datos el estado de la máquina a "freeForUse"
-        await api.patch(`/machines/${selectedMachine.id_machine}`, {
-          freeForUse: true,
-        });
-  
-        setShowMachineName(false);
-        // showNotification("NOTIFICACIÓN ENVIADA...");
-        // await api.post("/sendMessage", {
-        //   id_order: selectedPedido.fk_idServiceOrder,
-        //   name: selectedPedido.client.name,
-        //   email: selectedPedido.client.email,
-        //   tel: "521" + selectedPedido.client.phone,
-        //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
-        //   subject: "Tu Ropa esta Lista",
-        //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-        //   warning: false,
-        // });
-        // console.log("NOTIFICACIÓN ENVIADA...");
-        // showNotification(`Pedido finalizado correctamente`);
-        // showNotification(`Pedido finalizado`);
-      } catch (error) {
-        console.error("Error al finalizar el pedido:", error);
-      }
-    };
+    try {
+      const [machinesResponse] = await Promise.all([api.get("/machines")]);
+      const availableMachines = [...machinesResponse.data];
+      const res = await api.get(`/selfServiceQueueByOrder/${pedido.fk_idServiceOrder}`)
+      const selectedMachine = res.data[0]
+
+      // Actualizar localmente el estado del pedido a "finished"
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_serviceEvent === pedido.id_serviceEvent
+          ? { ...p, serviceStatus: "finished" }
+          : p
+      );
+      setPedidos(updatedPedidos);
+
+      // Actualizar localmente el estado de la máquina a "freeForUse"
+      const updatedMachines = availableMachines.map((machine) =>
+        machine.id_machine === selectedMachine.fk_idMachine
+          ? { ...machine, freeForUse: true }
+          : machine
+      );
+      setAvailableMachines(updatedMachines);
+
+      await api.patch(`/finishSelfServiceQueue/${pedido.id_serviceEvent}`, {
+        fk_idMachine: selectedMachine.fk_idMachine,
+        fk_idStaffMember: cookies.token,
+      });
+
+      // Actualizar en la base de datos el estado de la máquina a "freeForUse"
+      await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
+        freeForUse: true,
+      });
+
+      setShowMachineName(false);
+      // showNotification("NOTIFICACIÓN ENVIADA...");
+      // await api.post("/sendMessage", {
+      //   id_order: selectedPedido.fk_idServiceOrder,
+      //   name: selectedPedido.client.name,
+      //   email: selectedPedido.client.email,
+      //   tel: "521" + selectedPedido.client.phone,
+      //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+      //   subject: "Tu Ropa esta Lista",
+      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+      //   warning: false,
+      // });
+      // console.log("NOTIFICACIÓN ENVIADA...");
+      // showNotification(`Pedido finalizado correctamente`);
+      // showNotification(`Pedido finalizado`);
+    } catch (error) {
+      console.error("Error al finalizar el pedido:", error);
+    }
+  };
 
   return (
     <div>
@@ -266,12 +264,6 @@ function PedidosAutoservicio() {
             Finalizados
           </option>
           <option
-            value="delivered"
-            className="text-green-600 font-semibold text-base"
-          >
-            Entregados
-          </option>
-          <option
             value="stored"
             className="text-fuchsia-600 font-semibold text-base"
           >
@@ -294,7 +286,7 @@ function PedidosAutoservicio() {
           </thead>
           <tbody>
             {filteredPedidos
-              .filter((pedido) => pedido.serviceStatus !== "delivered") // Filtrar pedidos que no tienen estado "finished"
+              .filter((pedido) => pedido.serviceStatus !== "finished") // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
                 <tr key={pedido.id_serviceEvent}>
@@ -332,11 +324,7 @@ function PedidosAutoservicio() {
                       </span>
                     ) : pedido.serviceStatus === "finished" ? (
                       <span className="text-blue-600 pl-1">
-                        <IssuesCloseOutlined /> Finalizado no entregado
-                      </span>
-                    ) : pedido.serviceStatus === "delivered" ? (
-                      <span className="text-green-600 pl-1">
-                        <CheckCircleOutlined /> Finalizado Entregado
+                        <IssuesCloseOutlined /> Finalizado
                       </span>
                     ) : (
                       <span className="text-red-600 pl-1">
@@ -356,7 +344,7 @@ function PedidosAutoservicio() {
 
                     {pedido.serviceStatus === "inProgress" && (
                       <button
-                        onClick={() => handleFinishProcess()}
+                        onClick={() => handleFinishProcess(pedido)}
                         className="btn-primary ml-2 mt-1"
                       >
                         Terminar
@@ -375,7 +363,7 @@ function PedidosAutoservicio() {
           breakLabel="..."
           pageCount={Math.ceil(
             filteredPedidos.filter(
-              (pedido) => pedido.serviceStatus !== "delivered"
+              (pedido) => pedido.serviceStatus !== "finished"
             ).length / itemsPerPage
           )}
           marginPagesDisplayed={2}
@@ -452,9 +440,8 @@ function PedidosAutoservicio() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

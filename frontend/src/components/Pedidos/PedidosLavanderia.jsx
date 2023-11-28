@@ -354,9 +354,10 @@ function PedidosLavanderia() {
 
   };
 
-  const handleFinishProcess = async () => {
+  const handleFinishProcess = async (pedido) => {
     try {
-      if (!selectedPedido) {
+
+      if (!pedido) {
         console.error("El pedido seleccionado es indefinido.");
         return;
       }
@@ -376,21 +377,23 @@ function PedidosLavanderia() {
         });
       }
 
-      await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
+      await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
         fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
 
       // Actualizar el estado del pedido a "finish"
-      const updatedPedido = { ...selectedPedido, serviceStatus: "finished" };
+      const updatedPedido = { ...pedido, serviceStatus: "finished" };
       const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
+        p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
       );
       setPedidos(updatedPedidos);
+      
+      console.log(confirmedDryerProcesses)
 
       setConfirmedDryerProcesses({
         ...confirmedDryerProcesses,
-        [selectedPedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
+        [pedido.id_laundryEvent]: false, // Establecer el estado del pedido seleccionado como confirmado para secado
       });
 
       setShowMachineName(false);
@@ -577,7 +580,7 @@ function PedidosLavanderia() {
                     {pedido.serviceStatus === "inProgress" &&
                       confirmedDryerProcesses[pedido.id_laundryEvent] && (
                         <button
-                          onClick={handleFinishProcess}
+                          onClick={() => handleFinishProcess(pedido)}
                           className="btn-primary ml-2 mt-1"
                         >
                           Terminar

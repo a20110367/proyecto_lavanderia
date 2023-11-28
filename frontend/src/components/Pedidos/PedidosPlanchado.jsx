@@ -142,9 +142,10 @@ function PedidosPlanchado() {
       await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
         freeForUse: false,
       });
+
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.fk_idServiceOrder
-          ? { ...p, orderStatus: "inProgress" }
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "inProgress" }
           : p
       );
 
@@ -181,11 +182,12 @@ function PedidosPlanchado() {
       setLoading(false);
       return;
     }
+
     try {
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "finished" }
+        p.id_laundryEvent === selectedPedido.id_laundryEvent
+          ? { ...p, serviceStatus: "finished" }
           : p
       );
       setPedidos(updatedPedidos);
@@ -450,9 +452,8 @@ function PedidosPlanchado() {
                     <td>{machine.machineType}</td>
                     <td>{machine.pieces}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

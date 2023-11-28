@@ -160,7 +160,6 @@ function PedidosLavanderia() {
       setPedidos(updatedPedidos);
 
       setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
@@ -270,7 +269,6 @@ function PedidosLavanderia() {
         freeForUse: false,
       });
 
-      showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
@@ -332,7 +330,7 @@ function PedidosLavanderia() {
         });
       }
 
-      showNotification(`Pedido finalizado en ${selectedDryMachine.model}`);
+      showNotification(`Pedido Secado en ${selectedDryMachine.model}`);
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
@@ -406,6 +404,8 @@ function PedidosLavanderia() {
 
       localStorage.setItem('confirmedDryerProcesses', JSON.stringify(confirmedDryerProcesses))
       localStorage.setItem('selectedPedidoLaundry', JSON.stringify(selPedido))
+
+      showNotification(`Pedido Finalizado en ${selectedDryMachine.model}`);
 
       setShowMachineName(false);
 

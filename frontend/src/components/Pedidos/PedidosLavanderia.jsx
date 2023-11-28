@@ -70,6 +70,15 @@ function PedidosLavanderia() {
       setPedidos(data);
       setFilteredPedidos(data);
     }
+
+    const confirmedDryerProcessesFromStorage = {};
+    if (data) {
+      data.forEach((pedido) => {
+        confirmedDryerProcessesFromStorage[pedido.id_laundryEvent] = false;
+      });
+
+      setConfirmedDryerProcesses(confirmedDryerProcessesFromStorage);
+    }
   }, [data]);
 
   useEffect(() => {
@@ -229,11 +238,6 @@ function PedidosLavanderia() {
       setSelectedPedido(pedido);
       setShowDryerSelection(true);
       setIsDryingProcessConfirmedInModal(false);
-
-      setConfirmedDryerProcesses({
-        ...confirmedDryerProcesses,
-        [pedido.id_laundryEvent]: false,
-      });
 
     } catch (error) {
       console.error("Error al obtener datos:", error);

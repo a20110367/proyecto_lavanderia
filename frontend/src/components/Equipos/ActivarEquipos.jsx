@@ -71,7 +71,7 @@ function ActivarEquipos() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((machine, index) => (
-                  <tr key={machine.id_machine}>
+                  <tr key={machine.machineType === 'lavadora' || machine.machineType === 'secadora' ? machine.id_machine + '-' + machine.machineType : machine.id_ironStation + '-' + machine.machineType }>
                     <td>{index + 1}</td>
                     <td
                       className={`font-semibold ${

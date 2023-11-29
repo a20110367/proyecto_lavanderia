@@ -281,7 +281,6 @@ function PedidosLavanderia() {
         return;
       }
 
-      showNotification(`Pedido Finalizado`);
       setShowMachineName(false);
 
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
@@ -300,42 +299,42 @@ function PedidosLavanderia() {
           setAvailableMachines(updatedDryers);
 
           // También actualizar la base de datos
-          await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
+          const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
             fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
             fk_idStaffMember: cookies.token,
           });
 
+          // Actualizar el estado del pedido a "finish"
+          const updatedPedido = { ...pedido, serviceStatus: "finished" };
+          const updatedPedidos = pedidos.map((p) =>
+            p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
+          );
+          setPedidos(updatedPedidos);
+
           await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
             freeForUse: true,
           });
+
+          console.log(pedido)
+
+          if (res.data.orderStatus === 'finished') {
+            showNotification("NOTIFICACIÓN ENVIADA...");
+            await api.post("/sendMessage", {
+              id_order: pedido.fk_idServiceOrder,
+              name: pedido.serviceOrder.client.name + ' ' + pedido.serviceOrder.client.firstLN  + ' ' + pedido.serviceOrder.client.secondLN,
+              email: pedido.serviceOrder.client.email,
+              tel: "521" + pedido.serviceOrder.client.phone,
+              message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+              subject: "Tu Ropa esta Lista",
+              text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+              warning: false,
+            });
+            console.log("NOTIFICACIÓN ENVIADA...");
+            showNotification(`Pedido finalizado correctamente`);
+          } else {
+            showNotification(`Tarea del Pedido finalizada correctamente`);
+          }
         }
-
-
-        // Actualizar el estado del pedido a "finish"
-        const updatedPedido = { ...pedido, serviceStatus: "finished" };
-        const updatedPedidos = pedidos.map((p) =>
-          p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
-        );
-        setPedidos(updatedPedidos);
-
-
-
-        //   showNotification("NOTIFICACIÓN ENVIADA...");
-        //   await api.post("/sendMessage", {
-        //     id_laundryEvent: selectedPedido.id_laundryEvent,
-        //     name: selectedPedido.client.name,
-        //     email: selectedPedido.client.email,
-        //     tel: "521" + selectedPedido.client.phone,
-        //     message: `Tu pedido con el folio: ${selectedPedido.id_laundryEvent} está listo, Ya puedes pasar a recogerlo.`,
-        //     subject: "Tu Ropa esta Lista",
-        //     text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-        //     warning: false,
-        //   });
-        //   console.log("NOTIFICACIÓN ENVIADA...");
-        //   showNotification(`Pedido finalizado correctamente`);
-        // } catch (error) {
-        //   console.error("Error al actualizar el pedido:", error);
-        // }
       }
     } catch (err) {
       console.log(err)

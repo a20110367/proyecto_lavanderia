@@ -321,7 +321,7 @@ function PedidosLavanderia() {
             showNotification("NOTIFICACIÓN ENVIADA...");
             await api.post("/sendMessage", {
               id_order: pedido.fk_idServiceOrder,
-              name: pedido.serviceOrder.client.name + pedido.serviceOrder.client.firstLN,
+              name: pedido.serviceOrder.client.name + ' ' + pedido.serviceOrder.client.firstLN  + ' ' + pedido.serviceOrder.client.secondLN,
               email: pedido.serviceOrder.client.email,
               tel: "521" + pedido.serviceOrder.client.phone,
               message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,

@@ -464,6 +464,13 @@ export const getIronQueue = async (req, res) => {
                         name: true,
                         firstLN: true,
                         secondLN: true,
+                    },
+                },
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
                         phone: true,
                         email: true,
                     },

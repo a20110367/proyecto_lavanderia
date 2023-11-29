@@ -22,6 +22,8 @@ export const getLaundryQueue = async (req, res) => {
                                 name: true,
                                 firstLN: true,
                                 secondLN: true,
+                                phone: true,
+                                email: true,
                             },
                         },
                     },
@@ -256,6 +258,8 @@ export const getSelfServiceQueue = async (req, res) => {
                                 name: true,
                                 firstLN: true,
                                 secondLN: true,
+                                phone: true,
+                                email: true,
                             },
                         },
                     },
@@ -335,7 +339,7 @@ export const updateStartSelfServiceQueue = async (req, res) => {
 
             data: {
 
-                fk_idMachine:req.body.fk_idMachine,
+                fk_idMachine: req.body.fk_idMachine,
                 serviceStatus: "inProgress"
 
             }
@@ -460,6 +464,8 @@ export const getIronQueue = async (req, res) => {
                         name: true,
                         firstLN: true,
                         secondLN: true,
+                        phone: true,
+                        email: true,
                     },
                 },
 
@@ -528,7 +534,7 @@ export const updateIronQueue = async (req, res) => {
 export const startIronQueue = async (req, res) => {
 
     try {
-        const { fk_idStaffMember, fk_idIronStation} = req.body;
+        const { fk_idStaffMember, fk_idIronStation } = req.body;
         const startIronQueue = await prisma.ironQueue.updateMany({
             where: {
                 fk_idServiceOrder: Number(req.params.id)

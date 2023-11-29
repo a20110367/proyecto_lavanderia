@@ -202,8 +202,6 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        console.log(pedido)
-
         showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
         await api.post("/sendMessage", {
           id_order: pedido.id_order,

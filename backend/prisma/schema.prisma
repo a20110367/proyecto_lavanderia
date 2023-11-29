@@ -268,7 +268,7 @@ model DeliveryDetail {
   fk_idPayment   Int          @unique
   payment        Payment      @relation(fields: [fk_idPayment], references: [id_payment], onDelete: Cascade, onUpdate: Cascade)
   user           User         @relation(fields: [fk_userCashier], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order])
+  serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order],onDelete: Cascade,onUpdate: Cascade)
 }
 
 model StaffMember {

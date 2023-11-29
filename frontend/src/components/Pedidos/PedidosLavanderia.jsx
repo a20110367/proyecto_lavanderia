@@ -115,6 +115,9 @@ function PedidosLavanderia() {
     try {
       setLoading(true);
 
+      setShowMachineName(true);
+      setShowDryerSelection(false);
+
       // Obtener datos de las máquinas y estaciones de planchado
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
 
@@ -123,8 +126,6 @@ function PedidosLavanderia() {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
-      setShowMachineName(true);
-      setShowDryerSelection(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -138,6 +139,9 @@ function PedidosLavanderia() {
         console.error("El pedido o la máquina seleccionada son indefinidos.");
         return;
       }
+
+      setShowMachineName(false);
+      showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
 
       // Modificar el estado local de la lavadora seleccionada
       const updatedMachines = availableMachines.map((machine) =>
@@ -158,7 +162,7 @@ function PedidosLavanderia() {
 
       setPedidos(updatedPedidos);
 
-      setShowMachineName(false);
+
 
       await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
         orderStatus: "inProgress",
@@ -169,8 +173,6 @@ function PedidosLavanderia() {
         fk_idStaffMember: cookies.token,
       });
 
-      setShowMachineName(false);
-      showNotification(`Pedido iniciado en ${selectedWashMachine.model}`);
     } catch (error) {
       console.error("Error al confirmar la máquina:", error);
     }
@@ -180,6 +182,8 @@ function PedidosLavanderia() {
   const handleStartDryerProcess = async (pedido) => {
     try {
       setLoading(true);
+      setShowDryerSelection(true);
+      setIsDryingProcessConfirmedInModal(false);
 
       // Obtener datos de las secadoras
       const dryersResponse = await api.get("/machines", {
@@ -191,8 +195,6 @@ function PedidosLavanderia() {
       setAvailableMachines(availableDryers);
       setSelectedDryMachine(null);
       setSelectedPedido(pedido);
-      setShowDryerSelection(true);
-      setIsDryingProcessConfirmedInModal(false);
 
     } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -207,6 +209,10 @@ function PedidosLavanderia() {
         console.error("El pedido o la secadora seleccionada son indefinidos.");
         return;
       }
+
+      setShowDryerSelection(false); // Ocultar la selección de secadora
+      setIsDryingProcessConfirmedInModal(true);
+      showNotification(`Pedido Secado en ${selectedDryMachine.model}`);
 
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
@@ -255,15 +261,10 @@ function PedidosLavanderia() {
       );
       setPedidos(updatedPedidos);
 
-      setShowDryerSelection(false); // Ocultar la selección de secadora
-      setIsDryingProcessConfirmedInModal(true);
-
       await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
         fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
-
-      showNotification(`Pedido Secado en ${selectedDryMachine.model}`);
 
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
@@ -280,9 +281,12 @@ function PedidosLavanderia() {
         return;
       }
 
+      showNotification(`Pedido Finalizado`);
+      setShowMachineName(false);
+
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/laundryQueueById/${selectedPedido.id_laundryEvent}`)
+      const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`)
       const selectedDryMachine = res.data.DryDetail
 
       if (selectedDryMachine) {
@@ -314,9 +318,7 @@ function PedidosLavanderia() {
         );
         setPedidos(updatedPedidos);
 
-        showNotification(`Pedido Finalizado`);
 
-        setShowMachineName(false);
 
         //   showNotification("NOTIFICACIÓN ENVIADA...");
         //   await api.post("/sendMessage", {

@@ -9,17 +9,15 @@ import {
 import moment from "moment";
 import jsPDF from "jspdf";
 import useSWR from "swr";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
-import { orderTicket } from '../Ticket/Tickets'
+import { orderTicket } from "../Ticket/Tickets";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth/auth";
 import api from "../../api/api";
 
-
 function EntregaPlanchado() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -32,7 +30,7 @@ function EntregaPlanchado() {
   });
 
   const [entregando, setEntregando] = useState(false);
-  const [fkPayment, setFkPayment] = useState(0)
+  const [fkPayment, setFkPayment] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
@@ -48,10 +46,10 @@ function EntregaPlanchado() {
   const { data } = useSWR("ordersDeliveryIron", fetcher);
 
   useEffect(() => {
-      if(data) {
-        setPedidos(data);
-        setFilteredPedidos(data);
-      }
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
   }, [data]);
 
   const handleFiltroChange = (event) => {
@@ -62,24 +60,30 @@ function EntregaPlanchado() {
   const filterPedidos = (filterText) => {
     const filtered = pedidos.filter((pedido) => {
       return (
-        pedido.cliente.toLowerCase().includes(filterText.toLowerCase()) ||
-        pedido.user.toLowerCase().includes(filterText.toLowerCase()) ||
-        pedido.id_pedido.toString().includes(filterText)
+        (pedido.client &&
+          pedido.client.name &&
+          pedido.client.name
+            .toLowerCase()
+            .includes(filterText.toLowerCase())) ||
+        (pedido.user &&
+          pedido.user.name &&
+          pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||
+        (pedido.id_order && pedido.id_order.toString().includes(filterText))
       );
     });
     setFilteredPedidos(filtered);
   };
 
   const handleCobrar = (pedido) => {
-    if (!localStorage.getItem('cashCutId')) {
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No has inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
     console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
@@ -97,7 +101,7 @@ function EntregaPlanchado() {
   const handleGuardarCobro = async (pedido) => {
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
-      .format("DD/MM/YYYY")
+      .format("DD/MM/YYYY");
 
     const updatedPedido = {
       ...pedido,
@@ -117,34 +121,36 @@ function EntregaPlanchado() {
     setVisible(false);
 
     try {
-      const res = await api.post('/paymentsDelivery', {
+      const res = await api.post("/paymentsDelivery", {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,
           payDate: cobroInfo.fechaPago.toISOString(),
           payTime: cobroInfo.fechaPago.toISOString(),
-          fk_cashCut: parseInt(localStorage.getItem('cashCutId')),
-          payTotal: pedido.totalPrice
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          payTotal: pedido.totalPrice,
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
           deliveryDate: cobroInfo.fechaPago.toISOString(),
           deliveryTime: cobroInfo.fechaPago.toISOString(),
-          fk_idOrder: pedido.id_order
-        }
-      })
+          fk_idOrder: pedido.id_order,
+        },
+      });
       ///////////////////////////// TICKET //////////////////////////////////
-      const cart = []
+      const cart = [];
       cart.push({
-        description:  pedido.ServiceOrderDetail[0].IronService ?  pedido.ServiceOrderDetail[0].IronService.description : 'ERROR',
+        description: pedido.ServiceOrderDetail[0].IronService
+          ? pedido.ServiceOrderDetail[0].IronService.description
+          : "ERROR",
         id_service: pedido.ServiceOrderDetail[0].fk_Service,
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
-        quantity: pedido.ServiceOrderDetail[0].units
-      })
+        quantity: pedido.ServiceOrderDetail[0].units,
+      });
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
-        payStatus: 'paid',
+        payStatus: "paid",
         payMethod: cobroInfo.metodoPago,
         subtotal: pedido.totalPrice,
         casher: pedido.user.name,
@@ -153,49 +159,47 @@ function EntregaPlanchado() {
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        notes: '',
-        cart: cart
-      }
-      orderTicket(order)
-      setFkPayment(res.data.id_payment)
-      console.log(res.data.id_payment)
+        notes: "",
+        cart: cart,
+      };
+      orderTicket(order);
+      setFkPayment(res.data.id_payment);
+      console.log(res.data.id_payment);
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
         return order.id_order !== pedido.id_order;
-      })
+      });
       setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
     doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
     doc.text(
-      `Pedido: ${pedido.ServiceOrderDetail.find(
-        (service) => service.id_serviceOrderDetail
-      ) != undefined
-        ? pedido.ServiceOrderDetail.length
-        : 0
+      `Pedido: ${
+        pedido.ServiceOrderDetail.find(
+          (service) => service.id_serviceOrderDetail
+        ) != undefined
+          ? pedido.ServiceOrderDetail.length
+          : 0
       }`,
       10,
       30
     );
     doc.text(`Estatus: Adeudo`, 10, 40);
     doc.text(
-      `Método de Pago: ${pedido.payment
-        ? pedido.payment.payMethod === "cash"
-          ? "Efectivo"
-          : "Tarjeta"
-        : "N/A"
+      `Método de Pago: ${
+        pedido.payment
+          ? pedido.payment.payMethod === "cash"
+            ? "Efectivo"
+            : "Tarjeta"
+          : "N/A"
       }`,
       10,
       50
     );
-    doc.text(
-      `Fecha de Pago: ${formatDate(pedido.receptionTime)}`,
-      10,
-      60
-    );
+    doc.text(`Fecha de Pago: ${formatDate(pedido.receptionTime)}`, 10, 60);
     doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
     doc.save(`pedido_${updatedPedido.id_order}.pdf`);
   };
@@ -206,37 +210,39 @@ function EntregaPlanchado() {
   };
 
   const handleEntregar = async (pedido) => {
-    if (!localStorage.getItem('cashCutId')) {
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No has inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
 
     if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 
-      console.log(pedido)
+      console.log(pedido);
 
       try {
-        await api.post('/deliveryDetails', {
+        await api.post("/deliveryDetails", {
           fk_idOrder: pedido.id_order,
           fk_idPayment: pedido.payment.id_payment,
           fk_userCashier: cookies.token,
-          deliveryDate: cobroInfo.fechaPago.toISOString().split("T")[0] + 'T00:00:00.000Z',
-          deliveryTime: "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
-        })
+          deliveryDate:
+            cobroInfo.fechaPago.toISOString().split("T")[0] + "T00:00:00.000Z",
+          deliveryTime:
+            "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+        });
         // PIENSO ENVIAR EL TICKET PDF AL CLIENTE
         const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
           return order.id_order !== pedido.id_order;
-        })
+        });
         setFilteredPedidos(updatedFilteredPedidos);
       } catch (err) {
-        console.log(err)
+        console.log(err);
       }
 
       setEntregando(true);
@@ -246,22 +252,24 @@ function EntregaPlanchado() {
         doc.text(`Detalles del Pedido`, 10, 10);
         doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
         doc.text(
-          `Pedido: ${pedido.ServiceOrderDetail.find(
-            (service) => service.id_serviceOrderDetail
-          ) != undefined
-            ? pedido.ServiceOrderDetail.length
-            : 0
+          `Pedido: ${
+            pedido.ServiceOrderDetail.find(
+              (service) => service.id_serviceOrderDetail
+            ) != undefined
+              ? pedido.ServiceOrderDetail.length
+              : 0
           }`,
           10,
           30
         );
         doc.text(`Estatus: Entregado`, 10, 40);
         doc.text(
-          `Método de Pago: ${pedido.payment
-            ? pedido.payment.payMethod === "cash"
-              ? "Efectivo"
-              : "Tarjeta"
-            : "N/A"
+          `Método de Pago: ${
+            pedido.payment
+              ? pedido.payment.payMethod === "cash"
+                ? "Efectivo"
+                : "Tarjeta"
+              : "N/A"
           }`,
           10,
           50
@@ -303,12 +311,17 @@ function EntregaPlanchado() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th className="">No. Folio</th>
-              <th className="">Nombre del Cliente</th>
-              <th className="">Empleado que Recibe</th>
-              <th className="">Detalle del pedido</th>
-              <th className="">Fecha de Recepción</th>
+              <th className="">Cliente</th>
+              <th className="">Recibió</th>
+              <th className="">Detalles</th>
+              <th className="">
+                Fecha <br />
+                de Recepción
+              </th>
               <th className="">Estatus</th>
-              <th className="">Fecha de Entrega Estimada</th>
+              <th className="">
+                Entrega <br /> Estimada
+              </th>
               <th className="">Acciones</th>
             </tr>
           </thead>
@@ -329,20 +342,19 @@ function EntregaPlanchado() {
                     {pedido.user.name}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.ServiceOrderDetail.find(
-                      (service) => service.id_serviceOrderDetail
-                    ) != undefined
-                      ? pedido.ServiceOrderDetail.length
-                      : 0}
+                    {pedido.category.categoryDescription === "planchado"
+                      ? "Planchado"
+                      : pedido.category.categoryDescription}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.receptionDate)}
                   </td>
                   <td
-                    className={`py-3 px-6 ${pedido.payStatus === "unpaid"
-                      ? "text-red-600"
-                      : "text-green-600"
-                      }`}
+                    className={`py-3 px-6 ${
+                      pedido.payStatus === "unpaid"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
                   >
                     {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">
@@ -385,8 +397,11 @@ function EntregaPlanchado() {
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(filteredPedidos
-            .filter((pedido) => pedido.orderStatus === "finished").length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) => pedido.orderStatus === "finished"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
@@ -482,6 +497,5 @@ function EntregaPlanchado() {
     </div>
   );
 }
-
 
 export default EntregaPlanchado;

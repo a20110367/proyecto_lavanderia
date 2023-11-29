@@ -222,6 +222,14 @@ function PedidosLavanderia() {
       // Si hay una lavadora seleccionada, cambiar su estado a true
       if (selectedDryMachine.machineType === "secadora") {
         if (selectedWashMachine) {
+
+          // Actualizar el estado del pedido a "inProgressDry"
+          const updatedPedido = { ...selectedPedido, serviceStatus: "inProgressDry" };
+          const updatedPedidos = pedidos.map((p) =>
+            p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
+          );
+          setPedidos(updatedPedidos);
+
           const updatedWashers = availableMachines.map((machine) =>
             machine.id_machine === selectedWashMachine.fk_idWashMachine
               ? { ...machine, freeForUse: true }
@@ -253,13 +261,6 @@ function PedidosLavanderia() {
       await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
         freeForUse: false,
       });
-
-      // Actualizar el estado del pedido a "inProgressDry"
-      const updatedPedido = { ...selectedPedido, serviceStatus: "inProgressDry" };
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
-      );
-      setPedidos(updatedPedidos);
 
       await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
         fk_idDryMachine: selectedDryMachine.id_machine,
@@ -315,13 +316,11 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          console.log(pedido)
-
           if (res.data.orderStatus === 'finished') {
-            showNotification("NOTIFICACIÓN ENVIADA...");
+            showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
             await api.post("/sendMessage", {
               id_order: pedido.fk_idServiceOrder,
-              name: pedido.serviceOrder.client.name + ' ' + pedido.serviceOrder.client.firstLN  + ' ' + pedido.serviceOrder.client.secondLN,
+              name: pedido.serviceOrder.client.name + ' ' + pedido.serviceOrder.client.firstLN + ' ' + pedido.serviceOrder.client.secondLN,
               email: pedido.serviceOrder.client.email,
               tel: "521" + pedido.serviceOrder.client.phone,
               message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
@@ -330,7 +329,6 @@ function PedidosLavanderia() {
               warning: false,
             });
             console.log("NOTIFICACIÓN ENVIADA...");
-            showNotification(`Pedido finalizado correctamente`);
           } else {
             showNotification(`Tarea del Pedido finalizada correctamente`);
           }

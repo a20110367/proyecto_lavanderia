@@ -170,68 +170,54 @@ function PedidosPlanchado() {
       return;
     }
 
+    const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
+    const availableMachines = [...ironsResponse.data];
+    const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`)
+    const selectedMachine = res.data[0]
+
     try {
       if (selectedMachine && availableMachines) {
-        // Modificar el estado local de la lavadora seleccionada
-        const updatedMachines = availableMachines.map((machine) =>
-          machine.id_ironStation === selectedMachine.id_ironStation
-            ? { ...machine, freeForUse: true }
-            : machine
+        // Actualizar localmente el estado del pedido a "finished"
+        const updatedPedidos = pedidos.map((p) =>
+          p.id_order === pedido.id_order
+            ? { ...p, orderStatus: "finished" }
+            : p
         );
-        setAvailableMachines(updatedMachines);
+        setPedidos(updatedPedidos);
 
-        // Actualizar en la base de datos el estado de la máquina a "freeForUse"
-        await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
-          freeForUse: true,
-        });
-        await api.patch(`/finishIronQueue/${pedido.id_order}`, {
-          fk_idIronStation: selectedMachine.id_ironStation,
-          fk_idStaffMember: cookies.token,
-        });
-      } else {
-        const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
-        const availableMachines = [...ironsResponse.data];
-        const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`)
-        const selectedMachine = res.data[0]
         // Modificar el estado local de la lavadora seleccionada
         const updatedMachines = availableMachines.map((machine) =>
           machine.id_ironStation === selectedMachine.fk_idIronStation
             ? { ...machine, freeForUse: true }
             : machine
         );
+        setAvailableMachines(updatedMachines);
+
         await api.patch(`/ironStations/${selectedMachine.fk_idIronStation}`, {
           freeForUse: true,
         });
-        setAvailableMachines(updatedMachines);
+
         await api.patch(`/finishIronQueue/${pedido.id_order}`, {
           fk_idIronStation: selectedMachine.fk_idIronStation,
           fk_idStaffMember: cookies.token,
         });
-      }
-      // Actualizar localmente el estado del pedido a "finished"
 
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === pedido.id_order
-          ? { ...p, orderStatus: "finished" }
-          : p
-      );
-      setPedidos(updatedPedidos);
+        console.log(pedido)
+
+        showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
+        await api.post("/sendMessage", {
+          id_order: pedido.id_order,
+          name: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
+          email: pedido.client.email,
+          tel: "521" + pedido.client.phone,
+          message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+          subject: "Tu Ropa esta Lista",
+          text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+          warning: false,
+        });
+      }
 
       setShowMachineName(false);
-      // showNotification("NOTIFICACIÓN ENVIADA...");
-      // await api.post("/sendMessage", {
-      //   id_order: selectedPedido.fk_idServiceOrder,
-      //   name: selectedPedido.client.name,
-      //   email: selectedPedido.client.email,
-      //   tel: "521" + selectedPedido.client.phone,
-      //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
-      //   subject: "Tu Ropa esta Lista",
-      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-      //   warning: false,
-      // });
-      // console.log("NOTIFICACIÓN ENVIADA...");
-      // showNotification(`Pedido finalizado correctamente`);
-      // showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -464,9 +450,8 @@ function PedidosPlanchado() {
                     <td>{machine.machineType}</td>
                     <td>{machine.pieces}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

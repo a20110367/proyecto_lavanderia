@@ -947,4 +947,4 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:5000/todayIronControl/1
+PATCH http://localhost:5000/diaryIronControl/1

@@ -435,6 +435,7 @@ function PedidosPlanchado() {
             <thead className="bg-gray-200">
               <tr>
                 <th>Tipo de Máquina</th>
+                <th>Modelo</th>
                 <th>piezas</th>
                 <th>Estado de la Máquina</th>
                 <th></th>
@@ -445,7 +446,11 @@ function PedidosPlanchado() {
                 .filter((machine) => machine.status === "available")
                 .map((machine) => (
                   <tr key={machine.id_ironStation}>
-                    <td>{machine.machineType}</td>
+                    <td>
+  {machine.machineType === "plancha" ? "Plancha" : machine.machineType}
+</td>
+
+                    <td>{machine.description}</td>
                     <td>{machine.pieces}</td>
                     <td
                       className={`${machine.freeForUse ? "text-green-500" : "text-red-500"

@@ -20,16 +20,16 @@ const router = express.Router();
 
 router.get('/ironControl', getIronControl);
 router.get('/ironControl/:id', getIronControlById);
-router.get('/lastIronControl/', getLastIronControl);
+router.get('/lastIronControl', getLastIronControl);
 
 router.post('/ironControl', createIronControl);
 
 router.patch('/ironControl/:id', updateIronControl);
-router.patch('/cahsCutIronControl/', updateCashCutIron);
-router.patch('/diaryIronControl/', updateDiaryIron);
-router.patch('/todayIronControl/', updateTodayIron);
-router.patch('/tomorrowIronControl/', updateTomorrowIron);
-router.patch('/cleanCahsCutIronControl/', updateCleanCashCutIron);
+router.patch('/cahsCutIronControl', updateCashCutIron);
+router.patch('/diaryIronControl', updateDiaryIron);
+router.patch('/todayIronControl', updateTodayIron);
+router.patch('/tomorrowIronControl', updateTomorrowIron);
+router.patch('/cleanCahsCutIronControl', updateCleanCashCutIron);
 
 
 router.delete('/ironControl/:id', deleteIronControl);

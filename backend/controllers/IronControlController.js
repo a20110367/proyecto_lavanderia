@@ -67,15 +67,15 @@ export const updateIronControl = async (req, res) => {
 export const updateDiaryIron = async (req, res) => {
 
     try {
-        var ironControlFInal, piecesToday, piecesLeft;
+        let piecesToday;
         const ironControlBefore = await prisma.ironControl.findMany({
             skip: 1,
             take: 1,
         });
 
-
-        piecesToday = ironControlBefore.piecesTomorrow + ironControlBefore.piecesLeft;
-
+        console.log(ironControlBefore);
+        piecesToday = ironControlBefore[0].piecesTomorrow + ironControlBefore[0].piecesLeft;
+        //console.log(ironControlBefore);
 
         const ironControlCurrent = await prisma.ironControl.update({
 

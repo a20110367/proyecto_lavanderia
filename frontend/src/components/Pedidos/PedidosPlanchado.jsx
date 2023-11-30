@@ -18,9 +18,10 @@ import useSWR from "swr";
 import api from "../../api/api";
 
 function PedidosPlanchado() {
+  const { cookies } = useAuth();
+  const lastIronControlId = parseInt(localStorage.getItem('lastIronControl'))
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
-  const { cookies } = useAuth();
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
@@ -201,6 +202,10 @@ function PedidosPlanchado() {
           fk_idIronStation: selectedMachine.fk_idIronStation,
           fk_idStaffMember: cookies.token,
         });
+
+        await api.patch(`/cleanCahsCutIronControl/${lastIronControlId}`,{
+          pieces: pedido.ironPieces
+        })
 
         showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
         await api.post("/sendMessage", {

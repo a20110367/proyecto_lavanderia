@@ -203,7 +203,7 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        await api.patch(`/cleanCahsCutIronControl/${lastIronControlId}`,{
+        await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
           pieces: pedido.ironPieces
         })
 

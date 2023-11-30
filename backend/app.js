@@ -25,6 +25,7 @@ import ServiceOrderDetailRoute from './routes/ServiceOrderDetailRoute.js'
 import CashWithdrawalRoute from './routes/CashWithdrawalRoute.js'
 import PettyCashRoute from './routes/PettyCashRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
+import IronControlRoute from './routes/IronControlRoute.js'
 
 
 dotenv.config({ path: '.env' });
@@ -56,6 +57,7 @@ app.use(ServiceOrderDetailRoute)
 app.use(CashWithdrawalRoute)
 app.use(PettyCashRoute)
 app.use(MessageRoute)
+app.use(IronControlRoute)
 
 
 app.listen(process.env.APP_PORT, (req, res) => {

@@ -62,16 +62,25 @@ model IronStation {
   freeForUse     Boolean     @default(true)
   status         Status      @default(available)
   pieces         Int?
-  // piecesCashcut  Int?
-  // piecesLeft     Int?
-  // piecesToday    Int?
-  // piecesTomorrow Int?
+  description    String?
   notes          String
   serialNumber   String      @default("N/A")
 
   created   DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   IronQueue IronQueue[]
+}
+
+model IronControl {
+  id_ironControl Int @id @default(autoincrement())
+  piecesCashcut  Int @default(0)
+
+  piecesToday    Int @default(0)
+  piecesLeft     Int @default(0)
+  piecesTomorrow Int @default(0)
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
@@ -268,7 +277,7 @@ model DeliveryDetail {
   fk_idPayment   Int          @unique
   payment        Payment      @relation(fields: [fk_idPayment], references: [id_payment], onDelete: Cascade, onUpdate: Cascade)
   user           User         @relation(fields: [fk_userCashier], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order],onDelete: Cascade,onUpdate: Cascade)
+  serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model StaffMember {

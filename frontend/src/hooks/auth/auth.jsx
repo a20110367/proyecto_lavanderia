@@ -26,23 +26,32 @@ export const UserProvider = ({ children }) => {
         const now = moment()
         const lastIronControlDate  = moment(lastIronControl)
         const diff = now.diff(lastIronControlDate, 'days');
+        // const diff = 1
         // console.log(now)
         // console.log(lastIronControlDate)
-        // console.log(diff)
+        console.log(diff)
+        // console.log(lastIronControl.data)
         if (!lastIronControl || lastIronControl.data.length === 0) {
             const res = await api.post("/ironControl", {
                 piecesToday: 0,
             });
+            localStorage.setItem('lastIronControl', res.data.id_ironControl)
         } else if (diff > 0) {
             const res = await api.post("/ironControl", {
                 piecesToday: 0,
             });
-            await api.patch(`/diaryIronControl/${res.data.id_ironControl}`);            
+            const resDiary = await api.patch(`/diaryIronControl/${res.data.id_ironControl}`); 
+            localStorage.setItem('numberOfPieces', resDiary.data.piecesToday)           
+            localStorage.setItem('lastIronControl', resDiary.data.id_ironControl)
         } else if(diff === 0){
             // console.log('mismo dia')
-            await api.patch(`/diaryIronControl/${res.data.id_ironControl}`);
+            const res = await api.patch(`/diaryIronControl/${lastIronControl.data[0].id_ironControl}`);    
+            localStorage.setItem('numberOfPieces', res.data.piecesToday)
+            localStorage.setItem('lastIronControl', res.data.id_ironControl)
+        }else{
+            localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
         }
-        localStorage.setItem('lastIronControl', lastIronControl.data.id_ironControl)
+
 
         navigate('/autoServicio');
     };

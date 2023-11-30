@@ -168,8 +168,8 @@ function PedidosAutoservicio() {
     try {
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/selfServiceQueueByOrder/${pedido.fk_idServiceOrder}`)
-      const selectedMachine = res.data[0]
+      const res = await api.get(`/selfServiceQueueById/${pedido.id_serviceEvent}`)
+      const selectedMachine = res.data
 
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
@@ -178,6 +178,11 @@ function PedidosAutoservicio() {
           : p
       );
       setPedidos(updatedPedidos);
+
+      // Actualizar en la base de datos el estado de la máquina a "freeForUse"
+      await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
+        freeForUse: true,
+      });
 
       // Actualizar localmente el estado de la máquina a "freeForUse"
       const updatedMachines = availableMachines.map((machine) =>
@@ -192,26 +197,7 @@ function PedidosAutoservicio() {
         fk_idStaffMember: cookies.token,
       });
 
-      // Actualizar en la base de datos el estado de la máquina a "freeForUse"
-      await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
-        freeForUse: true,
-      });
-
       setShowMachineName(false);
-      // showNotification("NOTIFICACIÓN ENVIADA...");
-      // await api.post("/sendMessage", {
-      //   id_order: selectedPedido.fk_idServiceOrder,
-      //   name: selectedPedido.client.name,
-      //   email: selectedPedido.client.email,
-      //   tel: "521" + selectedPedido.client.phone,
-      //   message: `Tu pedido con el folio: ${selectedPedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
-      //   subject: "Tu Ropa esta Lista",
-      //   text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-      //   warning: false,
-      // });
-      // console.log("NOTIFICACIÓN ENVIADA...");
-      // showNotification(`Pedido finalizado correctamente`);
-      // showNotification(`Pedido finalizado`);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }

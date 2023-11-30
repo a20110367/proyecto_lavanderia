@@ -290,7 +290,7 @@ export const getSelfServiceQueueById = async (req, res) => {
 
 export const getSelfServiceQueueByOrderId = async (req, res) => {
     try {
-        const response = await prisma.selfServiceQueue.findMany({
+        const response = await prisma.selfServiceQueue.findUnique({
             where: {
                 fk_idServiceOrder: Number(req.params.fk_Order)
             }

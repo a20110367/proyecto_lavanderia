@@ -20,6 +20,7 @@ export default function PuntoVenta() {
   const { cookies } = useAuth();
 
   const navigate = useNavigate();
+  const lastIronControlId = parseInt(localStorage.getItem('lastIronControl'))
   const [cart, setCart] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
@@ -85,7 +86,7 @@ export default function PuntoVenta() {
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
     const serviceToAdd = service;
-    if (serviceToAdd ) {
+    if (serviceToAdd) {
       const existingService = cart.find(
         (item) => item.id_service === serviceId
       );
@@ -93,10 +94,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-                ...item,
-                quantity: item.quantity + 1,
-                totalPrice: item.price * (item.quantity + 1),
-              }
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
             : item
         );
         setCart(updatedCart);
@@ -198,126 +199,134 @@ export default function PuntoVenta() {
   };
 
   const handleSaveAndGenerateTicket = async () => {
-    if ((numberOfPieces + pieces) < 130) {
-      setIsSaved(true);
-      setIsModalVisible(false);
-      const arrayService = [];
+    setIsSaved(true);
+    setIsModalVisible(false);
+    const arrayService = [];
 
-      let noOfItems = 0;
-      cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
+    let noOfItems = 0;
+    cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
 
-      cart.map((detail) =>
-        arrayService.push({
-          units: detail.quantity,
-          subtotal: detail.quantity * detail.price,
-          fk_Service: detail.id_service,
-        })
-      );
+    cart.map((detail) =>
+      arrayService.push({
+        units: detail.quantity,
+        subtotal: detail.quantity * detail.price,
+        fk_Service: detail.id_service,
+      })
+    );
 
-      try {
-        const res = await api.post(postUrl, {
-          serviceOrder: {
-            totalPrice: calculateSubtotal(),
-            fk_client: parseInt(clientId),
-            numberOfItems: noOfItems,
-            payForm: payForm,
-            payStatus: payStatus,
-            fk_user: cookies.token,
-            receptionDate: purchaseDate.toISOString(),
-            receptionTime: purchaseDate.toISOString(),
-            scheduledDeliveryDate: deliveryDate.toISOString(),
-            scheduledDeliveryTime: deliveryDate.toISOString(),
-            express: isExpress,
-            ironPieces: pieces ? pieces : null,
-            fk_categoryId: categoryId,
-          },
-          services: arrayService,
-        });
-        const order = {
-          id_order: res.data.serviceOrder.id_order,
+    try {
+      const res = await api.post(postUrl, {
+        serviceOrder: {
+          totalPrice: calculateSubtotal(),
+          fk_client: parseInt(clientId),
+          numberOfItems: noOfItems,
           payForm: payForm,
           payStatus: payStatus,
-          payMethod: payMethod,
-          subtotal: calculateSubtotal(),
-          casher: cookies.username,
-          client: clientName,
+          fk_user: cookies.token,
           receptionDate: purchaseDate.toISOString(),
           receptionTime: purchaseDate.toISOString(),
           scheduledDeliveryDate: deliveryDate.toISOString(),
           scheduledDeliveryTime: deliveryDate.toISOString(),
-          notes: "",
-          cart: cart,
-        };
-        orderTicket(order);
-        const idOrder = res.data.serviceOrder.id_order;
-        console.log(idOrder);
-        if (payForm === "advance") {
-          await api.post("/paymentsAdvance", {
-            payment: {
-              fk_idOrder: idOrder,
-              payMethod: payMethod,
-              payDate: purchaseDate.toISOString(),
-              payTime: purchaseDate.toISOString(),
-              fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-              payTotal: calculateSubtotal(),
-            },
-          });
-        }
-      } catch (err) {
-        console.log(err);
-        if (!err?.response) {
-          setErrMsg("Sin respuesta del Servidor");
+          express: isExpress,
+          ironPieces: pieces ? pieces : null,
+          fk_categoryId: categoryId,
+        },
+        services: arrayService,
+      });
+      const order = {
+        id_order: res.data.serviceOrder.id_order,
+        payForm: payForm,
+        payStatus: payStatus,
+        payMethod: payMethod,
+        subtotal: calculateSubtotal(),
+        casher: cookies.username,
+        client: clientName,
+        receptionDate: purchaseDate.toISOString(),
+        receptionTime: purchaseDate.toISOString(),
+        scheduledDeliveryDate: deliveryDate.toISOString(),
+        scheduledDeliveryTime: deliveryDate.toISOString(),
+        notes: "",
+        cart: cart,
+      };
+      orderTicket(order);
+      if (categoryId === 3) {
+        if ((numberOfPieces + pieces) < 130 || isExpress) {
+          await api.patch(`/todayIronControl/${lastIronControlId}`, {
+            pieces: pieces
+          })
         } else {
-          setErrMsg(
-            "Hubo un error al registrar la Orden, comuniquese con Soporte"
-          );
+          await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
+            pieces: pieces
+          })
+          Swal.fire({
+            icon: "error",
+            title: "Se ha superado el No. de Piezas diarias",
+            text: "Como las piezas superar el limite, el pedido se entregara un dia posterior",
+            confirmButtonColor: "#034078",
+          });
+          setIsModalVisible(false)
         }
       }
-
-      localStorage.setItem("lastSelectedClient", clientName);
-      localStorage.setItem("returningFromPuntoVenta", "true");
-      localStorage.setItem('numberOfPieces', pieces + (localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0))
-
-      // Regresar a la página anterior
-      window.history.back();
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Se ha superado el No. de Piezas diarias",
-        text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
-        confirmButtonColor: "#034078",
-      });
-      setIsModalVisible(false)
+      const idOrder = res.data.serviceOrder.id_order;
+      console.log(idOrder);
+      if (payForm === "advance") {
+        await api.post("/paymentsAdvance", {
+          payment: {
+            fk_idOrder: idOrder,
+            payMethod: payMethod,
+            payDate: purchaseDate.toISOString(),
+            payTime: purchaseDate.toISOString(),
+            fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+            payTotal: calculateSubtotal(),
+          },
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      if (!err?.response) {
+        setErrMsg("Sin respuesta del Servidor");
+      } else {
+        setErrMsg(
+          "Hubo un error al registrar la Orden, comuniquese con Soporte"
+        );
+      }
     }
+
+    localStorage.setItem("lastSelectedClient", clientName);
+    localStorage.setItem("returningFromPuntoVenta", "true");
+    localStorage.setItem('numberOfPieces', pieces + (localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0))
+
+    // Regresar a la página anterior
+    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -385,10 +394,10 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-            ? "Lista de Servicios de Autoservicio"
-            : serviceType === "planchado"
-            ? "Lista de Servicios de Planchado"
-            : "Lista de Servicios"}
+              ? "Lista de Servicios de Autoservicio"
+              : serviceType === "planchado"
+                ? "Lista de Servicios de Planchado"
+                : "Lista de Servicios"}
         </strong>
       </div>
       <div className="relative w-full">
@@ -429,11 +438,10 @@ export default function PuntoVenta() {
                       </h3>
                       <h5 className="text-gray-600">${service.price}</h5>
                       <button
-                        className={`${
-                          isAddButtonDisabled
-                            ? "bg-gray-400"
-                            : "bg-blue-500 hover:bg-blue-700"
-                        } text-white font-bold py-2 px-4 rounded mt-2`}
+                        className={`${isAddButtonDisabled
+                          ? "bg-gray-400"
+                          : "bg-blue-500 hover:bg-blue-700"
+                          } text-white font-bold py-2 px-4 rounded mt-2`}
                         onClick={() => addToCart(service.id_service, service)}
                         disabled={isAddButtonDisabled}
                       >
@@ -621,20 +629,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

@@ -15,7 +15,6 @@ export default function Login() {
     e.preventDefault();
     if (!!user && !!pass) {
       login({ user, pass });
-      localStorage.clear()
     } else {
       setErr('Rellene los campos vacios')
     }

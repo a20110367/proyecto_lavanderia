@@ -16,19 +16,18 @@ export const UserProvider = ({ children }) => {
             username: user,
             pass: pass
         });
-
-        const lastIronControl = await api.get('/lastIronControl')
-        const now = moment()
-        const lastIronControlDate  = moment(lastIronControl)
         localStorage.clear()
+
         setCookies('token', res.data.id_user, { path: '/' }); // your token
         setCookies('username', res.data.username, { path: '/' }); // optional data
         setCookies('role', res.data.role, { path: '/' }); // optional data
 
+        const lastIronControl = await api.get('/lastIronControl')
+        const now = moment()
+        const lastIronControlDate  = moment(lastIronControl)
         const diff = now.diff(lastIronControlDate, 'days');
         // console.log(now)
         // console.log(lastIronControlDate)
-
         // console.log(diff)
         if (!lastIronControl || lastIronControl.data.length === 0) {
             const res = await api.post("/ironControl", {

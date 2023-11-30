@@ -69,7 +69,7 @@ export const updateDiaryIron = async (req, res) => {
     try {
         var ironControlFInal, piecesToday, piecesLeft;
         const ironControlBefore = await prisma.ironControl.findMany({
-            skip=1,
+            skip: 1,
             take: 1,
         });
 
@@ -80,12 +80,12 @@ export const updateDiaryIron = async (req, res) => {
         const ironControlCurrent = await prisma.ironControl.update({
 
             where: {
-                id_ironControl: ironControlBefore + 1,
+                id_ironControl: ironControlBefore.id_ironControl + 1,
             },
 
             data: {
                 piecesToday: piecesToday,
-                piecesLeft=piecesToday
+                piecesLeft: piecesToday
             }
 
         });
@@ -173,8 +173,8 @@ export const updateCleanCashCutIron = async (req, res) => {
                 piecesCashcut: {
                     set: 0,
                 },
-
-            });
+            }
+        });
         res.status(200).json(ironControl);
     } catch (e) {
         res.status(400).json({ msg: e.message });
@@ -194,4 +194,4 @@ export const deleteIronControl = async (req, res) => {
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
-},
+}

@@ -80,7 +80,7 @@ export const updateDiaryIron = async (req, res) => {
         const ironControlCurrent = await prisma.ironControl.update({
 
             where: {
-                id_ironControl: ironControlBefore.id_ironControl + 1,
+                id_ironControl: Number(req.params.id),
             },
 
             data: {

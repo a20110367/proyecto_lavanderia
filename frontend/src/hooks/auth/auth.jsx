@@ -14,11 +14,15 @@ export const UserProvider = ({ children }) => {
             username: user,
             pass: pass
         });
-
+        
+        const lastIronControl = await api.get('/lastIronControl')
+        localStorage.clear()
         setCookies('token', res.data.id_user, { path: '/' }); // your token
         setCookies('username', res.data.username, { path: '/' }); // optional data
         setCookies('role', res.data.role, { path: '/' }); // optional data
         localStorage.setItem('lastOrder', res.data.id_lastOrder.id_order)
+        
+        localStorage.setItem('lastIronControl', lastIronControl.data.id_ironControl)
 
         navigate('/autoServicio');
     };

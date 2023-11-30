@@ -934,3 +934,7 @@ GET   http://localhost:5000/ironQueue
 ####
 
 GET   http://localhost:5000/servicesSelfService
+
+###
+
+GET   http://localhost:5000/lastIronControl

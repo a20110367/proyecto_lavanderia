@@ -11,7 +11,7 @@ import {
     updateTomorrowIron,
     updateCleanCashCutIron,
     deleteIronControl
-   
+
 
 
 } from "../controllers/IronControlController.js";
@@ -25,11 +25,11 @@ router.get('/lastIronControl', getLastIronControl);
 router.post('/ironControl', createIronControl);
 
 router.patch('/ironControl/:id', updateIronControl);
-router.patch('/cahsCutIronControl', updateCashCutIron);
-router.patch('/diaryIronControl', updateDiaryIron);
-router.patch('/todayIronControl', updateTodayIron);
-router.patch('/tomorrowIronControl', updateTomorrowIron);
-router.patch('/cleanCahsCutIronControl', updateCleanCashCutIron);
+router.patch('/cahsCutIronControl/:id', updateCashCutIron);
+router.patch('/diaryIronControl/:id', updateDiaryIron);
+router.patch('/todayIronControl/:id', updateTodayIron);
+router.patch('/tomorrowIronControl/:id', updateTomorrowIron);
+router.patch('/cleanCahsCutIronControl/:id', updateCleanCashCutIron);
 
 
 router.delete('/ironControl/:id', deleteIronControl);

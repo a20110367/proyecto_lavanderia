@@ -27,6 +27,9 @@ export const getIronControlById = async (req, res) => {
 export const getLastIronControl = async (req, res) => {
     try {
         const response = await prisma.ironControl.findMany({
+            orderBy: {
+                id_ironControl: 'desc',
+            },
             take: 1,
         });
         res.status(200).json(response);
@@ -68,6 +71,9 @@ export const updateDiaryIron = async (req, res) => {
 
     try {
         const ironControlBefore = await prisma.ironControl.findMany({
+            orderBy: {
+                id_ironControl: 'desc',
+            },
             skip: 1,
             take: 1,
         });

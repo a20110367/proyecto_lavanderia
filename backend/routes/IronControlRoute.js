@@ -10,8 +10,8 @@ import {
     updateTodayIron,
     updateTomorrowIron,
     updateCleanCashCutIron,
-    deleteIronControl,
-    updateTomorrowIron
+    deleteIronControl
+   
 
 
 } from "../controllers/IronControlController.js";

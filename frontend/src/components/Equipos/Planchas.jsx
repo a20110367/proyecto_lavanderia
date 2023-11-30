@@ -72,6 +72,7 @@ function Planchas() {
               <tr>
                 <th>No. Equipo</th>
                 <th>Tipo de Máquina</th>
+                <th>Modelo</th>
                 <th>Piezas</th>
                 <th>Estado</th>
                 <th>Notas</th>
@@ -101,6 +102,7 @@ function Planchas() {
                           ? "Plancha"
                           : "Secadora"}
                     </td>
+                    <td>{iron.description}</td>
                     <td>{iron.pieces}</td>
                     <td
                       className={`${iron.status === "available"

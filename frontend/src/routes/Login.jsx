@@ -85,7 +85,7 @@ export default function Login() {
           <path className="st6" d="M390.8 975.7v-48.1h-63.5v-48.3h-63.5V831h-63.4v193h253.9v-48.3z"></path>
         </svg>
       </div>
-      <div className="bg-white w-1/2">
+      <div className="bg-white w-1/2 rounded-lg shadow-lg p-6">
         <h1 className="title">Bienvenido</h1>
         <p className="subtitle text-gray-500 mt-4">
           Bienvenido de vuelta! Por favor ingrese sus credenciales

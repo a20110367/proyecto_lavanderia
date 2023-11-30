@@ -45,9 +45,9 @@ export const UserProvider = ({ children }) => {
             localStorage.setItem('lastIronControl', resDiary.data.id_ironControl)
         } else if(diff === 0){
             // console.log('mismo dia')
-            const res = await api.patch(`/diaryIronControl/${lastIronControl.data[0].id_ironControl}`);    
-            localStorage.setItem('numberOfPieces', res.data.piecesToday)
-            localStorage.setItem('lastIronControl', res.data.id_ironControl)
+            // const res = await api.patch(`/diaryIronControl/${lastIronControl.data[0].id_ironControl}`);    
+            localStorage.setItem('numberOfPieces', lastIronControl.data[0].piecesToday)
+            localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
         }else{
             localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
         }

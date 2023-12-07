@@ -79,7 +79,6 @@ function AddClient() {
     try {
       await api.post("/clients", {
         name: name,
-        username: name,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
@@ -93,7 +92,18 @@ function AddClient() {
       setSecondLN("");
       setEmail("");
       setPhone("");
-      navigate("/clients");
+
+      const source = new URLSearchParams(location.search).get("source");
+
+      if (source === "encargo") {
+        navigate(`/recepcionLavanderia?serviceType=${source}`);
+      } else if (source === "autoservicio") {
+        navigate(`/autoservicio?serviceType=${source}`);
+      } else if (source === "planchado") {
+        navigate(`/recepcionPlanchado?serviceType=${source}`);
+      } else {
+        navigate("/clients");
+      }
     } catch (err) {
       console.log(err)
       if (!err?.response) {

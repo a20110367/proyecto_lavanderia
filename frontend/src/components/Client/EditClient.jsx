@@ -81,7 +81,6 @@ function EditClient() {
     try {
       await api.patch(`/clients/${id}`, {
         name: name,
-        username: name,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,

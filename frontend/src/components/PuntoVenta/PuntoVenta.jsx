@@ -213,7 +213,7 @@ export default function PuntoVenta() {
         }
       })
       .filter(Boolean);
-      setSelectedProducts([])
+    setSelectedProducts([]);
     setCart(updatedCart);
 
     if (serviceId === selectedServiceId) {
@@ -734,9 +734,9 @@ export default function PuntoVenta() {
                       Observaciones
                     </p>
                     <textarea
-                     className="observations"
+                      className="observations"
                       placeholder="Añadir observaciones..."
-                      value={observaciones} 
+                      value={observaciones}
                       onChange={(e) => setObservaciones(e.target.value)}
                     />
                   </div>
@@ -756,9 +756,7 @@ export default function PuntoVenta() {
                     ))}
                     {selectedProducts.length > 0 && (
                       <div>
-                        <p
-                          style={{ fontSize: "15px", fontWeight: "semi-bold" }}
-                        >
+                        <p className="text-base font-semibold">
                           Productos Seleccionados:
                         </p>
                         {selectedProducts.map((product, index) => (
@@ -769,9 +767,7 @@ export default function PuntoVenta() {
                             </p>
                           </div>
                         ))}
-                        <p
-                          style={{ fontSize: "16px", fontWeight: "semi-bold" }}
-                        >
+                        <p className="text-base font-semibold">
                           Total de Productos Seleccionados: $
                           {calculateProductTotal()}
                         </p>

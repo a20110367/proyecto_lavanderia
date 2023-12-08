@@ -14,14 +14,16 @@ import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 import { FaBoltLightning } from "react-icons/fa6";
 import { BsFillLightningFill } from "react-icons/bs";
+import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 const { Option } = Select;
 
 export default function PuntoVenta() {
   const { cookies } = useAuth();
 
   const navigate = useNavigate();
-  const lastIronControlId = parseInt(localStorage.getItem('lastIronControl'))
+  const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
   const [cart, setCart] = useState([]);
+  const [observaciones, setObservaciones] = useState("");
   const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -47,8 +49,64 @@ export default function PuntoVenta() {
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
-  const [pieces, setPieces] = useState(0)
-  const [numberOfPieces, setNumberOfPieces] = useState(localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0)
+  const [pieces, setPieces] = useState(0);
+  const [numberOfPieces, setNumberOfPieces] = useState(
+    localStorage.getItem("numberOfPieces")
+      ? parseInt(localStorage.getItem("numberOfPieces"))
+      : 0
+  );
+  const dummyProducts = [
+    { name: "Fabuloso", price: 15 },
+    { name: "Pinol", price: 20 },
+    { name: "Ace", price: 25 },
+    { name: "Suavitel", price: 30 },
+    { name: "Blancanieves", price: 40 },
+  ];
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
+
+  // Función para agregar productos
+  const addProduct = (productName, price) => {
+    const existingProduct = selectedProducts.find(
+      (product) => product.name === productName
+    );
+
+    if (existingProduct) {
+      // Si el producto ya está en la lista, incrementa la cantidad
+      const updatedProducts = selectedProducts.map((product) =>
+        product.name === productName
+          ? { ...product, quantity: product.quantity + 1 }
+          : product
+      );
+      setSelectedProducts(updatedProducts);
+    } else {
+      // Si el producto no está en la lista, agrégalo con cantidad 1
+      setSelectedProducts([
+        ...selectedProducts,
+        { name: productName, price: price, quantity: 1 },
+      ]);
+    }
+  };
+
+  // Función para eliminar productos
+  const removeProduct = (productName) => {
+    const updatedProducts = selectedProducts
+      .map((product) =>
+        product.name === productName
+          ? { ...product, quantity: product.quantity - 1 }
+          : product
+      )
+      .filter((product) => product.quantity > 0);
+    setSelectedProducts(updatedProducts);
+  };
+
+  // Función para calcular el precio total de los productos seleccionados
+  const calculateProductTotal = () => {
+    return selectedProducts.reduce(
+      (total, product) => total + product.price * product.quantity,
+      0
+    );
+  };
 
   useEffect(() => {
     // Definir el category_id
@@ -94,10 +152,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-              ...item,
-              quantity: item.quantity + 1,
-              totalPrice: item.price * (item.quantity + 1),
-            }
+                ...item,
+                quantity: item.quantity + 1,
+                totalPrice: item.price * (item.quantity + 1),
+              }
             : item
         );
         setCart(updatedCart);
@@ -109,14 +167,14 @@ export default function PuntoVenta() {
       }
 
       if (categoryId === 3) {
-        setPieces(pieces + serviceToAdd.pieces)
+        setPieces(pieces + serviceToAdd.pieces);
       } else if (categoryId === 3) {
         Swal.fire({
           icon: "error",
           title: "Se ha superado el No. de Piezas diarias",
           text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
           confirmButtonColor: "#034078",
-        })
+        });
       }
     }
     // } else {
@@ -144,10 +202,10 @@ export default function PuntoVenta() {
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
+            categoryId === 3 ? setPieces(pieces - item.pieces) : "";
             return { ...item, quantity: item.quantity - 1 };
           } else {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : ''
+            categoryId === 3 ? setPieces(pieces - item.pieces) : "";
             return null;
           }
         } else {
@@ -155,7 +213,7 @@ export default function PuntoVenta() {
         }
       })
       .filter(Boolean);
-
+      setSelectedProducts([])
     setCart(updatedCart);
 
     if (serviceId === selectedServiceId) {
@@ -250,21 +308,21 @@ export default function PuntoVenta() {
       };
       orderTicket(order);
       if (categoryId === 3) {
-        if ((numberOfPieces + pieces) < 130 || isExpress) {
+        if (numberOfPieces + pieces < 130 || isExpress) {
           await api.patch(`/todayIronControl/${lastIronControlId}`, {
-            pieces: pieces
-          })
+            pieces: pieces,
+          });
         } else {
           await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
-            pieces: pieces
-          })
+            pieces: pieces,
+          });
           Swal.fire({
             icon: "error",
             title: "Se ha superado el No. de Piezas diarias",
             text: "Como las piezas superar el limite, el pedido se entregara un dia posterior",
             confirmButtonColor: "#034078",
           });
-          setIsModalVisible(false)
+          setIsModalVisible(false);
         }
       }
       const idOrder = res.data.serviceOrder.id_order;
@@ -294,7 +352,13 @@ export default function PuntoVenta() {
 
     localStorage.setItem("lastSelectedClient", clientName);
     localStorage.setItem("returningFromPuntoVenta", "true");
-    localStorage.setItem('numberOfPieces', pieces + (localStorage.getItem('numberOfPieces') ? parseInt(localStorage.getItem('numberOfPieces')) : 0))
+    localStorage.setItem(
+      "numberOfPieces",
+      pieces +
+        (localStorage.getItem("numberOfPieces")
+          ? parseInt(localStorage.getItem("numberOfPieces"))
+          : 0)
+    );
 
     // Regresar a la página anterior
     window.history.back();
@@ -303,30 +367,30 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-      // Aquí aplicamos las condiciones para filtrar los servicios
-      if (
-        serviceType === "encargo" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "planchado" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "autoservicio" &&
-        service.description.toLowerCase().includes("autoservicio")
-      ) {
-        return true;
-      }
-      return false;
-    });
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "encargo" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "autoservicio" &&
+          service.description.toLowerCase().includes("autoservicio")
+        ) {
+          return true;
+        }
+        return false;
+      });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -394,10 +458,10 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-              ? "Lista de Servicios de Autoservicio"
-              : serviceType === "planchado"
-                ? "Lista de Servicios de Planchado"
-                : "Lista de Servicios"}
+            ? "Lista de Servicios de Autoservicio"
+            : serviceType === "planchado"
+            ? "Lista de Servicios de Planchado"
+            : "Lista de Servicios"}
         </strong>
       </div>
       <div className="relative w-full">
@@ -438,10 +502,11 @@ export default function PuntoVenta() {
                       </h3>
                       <h5 className="text-gray-600">${service.price}</h5>
                       <button
-                        className={`${isAddButtonDisabled
-                          ? "bg-gray-400"
-                          : "bg-blue-500 hover:bg-blue-700"
-                          } text-white font-bold py-2 px-4 rounded mt-2`}
+                        className={`${
+                          isAddButtonDisabled
+                            ? "bg-gray-400"
+                            : "bg-blue-500 hover:bg-blue-700"
+                        } text-white font-bold py-2 px-4 rounded mt-2`}
                         onClick={() => addToCart(service.id_service, service)}
                         disabled={isAddButtonDisabled}
                       >
@@ -454,13 +519,20 @@ export default function PuntoVenta() {
           </div>
 
           <div className="col-md-3 ml-10">
-            {categoryId === 3 ? <p className="text-3xl font-semibold text-center">Piezas del Pedido: <span className="text-orange-600">{pieces}</span></p> : ''}
+            {categoryId === 3 ? (
+              <p className="text-3xl font-semibold text-center">
+                Piezas del Pedido:{" "}
+                <span className="text-orange-600">{pieces}</span>
+              </p>
+            ) : (
+              ""
+            )}
             <div className="card card-body mt-2">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}
                 <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
               </h3>
-              <ul className="divide-y divide-gray-300">
+              <ul className="divide-y divide-gray-300 mb-2">
                 {cart.map((service) => (
                   <li
                     key={service.id_service}
@@ -484,9 +556,80 @@ export default function PuntoVenta() {
                   </li>
                 ))}
               </ul>
+              {serviceType === "autoservicio" && cart.length > 0 && (
+                <div className="mt-4 rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Productos Disponibles
+                  </h3>
+                  {dummyProducts.map((product, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center mb-2"
+                    >
+                      <div className="flex items-center">
+                        {product.name} $ {product.price}
+                      </div>
+                      <div className="flex items-center">
+                        <button
+                          onClick={() =>
+                            addProduct(product.name, product.price)
+                          }
+                          className="text-green-500 mr-2"
+                        >
+                          <AiOutlinePlusCircle fontSize={18} />
+                        </button>
+                        {selectedProducts.find(
+                          (p) => p.name === product.name
+                        ) && (
+                          <button
+                            onClick={() => removeProduct(product.name)}
+                            className="text-red-500"
+                          >
+                            <AiOutlineMinusCircle fontSize={18} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {selectedProducts.length > 0 && (
+                <div className="mt-4  rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Productos Seleccionados
+                  </h3>
+
+                  {selectedProducts.map((product, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center mb-2"
+                    >
+                      <div>
+                        {product.name} x {product.quantity} - $
+                        {product.price * product.quantity}
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-between mt-2">
+                    <div>
+                      <strong>Total Productos:</strong>{" "}
+                      {selectedProducts.reduce(
+                        (total, product) => total + product.quantity,
+                        0
+                      )}
+                    </div>
+                    <div>
+                      <strong>Total:</strong> ${calculateProductTotal()}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="flex mt-4 justify-between">
                 <div>
-                  <strong>Subtotal:</strong> ${calculateSubtotal()}
+                  <strong>Subtotal:</strong> $
+                  {calculateSubtotal() + calculateProductTotal()}
                 </div>
                 {categoryId === 3 ? (
                   <div className="flex items-center">
@@ -529,7 +672,7 @@ export default function PuntoVenta() {
                       key="submit"
                       className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                       onClick={handleSaveAndGenerateTicket}
-                      disabled={isSaved}
+                      disabled={!isDeliveryDateSelected || isSaved}
                     >
                       Guardar
                     </button>,
@@ -547,22 +690,6 @@ export default function PuntoVenta() {
                       Le atiende:
                     </p>
                     <p style={{ fontSize: "16px" }}>{cookies.username}</p>
-                  </div>
-
-                  <div>
-                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                      Detalles del Servicio:
-                    </p>
-                    {cart.map((service) => (
-                      <div key={service.id_service}>
-                        <p style={{ fontSize: "16px" }}>
-                          {service.description}
-                        </p>
-                        <p style={{ fontSize: "16px" }}>
-                          Costo: ${service.price * service.quantity}
-                        </p>
-                      </div>
-                    ))}
                   </div>
                   <div>
                     <div>
@@ -585,18 +712,80 @@ export default function PuntoVenta() {
                         timeFormat="HH:mm"
                         timeIntervals={15}
                         dateFormat={customDateFormat}
-                        onChange={(date) => setDeliveryDate(moment(date))}
+                        onChange={(date) => {
+                          setDeliveryDate(moment(date));
+                          setIsDeliveryDateSelected(true);
+                        }}
                         locale={es}
                         timeCaption="Hora"
+                        minDate={moment().toDate()}
+                        required
                         className="form-control border-black"
                       />
+                      {!isDeliveryDateSelected && (
+                        <p style={{ color: "red", fontSize: "14px" }}>
+                          Seleccione una fecha por favor.
+                        </p>
+                      )}
                     </div>
                   )}
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Observaciones
+                    </p>
+                    <textarea
+                     className="observations"
+                      placeholder="Añadir observaciones..."
+                      value={observaciones} 
+                      onChange={(e) => setObservaciones(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                      Detalles del Servicio:
+                    </p>
+                    {cart.map((service) => (
+                      <div key={service.id_service}>
+                        <p style={{ fontSize: "16px" }}>
+                          {service.description}
+                        </p>
+                        <p style={{ fontSize: "16px" }}>
+                          Costo: ${service.price * service.quantity}
+                        </p>
+                      </div>
+                    ))}
+                    {selectedProducts.length > 0 && (
+                      <div>
+                        <p
+                          style={{ fontSize: "15px", fontWeight: "semi-bold" }}
+                        >
+                          Productos Seleccionados:
+                        </p>
+                        {selectedProducts.map((product, index) => (
+                          <div key={index}>
+                            <p style={{ fontSize: "16px" }}>
+                              {product.name} x {product.quantity} - $
+                              {product.price * product.quantity}
+                            </p>
+                          </div>
+                        ))}
+                        <p
+                          style={{ fontSize: "16px", fontWeight: "semi-bold" }}
+                        >
+                          Total de Productos Seleccionados: $
+                          {calculateProductTotal()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                       Subtotal:
                     </p>
-                    <p style={{ fontSize: "16px" }}>${calculateSubtotal()}</p>
+                    <p style={{ fontSize: "16px" }}>
+                      ${calculateSubtotal() + calculateProductTotal()}
+                    </p>
                   </div>
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
@@ -629,20 +818,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                        <div>
-                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                            Método de Pago Anticipado:
-                          </p>
-                          <Select
-                            style={{ width: "100%", fontSize: "16px" }}
-                            onChange={(value) => setPayMethod(value)}
-                            value={payMethod}
-                          >
-                            <Option value="credit">Tarjeta</Option>
-                            <Option value="cash">Efectivo</Option>
-                          </Select>
-                        </div>
-                      )}
+                      <div>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Método de Pago Anticipado:
+                        </p>
+                        <Select
+                          style={{ width: "100%", fontSize: "16px" }}
+                          onChange={(value) => setPayMethod(value)}
+                          value={payMethod}
+                        >
+                          <Option value="credit">Tarjeta</Option>
+                          <Option value="cash">Efectivo</Option>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>
@@ -651,7 +840,16 @@ export default function PuntoVenta() {
               to="/recepcionLavanderia"
               className="mt-2 flex text-center text-decoration-none"
             ></Link>
-            {categoryId === 3 ? <p className="text-2xl font-semibold text-center">No. Maximo de Piezas: <span className="text-RedPantone">{pieces + parseInt(numberOfPieces)} / 130</span></p> : ''}
+            {categoryId === 3 ? (
+              <p className="text-2xl font-semibold text-center">
+                No. Maximo de Piezas:{" "}
+                <span className="text-RedPantone">
+                  {pieces + parseInt(numberOfPieces)} / 130
+                </span>
+              </p>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

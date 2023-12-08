@@ -329,11 +329,13 @@ function EntregaLavanderia() {
               .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="th2 font-medium text-gray-900">
+                      {`${pedido.client.name} ${pedido.client.firstLN}`} <br />
+                      {pedido.client.secondLN}
+                    </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.user.name} <br />
+                    {pedido.user.firstLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "encargo"

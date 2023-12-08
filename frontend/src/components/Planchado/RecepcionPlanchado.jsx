@@ -5,12 +5,12 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function RecepcionPlanchado() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
     const response = await api.get("/clients");
@@ -63,13 +63,13 @@ function RecepcionPlanchado() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate(url)
+        navigate(url);
       }
     });
-  }
+  };
 
   return (
     <div>
@@ -121,7 +121,8 @@ function RecepcionPlanchado() {
                   <tr className="bg-white border-b" key={index}>
                     <td className="py-3 px-1 text-center">{index + 1}</td>
                     <td className="th2 font-medium text-gray-900">
-                      {client.name}
+                      {`${client.name} ${client.firstLN}`} <br />
+                      {client.secondLN}
                     </td>
                     <td className="th2">{client.phone}</td>
                     <td className="th2">{client.email}</td>
@@ -173,9 +174,12 @@ function RecepcionPlanchado() {
       )}
 
       <div className="fcol-container">
-      <button className="btn-big-light" onClick={() => launchModal('/addClient?source=planchado')}>
-              <div className="subtitle m-1">Añadir Cliente</div>
-            </button>
+        <button
+          className="btn-big-light"
+          onClick={() => launchModal("/addClient?source=planchado")}
+        >
+          <div className="subtitle m-1">Añadir Cliente</div>
+        </button>
 
         <div className="text-IndigoDye font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!

@@ -314,6 +314,7 @@ function EntregaPlanchado() {
               <th className="">Cliente</th>
               <th className="">Recibió</th>
               <th className="">Detalles</th>
+              <th>Piezas</th>
               <th className="">
                 Fecha <br />
                 de Recepción
@@ -335,16 +336,21 @@ function EntregaPlanchado() {
               .map((pedido) => (
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="th2 font-medium text-gray-900">
+                      {`${pedido.client.name} ${pedido.client.firstLN}`} <br />
+                      {pedido.client.secondLN}
+                    </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
-                  </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.user.name} <br />
+                    {pedido.user.firstLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "planchado"
                       ? "Planchado"
                       : pedido.category.categoryDescription}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.receptionDate)}

@@ -542,13 +542,13 @@ export default function PuntoVenta() {
                       <img
                         src={img[0]}
                         alt={`Imagen de ${service.description}`}
-                        className="h-16 w-16 object-cover rounded-lg mr-4"
+                        className="h-16 w-16 object-cover rounded-lg mr-2"
                       />
                       {service.description} x {service.quantity} - $
                       {service.price * service.quantity}
                     </div>
                     <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded ml-2"
                       onClick={() => removeFromCart(service.id_service)}
                     >
                       Eliminar

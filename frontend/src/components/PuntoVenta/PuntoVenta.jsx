@@ -567,7 +567,7 @@ export default function PuntoVenta() {
                       className="flex justify-between items-center mb-2"
                     >
                       <div className="flex items-center">
-                        {product.name} $ {product.price}
+                        {product.name} - ${product.price}
                       </div>
                       <div className="flex items-center">
                         <button

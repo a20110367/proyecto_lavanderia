@@ -87,7 +87,7 @@ function ServicesVarios() {
         >
           Añadir Nuevo Servicio
           <br />
-          de Encargo Varios
+          de Encargo varios
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>

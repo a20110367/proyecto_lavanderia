@@ -488,7 +488,7 @@ export const getIronQueueById = async (req, res) => {
     try {
         const response = await prisma.ironQueue.findUnique({
             where: {
-                id_dryEvent: Number(req.params.id)
+                id_ironEvent: Number(req.params.id)
             }
         });
         res.status(200).json(response);
@@ -610,6 +610,188 @@ export const deleteIronQueue = async (req, res) => {
             }
         });
         res.status(200).json(id_ironEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+
+export const getDrycleanQueue = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+
+                fk_categoryId: 4
+            },
+
+            select: {
+                id_order: true,
+                orderStatus: true,
+                scheduledDeliveryDate: true,
+                drycleanPieces: true,
+                express: true,
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        phone: true,
+                        email: true,
+                    },
+                },
+
+            },
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+export const getDrycleanQueueById = async (req, res) => {
+    try {
+        const response = await prisma.drycleanQueue.findUnique({
+            where: {
+                id_drycleanEvent: Number(req.params.id)
+            }
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const getDrycleanQueueByOrderId = async (req, res) => {
+    try {
+        const response = await prisma.drycleanQueue.findMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.fk_Order)
+            }
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const createManyDrycleanQueue = async (req, res) => {
+
+    try {
+        const drycleanEvent = await prisma.drycleanQueue.createMany({
+            data: req.body
+
+        });
+        res.status(201).json(ironEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const updateDrycleanQueue = async (req, res) => {
+    try {
+        const id_drycleanEvent = await prisma.drycleanQueue.update({
+            where: {
+                id_ironEvent: Number(req.params.id)
+            },
+
+            data: req.body
+        });
+        res.status(200).json(id_ironEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const deliveryDrycleanQueue = async (req, res) => {
+
+    try {
+        const { fk_idStaffMember } = req.body;
+        const deliveryDrycleanQueue = await prisma.drycleanQueue.updateMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+            data: {
+                fk_idStaffMember: fk_idStaffMember,
+                serviceStatus: "inProgress"
+            }
+        });
+
+        const serviceOrder = await prisma.serviceOrder.update({
+            where: {
+                id_order: Number(req.params.id)
+            },
+
+            data: {
+                orderStatus: "inProgress"
+            }
+        });
+
+        res.status(200).json(deliveryDrycleanQueue);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const receptionDrycleanQueue = async (req, res) => {
+
+    try {
+
+        //const { fk_idStaffMember, fk_idIronStation } = req.body;
+        const finishIronQueue = await prisma.ironQueue.updateMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+            data: {
+                serviceStatus: "finished"
+            }
+        });
+
+        const serviceOrder = await prisma.serviceOrder.update({
+            where: {
+                id_order: Number(req.params.id)
+            },
+
+            data: {
+                orderStatus: "finished"
+            }
+        });
+        res.status(200).json(finishIronQueue);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const deleteDrycleanQueue = async (req, res) => {
+    try {
+        const id_drycleanEvent = await prisma.drycleanQueue.delete({
+            where: {
+                id_ironEvent: Number(req.params.id)
+            }
+        });
+        res.status(200).json(id_drycleanEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

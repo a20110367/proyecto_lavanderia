@@ -88,9 +88,10 @@ model Category {
   categoryDescription String         @unique
   serviceOrders       ServiceOrder[]
 
-  LaundryService LaundryService[]
-  SelfService    SelfService[]
-  IronService    IronService[]
+  LaundryService  LaundryService[]
+  SelfService     SelfService[]
+  IronService     IronService[]
+  DrycleanService DrycleanService[]
 }
 
 model IronService {
@@ -138,6 +139,21 @@ model LaundryService {
   LaundryQueue       LaundryQueue[]
 }
 
+model DrycleanService {
+  id_service         Int                  @id @default(autoincrement())
+  description        String               @unique
+  price              Float
+  pieces             Int
+  token_id           Int?
+  category_id        Int
+  created            DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail ServiceOrderDetail[]
+  DrycleanQueue      DrycleanQueue[]
+}
+
 model ServiceOrder {
   id_order              Int                  @id @default(autoincrement())
   receptionDate         DateTime             @db.Date
@@ -156,6 +172,7 @@ model ServiceOrder {
   fk_categoryId         Int
   fk_deliveryDetail     Int?
   ironPieces            Int?
+  drycleanPieces        Int?
   express               Boolean              @default(false)
   category              Category             @relation(fields: [fk_categoryId], references: [id_category], onDelete: Cascade, onUpdate: Cascade)
   client                Client               @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
@@ -166,6 +183,7 @@ model ServiceOrder {
   LaundryQueue          LaundryQueue[]
   SelfServiceQueue      SelfServiceQueue[]
   IronQueue             IronQueue[]
+  DrycleanQueue         DrycleanQueue[]
 }
 
 model ServiceOrderDetail {
@@ -178,11 +196,13 @@ model ServiceOrderDetail {
   fk_laundryService     Int?
   fk_selfService        Int?
   fk_ironService        Int?
+  fk_drycleanService    Int?
 
-  serviceOrder   ServiceOrder    @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
-  LaundryService LaundryService? @relation(fields: [fk_laundryService], references: [id_service])
-  SelfService    SelfService?    @relation(fields: [fk_selfService], references: [id_service])
-  IronService    IronService?    @relation(fields: [fk_ironService], references: [id_service])
+  serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])
+  SelfService     SelfService?     @relation(fields: [fk_selfService], references: [id_service])
+  IronService     IronService?     @relation(fields: [fk_ironService], references: [id_service])
+  DrycleanService DrycleanService? @relation(fields: [fk_drycleanService], references: [id_service])
 }
 
 model LaundryQueue {
@@ -251,6 +271,20 @@ model IronQueue {
   ironService  IronService  @relation(fields: [fk_idIronService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model DrycleanQueue {
+  id_drycleanEvent         Int           @id @default(autoincrement())
+  id_description           String?
+  fk_idDrycleanService     Int
+  fk_idServiceOrder        Int
+  fk_idStaffMemberDelivery Int?
+  token_id                 Int?
+  serviceStatus            ServiceStatus @default(pending)
+
+  serviceOrder    ServiceOrder    @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  staffMember     StaffMember?    @relation(fields: [fk_idStaffMemberDelivery], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
+  drycleanService DrycleanService @relation(fields: [fk_idDrycleanService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
+}
+
 model Payment {
   id_payment   Int             @id @default(autoincrement())
   fk_idOrder   Int             @unique
@@ -291,9 +325,10 @@ model StaffMember {
   id_Token       Int?
   secondLN       String
 
-  IronQueue  IronQueue[]
-  WashDetail WashDetail[]
-  DryDetail  DryDetail[]
+  IronQueue     IronQueue[]
+  WashDetail    WashDetail[]
+  DryDetail     DryDetail[]
+  DrycleanQueue DrycleanQueue[]
 }
 
 model CashCut {

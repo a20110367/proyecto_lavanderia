@@ -141,7 +141,7 @@ Content-Type: application/json
     "categoryDescription": "planchado"
   },
   {
-    "categoryDescription": "pruebas"
+    "categoryDescription": "tintoreria"
   }
 ]
 
@@ -150,7 +150,16 @@ POST http://localhost:5000/categories
 Content-Type: application/json
 
 {
-   "categoryDescription": "pruebas"
+   "categoryDescription": "varios"
+}
+
+###
+
+PATCH  http://localhost:5000/categoriesId/4
+Content-Type: application/json
+
+{
+   "categoryDescription": "tintoreria"
 }
 
 ###

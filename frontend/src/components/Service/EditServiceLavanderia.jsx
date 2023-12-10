@@ -135,7 +135,7 @@ function EditServiceLavanderia() {
               />
 
               <label className="form-lbl" htmlFor="washCycleTime">
-                Tiempo (minutos):
+                Tiempo de lavado (minutos):
               </label>
               <input
                 className="form-input"

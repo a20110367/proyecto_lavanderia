@@ -82,6 +82,9 @@ import PedidosTintoreria from "./components/Pedidos/PedidosTintoreria"
 import ServicesVarios from "./components/Service/ServicesVarios"
 import AddServiceVarios from "./components/Service/AddServiceVarios"
 import EditServiceVarios from "./components/Service/EditServiceVarios"
+import PedidosVarios from "./components/Pedidos/PedidosVarios"
+import RecepcionVarios from "./components/EncargoVarios/RecepcionVarios"
+import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
 
 function App() {
     const { cookies } = useAuth();
@@ -154,6 +157,11 @@ function App() {
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
                     <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
+                    
+                    {/**Encargo varios */}
+                    <Route path="/pedidosVarios" element={<PedidosVarios/>}/>
+                    <Route path="/recepcionVarios" element={<RecepcionVarios/>}/>
+                    <Route path="/entregaVarios" element={<EntregaVarios/>}/>
 
                     {/*Planchado */}
                     <Route path="/entregaPlanchado" element={<EntregaPlanchado />} />

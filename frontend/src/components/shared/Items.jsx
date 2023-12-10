@@ -14,6 +14,7 @@ import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
 import { HiWrenchScrewdriver } from "react-icons/hi2"
 import { RiHandCoinFill } from "react-icons/ri"
 import { useAuth } from '../../hooks/auth/auth'
+import { TbWashGentle } from "react-icons/tb";
 import { PiShirtFoldedDuotone } from "react-icons/pi";
 
 function getItem(label, key, icon, children, type) {
@@ -63,11 +64,18 @@ const items1 = [
         ]
     ),
 
+    getItem("Encargo Varios", "/encargoVarios", <TbWashGentle  style={iconStyle} />, [
+        getItem("Recepcion", "/recepcionVarios"),
+        getItem("Entrega", "/entregaVarios"),
+    ]),
+
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Encargo", "/pedidosLavanderia"),
+        getItem("Encargo Ropa", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("Tintoreria", "/pedidosTintoreria"),
+        getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
     ]),
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
@@ -134,11 +142,17 @@ const items2 = [
         ]
     ),
 
+    getItem("Encargo Varios", "/encargoVarios", <TbWashGentle  style={iconStyle} />, [
+        getItem("Recepcion", "/recepcionVarios"),
+        getItem("Entrega", "/entregaVarios"),
+    ]),
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Encargo Ropa", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
         getItem("Tintoreria", "/pedidosTintoreria"),
+        getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
 
     ]),

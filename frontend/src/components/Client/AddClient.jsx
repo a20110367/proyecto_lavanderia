@@ -103,7 +103,7 @@ function AddClient() {
         navigate(`/recepcionPlanchado?serviceType=${source}`);
       } else if (source === "tintoreria") {
         navigate(`/recepcionTintoreria?serviceType=${source}`);
-      } else if (source === "encargoVarios") {
+      } else if (source === "varios") {
         navigate(`/recepcionVarios?serviceType=${source}`);
       } else {
         navigate("/clients");
@@ -130,6 +130,10 @@ function AddClient() {
       navigate(`/autoservicio?serviceType=${source}`);
     } else if (source === "planchado") {
       navigate(`/recepcionPlanchado?serviceType=${source}`);
+    } else if (source === "tintoreria") {
+      navigate(`/recepcionTintoreria?serviceType=${source}`);
+    } else if (source === "varios") {
+      navigate(`/recepcionVarios?serviceType=${source}`);
     } else {
       navigate("/clients");
     }

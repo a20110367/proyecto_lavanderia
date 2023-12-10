@@ -537,7 +537,7 @@ export default function PuntoVenta() {
           </div>
 
           <div className="col-md-3 ml-10">
-            {(categoryId === 3 || categoryId === 4)  ? (
+            {(categoryId === 3 || categoryId === 4)  ? (  //|| categoryId === 4 Solo para ver si jala
               <p className="text-3xl font-semibold text-center">
                 Piezas del Pedido:{" "}
                 <span className="text-orange-600">{pieces}</span>

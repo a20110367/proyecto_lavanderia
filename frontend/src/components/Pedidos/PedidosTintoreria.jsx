@@ -103,6 +103,10 @@ function PedidosTintoreria() {
     );
     setPedidos(updatedPedidos);
    
+    await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
+      orderStatus: "inProgress",
+    });
+
       setSelectedPedido(pedido);
        } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -111,27 +115,6 @@ function PedidosTintoreria() {
     }
   };
 
-  const handleConfirmMachineSelection = async () => {
-    try {
-
-
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_order === selectedPedido.id_order
-          ? { ...p, orderStatus: "inProgress" }
-          : p
-      );
-
-      setPedidos(updatedPedidos);
-
-    //   await api.patch(`/startIronQueue/${selectedPedido.id_order}`, {
-    //     fk_idIronStation: selectedMachine.id_ironStation,
-    //     fk_idStaffMember: cookies.token,
-    //   });
-
-    } catch (error) {
-      console.error("Error al actualizar el pedido:", error);
-    }
-  };
 
   const handleFinishProcess = async (pedido) => {
     setLoading(true);
@@ -161,6 +144,7 @@ function PedidosTintoreria() {
         //   pieces: pedido.ironPieces
         // })
 
+        
         showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
         await api.post("/sendMessage", {
           id_order: pedido.id_order,

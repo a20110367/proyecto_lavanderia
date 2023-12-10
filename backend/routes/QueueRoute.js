@@ -35,8 +35,17 @@ import {
     deliveryDrycleanQueue,
     receptionDrycleanQueue,
     updateDrycleanQueue,
-    deleteDrycleanQueue
-    
+    deleteDrycleanQueue,
+
+    getOtherQueue,
+    getOtherQueueById,
+    getOtherQueueByOrderId,
+    createManyOtherQueue,
+    updateStartOtherQueue,
+    updateFinishOtherQueue,
+    updateOtherQueue,
+    deleteOtherQueue
+
 } from "../controllers/QueueController.js";
 
 const router = express.Router();
@@ -76,5 +85,13 @@ router.patch('/deliveryDrycleanQueue/:id', deliveryDrycleanQueue);
 router.patch('/receptionDrycleanQueue/:id', receptionDrycleanQueue);
 router.patch('/drycleanQueue/:id', updateDrycleanQueue);
 router.delete('/drycleanQueue/:id', deleteDrycleanQueue);
+
+router.get('/otherQueue', getOtherQueue);
+router.get('/otherQueueById/:id', getOtherQueueById);
+router.get('/otherQueueByOrder/:fk_Order', getOtherQueueByOrderId);
+//router.post('/otherQueue', createManyOtherQueue);
+router.patch('/startOtherQueue/:id', updateStartOtherQueue);
+router.patch('/finishOtherQueue/:id', updateFinishOtherQueue);
+router.delete('/otherQueue/:id', deleteOtherQueue);
 
 export default router;

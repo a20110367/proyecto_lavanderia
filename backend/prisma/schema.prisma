@@ -54,6 +54,9 @@ model Machine {
   serialNumber String      @default("N/A")
 
   SelfServiceQueue SelfServiceQueue[]
+  WashDetail       WashDetail[]
+  DryDetail        DryDetail[]
+  OtherQueue       OtherQueue[]
 }
 
 model IronStation {
@@ -92,6 +95,7 @@ model Category {
   SelfService     SelfService[]
   IronService     IronService[]
   DrycleanService DrycleanService[]
+  OtherService    OtherService[]
 }
 
 model IronService {
@@ -140,18 +144,32 @@ model LaundryService {
 }
 
 model DrycleanService {
-  id_service         Int                  @id @default(autoincrement())
-  description        String               @unique
-  price              Float
-  pieces             Int
-  token_id           Int?
-  category_id        Int
-  created            DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  id_service  Int      @id @default(autoincrement())
+  description String   @unique
+  price       Float
+  pieces      Int
+  token_id    Int?
+  category_id Int
+  created     DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail ServiceOrderDetail[]
   DrycleanQueue      DrycleanQueue[]
+}
+
+model OtherService {
+  id_service  Int      @id @default(autoincrement())
+  description String   @unique
+  price       Float
+  token_id    Int?
+  category_id Int
+  created     DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail ServiceOrderDetail[]
+  OtherQueue         OtherQueue[]
 }
 
 model ServiceOrder {
@@ -184,6 +202,7 @@ model ServiceOrder {
   SelfServiceQueue      SelfServiceQueue[]
   IronQueue             IronQueue[]
   DrycleanQueue         DrycleanQueue[]
+  OtherQueue            OtherQueue[]
 }
 
 model ServiceOrderDetail {
@@ -197,12 +216,14 @@ model ServiceOrderDetail {
   fk_selfService        Int?
   fk_ironService        Int?
   fk_drycleanService    Int?
+  fk_otherService       Int?
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
   LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])
   SelfService     SelfService?     @relation(fields: [fk_selfService], references: [id_service])
   IronService     IronService?     @relation(fields: [fk_ironService], references: [id_service])
   DrycleanService DrycleanService? @relation(fields: [fk_drycleanService], references: [id_service])
+  OtherService    OtherService?    @relation(fields: [fk_otherService], references: [id_service])
 }
 
 model LaundryQueue {
@@ -227,6 +248,7 @@ model WashDetail {
   fk_idStaffMember Int?
   fk_laundryEvent  Int? @unique
 
+  Machine      Machine?      @relation(fields: [fk_idWashMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
   LaundryQueue LaundryQueue? @relation(fields: [fk_laundryEvent], references: [id_laundryEvent], onDelete: SetNull, onUpdate: Cascade)
   StaffMember  StaffMember?  @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -237,6 +259,7 @@ model DryDetail {
   fk_idStaffMember Int?
   fk_laundryEvent  Int? @unique
 
+  Machine      Machine?      @relation(fields: [fk_idDryMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
   LaundryQueue LaundryQueue? @relation(fields: [fk_laundryEvent], references: [id_laundryEvent], onDelete: SetNull, onUpdate: Cascade)
   StaffMember  StaffMember?  @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -285,6 +308,22 @@ model DrycleanQueue {
   drycleanService DrycleanService @relation(fields: [fk_idDrycleanService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model OtherQueue {
+  id_otherEvent     Int           @id @default(autoincrement())
+  id_description    String?
+  fk_idOtherService Int
+  fk_idServiceOrder Int
+  fk_idStaffMember  Int?
+  token_id          Int?
+  fk_idMachine      Int?
+  serviceStatus     ServiceStatus @default(pending)
+
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  machine      Machine?     @relation(fields: [fk_idMachine], references: [id_machine], onDelete: Cascade, onUpdate: Cascade)
+  staffMember  StaffMember? @relation(fields: [fk_idStaffMember], references: [id_staffMember], onDelete: Cascade, onUpdate: Cascade)
+  otherService OtherService @relation(fields: [fk_idOtherService], references: [id_service], onDelete: Cascade, onUpdate: Cascade)
+}
+
 model Payment {
   id_payment   Int             @id @default(autoincrement())
   fk_idOrder   Int             @unique
@@ -329,6 +368,7 @@ model StaffMember {
   WashDetail    WashDetail[]
   DryDetail     DryDetail[]
   DrycleanQueue DrycleanQueue[]
+  OtherQueue    OtherQueue[]
 }
 
 model CashCut {

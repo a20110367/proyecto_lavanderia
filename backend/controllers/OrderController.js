@@ -514,6 +514,79 @@ export const createLaudryServiceOrder = async (req, res) => {
     }
 }
 
+export const createOtherServiceOrder = async (req, res) => {
+
+    try {
+
+        const otherDetail = [];
+        const serviceOrder = await prisma.serviceOrder.create({
+
+            data: req.body.serviceOrder,
+
+        });
+        console.log(serviceOrder.id_order);
+
+        const serviceDetail = req.body.services.map(item => ({ fk_otherService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        console.log(serviceDetail);
+
+        const serviceQueue = serviceDetail.map((item, index) => ({
+            fk_otherService: item.fk_otherService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+        }));
+
+        console.log(serviceQueue);
+
+        const services = req.body.services;
+        const serviceOrderDetail = await prisma.serviceOrderDetail.createMany({
+
+            data: serviceDetail
+
+
+        });
+
+        console.log(serviceOrderDetail);
+        var i = 0;
+        var series = 1;
+        //const{id_service,quantity,price,category_id}=services;
+        //id_description: (serviceOrder.id_order.toString() + "-" + (series + 1).toString()
+        while (serviceQueue.length > i) {
+            var j = 0;
+            while (serviceQueue.at(i).units > j) {
+
+                const otherQueue = await prisma.otherQueue.create({
+                    data: {
+                        id_description: (serviceQueue.at(i).fk_idServiceOrder.toString() + "-" + series.toString()),
+                        fk_otherService: serviceQueue.at(i).fk_otherService,
+                        fk_idServiceOrder: serviceQueue.at(i).fk_idServiceOrder,
+
+                    },
+                });
+                otherDetail.push(otherQueue);
+                j++;
+                series++;
+            }
+
+
+
+            i++;
+        }
+
+
+        const response = {
+
+            "serviceOrder": serviceOrder,
+            "orderDetail": otherDetail,
+
+        }
+
+        res.status(201).json(response);
+
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+
+
 
 export const createSelfServiceOrder = async (req, res) => {
 

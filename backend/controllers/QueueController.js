@@ -318,7 +318,7 @@ export const updateSelfServiceQueue = async (req, res) => {
     try {
         const selfServiceEvent = await prisma.selfServiceQueue.update({
             where: {
-                id_dryEvent: Number(req.params.id)
+                id_serviceEvent: Number(req.params.id)
             },
 
             data: req.body
@@ -758,7 +758,7 @@ export const receptionDrycleanQueue = async (req, res) => {
     try {
 
         //const { fk_idStaffMember, fk_idIronStation } = req.body;
-        const finishIronQueue = await prisma.ironQueue.updateMany({
+        const finishDrycleanQueue = await prisma.drycleanQueue.updateMany({
             where: {
                 fk_idServiceOrder: Number(req.params.id)
             },
@@ -777,7 +777,7 @@ export const receptionDrycleanQueue = async (req, res) => {
                 orderStatus: "finished"
             }
         });
-        res.status(200).json(finishIronQueue);
+        res.status(200).json(finishDrycleanQueue);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -788,10 +788,208 @@ export const deleteDrycleanQueue = async (req, res) => {
     try {
         const id_drycleanEvent = await prisma.drycleanQueue.delete({
             where: {
-                id_ironEvent: Number(req.params.id)
+                id_drycleanEvent: Number(req.params.id)
             }
         });
         res.status(200).json(id_drycleanEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+
+
+export const getOtherQueue = async (req, res) => {
+    try {
+        const response = await prisma.otherQueue.findMany({
+
+
+            include: {
+                otherService: true,
+                serviceOrder: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                        client: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                                phone: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+                //WashDetail:true,
+                //DryDetail:true,
+            },
+
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+export const getOtherQueueById = async (req, res) => {
+    try {
+        const response = await prisma.otherQueue.findUnique({
+            where: {
+                id_otherEvent: Number(req.params.id)
+            }
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const getOtherQueueByOrderId = async (req, res) => {
+    try {
+        const response = await prisma.otherQueue.findUnique({
+            where: {
+                fk_idServiceOrder: Number(req.params.fk_Order)
+            }
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const createManyOtherQueue = async (req, res) => {
+
+    try {
+        const otherEvent = await prisma.otherQueue.createMany({
+            data: req.body
+
+        });
+        res.status(201).json(otherEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const updateOtherQueue = async (req, res) => {
+    try {
+        const selfServiceEvent = await prisma.otherQueue.update({
+            where: {
+                id_otherEvent: Number(req.params.id)
+            },
+
+            data: req.body
+        });
+        res.status(200).json(selfServiceEvent);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const updateStartOtherQueue = async (req, res) => {
+
+    try {
+        const startOtherService = await prisma.otherQueue.update({
+            where: {
+                id_otherEvent: Number(req.params.id)
+            },
+
+            data: {
+
+                fk_idStaffMember: req.body.fk_idStaffMember,
+                serviceStatus: "inProgress"
+
+            }
+        });
+
+        res.status(200).json(startOtherService);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const updateFinishOtherQueue = async (req, res) => {
+
+    try {
+
+        const otherServiceEvent = await prisma.otherQueue.update({
+            where: {
+                id_otherEvent: Number(req.params.id)
+            },
+
+            data: {
+                serviceStatus: "finished"
+            }
+        });
+
+        const serviceOrderFinished = await prisma.otherQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        fk_idServiceOrder: otherServiceEvent.fk_idServiceOrder
+                    },
+                    {
+                        OR: [
+                            {
+                                serviceStatus: "inProgress"
+                            },
+                            {
+                                serviceStatus: "pending"
+                            }
+                        ]
+                    },
+                ],
+            },
+        })
+
+        var response;
+        if (serviceOrderFinished.length === 0) {
+
+            const serviceOrder = await prisma.serviceOrder.update({
+
+                where: {
+                    id_order: otherServiceEvent.fk_idServiceOrder
+                },
+                data: {
+                    orderStatus: "finished"
+                }
+            });
+
+            response = {
+                "id_order ": serviceOrder.id_order,
+                "orderStatus": "finished"
+            };
+
+        } else {
+
+            response = {
+                "id_order ": otherServiceEvent.fk_idServiceOrder,
+                "orderStatus": "inProgress"
+            };
+
+        }
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+
+}
+
+export const deleteOtherQueue = async (req, res) => {
+    try {
+        const id_otherEvent = await prisma.otherQueue.delete({
+            where: {
+                id_otherEvent: Number(req.params.id)
+            }
+        });
+        res.status(200).json(id_otherEvent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

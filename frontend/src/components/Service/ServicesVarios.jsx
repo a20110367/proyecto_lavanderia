@@ -78,7 +78,7 @@ function ServicesVarios() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios de <br /> Encargo Varios</strong>
+        <strong className="title-strong">Servicios de Encargo Varios</strong>
       </div>
       <div className="w-full pt-4">
         <button

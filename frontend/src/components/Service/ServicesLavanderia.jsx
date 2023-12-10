@@ -78,7 +78,7 @@ function ServicesLavanderia() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios de <br /> Encargo Ropa</strong>
+        <strong className="title-strong">Servicios de  Encargo Ropa</strong>
       </div>
       <div className="w-full pt-4">
         <button

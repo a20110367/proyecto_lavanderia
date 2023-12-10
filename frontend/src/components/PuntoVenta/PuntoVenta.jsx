@@ -115,7 +115,6 @@ export default function PuntoVenta() {
       setFetch("selfService");
       setCategoryId(1);
       setPostUrl("/ordersSelfService");
-
       setPayStatus("paid");
       setPayForm("advance");
     } else if (serviceType === "encargo") {
@@ -130,6 +129,8 @@ export default function PuntoVenta() {
       setFetch("dryCleanService");
       setCategoryId(4);
       setPostUrl("/ordersDrycleanService");
+      setPayStatus("paid");
+      setPayForm("advance");
     } else {
       setFetch("variosService");
       setCategoryId(5);

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
-import { BsFillTrashFill } from "react-icons/bs";
-import { AiFillEdit } from "react-icons/ai";
+import { BsFillTrashFill } from "react-icons/bs"
+import { AiFillEdit } from "react-icons/ai"
 import api from '../../api/api'
 
 // Dialogs
@@ -14,7 +14,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-function ServicesPlanchado() {
+function ServicesVarios() {
   const [serviceSelDesc, setServiceSelDesc] = useState();
   const [serviceSelId, setServiceSelId] = useState();
   const [open, setOpen] = useState(false);
@@ -28,13 +28,14 @@ function ServicesPlanchado() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/servicesIron");
+    const response = await api.get("/servicesLaundry");
     return response.data;
   };
 
-  const { data } = useSWR("servicesIron", fetcher);
+  const { data } = useSWR("servicesLaundry", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
+  // Filtrar servicios relacionados con lavandería
   const filteredData = data.filter((service) => {
     const description = service.description.toLowerCase();
     const exclusionKeywords = [
@@ -42,22 +43,21 @@ function ServicesPlanchado() {
       "auto servicio",
       "autoservicios",
       "auto servicios",
+      "planchado",
+      "plancha",
+      "tintoreria"
     ];
     const excludeService = exclusionKeywords.some((keyword) =>
       new RegExp(keyword, "i").test(description)
     );
     return (
-      (description.includes("planchado") ||
-        description.includes("planchados") ||
-        description.includes("planchaduria")) &&
       !excludeService
     );
   });
 
   const deleteService = async (serviceId) => {
-    console.log(serviceId)
-    await api.delete(`/servicesIron/${serviceId}`);
-    mutate("servicesIron");
+    await api.delete(`/servicesLaundry/${serviceId}`);
+    mutate("servicesLaundry");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {
@@ -78,24 +78,23 @@ function ServicesPlanchado() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios de Planchaduria</strong>
+        <strong className="title-strong">Servicios de <br /> Encargo Varios</strong>
       </div>
       <div className="w-full pt-4">
         <button
-          onClick={() => navigate("/addServicePlanchado")}
+          onClick={() => navigate("/addServiceVarios")}
           className="btn-primary"
         >
           Añadir Nuevo Servicio
           <br />
-          de Planchado
+          de Encargo Varios
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
-                <th>No. servicio</th>
+              <th>No. servicio</th> 
                 <th>Descripción</th>
-                <th>Piezas</th>
                 <th>Categoria</th>
                 <th>Precio</th>
                 <th>Opciones</th>
@@ -111,19 +110,18 @@ function ServicesPlanchado() {
                   <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
-                    <td>{service.pieces}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
                     <td>
                       <button
                         onClick={() =>
                           navigate(
-                            `/editServicePlanchado/${service.id_service}`
+                            `/editServiceVarios/${service.id_service}`
                           )
                         }
-                        className="btn-edit"
+                        className=" btn-edit"
                       >
-                        <AiFillEdit />
+                        <AiFillEdit/>
                       </button>
                       <button
                         onClick={() =>
@@ -134,7 +132,7 @@ function ServicesPlanchado() {
                         }
                         className="btn-cancel"
                       >
-                        <BsFillTrashFill />
+                        <BsFillTrashFill/>
                       </button>
                       <Dialog
                         open={open}
@@ -188,4 +186,4 @@ function ServicesPlanchado() {
   );
 }
 
-export default ServicesPlanchado;
+export default ServicesVarios;

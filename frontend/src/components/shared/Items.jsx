@@ -14,6 +14,7 @@ import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
 import { HiWrenchScrewdriver } from "react-icons/hi2"
 import { RiHandCoinFill } from "react-icons/ri"
 import { useAuth } from '../../hooks/auth/auth'
+import { PiShirtFoldedDuotone } from "react-icons/pi";
 
 function getItem(label, key, icon, children, type) {
     return {
@@ -50,10 +51,23 @@ const items1 = [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
     ]),
+
+    getItem(
+        "Tintoreria",
+        "/Tintoreria",
+        <PiShirtFoldedDuotone    style={iconStyle} />,
+        [
+            getItem("Recepcion", "/recepcionTintoreria"),
+            getItem("Entrega", "/entregaTintoreria"),
+
+        ]
+    ),
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
         getItem("Encargo", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("Tintoreria", "/pedidosTintoreria"),
         getItem("General", "/pedidosGeneral"),
     ]),
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
@@ -76,9 +90,11 @@ const items1 = [
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
     
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Encargo", "/servicesLavanderia"),
+        getItem("Encargo Ropa", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
+        getItem("Tintoreria", "/servicesTintoreria"),
+        getItem("Encargo Varios", "/servicesVarios"),
 
     ]),
     { type: "divider", style: { margin: "140px " } },
@@ -105,10 +121,24 @@ const items2 = [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
     ]),
+
+    
+    getItem(
+        "Tintoreria",
+        "/Tintoreria",
+        <PiShirtFoldedDuotone    style={iconStyle} />,
+        [
+            getItem("Recepcion", "/recepcionTintoreria"),
+            getItem("Entrega", "/entregaTintoreria"),
+
+        ]
+    ),
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Encargo", "/pedidosLavanderia"),
+        getItem("Encargo Ropa", "/pedidosLavanderia"),
         getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("Tintoreria", "/pedidosTintoreria"),
         getItem("General", "/pedidosGeneral"),
 
     ]),
@@ -131,9 +161,11 @@ const items2 = [
     ]),
 
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Encargo", "/servicesLavanderia"),
+        getItem("Encargo Ropa", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
+        getItem("Tintoreria", "/servicesTintoreria"),
+        getItem("Encargo Varios", "/servicesVarios"),
 
     ]),
 

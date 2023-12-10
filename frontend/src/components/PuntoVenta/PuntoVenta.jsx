@@ -55,58 +55,59 @@ export default function PuntoVenta() {
       ? parseInt(localStorage.getItem("numberOfPieces"))
       : 0
   );
-  const dummyProducts = [
-    { name: "Fabuloso", price: 15 },
-    { name: "Pinol", price: 20 },
-    { name: "Ace", price: 25 },
-    { name: "Suavitel", price: 30 },
-    { name: "Blancanieves", price: 40 },
-  ];
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
+  ///////////////////////IGNORA ESTO SAUL, ES DE PRODUCTOS Y DE MOMENTO ESO SE VA A LA VRG//////////////////////////////
+  // const dummyProducts = [
+  //   { name: "Fabuloso", price: 15 },
+  //   { name: "Pinol", price: 20 },
+  //   { name: "Ace", price: 25 },
+  //   { name: "Suavitel", price: 30 },
+  //   { name: "Blancanieves", price: 40 },
+  // ];
+  // const [selectedProducts, setSelectedProducts] = useState([]);
+   const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
 
-  // Función para agregar productos
-  const addProduct = (productName, price) => {
-    const existingProduct = selectedProducts.find(
-      (product) => product.name === productName
-    );
+  // // Función para agregar productos igual esto mandalo a la vrg
+  // const addProduct = (productName, price) => {
+  //   const existingProduct = selectedProducts.find(
+  //     (product) => product.name === productName
+  //   );
 
-    if (existingProduct) {
-      // Si el producto ya está en la lista, incrementa la cantidad
-      const updatedProducts = selectedProducts.map((product) =>
-        product.name === productName
-          ? { ...product, quantity: product.quantity + 1 }
-          : product
-      );
-      setSelectedProducts(updatedProducts);
-    } else {
-      // Si el producto no está en la lista, agrégalo con cantidad 1
-      setSelectedProducts([
-        ...selectedProducts,
-        { name: productName, price: price, quantity: 1 },
-      ]);
-    }
-  };
+  //   if (existingProduct) {
+  //     // Si el producto ya está en la lista, incrementa la cantidad
+  //     const updatedProducts = selectedProducts.map((product) =>
+  //       product.name === productName
+  //         ? { ...product, quantity: product.quantity + 1 }
+  //         : product
+  //     );
+  //     setSelectedProducts(updatedProducts);
+  //   } else {
+  //     // Si el producto no está en la lista, agrégalo con cantidad 1
+  //     setSelectedProducts([
+  //       ...selectedProducts,
+  //       { name: productName, price: price, quantity: 1 },
+  //     ]);
+  //   }
+  // };
 
-  // Función para eliminar productos
-  const removeProduct = (productName) => {
-    const updatedProducts = selectedProducts
-      .map((product) =>
-        product.name === productName
-          ? { ...product, quantity: product.quantity - 1 }
-          : product
-      )
-      .filter((product) => product.quantity > 0);
-    setSelectedProducts(updatedProducts);
-  };
+  // // Función para eliminar productos
+  // const removeProduct = (productName) => {
+  //   const updatedProducts = selectedProducts
+  //     .map((product) =>
+  //       product.name === productName
+  //         ? { ...product, quantity: product.quantity - 1 }
+  //         : product
+  //     )
+  //     .filter((product) => product.quantity > 0);
+  //   setSelectedProducts(updatedProducts);
+  // };
 
-  // Función para calcular el precio total de los productos seleccionados
-  const calculateProductTotal = () => {
-    return selectedProducts.reduce(
-      (total, product) => total + product.price * product.quantity,
-      0
-    );
-  };
+  // // Función para calcular el precio total de los productos seleccionados
+  // const calculateProductTotal = () => {
+  //   return selectedProducts.reduce(
+  //     (total, product) => total + product.price * product.quantity,
+  //     0
+  //   );
+  // };
 
   useEffect(() => {
     // Definir el category_id
@@ -121,10 +122,18 @@ export default function PuntoVenta() {
       setFetch("laundryService");
       setCategoryId(2);
       setPostUrl("/ordersLaundryService");
-    } else {
+    } else if (serviceType === "planchado") {
       setFetch("ironService");
       setCategoryId(3);
       setPostUrl("/ordersIronService");
+    } else if (serviceType === "tintoreria") {
+      setFetch("dryCleanService");
+      setCategoryId(4);
+      setPostUrl("/ordersDrycleanService");
+    } else {
+      setFetch("variosService");
+      setCategoryId(5);
+      setPostUrl("/ordersVariosService");
     }
   }, [serviceType]);
 
@@ -213,7 +222,7 @@ export default function PuntoVenta() {
         }
       })
       .filter(Boolean);
-    setSelectedProducts([]);
+    // setSelectedProducts([]);
     setCart(updatedCart);
 
     if (serviceId === selectedServiceId) {
@@ -384,6 +393,15 @@ export default function PuntoVenta() {
           return true;
         }
         if (
+          serviceType === "tintoreria" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
           serviceType === "autoservicio" &&
           service.description.toLowerCase().includes("autoservicio")
         ) {
@@ -519,7 +537,7 @@ export default function PuntoVenta() {
           </div>
 
           <div className="col-md-3 ml-10">
-            {categoryId === 3 ? (
+            {(categoryId === 3 || categoryId === 4)  ? (
               <p className="text-3xl font-semibold text-center">
                 Piezas del Pedido:{" "}
                 <span className="text-orange-600">{pieces}</span>
@@ -556,7 +574,9 @@ export default function PuntoVenta() {
                   </li>
                 ))}
               </ul>
-              {serviceType === "autoservicio" && cart.length > 0 && (
+              
+              {/* ///////////////// LO DE PRODUCTOS QUE POR EL MOMENTO SE VAN A LA VRG ///////////////// NO LO DESCOMENTES SAUL XD
+               {serviceType === "autoservicio" && cart.length > 0 && (
                 <div className="mt-4 rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
                   <h3 className="text-lg font-semibold mb-2">
                     Productos Disponibles
@@ -624,12 +644,12 @@ export default function PuntoVenta() {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className="flex mt-4 justify-between">
                 <div>
                   <strong>Subtotal:</strong> $
-                  {calculateSubtotal() + calculateProductTotal()}
+                  {calculateSubtotal()} {/*+ calculateProductTotal()*/}
                 </div>
                 {categoryId === 3 ? (
                   <div className="flex items-center">
@@ -754,7 +774,8 @@ export default function PuntoVenta() {
                         </p>
                       </div>
                     ))}
-                    {selectedProducts.length > 0 && (
+                    {////////////////PRODUCTOS SELECCIONADOS QUE SE MUESTRAN PERO DE MOMENTO ALAVERGA//////////////// TAMPOCO LOS DESCOMENTES
+                    /* {selectedProducts.length > 0 && (
                       <div>
                         <p className="text-base font-semibold">
                           Productos Seleccionados:
@@ -772,7 +793,7 @@ export default function PuntoVenta() {
                           {calculateProductTotal()}
                         </p>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   <div>
@@ -780,7 +801,7 @@ export default function PuntoVenta() {
                       Subtotal:
                     </p>
                     <p style={{ fontSize: "16px" }}>
-                      ${calculateSubtotal() + calculateProductTotal()}
+                      ${calculateSubtotal()} {/**+ calculateProductTotal() */}
                     </p>
                   </div>
                   <div>

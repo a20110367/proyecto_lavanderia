@@ -101,6 +101,10 @@ function AddClient() {
         navigate(`/autoservicio?serviceType=${source}`);
       } else if (source === "planchado") {
         navigate(`/recepcionPlanchado?serviceType=${source}`);
+      } else if (source === "tintoreria") {
+        navigate(`/recepcionTintoreria?serviceType=${source}`);
+      } else if (source === "encargoVarios") {
+        navigate(`/recepcionVarios?serviceType=${source}`);
       } else {
         navigate("/clients");
       }

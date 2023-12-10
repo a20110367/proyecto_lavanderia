@@ -19,7 +19,10 @@ import ServicesLavanderia from "./components/Service/ServicesLavanderia"
 import AddServiceLavanderia from './components/Service/AddServiceLavanderia'
 import EditServiceLavanderia from './components/Service/EditServiceLavanderia'
 
-
+//Tintoreria
+import ServicesTintoreria from "./components/Service/ServicesTintoreria"
+import AddServiceTintoreria from "./components/Service/AddServiceTintoreria"
+import EditServiceTintoreria from "./components/Service/EditServiceTintoreria"
 
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
@@ -73,6 +76,13 @@ import ServicesAutoservicio from "./components/Service/ServicesAutoservicio"
 import AddServiceAutoservicio from "./components/Service/AddServiceAutoservicio"
 import EditServiceAutoservicio from "./components/Service/EditServiceAutoservicio"
 
+import EntregaTintoreria from "./components/Tintoreria/EntregaTintoreria"
+import RecepcionTintoreria from "./components/Tintoreria/RecepcionTintoreria"
+import PedidosTintoreria from "./components/Pedidos/PedidosTintoreria"
+import ServicesVarios from "./components/Service/ServicesVarios"
+import AddServiceVarios from "./components/Service/AddServiceVarios"
+import EditServiceVarios from "./components/Service/EditServiceVarios"
+
 function App() {
     const { cookies } = useAuth();
 
@@ -118,6 +128,10 @@ function App() {
                     <Route path="/addServiceLavanderia" element={<AddServiceLavanderia />} />
                     <Route path="/editServiceLavanderia/:id" element={<EditServiceLavanderia />} />
 
+                    <Route path="/ServicesTintoreria" element={<ServicesTintoreria />} />
+                    <Route path="/addServiceTintoreria" element={<AddServiceTintoreria />} />
+                    <Route path="/editServiceTintoreria/:id" element={<EditServiceTintoreria />} />
+
                     <Route path="/servicesPlanchado" element={<ServicesPlanchado />} />
                     <Route path="/addServicePlanchado" element={<AddServicePlanchado />} />
                     <Route path="/editServicePlanchado/:id" element={<EditServicePlanchado />} />
@@ -125,6 +139,10 @@ function App() {
                     <Route path="/servicesAutoservicio" element={<ServicesAutoservicio />} />
                     <Route path="/addServiceAutoservicio" element={<AddServiceAutoservicio />} />
                     <Route path="/editServiceAutoservicio/:id" element={<EditServiceAutoservicio />} />
+
+                    <Route path="/servicesVarios" element={<ServicesVarios />} />
+                    <Route path="/addServiceVarios" element={<AddServiceVarios />} />
+                    <Route path="/editServiceVarios/:id" element={<EditServiceVarios />} />
 
 
                     {/* Pedidos */}
@@ -143,6 +161,10 @@ function App() {
                     <Route path="/addClient" element={<AddClient/>}/>
                     <Route path="/settings" element={<Settings/>}/>
 
+                    {/*Tintoreria */}
+                    <Route path="/entregaTintoreria" element={<EntregaTintoreria />} />
+                    <Route path="/recepcionTintoreria" element={<RecepcionTintoreria/>} />
+                    <Route path="/pedidosTintoreria" element={<PedidosTintoreria/>} />
 
                     {/* Clients */}
                     {/* <Route path="/addClient" element={

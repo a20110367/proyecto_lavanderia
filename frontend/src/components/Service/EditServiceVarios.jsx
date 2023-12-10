@@ -3,16 +3,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from "../../api/api";
 
-function EditServiceLavanderia() {
-
-
+function EditServiceVarios() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [washCycleTime, setWashCycleTime] = useState(0);
-  const [washWeight, setWashWeight] = useState(0);
-  const [dryCycleTime, setDryCycleTime] = useState(0);
-  const [dryWeight, setDryWeight] = useState(0);
-  const [category, setCategory] = useState("encargo");
+  const [category, setCategory] = useState("varios");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -21,7 +15,7 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado"];
+  const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
 
   useEffect(() => {
     const getServiceById = async () => {
@@ -29,20 +23,14 @@ function EditServiceLavanderia() {
         const response = await api.get(`/servicesLaundry/${id}`);
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
-        setCategory("Encargo");
-        setWashCycleTime(response.data.washCycleTime || 0);
-        setWashWeight(response.data.washWeight || 0);
-        setDryCycleTime(response.data.dryCycleTime || 0);
-        setDryWeight(response.data.dryWeight || 0);
+        setCategory("Varios");
       } catch (error) {
         console.error("Error fetching service:", error);
       }
     };
-  
+
     getServiceById();
   }, [id]);
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,7 +44,7 @@ function EditServiceLavanderia() {
       return;
     }
 
-    if (!description || !price || !washCycleTime) {
+    if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
@@ -70,16 +58,12 @@ function EditServiceLavanderia() {
       await api.patch(`/servicesUpdateLaundry/${id}`, {
         description: description,
         price: parseFloat(price),
-        washWeight: parseInt(washWeight),
-        washCycleTime: parseInt(washCycleTime),
-        category_id: 2,
-        dryWeight: parseInt(dryWeight),
-        dryCycleTime: parseInt(dryCycleTime),
+        category_id: 5,
       });
-      navigate("/servicesLavanderia");
+      navigate("/servicesVarios");
       setSuccess(true);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setErrMsg("Error al actualizar el servicio.");
     }
   };
@@ -88,7 +72,9 @@ function EditServiceLavanderia() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">Editando el Servicio de <br /> Encargo Ropa:</p>
+          <p className="title text-white">
+            Editando el Servicio de <br /> Encargo Varios:
+          </p>
           <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
@@ -128,60 +114,9 @@ function EditServiceLavanderia() {
                 className="form-input"
                 type="number"
                 id="price"
-
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
-              />
-
-              <label className="form-lbl" htmlFor="washCycleTime">
-                Tiempo (minutos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="washCycleTime"
-
-                onChange={(e) => setWashCycleTime(e.target.value)}
-                value={washCycleTime}
-                required
-              />
-
-              <label className="form-lbl" htmlFor="washWeight">
-                Peso (Kilos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="washWeight"
-
-                onChange={(e) => setWashWeight(e.target.value)}
-                value={washWeight}
-              />
-
-              <label className="form-lbl" htmlFor="dryCycleTime">
-                Tiempo de Secado (minutos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="dryCycleTime"
-
-                onChange={(e) => setDryCycleTime(e.target.value)}
-                value={dryCycleTime}
-                required
-              />
-
-              <label className="form-lbl" htmlFor="dryWeight">
-                Peso de Secado (Kilogramos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="dryWeight"
-
-                onChange={(e) => setDryWeight(e.target.value)}
-                value={dryWeight}
               />
 
               <label className="form-lbl" htmlFor="category">
@@ -200,7 +135,7 @@ function EditServiceLavanderia() {
               </button>
               <button
                 className="btn-cancel"
-                onClick={() => navigate("/servicesLavanderia")}
+                onClick={() => navigate("/servicesVarios")}
               >
                 Cancelar
               </button>
@@ -212,4 +147,4 @@ function EditServiceLavanderia() {
   );
 }
 
-export default EditServiceLavanderia;
+export default EditServiceVarios;

@@ -657,6 +657,79 @@ export const createIronServiceOrder = async (req, res) => {
 }
 
 
+
+export const createDrycleanServiceOrder = async (req, res) => {
+
+    try {
+
+        const drycleanServiceDetail = [];
+        const serviceOrder = await prisma.serviceOrder.create({
+
+            data: req.body.serviceOrder,
+
+        });
+        console.log(serviceOrder.id_order);
+
+        const serviceDetail = req.body.services.map(item => ({ fk_drycleanService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        console.log(serviceDetail);
+
+        const serviceQueue = serviceDetail.map((item, index) => ({
+            fk_drycleanService: item.fk_drycleanService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+        }));
+
+        console.log(serviceQueue);
+
+        const services = req.body.services;
+        const serviceOrderDetail = await prisma.serviceOrderDetail.createMany({
+
+            data: serviceDetail
+
+
+        });
+
+        console.log(serviceOrderDetail);
+        var i = 0;
+        var series = 1;
+        //const{id_service,quantity,price,category_id}=services;
+        //id_description: (serviceOrder.id_order.toString() + "-" + (series + 1).toString()
+        while (serviceQueue.length > i) {
+            var j = 0;
+            while (serviceQueue.at(i).units > j) {
+
+                const drycleanQueue = await prisma.drycleanQueue.create({
+                    data: {
+                        //id_description: (serviceQueue.at(i).fk_idServiceOrder.toString()+"-"+series.toString()),
+                        id_description: (serviceQueue.at(i).fk_idServiceOrder.toString()),
+                        fk_idDrycleanService: serviceQueue.at(i).fk_drycleanService,
+                        fk_idServiceOrder: serviceQueue.at(i).fk_idServiceOrder,
+                    },
+                });
+                drycleanServiceDetail.push(drycleanQueue);
+                j++;
+                series++;
+            }
+
+
+
+            i++;
+        }
+
+
+        const response = {
+
+            "serviceOrder": serviceOrder,
+            "orderDetail": drycleanServiceDetail,
+
+        }
+
+        res.status(201).json(response);
+
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+
 // export const createIronServiceOrder = async (req, res) => {
 
 //     try {

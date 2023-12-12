@@ -128,13 +128,13 @@ export default function PuntoVenta() {
     } else if (serviceType === "tintoreria") {
       setFetch("dryCleanService");
       setCategoryId(4);
-      setPostUrl("/ordersDrycleanService");
+      setPostUrl("/ordersDryclean");
       setPayStatus("paid");
       setPayForm("advance");
     } else {
       setFetch("variosService");
       setCategoryId(5);
-      setPostUrl("/ordersVariosService");
+      setPostUrl("/ordersOtherService");
     }
   }, [serviceType]);
 

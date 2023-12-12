@@ -108,6 +108,11 @@ function PedidosTintoreria() {
     });
 
       setSelectedPedido(pedido);
+      showNotification(`Pedido iniciado`);
+
+      // await api.patch(`/startIronQueue/${selectedPedido.id_order}`, {
+      //   fk_idStaffMember: cookies.token,
+      // });
        } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -136,7 +141,6 @@ function PedidosTintoreria() {
         setPedidos(updatedPedidos);
 
         // await api.patch(`/finishIronQueue/${pedido.id_order}`, {
-        //   fk_idIronStation: selectedMachine.fk_idIronStation,
         //   fk_idStaffMember: cookies.token,
         // });
 

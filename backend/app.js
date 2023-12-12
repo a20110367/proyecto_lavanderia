@@ -26,7 +26,8 @@ import CashWithdrawalRoute from './routes/CashWithdrawalRoute.js'
 import PettyCashRoute from './routes/PettyCashRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 import IronControlRoute from './routes/IronControlRoute.js'
-
+import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
+import OtherService from './routes/ServiceDrycleanRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -58,7 +59,8 @@ app.use(CashWithdrawalRoute)
 app.use(PettyCashRoute)
 app.use(MessageRoute)
 app.use(IronControlRoute)
-
+app.use(ServiceDryclean)
+app.use(OtherService)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

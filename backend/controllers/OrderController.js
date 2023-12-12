@@ -293,6 +293,105 @@ export const getOrdersIron = async (req, res) => {
     }
 }
 
+export const getOrdersDryclean = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+
+                fk_categoryId: 4
+            },
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: {
+                    select: {
+                        units: true,
+                        subtotal: true,
+                        DrycleanService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                payment: true,
+            },
+        });
+        res.status(201).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const getOrderOtherService = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+
+                fk_categoryId: 5
+            },
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: {
+                    select: {
+                        units: true,
+                        subtotal: true,
+                        OtherService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                payment: true,
+            },
+        });
+        res.status(201).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
 
 
 
@@ -386,6 +485,110 @@ export const getOrdersIronFinished = async (req, res) => {
                         units: true,
                         subtotal: true,
                         IronService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                payment: true,
+            },
+        });
+        res.status(201).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const getOrdersDrycleanFinished = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+                AND: [
+                    {
+                        orderStatus: "finished",
+                    },
+                    {
+                        fk_categoryId: 4
+                    }
+
+                ]
+            },
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: {
+                    select: {
+                        units: true,
+                        subtotal: true,
+                        DrycleanService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            },
+                        },
+                    },
+                },
+                payment: true,
+            },
+        });
+        res.status(201).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+export const getOrdersOtherServiceFinished = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+                AND: [
+                    {
+                        orderStatus: "finished",
+                    },
+                    {
+                        fk_categoryId: 5
+                    }
+
+                ]
+            },
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: {
+                    select: {
+                        units: true,
+                        subtotal: true,
+                        OtherService: {
                             select: {
                                 description: true,
                                 price: true,

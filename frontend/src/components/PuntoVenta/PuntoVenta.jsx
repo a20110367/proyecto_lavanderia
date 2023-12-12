@@ -282,10 +282,15 @@ export default function PuntoVenta() {
       })
     );
 
+    const subTotal = calculateSubtotal()
+
+    const totalWithDiscount = (payMethod === 'credit' ? subTotal - (subTotal * 0.05) : subTotal)
+    console.log(totalWithDiscount)
+
     try {
       const res = await api.post(postUrl, {
         serviceOrder: {
-          totalPrice: calculateSubtotal(),
+          totalPrice: totalWithDiscount,
           fk_client: parseInt(clientId),
           numberOfItems: noOfItems,
           payForm: payForm,
@@ -307,7 +312,7 @@ export default function PuntoVenta() {
         payForm: payForm,
         payStatus: payStatus,
         payMethod: payMethod,
-        subtotal: calculateSubtotal(),
+        subtotal: totalWithDiscount,
         casher: cookies.username,
         client: clientName,
         receptionDate: purchaseDate.toISOString(),

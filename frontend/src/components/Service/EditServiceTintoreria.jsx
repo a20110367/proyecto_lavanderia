@@ -26,7 +26,7 @@ function EditServiceTintoreria() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await api.get(`/servicesIron/${id}`);
+      const response = await api.get(`/servicesDryclean/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setPieces(response.data.pieces)
@@ -59,7 +59,7 @@ function EditServiceTintoreria() {
     }
 
     try {
-      await api.patch(`/servicesUpdateIron/${id}`, {
+      await api.patch(`/servicesUpdateDryclean/${id}`, {
         description: description,
         price: parseFloat(price),
         pieces: parseInt(pieces),

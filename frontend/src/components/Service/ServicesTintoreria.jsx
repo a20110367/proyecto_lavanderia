@@ -28,19 +28,19 @@ function ServicesTintoreria() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/servicesIron");
+    const response = await api.get("/servicesDryclean");
     return response.data;
   };
 
-  const { data } = useSWR("servicesIron", fetcher);
+  const { data } = useSWR("servicesDryclean", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
 
 
   const deleteService = async (serviceId) => {
     console.log(serviceId)
-    await api.delete(`/servicesIron/${serviceId}`);
-    mutate("servicesIron");
+    await api.delete(`/servicesDryclean/${serviceId}`);
+    mutate("servicesDryclean");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {

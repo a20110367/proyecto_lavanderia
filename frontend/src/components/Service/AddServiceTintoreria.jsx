@@ -41,7 +41,7 @@ function AddServiceTintoreria() {
     }
 
     try {
-      await api.post("/servicesIron", {
+      await api.post("/servicesDryclean", {
         description: description,
         price: parseFloat(price),
         // cycleTime: parseInt(time),

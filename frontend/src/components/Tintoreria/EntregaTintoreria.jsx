@@ -39,11 +39,11 @@ function EntregaTintoreria() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ordersIron");
+    const response = await api.get("/servicesDryclean");
     return response.data;
   };
 
-  const { data } = useSWR("ordersDeliveryIron", fetcher);
+  const { data } = useSWR("servicesDryclean", fetcher);
 
   useEffect(() => {
     if (data) {

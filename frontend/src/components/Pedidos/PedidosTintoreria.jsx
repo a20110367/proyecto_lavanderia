@@ -39,11 +39,11 @@ function PedidosTintoreria() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ironQueue");
+    const response = await api.get("/drycleanQueue");
     return response.data;
   };
 
-  const { data } = useSWR("ironQueue", fetcher);
+  const { data } = useSWR("drycleanQueue", fetcher);
 
   useEffect(() => {
     if (data) {

@@ -177,6 +177,7 @@ model ServiceOrder {
   receptionDate         DateTime             @db.Date
   orderStatus           OrderStatus          @default(pending)
   totalPrice            Float
+  notes                 String?
   fk_client             Int
   created               DateTime             @default(now())
   numberOfItems         Int                  @default(1)

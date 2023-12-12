@@ -23,7 +23,6 @@ export default function PuntoVenta() {
   const navigate = useNavigate();
   const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
   const [cart, setCart] = useState([]);
-  const [observaciones, setObservaciones] = useState("");
   const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
@@ -50,6 +49,7 @@ export default function PuntoVenta() {
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
   const [pieces, setPieces] = useState(0);
+  const [notes, setNotes] = useState('');
   const [numberOfPieces, setNumberOfPieces] = useState(
     localStorage.getItem("numberOfPieces")
       ? parseInt(localStorage.getItem("numberOfPieces"))
@@ -64,7 +64,7 @@ export default function PuntoVenta() {
   //   { name: "Blancanieves", price: 40 },
   // ];
   // const [selectedProducts, setSelectedProducts] = useState([]);
-   const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
+  const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
 
   // // Función para agregar productos igual esto mandalo a la vrg
   // const addProduct = (productName, price) => {
@@ -298,6 +298,7 @@ export default function PuntoVenta() {
           express: isExpress,
           ironPieces: pieces ? pieces : null,
           fk_categoryId: categoryId,
+          notes: notes
         },
         services: arrayService,
       });
@@ -313,7 +314,7 @@ export default function PuntoVenta() {
         receptionTime: purchaseDate.toISOString(),
         scheduledDeliveryDate: deliveryDate.toISOString(),
         scheduledDeliveryTime: deliveryDate.toISOString(),
-        notes: "",
+        notes: notes,
         cart: cart,
       };
       orderTicket(order);
@@ -577,7 +578,7 @@ export default function PuntoVenta() {
               </ul>
               
               {/* ///////////////// LO DE PRODUCTOS QUE POR EL MOMENTO SE VAN A LA VRG ///////////////// NO LO DESCOMENTES SAUL XD
-               {serviceType === "autoservicio" && cart.length > 0 && (
+              {serviceType === "autoservicio" && cart.length > 0 && (
                 <div className="mt-4 rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
                   <h3 className="text-lg font-semibold mb-2">
                     Productos Disponibles
@@ -752,13 +753,13 @@ export default function PuntoVenta() {
                   )}
                   <div>
                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                      Observaciones
+                      Observaciones:
                     </p>
                     <textarea
-                      className="observations"
+                      className="notes"
                       placeholder="Añadir observaciones..."
-                      value={observaciones}
-                      onChange={(e) => setObservaciones(e.target.value)}
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
                     />
                   </div>
                   <div>

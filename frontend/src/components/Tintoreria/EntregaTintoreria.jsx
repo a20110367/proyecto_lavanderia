@@ -350,7 +350,7 @@ function EntregaTintoreria() {
                       : pedido.category.categoryDescription}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
+                    {pedido.drycleanPieces !== null ? pedido.drycleanPieces : "0"}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.receptionDate)}

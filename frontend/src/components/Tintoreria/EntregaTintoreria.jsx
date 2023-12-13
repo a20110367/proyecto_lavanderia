@@ -140,8 +140,8 @@ function EntregaTintoreria() {
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
       cart.push({
-        description: pedido.ServiceOrderDetail[0].IronService
-          ? pedido.ServiceOrderDetail[0].IronService.description
+        description: pedido.ServiceOrderDetail[0].DrycleanService
+          ? pedido.ServiceOrderDetail[0].DrycleanService.description
           : "ERROR",
         id_service: pedido.ServiceOrderDetail[0].fk_Service,
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
@@ -159,7 +159,8 @@ function EntregaTintoreria() {
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        notes: "",
+        pieces: pedido.drycleanPieces,
+        notes: pedido.notes,
         cart: cart,
       };
       orderTicket(order);

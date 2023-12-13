@@ -159,7 +159,8 @@ function EntregaPlanchado() {
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        notes: "",
+        pieces: pedido.ironPieces,
+        notes: pedido.notes,
         cart: cart,
       };
       orderTicket(order);

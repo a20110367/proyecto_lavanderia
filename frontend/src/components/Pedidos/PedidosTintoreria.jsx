@@ -19,7 +19,7 @@ import api from "../../api/api";
 
 function PedidosTintoreria() {
   const { cookies } = useAuth();
-  const lastIronControlId = parseInt(localStorage.getItem('lastIronControl'))
+  const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -28,7 +28,6 @@ function PedidosTintoreria() {
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
-  const [showMachineName, setShowMachineName] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
@@ -91,35 +90,31 @@ function PedidosTintoreria() {
     }, 2000);
   };
 
-
   const handleStartProcess = async (pedido) => {
     try {
+      if (!pedido || !pedido.id_order) {
+        console.error("El pedido es inválido o no tiene un ID válido.");
+        return;
+      }
+
       setLoading(true);
+      setSelectedPedido(pedido);
 
       const updatedPedidos = pedidos.map((p) =>
-      p.id_order === pedido.id_order
-        ? { ...p, orderStatus: "inProgress" }
-        : p
-    );
-    setPedidos(updatedPedidos);
-   
-    await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
-      orderStatus: "inProgress",
-    });
+        p.id_order === pedido.id_order ? { ...p, orderStatus: "inProgress" } : p
+      );
+      setPedidos(updatedPedidos);
 
-      setSelectedPedido(pedido);
+      await api.patch(`/deliveryDrycleanQueue/${selectedPedido.id_order}`, {
+        fk_idStaffMember: cookies.token,
+      });
       showNotification(`Pedido iniciado`);
-
-      // await api.patch(`/startIronQueue/${selectedPedido.id_order}`, {
-      //   fk_idStaffMember: cookies.token,
-      // });
-       } catch (error) {
+    } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleFinishProcess = async (pedido) => {
     setLoading(true);
@@ -131,36 +126,38 @@ function PedidosTintoreria() {
     }
 
     try {
-    
-        // Actualizar localmente el estado del pedido a "finished"
-        const updatedPedidos = pedidos.map((p) =>
-          p.id_order === pedido.id_order
-            ? { ...p, orderStatus: "finished" }
-            : p
-        );
-        setPedidos(updatedPedidos);
+      // Actualizar localmente el estado del pedido a "finished"
+      const updatedPedidos = pedidos.map((p) =>
+        p.id_order === pedido.id_order ? { ...p, orderStatus: "finished" } : p
+      );
+      setPedidos(updatedPedidos);
 
-        // await api.patch(`/finishIronQueue/${pedido.id_order}`, {
-        //   fk_idStaffMember: cookies.token,
-        // });
+      await api.patch(`/receptionDrycleanQueue/${pedido.id_order}`, {
+        fk_idStaffMember: cookies.token,
+      });
 
-        // await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
-        //   pieces: pedido.ironPieces
-        // })
+      // await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
+      //   pieces: pedido.ironPieces
+      // })
 
-        
-        showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
-        await api.post("/sendMessage", {
-          id_order: pedido.id_order,
-          name: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
-          email: pedido.client.email,
-          tel: "521" + pedido.client.phone,
-          message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-          subject: "Tu Ropa esta Lista",
-          text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-          warning: false,
-        });
-      
+      showNotification(
+        "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
+      );
+      await api.post("/sendMessage", {
+        id_order: pedido.id_order,
+        name:
+          pedido.client.name +
+          " " +
+          pedido.client.firstLN +
+          " " +
+          pedido.client.secondLN,
+        email: pedido.client.email,
+        tel: "521" + pedido.client.phone,
+        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        subject: "Tu Ropa esta Lista",
+        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+        warning: false,
+      });
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }

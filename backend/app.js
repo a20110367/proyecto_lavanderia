@@ -27,7 +27,7 @@ import PettyCashRoute from './routes/PettyCashRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
 import IronControlRoute from './routes/IronControlRoute.js'
 import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
-import OtherService from './routes/ServiceDrycleanRoute.js'
+import OtherService from './routes/ServiceOtherServiceRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();

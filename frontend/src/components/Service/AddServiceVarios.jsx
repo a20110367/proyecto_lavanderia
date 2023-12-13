@@ -37,7 +37,7 @@ function AddServiceVarios() {
     }
 
     try {
-      await api.post("/servicesLaundry", {
+      await api.post("/servicesOtherService", {
         description: description,
         price: parseFloat(price),
         category_id: 5,

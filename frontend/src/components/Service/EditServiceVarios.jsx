@@ -20,7 +20,7 @@ function EditServiceVarios() {
   useEffect(() => {
     const getServiceById = async () => {
       try {
-        const response = await api.get(`/servicesLaundry/${id}`);
+        const response = await api.get(`/servicesOtherService/${id}`);
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
         setCategory("Varios");
@@ -55,7 +55,7 @@ function EditServiceVarios() {
     }
 
     try {
-      await api.patch(`/servicesUpdateLaundry/${id}`, {
+      await api.patch(`/servicesUpdateOtherService/${id}`, {
         description: description,
         price: parseFloat(price),
         category_id: 5,

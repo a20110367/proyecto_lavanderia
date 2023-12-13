@@ -48,13 +48,14 @@ export default function PuntoVenta() {
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
-  const [pieces, setPieces] = useState(0);
   const [notes, setNotes] = useState('');
+  const [pieces, setPieces] = useState(0);
   const [numberOfPieces, setNumberOfPieces] = useState(
     localStorage.getItem("numberOfPieces")
       ? parseInt(localStorage.getItem("numberOfPieces"))
       : 0
   );
+
   ///////////////////////IGNORA ESTO SAUL, ES DE PRODUCTOS Y DE MOMENTO ESO SE VA A LA VRG//////////////////////////////
   // const dummyProducts = [
   //   { name: "Fabuloso", price: 15 },
@@ -177,9 +178,9 @@ export default function PuntoVenta() {
         ]);
       }
 
-      if (categoryId === 3) {
+      if (categoryId === 3 || categoryId === 4) {
         setPieces(pieces + serviceToAdd.pieces);
-      } else if (categoryId === 3) {
+      } else if (categoryId === 3 && numberOfPieces + pieces > 130) {
         Swal.fire({
           icon: "error",
           title: "Se ha superado el No. de Piezas diarias",
@@ -213,10 +214,10 @@ export default function PuntoVenta() {
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : "";
+            categoryId === 3 ? setPieces(pieces - item.pieces) : categoryId === 4 ? setPieces(pieces - item.pieces) : "";
             return { ...item, quantity: item.quantity - 1 };
           } else {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : "";
+            categoryId === 3 ? setPieces(pieces - item.pieces) : categoryId === 4 ? setPieces(pieces - item.pieces) : "";
             return null;
           }
         } else {
@@ -287,6 +288,15 @@ export default function PuntoVenta() {
 
     const totalWithDiscount = (payMethod === 'credit' ? subTotal - (subTotal * 0.05) : subTotal)
 
+    let ironPieces = null
+    let drycleanPieces = null
+
+    if(categoryId === 3){
+      ironPieces = pieces
+    }else if(categoryId === 4){
+      drycleanPieces = pieces
+    }
+
     try {
       const res = await api.post(postUrl, {
         serviceOrder: {
@@ -301,7 +311,8 @@ export default function PuntoVenta() {
           scheduledDeliveryDate: deliveryDate.toISOString(),
           scheduledDeliveryTime: deliveryDate.toISOString(),
           express: isExpress,
-          ironPieces: pieces ? pieces : null,
+          ironPieces: ironPieces,
+          drycleanPieces: drycleanPieces,
           fk_categoryId: categoryId,
           notes: notes
         },
@@ -319,6 +330,7 @@ export default function PuntoVenta() {
         receptionTime: purchaseDate.toISOString(),
         scheduledDeliveryDate: deliveryDate.toISOString(),
         scheduledDeliveryTime: deliveryDate.toISOString(),
+        pieces: pieces,
         notes: notes,
         cart: cart,
       };

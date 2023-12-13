@@ -31,9 +31,10 @@ export const orderTicket = async (order) => {
             </div>
             <hr class="hr-header">
             <div style=" padding-top: 0px">                    
-                <h2>FOLIO No.: ${order.id_order} </h2>
-                <h2>TIPO PAGO: ${order.payForm === 'advance' ? "Anticipado" : "A la Entrega"}</h2>                     
-                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"}                    
+                <h3>FOLIO No.: ${order.id_order} </h3>
+                <h3>TIPO PAGO: ${order.payForm === 'advance' ? "Anticipado" : "A la Entrega"}</h3>
+                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"}
+                ${order.pieces ? `<h3>Piezas: ${order.pieces}</h3>` : ''}
                 <hr class="hr-header">  
                 <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">
                     <p>Cant.</p>

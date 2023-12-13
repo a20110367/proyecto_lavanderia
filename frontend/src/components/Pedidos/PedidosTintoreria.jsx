@@ -134,10 +134,6 @@ function PedidosTintoreria() {
         fk_idStaffMemberDelivery: cookies.token,
       });
 
-      // await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
-      //   pieces: pedido.ironPieces
-      // })
-
       showNotification(
         "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
       );
@@ -267,7 +263,7 @@ function PedidosTintoreria() {
                       )}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
+                    {pedido.drycleanPieces !== null ? pedido.drycleanPieces : "0"}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}

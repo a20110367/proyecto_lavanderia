@@ -132,11 +132,10 @@ export default function PuntoVenta() {
       setPostUrl("/ordersDryclean");
       setPayStatus("paid");
       setPayForm("advance");
-    }  else if (serviceType === "varios") {
+    } else if (serviceType === "varios") {
       setFetch("servicesOtherService");
       setCategoryId(5);
       setPostUrl("/ordersOtherService");
-
     }
   }, [serviceType]);
 
@@ -284,9 +283,10 @@ export default function PuntoVenta() {
       })
     );
 
-    const subTotal = calculateSubtotal()
+    const subTotal = calculateSubtotal();
 
-    const totalWithDiscount = (payMethod === 'credit' ? subTotal - (subTotal * 0.05) : subTotal)
+    const totalWithDiscount =
+      payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
 
     let ironPieces = null
     let drycleanPieces = null
@@ -314,7 +314,7 @@ export default function PuntoVenta() {
           ironPieces: ironPieces,
           drycleanPieces: drycleanPieces,
           fk_categoryId: categoryId,
-          notes: notes
+          notes: notes,
         },
         services: arrayService,
       });
@@ -391,7 +391,6 @@ export default function PuntoVenta() {
     // Regresar a la página anterior
     window.history.back();
   };
-
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -520,7 +519,7 @@ export default function PuntoVenta() {
           </div>
 
           <div className="col-md-3 ml-10">
-            {(categoryId === 3 || categoryId === 4)  ? (  //|| categoryId === 4 Solo para ver si jala
+            {categoryId === 3 || categoryId === 4 ? ( //|| categoryId === 4 Solo para ver si jala
               <p className="text-3xl font-semibold text-center">
                 Piezas del Pedido:{" "}
                 <span className="text-orange-600">{pieces}</span>
@@ -557,7 +556,7 @@ export default function PuntoVenta() {
                   </li>
                 ))}
               </ul>
-              
+
               {/* ///////////////// LO DE PRODUCTOS QUE POR EL MOMENTO SE VAN A LA VRG ///////////////// NO LO DESCOMENTES SAUL XD
               {serviceType === "autoservicio" && cart.length > 0 && (
                 <div className="mt-4 rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
@@ -631,8 +630,8 @@ export default function PuntoVenta() {
 
               <div className="flex mt-4 justify-between">
                 <div>
-                  <strong>Subtotal:</strong> $
-                  {calculateSubtotal()} {/*+ calculateProductTotal()*/}
+                  <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
+                  {/*+ calculateProductTotal()*/}
                 </div>
                 {categoryId === 3 ? (
                   <div className="flex items-center">
@@ -675,7 +674,11 @@ export default function PuntoVenta() {
                       key="submit"
                       className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                       onClick={handleSaveAndGenerateTicket}
-                      disabled={serviceType === "autoservicio" ? false : !isDeliveryDateSelected || isSaved}
+                      disabled={
+                        serviceType === "autoservicio"
+                          ? false
+                          : !isDeliveryDateSelected || isSaved
+                      }
                     >
                       Guardar
                     </button>,
@@ -757,8 +760,9 @@ export default function PuntoVenta() {
                         </p>
                       </div>
                     ))}
-                    {////////////////PRODUCTOS SELECCIONADOS QUE SE MUESTRAN PERO DE MOMENTO ALAVERGA//////////////// TAMPOCO LOS DESCOMENTES
-                    /* {selectedProducts.length > 0 && (
+                    {
+                      ////////////////PRODUCTOS SELECCIONADOS QUE SE MUESTRAN PERO DE MOMENTO ALAVERGA//////////////// TAMPOCO LOS DESCOMENTES
+                      /* {selectedProducts.length > 0 && (
                       <div>
                         <p className="text-base font-semibold">
                           Productos Seleccionados:
@@ -776,7 +780,8 @@ export default function PuntoVenta() {
                           {calculateProductTotal()}
                         </p>
                       </div>
-                    )} */}
+                    )} */
+                    }
                   </div>
 
                   <div>
@@ -804,13 +809,22 @@ export default function PuntoVenta() {
                         }
                       }}
                       value={
-                        serviceType === "autoservicio" ? "advance" : payForm
+                        serviceType === "autoservicio" ||
+                        serviceType === "tintoreria"
+                          ? "advance"
+                          : payForm
                       }
-                      disabled={serviceType === "autoservicio"}
+                      disabled={
+                        serviceType === "autoservicio" ||
+                        serviceType === "tintoreria"
+                      }
                     >
                       <Option
                         value="delivery"
-                        disabled={serviceType === "autoservicio"}
+                        disabled={
+                          serviceType === "autoservicio" ||
+                          serviceType === "tintoreria"
+                        }
                       >
                         A la Entrega
                       </Option>

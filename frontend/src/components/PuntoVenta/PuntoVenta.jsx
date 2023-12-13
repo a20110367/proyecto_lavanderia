@@ -131,10 +131,11 @@ export default function PuntoVenta() {
       setPostUrl("/ordersDryclean");
       setPayStatus("paid");
       setPayForm("advance");
-    } else {
-      setFetch("variosService");
+    }  else if (serviceType === "varios") {
+      setFetch("servicesOtherService");
       setCategoryId(5);
       setPostUrl("/ordersOtherService");
+
     }
   }, [serviceType]);
 
@@ -379,42 +380,6 @@ export default function PuntoVenta() {
     window.history.back();
   };
 
-  const filteredServices = shouldShowAllServices
-    ? data
-    : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "tintoreria" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -504,7 +469,7 @@ export default function PuntoVenta() {
         <div className="row">
           <div className="col-md-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              {filteredServices
+              {data
                 .filter((service) =>
                   service.description
                     .toLowerCase()

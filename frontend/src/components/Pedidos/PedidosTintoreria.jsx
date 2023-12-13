@@ -131,7 +131,7 @@ function PedidosTintoreria() {
       setPedidos(updatedPedidos);
 
       await api.patch(`/receptionDrycleanQueue/${pedido.id_order}`, {
-        fk_idStaffMember: cookies.token,
+        fk_idStaffMemberDelivery: cookies.token,
       });
 
       // await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{

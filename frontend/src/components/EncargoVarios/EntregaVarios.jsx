@@ -38,11 +38,11 @@ function EntregaVarios() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/ordersLaundry");
+    const response = await api.get("/ordersOtherService");
     return response.data;
   };
 
-  const { data } = useSWR("ordersDeliveryLaundry", fetcher);
+  const { data } = useSWR("ordersOtherService", fetcher);
 
   useEffect(() => {
     if (data) {

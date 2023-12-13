@@ -128,7 +128,7 @@ function RecepcionVarios() {
                     <td className="th2">{client.email}</td>
                     <td>
                       <Link
-                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Varios&geturl=/servicesVarios`}
+                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Varios&geturl=/servicesOtherService`}
                       >
                         <button className="btn-generate">
                           <div className="subtitle m-1">Generar pedido</div>

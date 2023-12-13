@@ -19,7 +19,6 @@ import api from "../../api/api";
 
 function PedidosTintoreria() {
   const { cookies } = useAuth();
-  const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -98,15 +97,14 @@ function PedidosTintoreria() {
       }
 
       setLoading(true);
-      setSelectedPedido(pedido);
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_order === pedido.id_order ? { ...p, orderStatus: "inProgress" } : p
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/deliveryDrycleanQueue/${selectedPedido.id_order}`, {
-        fk_idStaffMember: cookies.token,
+      await api.patch(`/deliveryDrycleanQueue/${pedido.id_order}`, {
+        fk_idStaffMemberDelivery: cookies.token,
       });
       showNotification(`Pedido iniciado`);
     } catch (error) {

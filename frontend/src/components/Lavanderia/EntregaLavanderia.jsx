@@ -158,7 +158,7 @@ function EntregaLavanderia() {
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        notes: "",
+        notes: pedido.notes,
         cart: cart,
       };
       orderTicket(order);

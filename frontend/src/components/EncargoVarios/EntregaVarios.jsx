@@ -139,8 +139,8 @@ function EntregaVarios() {
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
       cart.push({
-        description: pedido.ServiceOrderDetail[0].LaundryService
-          ? pedido.ServiceOrderDetail[0].LaundryService.description
+        description: pedido.ServiceOrderDetail[0].OtherService
+          ? pedido.ServiceOrderDetail[0].OtherService.description
           : "ERROR",
         id_service: pedido.ServiceOrderDetail[0].fk_Service,
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
@@ -158,7 +158,7 @@ function EntregaVarios() {
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        notes: "",
+        notes: pedido.notes,
         cart: cart,
       };
       orderTicket(order);

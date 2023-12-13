@@ -28,11 +28,11 @@ function ServicesVarios() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/servicesLaundry");
+    const response = await api.get("/servicesOtherService");
     return response.data;
   };
 
-  const { data } = useSWR("servicesLaundry", fetcher);
+  const { data } = useSWR("servicesOtherService", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   // Filtrar servicios relacionados con lavandería
@@ -56,8 +56,8 @@ function ServicesVarios() {
   });
 
   const deleteService = async (serviceId) => {
-    await api.delete(`/servicesLaundry/${serviceId}`);
-    mutate("servicesLaundry");
+    await api.delete(`/servicesOtherService/${serviceId}`);
+    mutate("servicesOtherService");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {

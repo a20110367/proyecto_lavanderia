@@ -758,7 +758,7 @@ export const createOtherServiceOrder = async (req, res) => {
                 const otherQueue = await prisma.otherQueue.create({
                     data: {
                         id_description: (serviceQueue.at(i).fk_idServiceOrder.toString() + "-" + series.toString()),
-                        fk_otherService: serviceQueue.at(i).fk_otherService,
+                        fk_idOtherService: serviceQueue.at(i).fk_otherService,
                         fk_idServiceOrder: serviceQueue.at(i).fk_idServiceOrder,
 
                     },

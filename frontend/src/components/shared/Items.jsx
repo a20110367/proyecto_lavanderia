@@ -38,7 +38,7 @@ const items1 = [
     getItem("Autoservicio", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
     
     getItem(
-        "Encargo",
+        "Encargo Ropa",
         "/Encargo",
         <MdOutlineLocalLaundryService style={iconStyle} />,
         [
@@ -115,7 +115,7 @@ const items2 = [
     getItem("Lavanderia", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
 
     getItem(
-        "Encargo",
+        "Encargo Ropa",
         "/Encargo",
         <MdOutlineLocalLaundryService style={iconStyle} />,
         [

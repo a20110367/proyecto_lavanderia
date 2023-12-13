@@ -165,7 +165,11 @@ function CajaPedidos() {
                         : pedido.category.categoryDescription === "planchado"
                         ? "Planchado"
                         : pedido.category.categoryDescription === "encargo"
-                        ? "Encargo"
+                        ? "Encargo Ropa"
+                        : pedido.category.categoryDescription === "tintoreria"
+                        ? "Tintoreria"
+                        : pedido.category.categoryDescription === "varios"
+                        ? "Encargo Varios"
                         : "Otro" // Si el texto no coincide con ninguna categoría específica
                       : "Categoría no definida"}
                   </td>

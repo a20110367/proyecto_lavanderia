@@ -95,7 +95,7 @@ function PedidosVarios() {
 
   const handleStartProcess = async (pedido) => {
     try {
-      if (!pedido || !pedido.id_order) {
+      if (!pedido || !pedido.id_otherEvent) {
         console.error("El pedido es inválido o no tiene un ID válido.");
         return;
       }
@@ -103,11 +103,13 @@ function PedidosVarios() {
       setLoading(true);
 
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === pedido.id_order ? { ...p, orderStatus: "inProgress" } : p
+        p.id_otherEvent === pedido.id_otherEvent
+          ? { ...p, serviceStatus: "inProgress" }
+          : p
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/startOtherQueue/${pedido.id_order}`, {
+      await api.patch(`/startOtherQueue/${pedido.id_otherEvent}`, {
         fk_idStaffMember: cookies.token,
       });
       showNotification(`Pedido iniciado`);
@@ -130,36 +132,36 @@ function PedidosVarios() {
     try {
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
-        p.id_order === pedido.id_order ? { ...p, orderStatus: "finished" } : p
+        p.id_otherEvent === pedido.id_otherEvent
+          ? { ...p, serviceStatus: "finished" }
+          : p
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/finishOtherQueue  /${pedido.id_order}`, {
+      const res = await api.patch(`/FinishOtherQueue/${pedido.id_otherEvent}`, {
         fk_idStaffMember: cookies.token,
       });
-
-      // await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
-      //   pieces: pedido.ironPieces
-      // })
 
       showNotification(
         "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
       );
-      await api.post("/sendMessage", {
-        id_order: pedido.id_order,
-        name:
-          pedido.client.name +
-          " " +
-          pedido.client.firstLN +
-          " " +
-          pedido.client.secondLN,
-        email: pedido.client.email,
-        tel: "521" + pedido.client.phone,
-        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
-        subject: "Tu Ropa esta Lista",
-        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-        warning: false,
-      });
+      if (res.data.orderStatus === "finished") {
+        await api.post("/sendMessage", {
+          id_order: pedido.fk_idServiceOrder,
+          name:
+            pedido.serviceOrder.client.name +
+            " " +
+            pedido.serviceOrder.client.firstLN +
+            " " +
+            pedido.serviceOrder.client.secondLN,
+          email: pedido.serviceOrder.client.email,
+          tel: "521" + pedido.serviceOrder.client.phone,
+          message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+          subject: "Tu Ropa esta Lista",
+          text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+          warning: false,
+        });
+      }
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -199,16 +201,10 @@ function PedidosVarios() {
             Pendientes
           </option>
           <option
-            value="inProgressWash"
+            value="inProgress"
             className="text-Cerulean font-semibold text-base"
           >
-            En Proceso de Lavado
-          </option>
-          <option
-            value="inProgressDry"
-            className="text-yellow-600 font-semibold text-base"
-          >
-            En Proceso de Secado
+            En Proceso
           </option>
           <option
             value="finished"
@@ -252,7 +248,7 @@ function PedidosVarios() {
               ) // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
-                <tr key={pedido.id_laundryEvent}>
+                <tr key={pedido.id_otherEvent}>
                   <td className="py-3 px-1 text-center">
                     {pedido.id_description}
                   </td>
@@ -266,11 +262,11 @@ function PedidosVarios() {
                     {pedido.serviceOrder.client.firstLN}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.LaundryService.description}
+                    {pedido.otherService.description}
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.LaundryService.created)}
+                    {formatDate(pedido.otherService.created)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
@@ -281,13 +277,9 @@ function PedidosVarios() {
                       <span className="text-fuchsia-600 pl-1">
                         <DropboxOutlined /> Almacenado
                       </span>
-                    ) : pedido.serviceStatus === "inProgressWash" ? (
-                      <span className="text-Cerulean pl-1">
-                        <ClockCircleOutlined /> En Proceso de Lavado
-                      </span>
-                    ) : pedido.serviceStatus === "inProgressDry" ? (
+                    ) : pedido.serviceStatus === "inProgress" ? (
                       <span className="text-yellow-600 pl-1">
-                        <ClockCircleOutlined /> En Proceso de Secado
+                        <ClockCircleOutlined /> En Proceso de Lavado
                       </span>
                     ) : pedido.serviceStatus === "finished" ? (
                       <span className="text-blue-600 pl-1">

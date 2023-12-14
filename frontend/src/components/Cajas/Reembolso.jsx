@@ -195,7 +195,7 @@ function Reembolso() {
         .map((reembolso) => (
               <tr className="bg-white border-b" key={reembolso.id_cashWithdrawal}>
                 <td className="py-3 px-1 text-center">{reembolso.id_cashWithdrawal}</td>
-                <td className="py-3 px-6">{reembolso.id_order}</td>
+                <td className="py-3 px-6">{reembolso.serviceOrder}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
                 <td className="py-3 px-6">{formatDate(reembolso.date)}</td>

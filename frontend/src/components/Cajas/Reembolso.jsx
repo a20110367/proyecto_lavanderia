@@ -7,12 +7,11 @@ import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
 import { formatDate } from "../../utils/format";
 import useSWR from "swr";
-import Swal from 'sweetalert2'
-import api from '../../api/api'
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function Reembolso() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [reembolsos, setReembolsos] = useState([]);
   const [filteredReembolsos, setFilteredReembolsos] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -40,7 +39,9 @@ function Reembolso() {
 
   useEffect(() => {
     if (data) {
-      const reembolsosFiltrados = data.filter((reembolso) => reembolso.cashWithdrawalType === "refound");
+      const reembolsosFiltrados = data.filter(
+        (reembolso) => reembolso.cashWithdrawalType === "refound"
+      );
       setReembolsos(reembolsosFiltrados);
       setFilteredReembolsos(reembolsosFiltrados);
     }
@@ -60,15 +61,15 @@ function Reembolso() {
   };
 
   const handleReembolso = () => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No has inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
     setVisible(true);
   };
@@ -76,7 +77,7 @@ function Reembolso() {
   const handleMontoInput = () => {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
-  
+
   const handleNpedidoInput = () => {
     setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
@@ -118,21 +119,21 @@ function Reembolso() {
     }
 
     if (isValid) {
-      const date = moment().format(); 
+      const date = moment().format();
 
       api.post("/cashWithdrawals", {
-        cashWithdrawalType : "refound",
-        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
-        fk_user:cookies.token,
+        cashWithdrawalType: "refound",
+        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        fk_user: cookies.token,
         serviceOrder: parseInt(numeroPedido),
-        amount : parseInt(monto),
+        amount: parseInt(monto),
         cause: motivo,
-        date: date
+        date: date,
       });
 
       const nuevoReembolso = {
         id_cashWithdrawal: reembolsos.length + 1,
-        cashWithdrawalType : "refound",
+        cashWithdrawalType: "refound",
         serviceOrder: parseInt(numeroPedido),
         amount: parseInt(monto),
         cause: motivo,
@@ -153,57 +154,60 @@ function Reembolso() {
   return (
     <div>
       <div className="mb-3">
-      <div className="title-container">
+        <div className="title-container">
           <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-        <div className="flex items-center -4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="input-search"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center -4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-1 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <div className="mt-3 mb-3">
-          <button
-            onClick={handleReembolso}
-            className="btn-primary"
-          >
-            Registrar Reembolso
-          </button>
-        
-        </div>
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th >No. Reembolso</th>
-              <th >Número de Pedido</th>
-              <th>Monto</th>
-              <th >Motivo</th>
-              <th >Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
+      </div>
+      <div className="mt-3 mb-3">
+        <button onClick={handleReembolso} className="btn-primary">
+          Registrar Reembolso
+        </button>
+      </div>
+      <table className="w-full text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+          <tr>
+            <th>No. Reembolso</th>
+            <th>Número de Pedido</th>
+            <th>Monto</th>
+            <th>Motivo</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
           {filteredReembolsos
-        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-        .map((reembolso) => (
-              <tr className="bg-white border-b" key={reembolso.id_cashWithdrawal}>
-                <td className="py-3 px-1 text-center">{reembolso.id_cashWithdrawal}</td>
+            .slice()
+            .reverse()
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .map((reembolso) => (
+              <tr
+                className="bg-white border-b"
+                key={reembolso.id_cashWithdrawal}
+              >
+                <td className="py-3 px-1 text-center">
+                  {reembolso.id_cashWithdrawal}
+                </td>
                 <td className="py-3 px-6">{reembolso.serviceOrder}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
                 <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
               </tr>
             ))}
-          </tbody>
-        </table>
+        </tbody>
+      </table>
       <Modal
         title="Registrar Reembolso"
         open={visible}
@@ -227,7 +231,7 @@ function Reembolso() {
           </Button>,
         ]}
       >
-       <form>
+        <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Número de Pedido:
@@ -270,22 +274,22 @@ function Reembolso() {
         </form>
       </Modal>
       <div className="flex justify-center mt-4 mb-4">
-    <ReactPaginate
-      previousLabel={"Anterior"}
-      nextLabel={"Siguiente"}
-      breakLabel={"..."}
-      pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
-      marginPagesDisplayed={2}
-      pageRangeDisplayed={2}
-      onPageChange={handlePageChange}
-      containerClassName={"pagination flex"}
-      pageLinkClassName="pageLinkClassName"
-      previousLinkClassName="prevOrNextLinkClassName"
-      nextLinkClassName="prevOrNextLinkClassName"
-      breakLinkClassName="breakLinkClassName"
-      activeLinkClassName="activeLinkClassName"
-    />
-  </div>
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
     </div>
   );
 }

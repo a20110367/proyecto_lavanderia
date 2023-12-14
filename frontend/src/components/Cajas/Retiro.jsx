@@ -7,12 +7,11 @@ import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import { formatDate } from "../../utils/format";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2'
-import api from '../../api/api'
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function Retiro() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [retiros, setRetiros] = useState([]);
   const [filteredRetiros, setFilteredRetiros] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -39,7 +38,9 @@ function Retiro() {
 
   useEffect(() => {
     if (data) {
-      const retirosFiltrados = data.filter((retiro) => retiro.cashWithdrawalType === "withdrawal");
+      const retirosFiltrados = data.filter(
+        (retiro) => retiro.cashWithdrawalType === "withdrawal"
+      );
       setRetiros(retirosFiltrados);
       setFilteredRetiros(retirosFiltrados);
     }
@@ -58,15 +59,15 @@ function Retiro() {
   };
 
   const handleRetiro = () => {
-    if(!localStorage.getItem('cashCutId')){
+    if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
         title: "No has inicializado caja!",
-        text: 'Da click en Iniciar Caja.',
-        confirmButtonColor: '#034078'
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
       });
-      navigate('/inicioCaja')
-      return
+      navigate("/inicioCaja");
+      return;
     }
     setVisible(true);
   };
@@ -172,6 +173,8 @@ function Retiro() {
         </thead>
         <tbody>
           {filteredRetiros
+            .slice()
+            .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
               <tr className="bg-white border-b" key={retiro.id_cashWithdrawal}>

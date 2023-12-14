@@ -124,7 +124,7 @@ function Reembolso() {
         cashWithdrawalType : "refound",
         fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
         fk_user:cookies.token,
-        serviceOrder: numeroPedido,
+        serviceOrder: parseInt(numeroPedido),
         amount : parseInt(monto),
         cause: motivo,
         date: date
@@ -133,7 +133,7 @@ function Reembolso() {
       const nuevoReembolso = {
         id_cashWithdrawal: reembolsos.length + 1,
         cashWithdrawalType : "refound",
-        serviceOrder: numeroPedido,
+        serviceOrder: parseInt(numeroPedido),
         amount: parseInt(monto),
         cause: motivo,
         date: date,

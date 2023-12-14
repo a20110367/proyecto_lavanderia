@@ -15,6 +15,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 function Planchas() {
+  const [machineSelModel, setMachineSelModel] = useState();
   const [ironSelId, setIronSelId] = useState();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -40,8 +41,9 @@ function Planchas() {
     mutate("ironStations");
   };
 
-  const handleClickOpen = (id_ironStation) => {
+  const handleClickOpen = (machineModel, id_ironStation) => {
     setIronSelId(id_ironStation);
+    setMachineSelModel(machineModel);
     setOpen(true);
   };
 
@@ -126,7 +128,7 @@ function Planchas() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(iron.id_ironStation)
+                          handleClickOpen(iron.description, iron.id_ironStation)
                         }
                         className="btn-cancel"
                       >
@@ -144,7 +146,7 @@ function Planchas() {
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
-                            ¿Deseas eliminar la máquina: {ironSelId}?
+                            ¿Deseas eliminar la máquina: {machineSelModel}?
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>

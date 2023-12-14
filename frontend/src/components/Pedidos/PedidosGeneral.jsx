@@ -294,7 +294,7 @@ function PedidosGeneral() {
                 Fecha de <br />
                 Entrega
               </th>
-              <th>Forma de Pago</th>
+              <th>Forma de <br />Pago</th>
               <th>Estatus</th>
               <th></th>
               {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
@@ -329,11 +329,14 @@ function PedidosGeneral() {
                         : pedido.category.categoryDescription === "planchado"
                         ? "Planchado"
                         : pedido.category.categoryDescription === "encargo"
-                        ? "Encargo"
+                        ? "Encargo Ropa"
+                        : pedido.category.categoryDescription === "tintoreria"
+                        ? "Tintoreria"
+                        : pedido.category.categoryDescription === "varios"
+                        ? "Encargo Varios"
                         : "Otro" // Si el texto no coincide con ninguna categoría específica
                       : "Categoría no definida"}
                   </td>
-
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>

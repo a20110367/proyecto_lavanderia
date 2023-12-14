@@ -307,8 +307,9 @@ function CajaChica() {
         </thead>
         <tbody>
           {filteredRetiros
+           .slice()
+           .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .reverse()
             .map((pettyCash) => (
               <tr className="bg-white border-b" key={pettyCash.id_movement}>
                 <td className="py-3 px-1 text-center">

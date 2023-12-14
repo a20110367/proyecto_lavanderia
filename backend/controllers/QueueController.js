@@ -395,13 +395,13 @@ export const updateFinishSelfServiceQueue = async (req, res) => {
                     id_order: selfServiceEvent.fk_idServiceOrder
                 },
                 data: {
-                    orderStatus: "finished"
+                    orderStatus: "delivered"
                 }
             });
 
             response = {
                 "id_order ": serviceOrder.id_order,
-                "orderStatus": "finished"
+                "orderStatus": "delivered"
             };
 
         } else {

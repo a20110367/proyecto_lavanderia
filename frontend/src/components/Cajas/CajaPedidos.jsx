@@ -134,7 +134,7 @@ function CajaPedidos() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Estatus</th>
-              <th>Forma de Pago</th>
+              <th>Forma de <br />Pago</th>
               <th>Método de Pago</th>
               <th>Monto</th>
             </tr>

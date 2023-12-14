@@ -232,7 +232,7 @@ function Reembolso() {
               Número de Pedido:
             </label>
             <Input
-              type="text"
+              type="number"
               value={numeroPedido}
               onChange={(e) => setNumeroPedido(e.target.value)}
               placeholder="Ingrese el número de pedido"

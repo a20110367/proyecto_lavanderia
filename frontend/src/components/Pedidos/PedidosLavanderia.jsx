@@ -50,7 +50,6 @@ function PedidosLavanderia() {
 
   const { data } = useSWR("laundryQueue", fetcher);
 
-
   useEffect(() => {
     if (data) {
       setPedidos(data);
@@ -163,8 +162,6 @@ function PedidosLavanderia() {
 
       setPedidos(updatedPedidos);
 
-
-
       await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
         orderStatus: "inProgress",
       });
@@ -173,12 +170,10 @@ function PedidosLavanderia() {
         fk_idWashMachine: selectedWashMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
-
     } catch (error) {
       console.error("Error al confirmar la máquina:", error);
     }
   };
-
 
   const handleStartDryerProcess = async (pedido) => {
     try {
@@ -196,7 +191,6 @@ function PedidosLavanderia() {
       setAvailableMachines(availableDryers);
       setSelectedDryMachine(null);
       setSelectedPedido(pedido);
-
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -217,17 +211,23 @@ function PedidosLavanderia() {
 
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/laundryQueueById/${selectedPedido.id_laundryEvent}`)
-      const selectedWashMachine = res.data.WashDetail
+      const res = await api.get(
+        `/laundryQueueById/${selectedPedido.id_laundryEvent}`
+      );
+      const selectedWashMachine = res.data.WashDetail;
 
       // Si hay una lavadora seleccionada, cambiar su estado a true
       if (selectedDryMachine.machineType === "secadora") {
         if (selectedWashMachine) {
-
           // Actualizar el estado del pedido a "inProgressDry"
-          const updatedPedido = { ...selectedPedido, serviceStatus: "inProgressDry" };
+          const updatedPedido = {
+            ...selectedPedido,
+            serviceStatus: "inProgressDry",
+          };
           const updatedPedidos = pedidos.map((p) =>
-            p.id_laundryEvent === selectedPedido.id_laundryEvent ? updatedPedido : p
+            p.id_laundryEvent === selectedPedido.id_laundryEvent
+              ? updatedPedido
+              : p
           );
           setPedidos(updatedPedidos);
 
@@ -243,10 +243,13 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          await api.patch(`/finishLaundryQueue/${selectedPedido.id_laundryEvent}`, {
-            fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
-            fk_idStaffMember: cookies.token,
-          });
+          await api.patch(
+            `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
+            {
+              fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
+              fk_idStaffMember: cookies.token,
+            }
+          );
         }
       }
 
@@ -267,17 +270,13 @@ function PedidosLavanderia() {
         fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
-
     } catch (error) {
       console.error("Error al confirmar la secadora:", error);
     }
-
   };
 
   const handleFinishProcess = async (pedido) => {
-
     try {
-
       if (!pedido) {
         console.error("El pedido seleccionado es indefinido.");
         return;
@@ -287,8 +286,8 @@ function PedidosLavanderia() {
 
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`)
-      const selectedDryMachine = res.data.DryDetail
+      const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
+      const selectedDryMachine = res.data.DryDetail;
 
       if (selectedDryMachine) {
         // Liberar la secadora seleccionada
@@ -301,10 +300,13 @@ function PedidosLavanderia() {
           setAvailableMachines(updatedDryers);
 
           // También actualizar la base de datos
-          const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
-            fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
-            fk_idStaffMember: cookies.token,
-          });
+          const res = await api.patch(
+            `/finishLaundryQueue/${pedido.id_laundryEvent}`,
+            {
+              fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
+              fk_idStaffMember: cookies.token,
+            }
+          );
 
           // Actualizar el estado del pedido a "finish"
           const updatedPedido = { ...pedido, serviceStatus: "finished" };
@@ -317,11 +319,18 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          if (res.data.orderStatus === 'finished') {
-            showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
+          if (res.data.orderStatus === "finished") {
+            showNotification(
+              "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
+            );
             await api.post("/sendMessage", {
               id_order: pedido.fk_idServiceOrder,
-              name: pedido.serviceOrder.client.name + ' ' + pedido.serviceOrder.client.firstLN + ' ' + pedido.serviceOrder.client.secondLN,
+              name:
+                pedido.serviceOrder.client.name +
+                " " +
+                pedido.serviceOrder.client.firstLN +
+                " " +
+                pedido.serviceOrder.client.secondLN,
               email: pedido.serviceOrder.client.email,
               tel: "521" + pedido.serviceOrder.client.phone,
               message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
@@ -336,7 +345,7 @@ function PedidosLavanderia() {
         }
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -416,6 +425,7 @@ function PedidosLavanderia() {
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
             </tr>
           </thead>
@@ -478,6 +488,11 @@ function PedidosLavanderia() {
                         <StopOutlined /> Cancelado
                       </span>
                     )}
+                  </td>
+                  <td>
+                    {pedido.serviceOrder.notes
+                      ? pedido.serviceOrder.notes
+                      : "No hay notas"}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.serviceStatus === "pending" && (
@@ -587,8 +602,9 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>
@@ -662,8 +678,9 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

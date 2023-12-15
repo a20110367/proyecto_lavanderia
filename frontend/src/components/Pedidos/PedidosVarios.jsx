@@ -237,6 +237,7 @@ function PedidosVarios() {
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
             </tr>
           </thead>
@@ -295,6 +296,11 @@ function PedidosVarios() {
                         <StopOutlined /> Cancelado
                       </span>
                     )}
+                  </td>
+                  <td>
+                    {pedido.serviceOrder.notes
+                      ? pedido.serviceOrder.notes
+                      : "No hay notas"}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.serviceStatus === "pending" && (

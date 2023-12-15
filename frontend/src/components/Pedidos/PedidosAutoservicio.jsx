@@ -147,10 +147,13 @@ function PedidosAutoservicio() {
       );
       setPedidos(updatedPedidos);
 
-      await api.patch(`/startSelfServiceQueue/${selectedPedido.id_serviceEvent}`, {
-        fk_idMachine: selectedMachine.id_machine,
-        fk_idStaffMember: cookies.token,
-      });
+      await api.patch(
+        `/startSelfServiceQueue/${selectedPedido.id_serviceEvent}`,
+        {
+          fk_idMachine: selectedMachine.id_machine,
+          fk_idStaffMember: cookies.token,
+        }
+      );
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
@@ -169,8 +172,10 @@ function PedidosAutoservicio() {
     try {
       const [machinesResponse] = await Promise.all([api.get("/machines")]);
       const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/selfServiceQueueById/${pedido.id_serviceEvent}`)
-      const selectedMachine = res.data
+      const res = await api.get(
+        `/selfServiceQueueById/${pedido.id_serviceEvent}`
+      );
+      const selectedMachine = res.data;
 
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
@@ -268,6 +273,7 @@ function PedidosAutoservicio() {
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
             </tr>
           </thead>
@@ -318,6 +324,11 @@ function PedidosAutoservicio() {
                         <StopOutlined /> Cancelado
                       </span>
                     )}
+                  </td>
+                  <td>
+                    {pedido.serviceOrder.notes
+                      ? pedido.serviceOrder.notes
+                      : "No hay notas"}
                   </td>
                   <td>
                     {pedido.serviceStatus === "pending" && (
@@ -427,8 +438,9 @@ function PedidosAutoservicio() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

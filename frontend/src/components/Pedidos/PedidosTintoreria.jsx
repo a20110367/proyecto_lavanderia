@@ -229,6 +229,7 @@ function PedidosTintoreria() {
               <th>Piezas</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
             </tr>
           </thead>
@@ -264,7 +265,9 @@ function PedidosTintoreria() {
                       )}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.drycleanPieces !== null ? pedido.drycleanPieces : "0"}
+                    {pedido.drycleanPieces !== null
+                      ? pedido.drycleanPieces
+                      : "0"}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}
@@ -296,6 +299,7 @@ function PedidosTintoreria() {
                       </span>
                     )}
                   </td>
+                  <td>{pedido.notes ? pedido.notes : "No hay notas"}</td>
                   <td>
                     {pedido.orderStatus === "pending" && (
                       <button

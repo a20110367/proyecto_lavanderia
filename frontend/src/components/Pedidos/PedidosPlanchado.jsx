@@ -298,6 +298,7 @@ function PedidosPlanchado() {
               <th>Piezas</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
             </tr>
           </thead>
@@ -364,6 +365,11 @@ function PedidosPlanchado() {
                         <StopOutlined /> Cancelado
                       </span>
                     )}
+                  </td>
+                  <td>
+                    {pedido.notes
+                      ? pedido.notes
+                      : "No hay notas"}
                   </td>
                   <td>
                     {pedido.orderStatus === "pending" && (

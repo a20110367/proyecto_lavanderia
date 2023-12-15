@@ -295,8 +295,12 @@ function PedidosGeneral() {
                 Fecha de <br />
                 Entrega
               </th>
-              <th>Forma de <br />Pago</th>
+              <th>
+                Forma de <br />
+                Pago
+              </th>
               <th>Estatus</th>
+              <th>Observaciones</th>
               <th></th>
               {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
             </tr>
@@ -318,7 +322,9 @@ function PedidosGeneral() {
                     {pedido.user.name}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.deliveryDetail ? pedido.deliveryDetail.user.name : ''}
+                    {pedido.deliveryDetail
+                      ? pedido.deliveryDetail.user.name
+                      : ""}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.client.name}
@@ -371,7 +377,7 @@ function PedidosGeneral() {
                       </span>
                     )}
                   </td>
-
+                  <td>{pedido.notes ? pedido.notes : "No hay notas"}</td>
                   {showCheckbox && (
                     <td className="py-3 px-6">
                       {pedido.orderStatus === "pending" ? (

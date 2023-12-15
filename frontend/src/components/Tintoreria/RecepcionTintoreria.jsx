@@ -17,16 +17,23 @@ function RecepcionTintoreria() {
     return response.data;
   });
 
-  const filteredClients = clients
-    ? clients.filter((client) => {
+  
+  const [filteredClients, setFilteredClients] = useState([]); // Agrega un estado para los clientes filtrados
+
+  useEffect(() => {
+    if (clients) {
+      const filtered = clients.filter((client) => {
         const searchTerm = filtro.toLowerCase();
         return (
           client.name.toLowerCase().includes(searchTerm) ||
           client.email.toLowerCase().includes(searchTerm) ||
           client.phone.toLowerCase().includes(searchTerm)
         );
-      })
-    : [];
+      });
+      setFilteredClients(filtered); // Actualiza los clientes filtrados
+      setCurrentPage(0)
+    }
+  }, [filtro, clients]);
 
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
 

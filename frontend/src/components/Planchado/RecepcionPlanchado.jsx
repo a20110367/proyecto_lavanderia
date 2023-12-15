@@ -17,16 +17,22 @@ function RecepcionPlanchado() {
     return response.data;
   });
 
-  const filteredClients = clients
-    ? clients.filter((client) => {
+  const [filteredClients, setFilteredClients] = useState([]); 
+
+  useEffect(() => {
+    if (clients) {
+      const filtered = clients.filter((client) => {
         const searchTerm = filtro.toLowerCase();
         return (
           client.name.toLowerCase().includes(searchTerm) ||
           client.email.toLowerCase().includes(searchTerm) ||
           client.phone.toLowerCase().includes(searchTerm)
         );
-      })
-    : [];
+      });
+      setFilteredClients(filtered); 
+      setCurrentPage(0)
+    }
+  }, [filtro, clients]);
 
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
 

@@ -26,6 +26,8 @@ export const getLaundryQueue = async (req, res) => {
                                 email: true,
                             },
                         },
+
+                        notes: true,
                     },
                 },
                 WashDetail: true,

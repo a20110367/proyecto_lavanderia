@@ -399,7 +399,8 @@ export default function PuntoVenta() {
       if (
         serviceType === "encargo" &&
         !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado")
+        !service.description.toLowerCase().includes("planchado") &&
+        !service.description.toLowerCase().includes("lavado edredon")
       ) {
         return true;
       }

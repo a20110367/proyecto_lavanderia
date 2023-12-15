@@ -51,7 +51,7 @@ function Reembolso() {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = reembolsos.filter(
       (reembolso) =>
-        reembolso.fk_cashCut.toLowerCase().includes(searchTerm) ||
+        reembolso.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
         reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
         reembolso.cause.toLowerCase().includes(searchTerm) ||
         reembolso.date.toLowerCase().includes(searchTerm)

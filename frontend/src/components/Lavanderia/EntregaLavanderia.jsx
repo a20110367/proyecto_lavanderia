@@ -71,6 +71,7 @@ function EntregaLavanderia() {
       );
     });
     setFilteredPedidos(filtered);
+    setCurrentPage(0);
   };
 
   const handleCobrar = (pedido) => {

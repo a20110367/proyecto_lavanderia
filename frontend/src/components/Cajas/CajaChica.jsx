@@ -48,14 +48,18 @@ function CajaChica() {
 
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
-    const filtered = retiros.filter(
-      (retiro) =>
+    const filtered = retiros.filter((retiro) => {
+      const formattedDate = moment(retiro.movementDate).format("DD/MM/YYYY");
+      return (
+        retiro.id_movement.toString().toLowerCase().includes(searchTerm) ||
+        formattedDate.includes(searchTerm) ||
         retiro.cause.toLowerCase().includes(searchTerm) ||
-        retiro.created.toLowerCase().includes(searchTerm) ||
         retiro.user.name.toLowerCase().includes(searchTerm)
-    );
+      );
+    });
     setFiltro(event.target.value);
     setFilteredRetiros(filtered);
+    setCurrentPage(0);
   };
 
   const handleRetiro = () => {
@@ -307,8 +311,8 @@ function CajaChica() {
         </thead>
         <tbody>
           {filteredRetiros
-           .slice()
-           .reverse()
+            .slice()
+            .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((pettyCash) => (
               <tr className="bg-white border-b" key={pettyCash.id_movement}>

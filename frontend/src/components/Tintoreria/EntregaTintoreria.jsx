@@ -72,6 +72,7 @@ function EntregaTintoreria() {
       );
     });
     setFilteredPedidos(filtered);
+    setCurrentPage(0);
   };
 
   const handleCobrar = (pedido) => {

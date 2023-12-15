@@ -155,6 +155,7 @@ function HistorialCaja() {
 
       setFilteredCortes(filtered);
       setDatesSelected(true);
+      setCurrentPage(0);
     } else {
       if (!datesSelected) {
         setFilteredCortes(Cortes);

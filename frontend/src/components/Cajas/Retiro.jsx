@@ -56,6 +56,7 @@ function Retiro() {
     );
     setFiltro(event.target.value);
     setFilteredRetiros(filtered);
+    setCurrentPage(0);
   };
 
   const handleRetiro = () => {

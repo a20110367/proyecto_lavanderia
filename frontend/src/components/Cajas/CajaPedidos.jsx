@@ -60,6 +60,7 @@ function CajaPedidos() {
     });
 
     setFilteredPedidos(textFiltered);
+    setCurrentPage(0);
   }, [filtro, filtroEstatus, pedidos]);
 
   if (!data) return <h2>Loading...</h2>;

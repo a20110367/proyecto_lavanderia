@@ -50,14 +50,18 @@ function Reembolso() {
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = reembolsos.filter(
-      (reembolso) =>
+      (reembolso) =>{
+      const formattedDate = moment(reembolso.date).format("DD/MM/YYYY");
+      return(
         reembolso.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
         reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
         reembolso.cause.toLowerCase().includes(searchTerm) ||
-        reembolso.date.toLowerCase().includes(searchTerm)
-    );
-    setFiltro(event.target.value);
-    setFilteredReembolsos(filtered);
+        formattedDate.toLowerCase().includes(searchTerm)
+        );
+      });
+      setFiltro(event.target.value);
+      setFilteredReembolsos(filtered);
+      setCurrentPage(0);
   };
 
   const handleReembolso = () => {

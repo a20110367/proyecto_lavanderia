@@ -264,6 +264,8 @@ export const getSelfServiceQueue = async (req, res) => {
                                 email: true,
                             },
                         },
+
+                        notes: true,
                     },
                 },
                 //WashDetail:true,
@@ -477,6 +479,8 @@ export const getIronQueue = async (req, res) => {
                         email: true,
                     },
                 },
+                notes: true,
+
 
             },
         });
@@ -660,6 +664,7 @@ export const getDrycleanQueue = async (req, res) => {
                         email: true,
                     },
                 },
+                notes: true,
 
             },
         });
@@ -826,6 +831,8 @@ export const getOtherQueue = async (req, res) => {
                                 email: true,
                             },
                         },
+
+                        notes: true,
                     },
                 },
                 //WashDetail:true,

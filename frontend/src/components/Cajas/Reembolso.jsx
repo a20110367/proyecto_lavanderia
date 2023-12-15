@@ -132,7 +132,7 @@ function Reembolso() {
       });
 
       const nuevoReembolso = {
-        id_cashWithdrawal: reembolsos.id_cashWithdrawal + 1,
+        id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
         cashWithdrawalType : "refound",
         serviceOrder: parseInt(numeroPedido),
         amount: parseInt(monto),

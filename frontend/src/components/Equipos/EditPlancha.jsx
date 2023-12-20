@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   faCheck,
@@ -7,18 +6,20 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import api from "../../api/api";
 
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
+const DESCRIPTION_REGEX = /^[A-z0-9-_ ]{1,191}$/;
 
 function EditEquipo() {
-
   const errRef = useRef();
+  const descriptionRef = useRef();
 
-
+  const [description, setDescription] = useState("");
+  const [validDescription, setValidDescription] = useState(false);
+  const [descriptionFocus, setDescriptionFocus] = useState(false);
 
   const [machineType, setMachineType] = useState("plancha");
-
 
   const [pieces, setPieces] = useState("");
   const [validPieces, setValidPieces] = useState(false);
@@ -30,6 +31,13 @@ function EditEquipo() {
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    descriptionRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setValidDescription(DESCRIPTION_REGEX.test(description));
+  }, [description]);
 
   useEffect(() => {
     setValidPieces(WEIGHT_REGEX.test(pieces));
@@ -37,14 +45,15 @@ function EditEquipo() {
 
   useEffect(() => {
     setErrMsg("");
-  }, [pieces]);
+  }, [pieces, description]);
 
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
     const getIronStationsById = async () => {
-      const response = await Axios.get(`http://localhost:5000/ironStations/${id}`);
+      const response = await api.get(`/ironStations/${id}`);
+      setDescription(response.data.description);
       setMachineType(response.data.machineType);
       setPieces(response.data.pieces.toString());
       setStatus(response.data.status);
@@ -57,14 +66,16 @@ function EditEquipo() {
     e.preventDefault();
 
     const v3 = WEIGHT_REGEX.test(pieces);
+    const v1 = DESCRIPTION_REGEX.test(description);
 
-    if (!v3) {
+    if (!v1 || !v3) {
       setErrMsg("Entrada no válida");
       return;
     }
 
     try {
-      await Axios.patch(`http://localhost:5000/ironStations/${id}`, {
+      await api.patch(`/ironStations/${id}`, {
+        description: description,
         machineType: machineType,
         pieces: parseInt(pieces),
         status: status,
@@ -73,6 +84,7 @@ function EditEquipo() {
 
       setSuccess(true);
 
+      setDescription("");
       setPieces("");
       setNotes("");
       navigate("/planchas");
@@ -91,7 +103,7 @@ function EditEquipo() {
       <div className="form-container">
         <div className="HeadContent">
           <p className="title text-white">Editando la Plancha:</p>
-          <strong className="title-strong">{machineType}</strong>
+          <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
           <section>
@@ -110,7 +122,6 @@ function EditEquipo() {
               {errMsg}
             </p>
             <form onSubmit={handleSubmit}>
-
               {/* Tipo de Máquina */}
               <label className="form-lbl" htmlFor="machineType">
                 Tipo de Máquina:
@@ -125,13 +136,45 @@ function EditEquipo() {
                 <option value="Plancha">Plancha</option>
               </select>
 
-              {/* Peso */}
+              {/* Modelo */}
+              <label className="form-lbl" htmlFor="model">
+                Modelo:
+                {validDescription ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="model"
+                ref={descriptionRef}
+                autoComplete="off"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
+                required
+                aria-invalid={validDescription ? "false" : "true"}
+                onFocus={() => setDescriptionFocus(true)}
+                onBlur={() => setDescriptionFocus(false)}
+              />
+
+              {/* Piezas */}
               <label className="form-lbl" htmlFor="weight">
                 Piezas:
                 {validPieces ? (
-                  <FontAwesomeIcon icon={faCheck} className="ml-3 text-green-500" />
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
                 ) : (
-                  <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="ml-3 text-red-500"
+                  />
                 )}
               </label>
               <input
@@ -171,10 +214,7 @@ function EditEquipo() {
                 onChange={(e) => setNotes(e.target.value)}
                 value={notes}
               />
-              <button
-                className="btn-edit"
-                disabled={!validPieces}
-              >
+              <button className="btn-edit" disabled={!validPieces}>
                 Actualizar
               </button>
               <button

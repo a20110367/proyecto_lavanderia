@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
-import Axios from 'axios'
 import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
-
+import api from '../../api/api'
 
 function InicioCaja() {
+
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
@@ -19,12 +19,8 @@ function InicioCaja() {
   const dateT = new Date()
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const formattedDate = moment().format('DD/MM/yyyy HH:mm:ss');
-      setFechaHora(formattedDate);
-    }, 1000);
-
-    return () => clearInterval(intervalId);
+    const formattedDate = moment().format('DD/MM/yyyy HH:mm');
+    setFechaHora(formattedDate);
   }, []);
 
   useEffect(() => {
@@ -48,18 +44,19 @@ function InicioCaja() {
       return
     }
     try {
-      const response = await Axios.post("http://localhost:5000/cashCuts", {
-        inicialCash: parseFloat(dineroInicio),
+      const response = await api.post("/cashCuts", {
+        initialCash: parseFloat(dineroInicio),
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON()
       });
       localStorage.setItem("cashCutId", response.data.id_cashCut);
-      localStorage.setItem("initialCash", response.data.inicialCash)
-
+      localStorage.setItem("initialCash", response.data.initialCash)
+      localStorage.removeItem('lastCashCut')
       setCajaIniciada(true);
       setVisible(false);
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
       } else {
@@ -67,12 +64,27 @@ function InicioCaja() {
       }
     }
   };
-    const handleDineroInicioInput = () => {
-      setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
-    };
+  const handleDineroInicioInput = () => {
+    setErrorVisible(false); // Ocultar el mensaje de error cuando se escribe en el campo
+  };
 
-  const handleAbrirFormulario = () => {
-    setVisible(true);
+  const handleAbrirFormulario = async () => {
+    try {
+      const res = await api.get("/cashCutStatus")
+      if (res.data.cashCutStatus === 'closed') {
+        setVisible(true);
+      } else if (res.data.cashCutStatus === 'open') {
+        localStorage.removeItem('lastCashCut')
+        localStorage.setItem("cashCutId", res.data.id_cashCut)
+        setCajaIniciada(true);
+        setVisible(false);
+      } else{
+        setVisible(false)
+      }
+    } catch (err) { 
+      console.log(err)
+      console.error('No entiendo como sucedio esto')
+    }
   };
 
   const handleCloseDialog = () => {
@@ -103,7 +115,7 @@ function InicioCaja() {
           <button
             onClick={handleAbrirFormulario}
             className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
-            >
+          >
             Iniciar Caja
           </button>
         </div>

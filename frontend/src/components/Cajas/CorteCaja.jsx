@@ -1,31 +1,38 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Input, message } from "antd";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import jsPDF from "jspdf";
 import { useAuth } from "../../hooks/auth/auth";
-import Axios from "axios";
-import { AiOutlinePlusCircle } from "react-icons/ai"
-
+import { AiOutlinePlusCircle } from "react-icons/ai";
+import { formatDate } from "../../utils/format";
+import Swal from 'sweetalert2'
+import api from '../../api/api'
 
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
-  const [partialCorteDialogVisible, setPartialCorteDialogVisible] = useState(false);
+  const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
+    useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [corteActivo, setCorteActivo] = useState(false);
-
+  const navigate = useNavigate()
 
   const { cookies } = useAuth();
   const [turno, setTurno] = useState("Matutino");
-  const [initialCash, setInitialCash] = useState(localStorage.getItem('initialCash'))
-  const [cashCutId, setCashCutId] = useState(0)
-  const [lastCashCut, setLastCashCut] = useState(JSON.parse(localStorage.getItem('lastCashCut')));
+  const [initialCash, setInitialCash] = useState(
+    localStorage.getItem("initialCash")
+  );
+  const [cashCutId, setCashCutId] = useState(0);
+  const [lastCashCut, setLastCashCut] = useState(
+    JSON.parse(localStorage.getItem("lastCashCut"))
+  );
 
   useEffect(() => {
-    setCashCutId(localStorage.getItem('cashCutId'))
+    setCashCutId(localStorage.getItem("cashCutId"));
     const now = new Date();
     const formattedDate = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
     setFechaHora(formattedDate);
@@ -55,53 +62,95 @@ function CorteCaja() {
     }
   };
 
-
-
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
-    const now = new Date();
-    const horaActual = now.getHours();
+    if (localStorage.getItem('lastCashCut')) {
+      Swal.fire({
+        icon: "error",
+        title: "Ya has Cerrado Caja",
+        text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      return
+    } else if (!localStorage.getItem('cashCutId')) {
+      Swal.fire({
+        icon: "warning",
+        title: "No se ha Inicializado Caja",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      navigate('/inicioCaja')
+      return
+    }
 
-    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
+    try {
+      const now = new Date();
+      const horaActual = now.getHours();
 
-    const response = await Axios.get(`http://localhost:5000/closeCashCut/${cashCutId}`)
+      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const nuevoCorte = response.data
+      const response = await api.get(`/closeCashCut/${cashCutId}`);
 
-    const pdf = new jsPDF();
+      const corte = response.data;
 
-    pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-    pdf.text(`ID: ${cashCutId}`, 10, 20);
-    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-    pdf.text(`Turno: ${turno}`, 10, 40);
-    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
-    //Separación
-    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
-    nuevoCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
-    nuevoCorte.totalPlanchado ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
-    pdf.text(`Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`, 10, 120);
-    nuevoCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130) : pdf.text("Ingreso en Efectivo: $0", 10, 130)
-    nuevoCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
-    //Separación
-    pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
-    pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
-    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
 
-    localStorage.setItem('lastCashCut', JSON.stringify(nuevoCorte))
-    localStorage.removeItem('initialCash')
-    setLastCashCut(nuevoCorte)
-    setCortes([nuevoCorte]);
-    setMostrarTabla(true); // Muestra la tabla después de hacer el corte
+      const pdf = new jsPDF();
 
-    setDialogVisible(false);
+      pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
+      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
+      //Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      nuevoCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
+        : pdf.text("Autoservicio: $0", 10, 90);
+      nuevoCorte.totalEncargo
+        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        : pdf.text("Lavado por Encargo: $0", 10, 100);
+      nuevoCorte.totalPlanchado
+        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
+        : pdf.text("Planchado: $0", 10, 110);
+      pdf.text(
+        `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+        10,
+        120
+      );
+      nuevoCorte.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 130);
+      nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
+      //Separación
+      pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
+      pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
+      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+
+      setLastCashCut(nuevoCorte);
+      setCortes([nuevoCorte]);
+
+      localStorage.setItem("lastCashCut", JSON.stringify(nuevoCorte));
+      localStorage.removeItem("initialCash");
+      localStorage.removeItem("cashCutId");
+      setMostrarTabla(true); // Muestra la tabla después de hacer el corte
+
+      setDialogVisible(false);
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   const handleDetallesClick = (corte) => {
     setSelectedCorte(corte);
     setModalVisible(true);
+    console.log(corte)
   };
 
   const handlePartialCorteCaja = () => {
@@ -111,38 +160,88 @@ function CorteCaja() {
   /* ------------------------------ PARTIAL CASHCUT ------------------------------------*/
 
   const handlePartialCorteConfirm = async () => {
-    const now = new Date();
-    const horaActual = now.getHours();
+    if (localStorage.getItem('lastCashCut')) {
+      Swal.fire({
+        icon: "error",
+        title: "Ya has Cerrado Caja",
+        text: 'Intenta ir a Historial de Cortes para volver a imprimir el corte del dia que estabas buscando.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      return
+    } else if (!localStorage.getItem('cashCutId')) {
+      Swal.fire({
+        icon: "warning",
+        title: "No se ha Inicializado Caja",
+        text: 'Da click en Iniciar Caja.',
+        confirmButtonColor: '#034078'
+      });
+      setPartialCorteDialogVisible(false)
+      navigate('/inicioCaja')
+      return
+    }
 
-    setTurno(horaActual < 12 ? "Matutino" : "Vespertino")
+    try {
 
-    const response = await Axios.get(`http://localhost:5000/calculateCashCut/${cashCutId}`);
+      const now = new Date();
+      const horaActual = now.getHours();
 
-    const nuevoCorte = response.data
+      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
 
-    const pdf = new jsPDF();
-    pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-    pdf.text(`ID: ${cashCutId}`, 10, 20);
-    pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-    pdf.text(`Turno: ${turno}`, 10, 40);
-    pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-    initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 90)
-      
-    // Separación
-    pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-    nuevoCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${nuevoCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
-    nuevoCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
-    nuevoCorte.totalPlanchado ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
-    nuevoCorte.totalIncome ? pdf.text(`Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,10,120) : pdf.text("Total (Suma de los Servicios): $0", 10, 120)
-    // Separación
-    nuevoCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140) : pdf.text("Ingreso en Efectivo: $0", 10, 140)
-    nuevoCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
-    nuevoCorte.totalCashWithdrawal ? pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160) : pdf.text("Retiros Totales: $0", 10, 160)
-    nuevoCorte.total ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170) : pdf.text("Final Total en Caja: $0", 10, 170)
-    pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
-    setCortes([nuevoCorte]);
-    setPartialCorteDialogVisible(false);
+      const corte = response.data;
+
+      const nuevoCorte = { ...corte, id_cashCut: parseInt(localStorage.getItem('cashCutId')) }
+
+      const pdf = new jsPDF();
+      pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
+      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      initialCash
+        ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
+        : pdf.text("Dinero en Fondo: $0", 10, 90);
+
+      // Separación
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      nuevoCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
+        : pdf.text("Autoservicio: $0", 10, 90);
+      nuevoCorte.totalEncargo
+        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        : pdf.text("Lavado por Encargo: $0", 10, 100);
+      nuevoCorte.totalPlanchado
+        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
+        : pdf.text("Planchado: $0", 10, 110);
+      nuevoCorte.totalIncome
+        ? pdf.text(
+          `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+          10,
+          120
+        )
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
+      // Separación
+      nuevoCorte.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 140);
+      nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
+      nuevoCorte.totalCashWithdrawal
+        ? pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160)
+        : pdf.text("Retiros Totales: $0", 10, 160);
+      nuevoCorte.total
+        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170)
+        : pdf.text("Final Total en Caja: $0", 10, 170);
+      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+
+      setCortes([nuevoCorte]);
+      setPartialCorteDialogVisible(false);
+    } catch (err) {
+      console.error(err)
+    }
   };
 
   const handleModalPrint = () => {
@@ -150,36 +249,60 @@ function CorteCaja() {
 
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
-      pdf.text(`ID: ${cashCutId}`, 10, 20);
+      pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20)
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
       pdf.text(`Turno: ${turno}`, 10, 40);
-      pdf.text(`Fecha: ${formatDateToGMTMinus6(selectedCorte.cashCutD)}`,10,50);
-      initialCash ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60) : pdf.text("Dinero en Fondo: $0", 10, 60)
-      
+      pdf.text(
+        `Fecha: ${formatDate(selectedCorte.cashCutD)}`,
+        10,
+        50
+      );
+      initialCash
+        ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
+        : pdf.text("Dinero en Fondo: $0", 10, 60);
+
       // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-      selectedCorte.toalAutoservicio ? pdf.text(`Autoservicio: $${selectedCorte.toalAutoservicio}`, 10, 90) : pdf.text("Autoservicio: $0", 10, 90)
-      selectedCorte.totalEncargo ? pdf.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 100) : pdf.text("Lavado por Encargo: $0", 10, 100)
-      selectedCorte.totalPlanchado ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110) : pdf.text("Planchado: $0", 10, 110)
-      selectedCorte.totalIncome ? pdf.text(`Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,10,120) : pdf.text("Total (Suma de los Servicios): $0", 10, 120)
+      selectedCorte.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
+        : pdf.text("Autoservicio: $0", 10, 90);
+      selectedCorte.totalEncargo
+        ? pdf.text(
+          `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
+          10,
+          100
+        )
+        : pdf.text("Lavado por Encargo: $0", 10, 100);
+      selectedCorte.totalPlanchado
+        ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
+        : pdf.text("Planchado: $0", 10, 110);
+      selectedCorte.totalIncome
+        ? pdf.text(
+          `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
+          10,
+          120
+        )
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
       // Separación
-      selectedCorte.totalCash ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 140) : pdf.text("Ingreso en Efectivo: $0", 10, 140)
-      selectedCorte.totalCredit ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150) : pdf.text("Ingreso en Tarjeta: $0", 10, 150)
-      selectedCorte.totalCashWithdrawal ? pdf.text(`Retiros Totales: $${selectedCorte.totalCashWithdrawal}`, 10, 160) : pdf.text("Retiros Totales: $0", 10, 160)
-      selectedCorte.total ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170) : pdf.text("Final Total en Caja: $0", 10, 170)    
+      selectedCorte.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 140)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 140);
+      selectedCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
+      selectedCorte.totalCashWithdrawal
+        ? pdf.text(
+          `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
+          10,
+          160
+        )
+        : pdf.text("Retiros Totales: $0", 10, 160);
+      selectedCorte.total
+        ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170)
+        : pdf.text("Final Total en Caja: $0", 10, 170);
       pdf.save("detalle_corte.pdf");
     }
   };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-  
 
   return (
     <div className="text-center mt-4">
@@ -209,26 +332,43 @@ function CorteCaja() {
               <tr>
                 <th>No. Corte</th>
                 <th>FECHA</th>
-                <th>DINERO EN FONDO</th>
-                <th>INGRESO EN EFECTIVO</th>
-                <th>INGRESO EN TARJETA</th>
-                <th>INGRESOS TOTALES</th>
-                <th>RETIROS TOTALES</th>
-                <th>FINAL TOTAL CAJA</th>
+                <th>DINERO <br />EN FONDO</th>
+                <th>INGRESO <br />EN EFECTIVO</th>
+                <th>INGRESO <br />EN TARJETA</th>
+                <th>INGRESOS <br />TOTALES</th>
+                <th>RETIROS <br />TOTALES</th>
+                <th>FINAL <br />TOTAL CAJA</th>
+                <th></th>
               </tr>
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
               {Cortes.map((corte) => (
-                <tr className="bg-white border-b" key={cashCutId}>
-                  <td className="py-3 px-1 text-center">{cashCutId}</td>
-                  <td className="py-3 px-6">{formatDateToGMTMinus6(corte.cashCutD)}</td>
-                  <td className="py-3 px-6">${initialCash ? initialCash : 0}</td>
-                  <td className="py-3 px-6">${corte.totalCash ? corte.totalCash : 0}</td>
-                  <td className="py-3 px-6">${corte.totalCredit ? corte.totalCredit : 0}</td>
-                  <td className="py-3 px-6">${corte.totalIncome ? corte.totalIncome : 0}</td>
-                  <td className="py-3 px-6">${corte.totalCashWithdrawal ? corte.totalCashWithdrawal : 0}</td>
-                  <td className="py-3 px-6">${corte.total ? corte.total : 0}</td>
+                <tr className="bg-white border-b" key={corte.id_cashCut}>
+                  <td className="py-3 px-1 text-center">
+                    {corte.id_cashCut}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDate(corte.cashCutD)}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${initialCash ? initialCash : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${corte.totalCash ? corte.totalCash : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${corte.totalCredit ? corte.totalCredit : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${corte.totalIncome ? corte.totalIncome : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${corte.totalCashWithdrawal ? corte.totalCashWithdrawal : 0}
+                  </td>
+                  <td className="py-3 px-6">
+                    ${corte.total ? corte.total : 0}
+                  </td>
                   <td className="py-3 px-6">
                     <button
                       className="btn-primary"
@@ -300,11 +440,7 @@ function CorteCaja() {
         onCancel={() => setModalVisible(false)}
         width={600}
         footer={[
-          <Button
-            key="print"
-            onClick={handleModalPrint}
-            className="btn-print"
-          >
+          <Button key="print" onClick={handleModalPrint} className="btn-print">
             Imprimir
           </Button>,
           <Button
@@ -321,33 +457,41 @@ function CorteCaja() {
             <div className="flex">
               <div className="w-1/2">
                 <p className="text-lg">
-                  <span className="font-bold">ID:</span> {cashCutId}
+                  <span className="font-bold">ID:</span> {localStorage.getItem("lastCashCut").id}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Usuario:</span>{" "}{cookies.username}
+                  <span className="font-bold">Usuario:</span> {cookies.username}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Turno:</span>{" "}{turno}
+                  <span className="font-bold">Turno:</span> {turno}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Fecha:</span>{" "}{formatDateToGMTMinus6(selectedCorte.cashCutD)}
+                  <span className="font-bold">Fecha:</span>{" "}
+                  {formatDate(selectedCorte.cashCutD)}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Dinero en Fondo:</span> ${initialCash}
+                  <span className="font-bold">Dinero en Fondo:</span> $
+                  {initialCash}
                 </p>
               </div>
               <div className="w-1/2">
                 <p className="text-lg">
-                  <span className="font-bold">Ingreso en Efectivo:</span> ${ selectedCorte.totalCash ? selectedCorte.totalCash : 0}
+                  <span className="font-bold">Ingreso en Efectivo:</span> $
+                  {selectedCorte.totalCash ? selectedCorte.totalCash : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Ingreso en Tarjeta:</span> ${ selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
+                  <span className="font-bold">Ingreso en Tarjeta:</span> $
+                  {selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Retiros Totales:</span> ${selectedCorte.totalCashWithdrawal ? selectedCorte.totalCashWithdrawal : 0}
+                  <span className="font-bold">Retiros Totales:</span> $
+                  {selectedCorte.totalCashWithdrawal
+                    ? selectedCorte.totalCashWithdrawal
+                    : 0}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Final Total en Caja:</span> ${ selectedCorte.total ? selectedCorte.total: 0}
+                  <span className="font-bold">Final Total en Caja:</span> $
+                  {selectedCorte.total ? selectedCorte.total : 0}
                 </p>
               </div>
             </div>
@@ -356,18 +500,26 @@ function CorteCaja() {
                 Detalles de Ingresos por Servicio:
               </h3>
               <p className="text-lg">
-                <span className="font-bold">Autoservicio:</span> ${ selectedCorte.toalAutoservicio ? selectedCorte.toalAutoservicio : 0}
+                <span className="font-bold">Autoservicio:</span> $
+                {selectedCorte.totalAutoservicio
+                  ? selectedCorte.totalAutoservicio
+                  : 0}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Lavado por Encargo:</span> ${selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
+                <span className="font-bold">Lavado por Encargo:</span> $
+                {selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Planchado:</span> ${ selectedCorte.totalPlanchado ? selectedCorte.totalPlanchado : 0}
+                <span className="font-bold">Planchado:</span> $
+                {selectedCorte.totalPlanchado
+                  ? selectedCorte.totalPlanchado
+                  : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">
                   Total (Suma de los Servicios):
-                </span>{" "} ${ selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+                </span>{" "}
+                ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
               </p>
             </div>
           </div>

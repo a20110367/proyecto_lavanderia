@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button, Input } from "antd";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
-import Axios from "axios";
+import { formatDate } from "../../utils/format";
 import useSWR from "swr";
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function Reembolso() {
+  const navigate = useNavigate();
   const [reembolsos, setReembolsos] = useState([]);
   const [filteredReembolsos, setFilteredReembolsos] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -27,15 +31,17 @@ function Reembolso() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/cashWhithdrawals");
+    const response = await api.get("/cashWithdrawals");
     return response.data;
   };
 
-  const { data } = useSWR("cashWhithdrawals", fetcher);
+  const { data } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
-      const reembolsosFiltrados = data.filter((reembolso) => reembolso.cashWhithdrawalType === "refound");
+      const reembolsosFiltrados = data.filter(
+        (reembolso) => reembolso.cashWithdrawalType === "refound"
+      );
       setReembolsos(reembolsosFiltrados);
       setFilteredReembolsos(reembolsosFiltrados);
     }
@@ -44,24 +50,38 @@ function Reembolso() {
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = reembolsos.filter(
-      (reembolso) =>
-        reembolso.fk_cashCut.toLowerCase().includes(searchTerm) ||
+      (reembolso) =>{
+      const formattedDate = moment(reembolso.date).format("DD/MM/YYYY");
+      return(
+        reembolso.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
         reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
         reembolso.cause.toLowerCase().includes(searchTerm) ||
-        reembolso.date.toLowerCase().includes(searchTerm)
-    );
-    setFiltro(event.target.value);
-    setFilteredReembolsos(filtered);
+        formattedDate.toLowerCase().includes(searchTerm)
+        );
+      });
+      setFiltro(event.target.value);
+      setFilteredReembolsos(filtered);
+      setCurrentPage(0);
   };
 
   const handleReembolso = () => {
+    if (!localStorage.getItem("cashCutId")) {
+      Swal.fire({
+        icon: "warning",
+        title: "No has inicializado caja!",
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
+      });
+      navigate("/inicioCaja");
+      return;
+    }
     setVisible(true);
   };
 
   const handleMontoInput = () => {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
-  
+
   const handleNpedidoInput = () => {
     setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
@@ -103,21 +123,22 @@ function Reembolso() {
     }
 
     if (isValid) {
-      const date = moment().format(); 
+      const date = moment().format();
 
-      Axios.post("http://localhost:5000/cashWhithdrawals", {
-        cashWhithdrawalType : "refound",
-        fk_cashCut : parseInt(localStorage.getItem("cashCutId")),
-        fk_user:cookies.token,
-        amount : parseInt(monto),
+      api.post("/cashWithdrawals", {
+        cashWithdrawalType: "refound",
+        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        fk_user: cookies.token,
+        serviceOrder: parseInt(numeroPedido),
+        amount: parseInt(monto),
         cause: motivo,
-        date: date
+        date: date,
       });
 
       const nuevoReembolso = {
-        id_cashWhithdrawal: reembolsos.length + 1,
-        cashWhithdrawalType : "refound",
-        numeroPedido: numeroPedido,
+        id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
+        cashWithdrawalType : "refound",
+        serviceOrder: parseInt(numeroPedido),
         amount: parseInt(monto),
         cause: motivo,
         date: date,
@@ -134,69 +155,63 @@ function Reembolso() {
     setVisible(false);
   };
 
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div>
       <div className="mb-3">
-      <div className="title-container">
+        <div className="title-container">
           <strong className="title-strong">Registro de Reembolsos</strong>
         </div>
       </div>
-        <div className="flex items-center -4">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Buscar..."
-              className="input-search"
-              value={filtro}
-              onChange={handleFiltroChange}
-            />
-            <div className="absolute top-2.5 left-1 text-gray-400">
-              <HiOutlineSearch fontSize={20} className="text-gray-400" />
-            </div>
+      <div className="flex items-center -4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-1 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
-        <div className="mt-3 mb-3">
-          <button
-            onClick={handleReembolso}
-            className="btn-primary"
-          >
-            Registrar Reembolso
-          </button>
-        
-        </div>
-        <table className="w-full text-sm text-left text-gray-500">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-            <tr>
-              <th >No. Reembolso</th>
-              <th >Número de Pedido</th>
-              <th>Monto</th>
-              <th >Motivo</th>
-              <th >Fecha</th>
-            </tr>
-          </thead>
-          <tbody>
+      </div>
+      <div className="mt-3 mb-3">
+        <button onClick={handleReembolso} className="btn-primary">
+          Registrar Reembolso
+        </button>
+      </div>
+      <table className="w-full text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+          <tr>
+            <th>No. Reembolso</th>
+            <th>Número de Pedido</th>
+            <th>Monto</th>
+            <th>Motivo</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
           {filteredReembolsos
-        .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-        .map((reembolso) => (
-              <tr className="bg-white border-b" key={reembolso.id_cashWhithdrawal}>
-                <td className="py-3 px-1 text-center">{reembolso.id_cashWhithdrawal}</td>
-                <td className="py-3 px-6">{reembolso.id_order}</td>
+            .slice()
+            .reverse()
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .map((reembolso) => (
+              <tr
+                className="bg-white border-b"
+                key={reembolso.id_cashWithdrawal}
+              >
+                <td className="py-3 px-1 text-center">
+                  {reembolso.id_cashWithdrawal}
+                </td>
+                <td className="py-3 px-6">{reembolso.serviceOrder}</td>
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(reembolso.date)}</td>
+                <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
               </tr>
             ))}
-          </tbody>
-        </table>
+        </tbody>
+      </table>
       <Modal
         title="Registrar Reembolso"
         open={visible}
@@ -220,13 +235,13 @@ function Reembolso() {
           </Button>,
         ]}
       >
-       <form>
+        <form>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Número de Pedido:
             </label>
             <Input
-              type="text"
+              type="number"
               value={numeroPedido}
               onChange={(e) => setNumeroPedido(e.target.value)}
               placeholder="Ingrese el número de pedido"
@@ -263,22 +278,22 @@ function Reembolso() {
         </form>
       </Modal>
       <div className="flex justify-center mt-4 mb-4">
-    <ReactPaginate
-      previousLabel={"Anterior"}
-      nextLabel={"Siguiente"}
-      breakLabel={"..."}
-      pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
-      marginPagesDisplayed={2}
-      pageRangeDisplayed={2}
-      onPageChange={handlePageChange}
-      containerClassName={"pagination flex"}
-      pageLinkClassName="pageLinkClassName"
-      previousLinkClassName="prevOrNextLinkClassName"
-      nextLinkClassName="prevOrNextLinkClassName"
-      breakLinkClassName="breakLinkClassName"
-      activeLinkClassName="activeLinkClassName"
-    />
-  </div>
+        <ReactPaginate
+          previousLabel={"Anterior"}
+          nextLabel={"Siguiente"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(filteredReembolsos.length / itemsPerPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination flex"}
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
     </div>
   );
 }

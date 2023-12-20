@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -28,14 +28,12 @@ function ServicesLavanderia() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/servicesLaundry");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesLaundry", fetcher);
   if (!data) return <h2>Loading...</h2>;
-
-  console.log(data)
 
   // Filtrar servicios relacionados con lavandería
   const filteredData = data.filter((service) => {
@@ -58,8 +56,8 @@ function ServicesLavanderia() {
   });
 
   const deleteService = async (serviceId) => {
-    await Axios.delete(`http://localhost:5000/services/${serviceId}`);
-    mutate("services");
+    await api.delete(`/servicesLaundry/${serviceId}`);
+    mutate("servicesLaundry");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {
@@ -80,7 +78,7 @@ function ServicesLavanderia() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Lavanderia</strong>
+        <strong className="title-strong">Servicios de  Encargo Ropa</strong>
       </div>
       <div className="w-full pt-4">
         <button
@@ -89,13 +87,13 @@ function ServicesLavanderia() {
         >
           Añadir Nuevo Servicio
           <br />
-          de Lavandería
+          de Encargo ropa
         </button>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
             <thead>
               <tr>
-              <th>No. servicio</th>
+              <th>No. servicio</th> 
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>

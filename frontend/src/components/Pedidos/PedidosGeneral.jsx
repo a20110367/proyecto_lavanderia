@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation } from "react-router-dom";
+import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
-import Axios from 'axios'
 import useSWR from "swr";
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 import {
   IssuesCloseOutlined,
@@ -23,7 +25,7 @@ function PedidosGeneral() {
   const [filtroEstatus, setFiltroEstatus] = useState("");
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-  const [errMsg, setErrMsg] = useState("")
+  const [errMsg, setErrMsg] = useState("");
   const location = useLocation();
 
   const machineIdQueryParam = new URLSearchParams(location.search).get(
@@ -45,7 +47,7 @@ function PedidosGeneral() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/orders");
+    const response = await api.get("/orders");
     return response.data;
   };
 
@@ -77,6 +79,7 @@ function PedidosGeneral() {
     });
 
     setFilteredPedidos(textFiltered);
+    setCurrentPage(0);
   }, [filtro, filtroEstatus, pedidos]);
 
   if (!data) return <h2>Loading...</h2>;
@@ -94,14 +97,17 @@ function PedidosGeneral() {
     try {
       setShowMachineName(false);
       showNotification("NOTIFICACIÓN ENVIADA...");
-      await Axios.post("http://localhost:5000/sendMessage", {
+      await api.post("/sendMessage", {
         id_order: pedido.id_order,
         name: pedido.client.name,
         email: pedido.client.email,
-        tel: "521"+pedido.client.phone,
-        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`
+        tel: "521" + pedido.client.phone,
+        message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
+        subject: "Tu Ropa esta Lista",
+        text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+        warning: false,
       });
-      console.log("NOTIFICACIÓN ENVIADA...")
+      console.log("NOTIFICACIÓN ENVIADA...");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
@@ -120,8 +126,42 @@ function PedidosGeneral() {
     }, 2000);
   };
 
+  const notifyAll = async () => {
+    Swal.fire({
+      title: "Notificar a todos los clientes?",
+      text: "Estas seguro de notificar a todos los clientes?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const filteredOrder = pedidos.filter(
+          (pedido) => pedido.orderStatus === "finished"
+        );
+        try {
+          await api.post("/notifyAll", {
+            filteredOrder: filteredOrder,
+          });
+          setShowMachineName(false);
+          showNotification("NOTIFICACIONES ENVIADAS...");
+          console.log("NOTIFICACIONES ENVIADAS...");
+        } catch (err) {
+          if (!err?.response) {
+            setErrMsg("No hay respuesta del servidor.");
+          } else {
+            setErrMsg("Error al mandar la notificación");
+            console.log(err);
+          }
+        }
+      }
+    });
+  };
+
   const handleSeleccionarPedido = (pedido, pedidoId) => {
-    const pedidoSeleccionado = pedido
+    const pedidoSeleccionado = pedido;
 
     if (pedidoSeleccionado && pedidoSeleccionado.orderStatus === "pending") {
       if (selectedPedidos[machineIdQueryParam]) {
@@ -133,8 +173,8 @@ function PedidosGeneral() {
 
       const pedidosActualizados = pedidos.map((pedido) => {
         if (pedido.id_order === pedidoId) {
-          Axios.patch(`http://localhost:5000/orders/${pedidoId}`, {
-            orderStatus: "inProgress"
+          Axios.api(`/orders/${pedidoId}`, {
+            orderStatus: "inProgress",
           });
           return { ...pedido, orderStatus: "inProgress" };
         }
@@ -153,8 +193,8 @@ function PedidosGeneral() {
         content: (
           <div>
             <p>
-              El pedido para el cliente: {pedido.client.name} ha sido cambiado a "En
-              Proceso".
+              El pedido para el cliente: {pedido.client.name} ha sido cambiado a
+              "En Proceso".
             </p>
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
           </div>
@@ -179,15 +219,6 @@ function PedidosGeneral() {
     }
   };
 
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setUTCHours(0, 0, 0, 0);
-    const day = date.getUTCDate();
-    const month = date.getUTCMonth() + 1;
-    const year = date.getUTCFullYear();
-    return `${day}/${month}/${year}`;
-  };
-  
   return (
     <div>
       <div className="mb-3">
@@ -208,6 +239,9 @@ function PedidosGeneral() {
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
         </div>
+        <button className="btn-primary text-xs" onClick={() => notifyAll()}>
+          Notificar a todos los Clientes
+        </button>
         <select
           className="select-category"
           value={filtroEstatus}
@@ -253,87 +287,126 @@ function PedidosGeneral() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th>No. Folio</th>
-              <th>Empleado que Recibió</th>
-              <th>Empleado que Entregó</th>
-              <th>Nombre del Cliente</th>
-              <th>Detalle del pedido</th>
-              <th>Fecha de Entrega</th>
+              <th>Recibió</th>
+              <th>Entregó</th>
+              <th>Cliente</th>
+              <th>Detalles</th>
+              <th>
+                Fecha de <br />
+                Entrega
+              </th>
+              <th>
+                Forma de <br />
+                Pago
+              </th>
               <th>Estatus</th>
-              <th>Forma de Pago</th>
+              <th>Observaciones</th>
+              <th></th>
               {showCheckbox && <th className="py-3 px-6">Seleccionar</th>}
             </tr>
           </thead>
           <tbody>
-            {filteredPedidos.slice(startIndex, endIndex).map((pedido) => (
-              <tr className="bg-white border-b" key={pedido.id_order}>
-                <td className="py-3 px-1 text-center">{pedido.id_order}</td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.client.name}
-                </td>
-                <td className="py-3 px-6">{pedido.ServiceOrderDetail}</td>
-                <td className="py-3 px-6">{formatDate(pedido.scheduledDeliveryDate)}</td>
-                <td className="py-3 px-6 ">
-                  {pedido.orderStatus === "pending" ? (
-                    <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined /> Pendiente
-                    </span>
-                  ) : pedido.orderStatus === "stored" ? (
-                    <span className="text-fuchsia-600 pl-1">
-                      <DropboxOutlined /> Almacenado
-                    </span>
-                  ) : pedido.orderStatus === "inProgress" ? (
-                    <span className="text-yellow-600 pl-1">
-                      <ClockCircleOutlined /> En Proceso
-                    </span>
-                  ) : pedido.orderStatus === "finished" ? (
-                    <span className="text-blue-600 pl-1">
-                      <IssuesCloseOutlined /> Finalizado no entregado
+            {filteredPedidos
+              .slice()
+              .reverse()
+              .filter(
+                (pedido) =>
+                  pedido.orderStatus === "finished" ||
+                  pedido.orderStatus === "delivered"
+              )
+              .slice(startIndex, endIndex)
+              .map((pedido) => (
+                <tr className="bg-white border-b" key={pedido.id_order}>
+                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.user.name}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.deliveryDetail
+                      ? pedido.deliveryDetail.user.name
+                      : ""}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.client.name}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.category
+                      ? pedido.category.categoryDescription === "autoservicio"
+                        ? "Autoservicio"
+                        : pedido.category.categoryDescription === "planchado"
+                        ? "Planchado"
+                        : pedido.category.categoryDescription === "encargo"
+                        ? "Encargo Ropa"
+                        : pedido.category.categoryDescription === "tintoreria"
+                        ? "Tintoreria"
+                        : pedido.category.categoryDescription === "varios"
+                        ? "Encargo Varios"
+                        : "Otro" // Si el texto no coincide con ninguna categoría específica
+                      : "Categoría no definida"}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.scheduledDeliveryDate)}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                  </td>
+                  <td className="py-3 px-6 font-bold">
+                    {pedido.orderStatus === "pending" ? (
+                      <span className="text-gray-600 pl-1">
+                        <MinusCircleOutlined /> Pendiente
+                      </span>
+                    ) : pedido.orderStatus === "stored" ? (
+                      <span className="text-fuchsia-600 pl-1">
+                        <DropboxOutlined /> Almacenado
+                      </span>
+                    ) : pedido.orderStatus === "inProgress" ? (
+                      <span className="text-yellow-600 pl-1">
+                        <ClockCircleOutlined /> En Proceso
+                      </span>
+                    ) : pedido.orderStatus === "finished" ? (
+                      <span className="text-blue-600 pl-1">
+                        <IssuesCloseOutlined /> Finalizado no entregado
+                      </span>
+                    ) : pedido.orderStatus === "delivered" ? (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Finalizado Entregado
+                      </span>
+                    ) : (
+                      <span className="text-red-600 pl-1">
+                        <StopOutlined /> Cancelado
+                      </span>
+                    )}
+                  </td>
+                  <td>{pedido.notes ? pedido.notes : "No hay notas"}</td>
+                  {showCheckbox && (
+                    <td className="py-3 px-6">
+                      {pedido.orderStatus === "pending" ? (
+                        selectedPedidos[machineIdQueryParam] ? (
+                          <input type="checkbox" className="h-6 w-6" disabled />
+                        ) : (
+                          <input
+                            type="checkbox"
+                            className="h-6 w-6"
+                            onChange={() =>
+                              handleSeleccionarPedido(pedido, pedido.id_order)
+                            }
+                          />
+                        )
+                      ) : null}
+                    </td>
+                  )}
+                  <td>
+                    {pedido.orderStatus === "finished" && (
                       <button
                         onClick={() => handleNotificarCliente(pedido)}
                         className="btn-primary mt-1"
                       >
                         Notificar al Cliente
                       </button>
-                    </span>
-                  ) : pedido.orderStatus === "delivered" ? (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Finalizado Entregado
-                    </span>
-                  ) : (
-                    <span className="text-red-600 pl-1">
-                      <StopOutlined /> Cancelado
-                    </span>
-                  )}
-                </td>
-                <td className="py-3 px-6">{pedido.payForm === 'delivery' ? 'Entrega' : 'Anticipo'}</td>
-                {showCheckbox && (
-                  <td className="py-3 px-6">
-                    {pedido.orderStatus === "pending" ? (
-                      selectedPedidos[machineIdQueryParam] ? (
-                        <input type="checkbox" className="h-6 w-6" disabled />
-                      ) : (
-                        <input
-                          type="checkbox"
-                          className="h-6 w-6"
-                          onChange={() =>
-                            handleSeleccionarPedido(
-                              pedido,
-                              pedido.id_order
-                            )
-                          }
-                        />
-                      )
-                    ) : null}
+                    )}
                   </td>
-                )}
-              </tr>
-            ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -342,7 +415,13 @@ function PedidosGeneral() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) =>
+                pedido.orderStatus === "finished" ||
+                pedido.orderStatus === "delivered"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

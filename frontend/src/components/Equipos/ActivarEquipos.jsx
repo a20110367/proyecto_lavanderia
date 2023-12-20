@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Axios from "axios";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import ReactPaginate from "react-paginate";
+import api from "../../api/api";
 
 function ActivarEquipos() {
   const [machineSelModel, setMachineSelModel] = useState();
@@ -17,8 +17,8 @@ function ActivarEquipos() {
   const [allEquipment, setAllEquipment] = useState([]);
 
   const fetcher = async () => {
-    const machinesResponse = await Axios.get("http://localhost:5000/machines");
-    const ironsResponse = await Axios.get("http://localhost:5000/ironStations");
+    const machinesResponse = await api.get("/machines");
+    const ironsResponse = await api.get("/ironStations");
     const machinesData = machinesResponse.data.map((machine) => ({
       ...machine,
       type: "machine", // Agregar un campo 'type' para diferenciar las máquinas
@@ -31,7 +31,7 @@ function ActivarEquipos() {
     setAllEquipment(allData);
     return allData;
   };
-  const { data } = useSWR("machines", fetcher);
+  const { data } = useSWR("turnOnMachines", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const handleClickOpen = (machineModel, machineId) => {
@@ -58,7 +58,7 @@ function ActivarEquipos() {
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
-                <th>Peso</th>
+                <th>Peso / Piezas</th>
                 <th>Estado</th>
                 <th>Notas</th>
                 <th>Opciones</th>
@@ -71,7 +71,14 @@ function ActivarEquipos() {
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((machine, index) => (
-                  <tr key={machine.id_machine}>
+                  <tr
+                    key={
+                      machine.machineType === "lavadora" ||
+                      machine.machineType === "secadora"
+                        ? machine.id_machine + "-" + machine.machineType
+                        : machine.id_ironStation + "-" + machine.machineType
+                    }
+                  >
                     <td>{index + 1}</td>
                     <td
                       className={`font-semibold ${
@@ -88,9 +95,24 @@ function ActivarEquipos() {
                         "Secadora"
                       )}
                     </td>
-                    <td>{machine.model}</td>
+                    <td>
+                      {machine.machineType === "plancha"
+                        ? machine.description
+                        : machine.machineType === "lavadora"
+                        ? machine.model
+                        : machine.machineType === "secadora"
+                        ? machine.model
+                        : ""}
+                    </td>
                     <td>{machine.cicleTime}</td>
-                    <td>{machine.weight}</td>
+                    <td>
+                      {" "}
+                      {
+                        machine.machineType === "plancha"
+                          ? machine.pieces 
+                          : machine.weight 
+                      }
+                    </td>
                     <td
                       className={`${
                         machine.status === "available"

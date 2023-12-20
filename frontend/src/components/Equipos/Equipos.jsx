@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -29,7 +29,7 @@ function Equipos() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/machines");
+    const response = await api.get("/machines");
     return response.data;
   };
 
@@ -41,7 +41,7 @@ function Equipos() {
     : data;
 
   const deleteMachine = async (machineId) => {
-    await Axios.delete(`http://localhost:5000/machines/${machineId}`);
+    await api.delete(`/machines/${machineId}`);
     mutate("machines");
   };
 
@@ -93,12 +93,6 @@ function Equipos() {
               className="text-green-500 font-semibold text-base"
             >
               Secadoras
-            </option>
-            <option
-              value="plancha"
-              className="text-yellow-500 font-semibold text-base"
-            >
-              Planchas
             </option>
           </select>
         </div>

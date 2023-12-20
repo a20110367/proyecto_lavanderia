@@ -1,20 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from "../../api/api";
 
 function EditServiceLavanderia() {
-  const descriptionRef = useRef();
-  const priceRef = useRef();
-  const timeRef = useRef();
-  const weightRef = useRef();
+
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState();
-  const [pieces, setPieces] = useState();
-  const [category, setCategory] = useState("lavado");
+  const [washCycleTime, setWashCycleTime] = useState(0);
+  const [washWeight, setWashWeight] = useState(0);
+  const [dryCycleTime, setDryCycleTime] = useState(0);
+  const [dryWeight, setDryWeight] = useState(0);
+  const [category, setCategory] = useState("encargo");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -23,19 +21,28 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = "autoservicio";
+  const forbiddenKeyword = ["autoservicio", "planchado"];
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await Axios.get(`http://localhost:5000/servicesById/${id}`);
-      setDescription(response.data.description);
-      setPrice(response.data.price);
-      setCategory("Lavado");
-      setTime(response.data.time);
-      setWeight(response.data.weight);
+      try {
+        const response = await api.get(`/servicesLaundry/${id}`);
+        setDescription(response.data.description || "");
+        setPrice(response.data.price || 0);
+        setCategory("Encargo");
+        setWashCycleTime(response.data.washCycleTime || 0);
+        setWashWeight(response.data.washWeight || 0);
+        setDryCycleTime(response.data.dryCycleTime || 0);
+        setDryWeight(response.data.dryWeight || 0);
+      } catch (error) {
+        console.error("Error fetching service:", error);
+      }
     };
+  
     getServiceById();
   }, [id]);
+  
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +56,7 @@ function EditServiceLavanderia() {
       return;
     }
 
-    if (!description || !price || !time) {
+    if (!description || !price || !washCycleTime) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
@@ -60,14 +67,19 @@ function EditServiceLavanderia() {
     }
 
     try {
-      await Axios.patch(`http://localhost:5000/services/${id}`, {
+      await api.patch(`/servicesUpdateLaundry/${id}`, {
         description: description,
-        category_id: 2,
         price: parseFloat(price),
+        washWeight: parseInt(washWeight),
+        washCycleTime: parseInt(washCycleTime),
+        category_id: 2,
+        dryWeight: parseInt(dryWeight),
+        dryCycleTime: parseInt(dryCycleTime),
       });
       navigate("/servicesLavanderia");
       setSuccess(true);
     } catch (err) {
+      console.log(err)
       setErrMsg("Error al actualizar el servicio.");
     }
   };
@@ -76,7 +88,7 @@ function EditServiceLavanderia() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">Editando el Servicio de Lavado:</p>
+          <p className="title text-white">Editando el Servicio de <br /> Encargo Ropa:</p>
           <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
@@ -93,7 +105,6 @@ function EditServiceLavanderia() {
                 className="form-input"
                 type="text"
                 id="description"
-                ref={descriptionRef}
                 autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
@@ -117,35 +128,60 @@ function EditServiceLavanderia() {
                 className="form-input"
                 type="number"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
               />
 
-              <label className="form-lbl" htmlFor="time">
-                Tiempo (minutos):
+              <label className="form-lbl" htmlFor="washCycleTime">
+                Tiempo de lavado (minutos):
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="time"
-                ref={timeRef}
-                onChange={(e) => setTime(e.target.value)}
-                value={time}
+                id="washCycleTime"
+
+                onChange={(e) => setWashCycleTime(e.target.value)}
+                value={washCycleTime}
                 required
               />
 
-              <label className="form-lbl" htmlFor="weight">
-                Peso (gramos):
+              <label className="form-lbl" htmlFor="washWeight">
+                Peso (Kilos):
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="weight"
-                ref={weightRef}
-                onChange={(e) => setWeight(e.target.value)}
-                value={weight}
+                id="washWeight"
+
+                onChange={(e) => setWashWeight(e.target.value)}
+                value={washWeight}
+              />
+
+              <label className="form-lbl" htmlFor="dryCycleTime">
+                Tiempo de Secado (minutos):
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="dryCycleTime"
+
+                onChange={(e) => setDryCycleTime(e.target.value)}
+                value={dryCycleTime}
+                required
+              />
+
+              <label className="form-lbl" htmlFor="dryWeight">
+                Peso de Secado (Kilogramos):
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="dryWeight"
+
+                onChange={(e) => setDryWeight(e.target.value)}
+                value={dryWeight}
               />
 
               <label className="form-lbl" htmlFor="category">
@@ -155,7 +191,7 @@ function EditServiceLavanderia() {
                 className="form-input"
                 type="text"
                 id="category"
-                value="Lavandería"
+                value="Encargo"
                 disabled
               />
 

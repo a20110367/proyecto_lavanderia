@@ -5,7 +5,11 @@ import dotenv from "dotenv";
 //Rutas de los modelos
 import UserRoute from './routes/UserRoute.js';
 import ClientRoute from './routes/ClientRoute.js'
-import ServiceRoute from './routes/ServiceRoute.js'
+//import ServiceRoute from './routes/ServiceRoute.js'
+import QueueRoute from './routes/QueueRoute.js'
+import ServiceLaundryRoute from './routes/ServiceLaundryRoute.js'
+import ServiceIronRoute from './routes/ServiceIronRoute.js'
+import ServiceSelfServiceRoute from './routes/ServiceSelfServiceRoute.js'
 import MachineRoute from './routes/MachineRoute.js'
 import IronStationRoute from './routes/IronStationRoute.js'
 import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
@@ -18,9 +22,12 @@ import DeliveryDetailRoute from './routes/DeliveryDetailRoute.js'
 import SelfServiceQueueRoute from './routes/SelfServiceQueueRoute.js'
 import ServiceDetailRoute from './routes/ServiceDetailRoute.js'
 import ServiceOrderDetailRoute from './routes/ServiceOrderDetailRoute.js'
-import CashWhithdrawalRoute from './routes/CashWithdrawalRoute.js'
+import CashWithdrawalRoute from './routes/CashWithdrawalRoute.js'
+import PettyCashRoute from './routes/PettyCashRoute.js'
 import MessageRoute from './routes/MessageRoute.js'
-
+import IronControlRoute from './routes/IronControlRoute.js'
+import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
+import OtherService from './routes/ServiceOtherServiceRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -31,7 +38,11 @@ app.use(express.json());
 //Uso de rutas de por la aplicación
 app.use(UserRoute)
 app.use(ClientRoute)
-app.use(ServiceRoute)
+app.use(QueueRoute)
+//app.use(ServiceRoute)
+app.use(ServiceLaundryRoute)
+app.use(ServiceIronRoute)
+app.use(ServiceSelfServiceRoute)
 app.use(MachineRoute)
 app.use(IronStationRoute)
 app.use(OrderRoute)
@@ -44,10 +55,12 @@ app.use(LaundryQueueRoute)
 app.use(SelfServiceQueueRoute)
 app.use(ServiceDetailRoute)
 app.use(ServiceOrderDetailRoute)
-app.use(CashWhithdrawalRoute)
-
+app.use(CashWithdrawalRoute)
+app.use(PettyCashRoute)
 app.use(MessageRoute)
-
+app.use(IronControlRoute)
+app.use(ServiceDryclean)
+app.use(OtherService)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

@@ -37,7 +37,6 @@ export default function Sidebar() {
           <div className="img-side">
             {" "}
             {/* Contenedor flex */}
-           
               <img
                 src={washingsvg}
                 alt="Lavadora"

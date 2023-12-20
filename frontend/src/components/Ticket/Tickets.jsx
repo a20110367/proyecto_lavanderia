@@ -1,173 +1,131 @@
-import Navbar from "../../routes/Navbar"
-import { useRef, useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
-import Axios from "axios";
+import IMAGES from "../../images/images";
+import printJS from "print-js";
+import moment from "moment";
+import jsPDF from "jspdf";
+import api from '../../api/api'
+import { formatDate, formatTime } from "../../utils/format";
 
+export const orderTicket = async (order) => {
+    const date = moment().format("DD / MM / YYYY")
+    const hour = moment().format("LT");
 
-function AddClient() {
-
-    const clientRef = useRef();
-    const errcRef = useRef();
-
-    const [client, setClient] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [clientFocus, setClientFocus] = useState(false);
-
-    const [apellido_p, setApellido_p] = useState('');
-    const [validApellido_p, setValidApellido_p] = useState(false);
-    const [apellido_pFocus, setApellido_pFocus] = useState(false);
-    
-    const [apellido_m, setApellido_m] = useState('');
-    const [validApellido_m, setValidApellido_m] = useState(false);
-    const [apellido_mFocus, setApellido_mFocus] = useState(false);
-
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-
-    const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        clientRef.current.focus();
-    }, [])
-
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(client)
-        console.log(apellido_p)
-        console.log(apellido_m)
-        console.log(phone)
-        console.log(email)
-       
-       
-        try {
-            await Axios.post("http://localhost:5000/clients", {
-                name: client,
-                apellido_p: apellido_p,
-                apellido_m: apellido_m,
-                phone: phone,
-                email: email,
-                
-            });
-            //console.log(JSON.stringify(response))
-            setSuccess(true);
-            //clear state and controlled inputs
-            setClient('');
-            setApellido_p('');
-            setApellido_m('');
-
-            navigate('/login')
-        } catch (err) {
-            if (!err?.response) {
-                setErrMsg('No Server Response');
-            } else if (err.response?.status === 409) {
-                setErrMsg('Clientname Taken');
-            } else {
-                setErrMsg('Registration Failed')
-            }
-            errcRef.current.focus();
-        }
+    let word = 'w'
+    try {
+        const res = await api.post("/numberToWord", {
+            number: order.subtotal,
+        });
+        word = res.data
+    } catch (e) {
+        console.log('Error al convertir de número a letra')
     }
-
-
-    return (
-        <div className="signup-form">
-            <div  className=" bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-                <strong>Añadir Cliente</strong>
+    const html = `
+    <form class="form-container" id="container" style="font-size:small">
+        <div class="PrintOnly">
+            <div class="info" style="text-align: center;"> 
+                <img src="${IMAGES.caprelogo}" width="150" height="100" alt="logo" class="logo">
+                <p>**CAPREL**</p>
+                <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
+                <p>TLAQUEPAQUE, JALISCO</p>
+                <p>TEL. (33) 30001789</p>
+                <p>RFC: RORS010912QZ6</p>
             </div>
-            {success ? (
-                <section>
-                    <h1>Success!</h1>
-                    <p>
-                        <a href="/login">Sign In</a>
-                    </p>
-                </section>
-            ) : (
-                <section className="bg-white px-4 pt-3 pb-4 rounded-sm border vorder-gray-200 flex-1">
-                    <p ref={errcRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
-                    <h1 className="font-medium text-lg text-gray-500 mt-4">Por favor añade los datos del Cliente</h1>
-                    <form onSubmit={handleSubmit}>
-                        <label className="text-lg font-medium" htmlFor="clientname">
-                            Nombre Cliente
-                        </label>
-                        <input className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="text"
-                            id="clientname"
-                            ref={clientRef}
-                            autoComplete="off"
-                            onChange={(e) => setClient(e.target.value)}
-                            value={client}
-                            required
-                            onFocus={() => setClientFocus(true)}
-                            onBlur={() => setClientFocus(false)}
-                        />
-
-
-                        <label  className="text-lg font-medium" htmlFor="apellido_p">
-                            Apellido Parterno
-                        </label>
-                        <input
-                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
-                            type="text"
-                            id="apellido_p"
-                            onChange={(e) => setApellido_p(e.target.value)}
-                            value={apellido_p}
-                            required
-                            onFocus={() => setApellido_pFocus(true)}
-                            onBlur={() => setApellido_pFocus(false)}
-                        />
-
-
-                        <label  className="text-lg font-medium" htmlFor="apellido_m">
-                            Apellido Materno
-                        </label>
-                        <input
-                            className="w-full border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"  
-                            type="text"
-                            id="apellido_m"
-                            onChange={(e) => setApellido_m(e.target.value)}
-                            value={apellido_m}
-                            required
-                            onFocus={() => setApellido_mFocus(true)}
-                            onBlur={() => setApellido_mFocus(false)}
-                        />
-
-                        <label className="text-lg font-medium" htmlFor="phone">
-                            Telefono
-                        </label>
-                        <input
-                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="tel"
-                            id="phone"
-                            onChange={(e) => setPhone(e.target.value)}
-                            value={phone}
-                            required
-                            pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                        />
-
-                        <label  className="text-lg font-medium" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                        className=" border-2 border-gray-100 rounded-xl p-4 mt-1 bg-transparent"
-                            type="email"
-                            id="email"
-                            onChange={(e) => setEmail(e.target.value)}
-                            value={email}
-                            required
-                        />
-                    
-
-                        <button>Sign Up</button>
-                    </form>
-                </section>
-            )}
-            <Navbar></Navbar>
+            <hr class="hr-header">
+            <div style=" padding-top: 0px">                    
+                <h3>FOLIO No.: ${order.id_order} </h3>
+                <h3>TIPO PAGO: ${order.payForm === 'advance' ? "Anticipado" : "A la Entrega"}</h3>
+                ${order.payStatus === 'paid' ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"}
+                ${order.pieces ? `<h3>Piezas: ${order.pieces}</h3>` : ''}
+                <hr class="hr-header">  
+                <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">
+                    <p>Cant.</p>
+                    <p>Servicio</p>
+                    <p>Precio</p>
+                    ${order.cart.map(detail => `<p>${detail.quantity}</p><p>${detail.description}</p><p>$${detail.totalPrice}</p>`).join('')}  
+                </div>
+                <hr class="hr-header">       
+                    <h4 style="text-align:center;">Total Pagado: $${order.subtotal}</h4>
+                    <p style="text-align:center;">${word}</p> 
+                    ${order.payStatus === 'paid' ? `<div> <p>F. PAGO: ${order.payMethod === 'cash' ? "EFECTIVO" : "TARJETA"}</p> <!--<p>Pago recibido: $100.00</p> <p>Cambio devuelto: $5.00</p>--> <p>Cajero: ${order.casher}</p></div>` : ''}
+                <hr class="hr-header">   
+                    <p>Cliente: ${order.client}</p>         
+                    <p>F. Recepción: ${formatDate(order.receptionDate)} JUEVES ${formatTime(order.receptionTime)}</p>
+                    <h4>F. Entrega: ${formatDate(order.scheduledDeliveryDate)} SABADO ${formatTime(order.scheduledDeliveryTime)}</h4>        
+                    <hr class="hr-header">
+                <p>Observaciones Generales: ${order.notes}</p>
+                <hr class="hr-header">
+                <div style="text-align:center;">
+                    <p>PROFECO N. REGISTRO: 4390/2013</p>
+                    <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
+                    <p>FECHA: ${date}</p>
+                    <p>HORA: ${hour}</p>                    
+                    <p>GRACIAS POR SU VISITA</p>
+                </div>
+            </div>
         </div>
-    )
+    </form>
+    `;
+
+    const doc = new jsPDF()
+    doc.html(html, {
+        callback: function(doc) {
+            // Save the PDF
+            doc.save(`${moment().format('YYYY')+order.client+String(order.id_order)}.pdf`);
+        },
+        x: 15,
+        y: 15,
+        width: 170,
+        windowWidth: 750,
+    });
+    // pdf.autoPrint()
+
+    //----------------------IMPRIMIR--------------------------//
+    printJS({
+        printable: html,
+        type: "raw-html",
+        header: "PrintJS - Form Element Selection",
+        showModal: true,
+        modalMessage: "Imprimiendo...",
+        onError: (err) => console.log(err),
+        fallbackPrintable: () => console.log("FallbackPrintable"),      
+        onPrintDialogClose: () => console.log('The print dialog was closed')
+        
+        // css: './ticket.css'
+    })
 }
 
-export default AddClient
+export const orderTicketPDF = async (order) => {
+
+    const doc = new jsPDF();
+    doc.text(`Ticket de Compra de: ${order.client}`, 10, 10);
+    doc.text(`Le atendió:  ${order.casher}`, 10, 20);
+    doc.text("Productos:", 10, 30);
+    let y = 40;
+    order.cart.forEach((service) => {
+        doc.text(
+            `${service.description} x ${service.quantity} - $${service.price * service.quantity
+            }`,
+            10,
+            y
+        );
+        y += 10;
+    });
+    doc.text(`Subtotal: $${order.subtotal}`, 10, y + 10);
+    doc.text(
+        `Fecha de Recepcion: ${moment().format("DD / MM / YYYY")}`,
+        10,
+        y + 20
+    );
+    // Agregar el campo "Fecha de Entrega" al ticket
+    doc.text(
+        `Fecha de Entrega: ${order.scheduledDeliveryDate}`,
+        10,
+        y + 30
+    );
+    doc.text(`Forma de Pago: ${order.payForm}`, 10, y + 40);
+    if (order.payForm === "advance") {
+        doc.text(`Método de Pago Anticipado: ${order.payMethod}`, 10, y + 50);
+    }
+    doc.save("ticket_compra.pdf");
+
+    //----------------------IMPRIMIR--------------------------//
+}

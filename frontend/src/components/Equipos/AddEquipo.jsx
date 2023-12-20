@@ -6,9 +6,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import api from '../../api/api'
 
-const MODEL_REGEX = /^[A-z0-9-_]{1,191}$/;
+const MODEL_REGEX = /^[A-z0-9-_ ]{1,191}$/;
 const TIME_REGEX = /^[0-9]{1,}$/;
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
 
@@ -67,7 +67,7 @@ function AddEquipo() {
     }
 
     try {
-      await Axios.post("http://localhost:5000/machines", {
+      await api.post("/machines", {
         machineType: machineType,
         model: model,
         cicleTime: parseInt(cicleTime),
@@ -130,7 +130,6 @@ function AddEquipo() {
                 onChange={(e) => setMachineType(e.target.value)}
               >
                 <option value="lavadora">Lavadora</option>
-                <option value="plancha">Plancha</option>
                 <option value="secadora">Secadora</option>
               </select>
 

@@ -3,28 +3,37 @@ import { HiOutlineSearch } from "react-icons/hi";
 import { RiUserSearchFill } from "react-icons/ri";
 import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import Axios from "axios";
+import Swal from 'sweetalert2'
 import ReactPaginate from "react-paginate";
+import api from '../../api/api'
 
 function AutoServicio() {
+
+  const navigate = useNavigate()
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
-    const response = await Axios.get("http://localhost:5000/clients");
+    const response = await api.get("/clients");
     return response.data;
   });
 
-  const filteredClients = clients
-    ? clients.filter((client) => {
+  const [filteredClients, setFilteredClients] = useState([]); 
+
+  useEffect(() => {
+    if (clients) {
+      const filtered = clients.filter((client) => {
         const searchTerm = filtro.toLowerCase();
         return (
           client.name.toLowerCase().includes(searchTerm) ||
           client.email.toLowerCase().includes(searchTerm) ||
           client.phone.toLowerCase().includes(searchTerm)
         );
-      })
-    : [];
+      });
+      setFilteredClients(filtered); 
+      setCurrentPage(0)
+    }
+  }, [filtro, clients]);
 
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
 
@@ -33,6 +42,23 @@ function AutoServicio() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
+
+  const launchModal = (url) => {
+    Swal.fire({
+      title: "Estas a punto de añadir un cliente",
+      text: "¿Estas seguro?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si",
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        navigate(url)
+      }
+    });
+  }
 
   useEffect(() => {
     // Verificar si estamos regresando desde PuntoVenta
@@ -93,6 +119,7 @@ function AutoServicio() {
             </thead>
             <tbody>
               {filteredClients
+                .filter((client) => client.id_client !== 1)
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
@@ -107,7 +134,7 @@ function AutoServicio() {
                     <td className="th2">{client.email}</td>
                     <td>
                       <Link
-                        to={`/puntoVenta?clientName=${client.name}&serviceType=Autoservicio`}
+                        to={`/puntoVenta?clientId=${client.id_client}&clientName=${client.name}&serviceType=Autoservicio&geturl=/servicesSelfService`}
                       >
                         <button className="btn-generate">
                           <div className="subtitle m-1">Generar pedido</div>
@@ -155,18 +182,16 @@ function AutoServicio() {
       <div className="fcol-container">
         <div className="flex justify-between items-center">
           <div>
-            <Link to="/addClient">
-              <button className="btn-big-light">
-                <div className="subtitle m-1">Añadir Cliente</div>
-              </button>
-            </Link>
+            <button className="btn-big-light" onClick={() => launchModal('/addClient?source=autoservicio')}>
+              <div className="subtitle m-1">Añadir Cliente</div>
+            </button>
             <div className="text-IndigoDye font-semibold mt-2">
               ¿El cliente no está registrado? ¡Regístralo!
             </div>
           </div>
           <div className="text-center ml-96">
             <Link
-              to={`/puntoVenta?clientName=Público en General&serviceType=Autoservicio`}
+              to={`/puntoVenta?clientId=${1}&clientName=Publico en General&serviceType=autoservicio&geturl=/servicesSelfService`}
             >
               <button className="btn-big-light">
                 <div className="subtitle m-1">Público en General</div>

@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { Select } from "antd";
+const { Option } = Select;
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from "../../api/api";
 
 function EditServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -13,8 +15,8 @@ function EditServiceAutoservicio() {
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState();
-  const [pieces, setPieces] = useState();
   const [category, setCategory] = useState("Autoservicio");
+  const [service, setService] = useState("lavadora");
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -22,15 +24,15 @@ function EditServiceAutoservicio() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await Axios.get(`http://localhost:5000/servicesById/${id}`);
+      const response = await api.get(`/servicesSelfService/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
       setCategory("Autoservicio");
-      setTime(response.data.time);
+      setTime(response.data.cycleTime);
       setWeight(response.data.weight);
+      setService(response.data.machineType);
     };
     getServiceById();
   }, [id]);
@@ -39,21 +41,26 @@ function EditServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
-        setErrMsg("Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio).");
-        return;
-      }
-  
+      setErrMsg(
+        "Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio)."
+      );
+      return;
+    }
 
     try {
-      await Axios.patch(`http://localhost:5000/services/${id}`, {
+      await api.patch(`/servicesUpdateSelfService/${id}`, {
         description: description,
-        category_id: 1,
         price: parseFloat(price),
+        weight: parseInt(weight),
+        cycleTime: parseInt(time),
+        machineType: service,
+        category_id: 1
       });
       navigate("/servicesAutoservicio");
       setSuccess(true);
     } catch (err) {
-      setErrMsg("Error al actualizar el servicio.");
+      console.log(err);
+      setErrMsg("Error al actualizar el servicio lavado.");
     }
   };
 
@@ -61,7 +68,9 @@ function EditServiceAutoservicio() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">Editando el Servicio de Autoservicio:</p>
+          <p className="title text-white">
+            Editando el Servicio de Autoservicio:
+          </p>
           <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
@@ -122,7 +131,7 @@ function EditServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="weight">
-                Peso (gramos):
+                Peso (Kilos):
               </label>
               <input
                 className="form-input"
@@ -133,16 +142,45 @@ function EditServiceAutoservicio() {
                 value={weight}
               />
 
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
+              <label className="form-lbl" htmlFor="type">
+                Tipo de Servicio
               </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
-              />
+              <Select
+                id="type"
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setService(value)}
+                value={service}
+              >
+                <Select.Option value="lavadora">Lavado</Select.Option>
+                <Select.Option value="secadora">Secado</Select.Option>
+              </Select>
+
+              {/* <label className="form-lbl" htmlFor="type">
+                Tipo de Servicio
+              </label>
+              <Select
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setService(value)}
+                value={service}
+              >
+                <Option value="laundry">Lavado</Option>
+                <Option value="dry">Secado</Option>
+              </Select> */}
+
+              {/* {service == 'dry' ?
+                <div>
+                  <label className="form-lbl" htmlFor="pieces">
+                    Piezas
+                  </label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="pieces"
+                    onChange={(e) => setPieces(e.target.value)}
+                    value={pieces}
+                  />
+                </div>
+                : <p></p>} */}
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:

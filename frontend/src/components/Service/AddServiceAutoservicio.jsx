@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
-import Axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Select } from "antd";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function AddServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -12,9 +13,9 @@ function AddServiceAutoservicio() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState("");
-  const [pieces, setPieces] = useState("");
+  const [weight, setWeight] = useState(0);
   const [category, setCategory] = useState("Autoservicio");
+  const [service, setService] = useState('lavadora')
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -28,24 +29,27 @@ function AddServiceAutoservicio() {
       setErrMsg("Error, solo puedes añadir servicios de 'autoservicio' (debe contener la palabra autoservicio).");
       return;
     }
-
     try {
-      await Axios.post("http://localhost:5000/services", {
+      await api.post("/servicesSelfService", {
         description: description,
         price: parseFloat(price),
-        category_id: 1,
+        weight: parseInt(weight),
+        cycleTime: parseInt(time),
+        machineType: service,
+        category_id: 1
       });
+
       setDescription("");
       setPrice(0);
       setTime(0);
-      setWeight("");
-      setPieces("");
+      setWeight(0);
       setCategory("Autoservicio");
       setSuccess(true);
 
       navigate("/servicesAutoservicio");
     } catch (err) {
       setErrMsg("Failed to add service.");
+      console.log(err)
     }
   };
 
@@ -108,7 +112,7 @@ function AddServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="time">
-                Tiempo (minutos):
+                Tiempo de Ciclo en minutos:
               </label>
               <input
                 className="form-input"
@@ -121,7 +125,7 @@ function AddServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="weight">
-                Peso (Kilogramos):
+                Peso (Kilos):
               </label>
               <input
                 className="form-input"
@@ -133,15 +137,32 @@ function AddServiceAutoservicio() {
               />
 
               <label className="form-lbl" htmlFor="type">
-                Piezas
+                Tipo de Servicio
               </label>
-              <input
-                className="form-input"
-                type="number"
+              <Select
                 id="type"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
-              />
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setService(value)}
+                value={service}
+              >
+                <Select.Option value="lavadora">Lavado</Select.Option>
+                <Select.Option value="secadora">Secado</Select.Option>
+              </Select>
+
+              {/* {service == 'dry' ?
+                <div>
+                  <label className="form-lbl" htmlFor="pieces">
+                    Piezas
+                  </label>
+                  <input
+                    className="form-input"
+                    type="number"
+                    id="pieces"
+                    onChange={(e) => setPieces(e.target.value)}
+                    value={pieces}
+                  />
+                </div>
+                : <p></p>} */}
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:

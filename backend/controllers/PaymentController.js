@@ -52,6 +52,84 @@ export const createPayment = async (req, res) =>{
     }
 }
 
+export const createPaymentDelivery = async (req, res) =>{
+   
+    try {
+        console.log(req.body);
+        const payment = await prisma.payment.create({
+            data: req.body.payment
+       
+        });
+        console.log(payment);
+        const delivery = await prisma.deliveryDetail.create({
+            data: {
+                fk_userCashier:req.body.deliveryDetail.fk_userCashier,
+                deliveryDate:req.body.deliveryDetail.deliveryDate,
+                deliveryTime:req.body.deliveryDetail.deliveryTime,
+                fk_idOrder:req.body.deliveryDetail.fk_idOrder,
+                fk_idPayment:payment.id_payment
+            }
+       
+        });
+        console.log(delivery);
+
+        
+        const orderPayment = await prisma.serviceOrder.update({
+            where:{
+                id_order:req.body.deliveryDetail.fk_idOrder,
+            },
+            data:{
+                payStatus:'paid',
+                orderStatus:'delivered',
+            },
+
+        });
+
+        console.log(orderPayment);
+
+        const result = {
+            "payment":payment,
+            "delivery":delivery,
+            "orderPayment":orderPayment
+        }
+
+        res.status(201).json(result);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
+export const createPaymentAdvance = async (req, res) =>{
+   
+        console.log(req.body)
+
+    try {
+        const payment =  prisma.payment.create({
+            data: req.body.payment
+       
+        });
+
+        
+        const orderPayment = prisma.serviceOrder.update({
+            where:{
+                id_order:Number(req.body.payment.fk_idOrder),
+            },
+            data:{
+                payStatus:'paid',
+            },
+
+        });
+
+
+
+        const result= await prisma.$transaction([payment,orderPayment]);
+
+        res.status(201).json(result);
+    }catch(e){
+        res.status(400).json({msg:e.message});
+    }
+}
+
 export const updatePayment =  async (req, res) =>{
     try {
         const payment = await prisma.payment.update({

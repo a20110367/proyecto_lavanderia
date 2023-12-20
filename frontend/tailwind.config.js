@@ -9,6 +9,8 @@ export default {
     borderRadius:{
       'none': '0',
       'sm': '15px 50px 30px 5px',
+      'rtn': '50px 0px 0px 30px',
+      'title': '0px 20px 20px 0px',
       'md': '0.375rem',
       'lg': '0.5rem',
       'full': '9999px',

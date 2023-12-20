@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function EditServicePlanchado() {
   const descriptionRef = useRef();
@@ -11,9 +11,8 @@ function EditServicePlanchado() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState();
-  const [pieces, setPieces] = useState();
+  const [pieces, setPieces] = useState(0)
+  const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -27,12 +26,12 @@ function EditServicePlanchado() {
 
   useEffect(() => {
     const getServiceById = async () => {
-      const response = await Axios.get(`http://localhost:5000/servicesById/${id}`);
+      const response = await api.get(`/servicesIron/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
+      setPieces(response.data.pieces)
+      setTime(response.data.cycleTime)
       setCategory("Planchado");
-      setTime(response.data.time);
-      setWeight(response.data.weight);
     };
     getServiceById();
   }, [id]);
@@ -49,25 +48,28 @@ function EditServicePlanchado() {
       return;
     }
 
-    if (!description || !price || !time) {
+    if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-        setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
-        return;
-      }
+      setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
+      return;
+    }
 
     try {
-      await Axios.patch(`http://localhost:5000/services/${id}`, {
+      await api.patch(`/servicesUpdateIron/${id}`, {
         description: description,
-        category_id: 3,
         price: parseFloat(price),
+        pieces: parseInt(pieces),
+        cycleTime: parseInt(time),
+        category_id: 3,
       });
       navigate("/servicesPlanchado");
       setSuccess(true);
     } catch (err) {
+      console.error(err);
       setErrMsg("Error al actualizar el servicio.");
     }
   };
@@ -110,6 +112,30 @@ function EditServicePlanchado() {
                 </div>
               )}
 
+              <label className="form-lbl" htmlFor="pieces">
+                No. Piezas:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="pieces"
+                onChange={(e) => setPieces(e.target.value)}
+                value={pieces}
+                required
+              />
+
+              <label className="form-lbl" htmlFor="time">
+                Tiempo del Ciclo de Planchado:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="time"
+                onChange={(e) => setTime(e.target.value)}
+                value={time}
+                required
+              />
+
               <label className="form-lbl" htmlFor="price">
                 Precio Unitario:
               </label>
@@ -121,42 +147,6 @@ function EditServicePlanchado() {
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
-              />
-
-              <label className="form-lbl" htmlFor="time">
-                Tiempo (minutos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="time"
-                ref={timeRef}
-                onChange={(e) => setTime(e.target.value)}
-                value={time}
-                required
-              />
-
-              <label className="form-lbl" htmlFor="weight">
-                Peso (gramos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="weight"
-                ref={weightRef}
-                onChange={(e) => setWeight(e.target.value)}
-                value={weight}
-              />
-
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
               />
 
               <label className="form-lbl" htmlFor="category">

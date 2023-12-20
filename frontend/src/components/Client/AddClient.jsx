@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { IoIosArrowBack } from 'react-icons/io';
 import {
   faCheck,
   faTimes,
@@ -6,25 +7,20 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import api from '../../api/api'
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$*]).{8,24}$/;
 
 function AddClient() {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [userName, setUserName] = useState("");
-  const [validUserName, setValidUserName] = useState(false);
-  const [userNameFocus, setUserNameFocus] = useState(false);
 
   const [name, setName] = useState("");
   const [firstLN, setFirstLN] = useState("");
   const [secondLN, setSecondLN] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [pass, setPass] = useState("");
+
   const [validName, setValidName] = useState(false);
   const [nameFocus, setNameFocus] = useState(false);
 
@@ -37,17 +33,10 @@ function AddClient() {
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
-  const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setPwdFocus] = useState(false);
-
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setValidUserName(USER_REGEX.test(userName));
-  }, [userName]);
 
   useEffect(() => {
     userRef.current.focus();
@@ -69,13 +58,10 @@ function AddClient() {
     setValidEmail(email.trim().length > 0);
   }, [email]);
 
-  useEffect(() => {
-    setValidPwd(PWD_REGEX.test(pass));
-  }, [pass]);
 
   useEffect(() => {
     setErrMsg("");
-  }, [name, firstLN, secondLN, email, pass]);
+  }, [name, firstLN, secondLN, email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,33 +70,46 @@ function AddClient() {
       !validName ||
       !validFirstName ||
       !validSecondName ||
-      !validEmail ||
-      !validPwd
+      !validEmail 
     ) {
       setErrMsg("Invalid Entry");
       return;
     }
 
     try {
-      await Axios.post("http://localhost:5000/clients", {
-        userName: userName,
+      await api.post("/clients", {
         name: name,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
         phone: phone,
-        pass: pass,
+        pass: "",
       });
 
       setSuccess(true);
       setName("");
-      setFirstName("");
-      setSecondName("");
+      setFirstLN("");
+      setSecondLN("");
       setEmail("");
       setPhone("");
-      setPass("");
-      navigate("/clients");
+
+      const source = new URLSearchParams(location.search).get("source");
+
+      if (source === "encargo") {
+        navigate(`/recepcionLavanderia?serviceType=${source}`);
+      } else if (source === "autoservicio") {
+        navigate(`/autoservicio?serviceType=${source}`);
+      } else if (source === "planchado") {
+        navigate(`/recepcionPlanchado?serviceType=${source}`);
+      } else if (source === "tintoreria") {
+        navigate(`/recepcionTintoreria?serviceType=${source}`);
+      } else if (source === "varios") {
+        navigate(`/recepcionVarios?serviceType=${source}`);
+      } else {
+        navigate("/clients");
+      }
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
@@ -121,15 +120,35 @@ function AddClient() {
       errRef.current.focus();
     }
   };
-
+  const handleCancel = () => {
+    const source = new URLSearchParams(location.search).get("source");
+    console.log("Source:", source);
+  
+    if (source === "encargo") {
+      navigate(`/recepcionLavanderia?serviceType=${source}`);
+    } else if (source === "autoservicio") {
+      navigate(`/autoservicio?serviceType=${source}`);
+    } else if (source === "planchado") {
+      navigate(`/recepcionPlanchado?serviceType=${source}`);
+    } else if (source === "tintoreria") {
+      navigate(`/recepcionTintoreria?serviceType=${source}`);
+    } else if (source === "varios") {
+      navigate(`/recepcionVarios?serviceType=${source}`);
+    } else {
+      navigate("/clients");
+    }
+  };
+  
+  
   return (
     <div className="signup-form">
       <div className="form-container">
-        <div className="HeadContent">
-          <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
-          <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
-          <div className="clearBoth"></div>
-        </div>
+          {/* <button className="flex-none px-2 py-2 rounded-rtn shadow-md bg-NonPhotoblue hover:text-white"><IoIosArrowBack size={30}/></button> */}
+          <div className="HeadContent">
+            <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
+            <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
+            <div className="clearBoth"></div>
+          </div>
         {success ? (
           <section>
             <h1>Success!</h1>
@@ -172,55 +191,7 @@ function AddClient() {
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
               />
-              {/**Nombre Usuario */}
-              <label className="form-lbl" htmlFor="username">
-                Nombre de usuario:
-                {validUserName ? (
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className="ml-3 text-green-500"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
-                )}
-              </label>
-              <input
-                className="form-input"
-                type="text"
-                id="username"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUserName(e.target.value)}
-                value={userName}
-                required
-                aria-invalid={validUserName ? "false" : "true"}
-                aria-describedby="uidnote"
-                onFocus={() => setUserNameFocus(true)}
-                onBlur={() => setUserNameFocus(false)}
-              />
-              <div className="group">
-              <p
-                  id="uidnote"
-                  className={`instructions ${userNameFocus && userName && !validUserName ? "block" : "hidden"
-                    }`}
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} />De 4 a 24 caracteres.
-                  <br />
-                  Debera iniciar con una letra.
-                  <br />
-                  Caracteres Permitidos:
-                  <br />
-                  Letras, p. ej. L
-                  <br />
-                  Números, p. ej. 4
-                  <br />
-                  Guiones, p. ej. -
-                  <br />
-                  Guiones Bajos p. ej. _
-                  <br />
-                </p>
-              </div>
-
+             
               {/* First Name */}
               <label className="form-lbl" htmlFor="firstName">
                 Apellido Paterno:
@@ -285,53 +256,7 @@ function AddClient() {
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
               />
-              {/* Password */}
-              <label className="form-lbl" htmlFor="password">
-                Contraseña:
-                {validPwd ? (
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className="ml-3 text-green-500"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
-                )}
-              </label>
-              <input
-                className="form-input"
-                type="password"
-                id="password"
-                onChange={(e) => setPass(e.target.value)}
-                value={pass}
-                required
-                aria-invalid={validPwd ? "false" : "true"}
-                onFocus={() => setPwdFocus(true)}
-                onBlur={() => setPwdFocus(false)}
-              />
-              <div className="group">
-                <p
-                  id="pwdnote"
-                  className={`instructions text-sm text-red-600 ${pwdFocus && !validPwd ? "block" : "hidden"
-                    }`}
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} />Debera ser de 8 a 24 characters.
-                  <br />
-                  Debera incluir al menos una 
-                  <br />
-                  Mayuscula, Minuscula,
-                  <br />
-                  un Número y un caracter Especial
-                  <br />
-                  Caracteres Especiales Permitidos:{" "}
-                  <span aria-label="exclamation mark">!</span>{" "}
-                  <span aria-label="at symbol">@</span>{" "}
-                  <span aria-label="hashtag">#</span>{" "}
-                  <span aria-label="dollar sign">$</span>{" "}
-                  <span aria-label="percent">%</span>
-                  <span aria-label="percent">?</span>
-                  <span aria-label="percent">=</span>
-                  <span aria-label="percent">*</span>
-                </p>
+            
                 {/* Phone */}
                 <label className="form-lbl" htmlFor="phone">
                   Telefono:
@@ -353,20 +278,18 @@ function AddClient() {
                       !validName ||
                       !validFirstName ||
                       !validSecondName ||
-                      !validEmail ||
-                      !validPwd
+                      !validEmail 
                     }
                   >
                     Registrar Cliente
                   </button>
                   <button
                     className="btn-cancel"
-                    onClick={() => navigate("/clients")}
-                  >
+                    onClick={handleCancel}>
+                  
                     Cancelar
                   </button>
                 </div>
-              </div>
             </form>
           </section>
         )}

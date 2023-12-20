@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   faCheck,
@@ -7,8 +6,9 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from '../../api/api'
 
-const MODEL_REGEX = /^[A-z0-9-_]{1,191}$/;
+const MODEL_REGEX = /^[A-z0-9-_ ]{1,191}$/;
 const TIME_REGEX = /^[0-9]{1,}$/;
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
 
@@ -60,7 +60,7 @@ function EditEquipo() {
 
   useEffect(() => {
     const getMachineById = async () => {
-      const response = await Axios.get(`http://localhost:5000/machines/${id}`);
+      const response = await api.get(`/machines/${id}`);
       setModel(response.data.model);
       setMachineType(response.data.machineType);
       setCicleTime(response.data.cicleTime.toString());
@@ -84,7 +84,7 @@ function EditEquipo() {
     }
 
     try {
-      await Axios.patch(`http://localhost:5000/machines/${id}`, {
+      await api.patch(`/machines/${id}`, {
         model: model,
         machineType: machineType,
         cicleTime: parseInt(cicleTime),
@@ -147,7 +147,6 @@ function EditEquipo() {
                 id="machineType"
               >
                 <option value="lavadora">Lavadora</option>
-                <option value="plancha">Plancha</option>
                 <option value="secadora">Secadora</option>
               </select>
 

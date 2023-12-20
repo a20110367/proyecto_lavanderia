@@ -37,7 +37,7 @@ function Signup() {
 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [rol, setRol] = useState("cajero");
+  const [rol, setRol] = useState("employee");
 
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
@@ -89,12 +89,12 @@ function Signup() {
     try {
       await Axios.post("http://localhost:5000/users", {
         name: name,
-        userName: userName,
+        username: userName,
         firstLN: firstLN,
         secondLN: secondLN,
         email: email,
         phone: phone,
-        rol: rol,
+        role: rol,
         pass: pwd,
       });
       //console.log(JSON.stringify(response))
@@ -103,8 +103,9 @@ function Signup() {
       setUserName("");
       setPwd("");
       setMatchPwd("");
-      navigate("/menuPuntoVenta");
+      navigate("/users");
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
@@ -385,7 +386,7 @@ function Signup() {
                 name="rol"
                 id="rol"
               >
-                <option value="cajero">Cajero</option>
+                <option value="employee">Cajero</option>
                 <option value="admin">Administrador</option>
               </select>
               <div className="float-right">

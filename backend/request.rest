@@ -20,9 +20,21 @@ Content-Type: application/json
 }
 
 ###
+
+POST http://localhost:5000/auth
+Content-Type: application/json
+
+{
+  "username":"isra",
+  "pass":"1010"
+}
+
+###
+
 POST http://localhost:5000/usersMany
 Content-Type: application/json
 
+###
 
 POST http://localhost:5000/numberToWord
 Content-Type: application/json
@@ -37,7 +49,6 @@ Content-Type: application/json
 
 {
    
-  "id_user": 3,
     "username": "Juan1234",
     "name": "Juan24",
     "firstLN": "Perez4",
@@ -130,7 +141,7 @@ Content-Type: application/json
     "categoryDescription": "planchado"
   },
   {
-    "categoryDescription": "pruebas"
+    "categoryDescription": "tintoreria"
   }
 ]
 
@@ -139,7 +150,16 @@ POST http://localhost:5000/categories
 Content-Type: application/json
 
 {
-   "categoryDescription": "pruebas"
+   "categoryDescription": "varios"
+}
+
+###
+
+PATCH  http://localhost:5000/categoriesId/4
+Content-Type: application/json
+
+{
+   "categoryDescription": "tintoreria"
 }
 
 ###
@@ -292,8 +312,8 @@ POST http://localhost:5000/services
 Content-Type: application/json
 
 {
-    "description": "Lavado 10 kg",
-    "price": 60,
+    "description": "Lavado prueba 10 kg",
+    "price": 90,
     "category_id": 2
 }
 
@@ -314,15 +334,16 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:5000/servicesWashSelfService
+POST http://localhost:5000/servicesSelfService
 Content-Type: application/json
 
 {
-"description":"Lavado 10 kilos autoservicio",
-"price":100.00 ,
+"description":"Lavado 20 kilos autoservicio",
+"price":200.00 ,
 "category_id":1,
-"washWeight":10,
-"washCycleTime":45
+"weight":20,
+"cycleTime":45,
+"machineType":"lavadora"
 }
 
 ###
@@ -343,19 +364,15 @@ POST http://localhost:5000/servicesIron
 Content-Type: application/json
 
 {
-"description":"Docena Planchado",
-"price":60.00 ,
-"ironPieces":12,
-"ironCycleTime":45
+"description":"Media Docena Planchado",
+"price":30.00 ,
+"pieces":6,
+"cycleTime":45,
+"category_id":3
+
 }
 
 ###
-
-POST http://localhost:5000/servicesMany
-Content-Type: application/json
-
-###
-
 GET  http://localhost:5000/services
 ###
 
@@ -385,9 +402,182 @@ Content-Type: application/json
 
 ###
 
-DELETE   http://localhost:5000/services/3
+PATCH  http://localhost:5000/servicesUpdateLaundry/43
+Content-Type: application/json
+
+{
+"description":"lavado 10 kilos encargo",
+"price":100.00 ,
+"category_id":2,
+"washWeight":20,
+"washCycleTime":45,
+"dryWeight":20,
+"dryCycleTime":60
+}
 
 ###
+
+PATCH  http://localhost:5000/servicesUpdateWashSelfService/48
+Content-Type: application/json
+
+{
+"description":"Lavado autoservicio 15 kilos",
+"price":130.00 ,
+"category_id":1,
+"washWeight":10,
+"washCycleTime":10
+}
+
+###
+
+
+DELETE   http://localhost:5000/services/28
+
+###
+
+###
+GET http://localhost:5000/servicesIronService
+
+###
+
+
+POST http://localhost:5000/servicesMany
+Content-Type: application/json
+
+###
+
+PATCH  http://localhost:5000/services/31
+Content-Type: application/json
+
+{
+    "description": "Lavado prueba 10 kg",
+    "price": 150,
+    "category_id": 2
+}
+
+###
+
+DELETE   http://localhost:5000/services/31
+Content-Type: application/json
+###
+
+///CRUD SERVICE ORDERS
+
+POST http://localhost:5000/ordersLaundryService
+Content-Type: application/json
+
+{
+  "serviceOrder":
+  {
+    "receptionDate": "2023-11-02T00:00:00.000Z",
+    "orderStatus": "pending",
+    "totalPrice": 300,
+    "fk_client": 1,
+    "created": "2023-11-03T04:46:52.708Z",
+    "numberOfItems": 5,
+    "payForm": "delivery",
+    "payStatus": "paid",
+    "receptionTime": "1970-01-01T00:00:00.000Z",
+    "updatedAt": "2023-11-04T00:55:45.377Z",
+    "fk_user": 3,
+    "scheduledDeliveryDate": "2023-11-02T00:00:00.000Z",
+    "scheduledDeliveryTime": null,
+    "fk_categoryId": 1,
+    "fk_deliveryDetail": null
+
+  },
+  "services":
+      [ 
+        {
+          "fk_Service":1,
+          "units":2,
+          "subtotal":200
+        },
+        {
+          "fk_Service":2,
+          "units":2,
+          "subtotal":200
+        }
+    ]
+   
+  
+}
+
+###
+POST http://localhost:5000/ordersIronService
+Content-Type: application/json
+
+{
+  "serviceOrder":
+  {
+
+    "receptionDate": "2023-11-02T00:00:00.000Z",
+    "orderStatus": "pending",
+    "totalPrice": 300,
+    "fk_client": 1,
+    "created": "2023-11-03T04:46:52.708Z",
+    "numberOfItems": 5,
+    "payForm": "delivery",
+    "payStatus": "paid",
+    "receptionTime": "1970-01-01T00:00:00.000Z",
+    "updatedAt": "2023-11-04T00:55:45.377Z",
+    "fk_user": 3,
+    "scheduledDeliveryDate": "2023-11-02T00:00:00.000Z",
+    "scheduledDeliveryTime": null,
+    "fk_categoryId": 1,
+    "fk_deliveryDetail": null
+  },
+  "services":
+      [ 
+        {
+          "fk_Service":1,
+          "units":1,
+          "subtotal":60
+        }
+    ]
+   
+  
+}
+###
+
+POST http://localhost:5000/ordersSelfService
+Content-Type: application/json
+
+{
+  "serviceOrder":
+  {
+    "receptionDate": "2023-10-11T00:00:00.000Z",
+    "orderStatus": "pending",
+    "totalPrice": 600,
+    "fk_client": 1,
+    "created": "2023-11-03T04:46:52.708Z",
+    "numberOfItems": 4,
+    "payForm": "advance",
+    "payStatus": "paid",
+    "receptionTime": "1970-01-01T13:15:48.000Z",
+    "updatedAt": "2023-11-04T00:55:45.377Z",
+    "fk_user": 3,
+    "scheduledDeliveryDate": "2023-11-02T00:00:00.000Z",
+    "scheduledDeliveryTime": null,
+    "fk_categoryId": 1
+    
+  },
+ "services": 
+  [
+        {
+          "units": 2,
+          "subtotal": 200,
+          "fk_Service": 1
+        },
+        {
+          "units": 2,
+          "subtotal": 400,
+          "fk_Service": 2
+        }
+    ]
+}
+###
+
 
 //CRUD DE ORDENES
 GET http://localhost:5000/orders
@@ -405,6 +595,24 @@ GET http://localhost:5000/ordersByUser/1
 GET http://localhost:5000/ordersByClient/1
 
 ###
+
+GET http://localhost:5000/ordersLaundry
+
+###
+
+
+GET http://localhost:5000/ordersIron
+
+###
+
+GET http://localhost:5000/ordersSelfService
+
+###
+
+GET http://localhost:5000/ordersLaundry
+
+###
+
 
 POST http://localhost:5000/ordersMany
 Content-Type: application/json
@@ -487,11 +695,11 @@ GET http://localhost:5000/lastCashCut
 GET http://localhost:5000/cashCuts/1
 
 ###
-GET  http://localhost:5000/calculateCashCut/10
+GET  http://localhost:5000/calculateCashCut/48
 
 ###
 
-GET  http://localhost:5000/closeCashCut/10
+GET  http://localhost:5000/closeCashCut/8
 
 ###
 
@@ -514,7 +722,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:5000/cashCuts/1
+DELETE http://localhost:5000/cashCuts/48
 
 ### 
 
@@ -538,6 +746,51 @@ Content-Type: application/json
   "payTime": "1970-01-01T12:20:20.000Z"       
   //"fk_cashCut":     
 
+}
+
+###
+
+
+POST http://localhost:5000/paymentsAdvance
+Content-Type: application/json
+
+{
+  "payment":{
+    "fk_idOrder":39,     
+  //"fk_userCashier":2,
+  "payTotal": 300,
+  "payMethod":"cash",     
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z",       
+  "fk_cashCut":23     
+
+  }
+  
+}
+###
+
+POST http://localhost:5000/paymentsDelivery
+Content-Type: application/json
+
+{
+  "payment":{
+    "fk_idOrder":149,     
+  //"fk_userCashier":2,
+  "payTotal": 400,
+  "payMethod":"cash",     
+  "payDate": "2023-11-11T00:00:00.000Z",         
+  "payTime": "1970-01-01T12:20:20.000Z",       
+  "fk_cashCut":23     
+
+  },
+  "deliveryDetail":{
+    "fk_idOrder":149,
+    "fk_userCashier":3,
+    "deliveryDate":"2023-11-11T00:00:00.000Z",
+    "deliveryTime":"1970-01-01T12:20:20.000Z"
+    
+  }
+  
 }
 
 ###
@@ -595,15 +848,15 @@ DELETE http://localhost:5000/deliveryDetails/7
 
 //CRUD DE CASH WHITHDRAWALS
 
-GET http://localhost:5000/cashWhithdrawals
+GET http://localhost:5000/cashWithdrawals
 
 ###
 
-GET http://localhost:5000/cashWhithdrawals/1
+GET http://localhost:5000/cashWithdrawals/1
 
 ###
 
-POST http://localhost:5000/cashWhithdrawals
+POST http://localhost:5000/cashWithdrawals
 Content-Type: application/json
 
 {
@@ -614,45 +867,15 @@ Content-Type: application/json
   "date" :"2023-10-15T00:00:00.000Z"
 }
 ###
-PATCH  http://localhost:5000/cashWhithdrawals/1
+PATCH  http://localhost:5000/cashWithdrawals/1
 Content-Type: application/json
 
 {
     "amount":400.00
 }
 ###
-DELETE   http://localhost:5000/cashWhithdrawals/19
+DELETE   http://localhost:5000/cashWithdrawals/19
 
-//CRUD DE LAUNDRY SERVICE DETAILS
-GET http://localhost:5000/orderLaundryServiceDetails
-
-###
-
-GET http://localhost:5000/orderLaundryServiceDetails/20
-
-###
-
-POST http://localhost:5000/orderLaundryServiceDetails
-Content-Type: application/json
-
-{
-  
-    "fk_Order":2,
-  "fk_Service":4
-
-}
-
-###
-PATCH  http://localhost:5000/orderLaundryServiceDetails/21
-Content-Type: application/json
-
-{
-    "started":true
-}
-###
-DELETE   http://localhost:5000/orderLaundryServiceDetails/17
-
-###
 
 //CRUD DE IRON SERVICE DETAILS
 GET http://localhost:5000/orderIronServiceDetails
@@ -688,3 +911,49 @@ Content-Type: application/json
 DELETE   http://localhost:5000/orderIronServiceDetails/17
 
 ###
+
+
+//CRUD PRETTY CASH
+
+POST http://localhost:5000/pettyCashWithdrawal 
+Content-Type: application/json
+
+{
+    "amount": 100,
+    "balance": 0,
+    "movementDate": "2023-11-14T00:00:00.000Z",
+    "cause": "Hialuronato de Sodio2",
+    "fk_user" :2,
+    "pettyCashType": "withdrawal"
+  }
+
+###
+GET   http://localhost:5000/pettyCash
+####
+
+//QUEUE CRUDS
+GET   http://localhost:5000/laundryQueue
+###
+//QUEUE CRUDS
+
+GET   http://localhost:5000/selfServiceQueue
+####
+
+GET   http://localhost:5000/ironQueue
+####
+
+GET   http://localhost:5000/servicesSelfService
+
+###
+
+GET   http://localhost:5000/lastIronControl
+
+###
+POST http://localhost:5000/ironControl
+Content-Type: application/json
+{
+  "piecesToday":0
+}
+
+###
+PATCH http://localhost:5000/diaryIronControl/1

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import api from "../../api/api";
 import useSWR, { useSWRConfig } from "swr";
-import printJS from "print-js";
 import moment from "moment";
 import IMAGES from "../../images/images";
 import ReactPaginate from "react-paginate";
@@ -23,7 +22,7 @@ function Clients() {
   const [word, setWord] = useState("");
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const date = moment().format("DD / MM / YYYY")
+  const date = moment().format("DD / MM / YYYY");
   const hour = moment().format("LT");
   const [paid, setPaid] = useState(true);
   1;
@@ -36,7 +35,7 @@ function Clients() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/clients");
+    const response = await api.get("/clients");
     return response.data;
   };
 
@@ -44,7 +43,7 @@ function Clients() {
   if (!data) return <h2>Loading...</h2>;
 
   const deleteClient = async (clientId) => {
-    await Axios.delete(`http://localhost:5000/clients/${clientId}`);
+    await api.delete(`/clients/${clientId}`);
     mutate("clients");
   };
 
@@ -65,82 +64,15 @@ function Clients() {
     deleteClient(clientId);
   };
 
-  const n2word = async () => {
-    const res = await Axios.post("http://localhost:5000/numberToWord", {
-      number: 95.0,
-    });
-
-    setWord(res.data);
-  };
   // Si fue a la entrega se genera ticket y se queda en blanco la forma de pago
   /* si es a la entrega se genera un comprobante de pago(otro ticket distinto) 
   folio folio, fecha */
-
-  const html = `
-        <form class="form-container" id="container" style="font-size:small">
-            <div class="PrintOnly">
-                <div class="info" style="text-align: center;"> 
-                    <img src="${
-                      IMAGES.caprelogo
-                    }" width="150" height="100" alt="logo" class="logo">
-                    <p>**CAPREL**</p>
-                    <p>VISTA A LA CAMPIÑA #3215, COL. MIRADOR DEL TESORO</p>
-                    <p>TLAQUEPAQUE, JALISCO</p>
-                    <p>TEL. (33) 30001789</p>
-                    <p>RFC: RORS010912QZ6</p>
-                </div>
-                <hr class="hr-header">
-                <div style=" padding-top: 0px">                    
-                    <h2>FOLIO No.: 87668</h2>
-                    <h2>TIPO PAGO: ANTICIPADO</h2>                     
-                    ${
-                      paid ? "<h2>PAGADO</h2>" : "<h2>NO PAGADO</h2>"
-                    }                    
-                    <hr class="hr-header">  
-                    <div class="grid" style="display: grid; grid-template-columns: auto auto auto; padding: 10px;">    
-                        <p>Color</p>
-                        <p>Estampado</p>
-                        <p>Fibra</p>
-                        <p>Cant.</p>
-                        <p>Producto</p>
-                        <p>Precio</p>           
-                        <p>1</p>
-                        <p>EDREDON MATRIMONIAL</p>
-                        <p>95.00</p>
-                    </div>
-                    <hr class="hr-header">       
-                    <h4 style="text-align:center;">Total Pagado: $95.00</h4>
-                    <!--*<p style="text-align:center;">NOVENTA Y CINCO Pesos 00/100 M.N.)</p>-->
-                    <p style="text-align:center;">${word}</p>            
-                        <p>F. PAGO: EFECTIVO</p>
-                        <p>Pago recibido: $100.00</p>
-                        <p>Cambio devuelto: $5.00</p> 
-                        <p>Cajero: YADIRA</p> 
-                    <hr class="hr-header">   
-                        <p>Cliente: biagai</p>         
-                        <p>F. Recepción: 20/07/2023 JUEVES 09:35 PM</p>
-                        <h4>F. Entrega: 22/07/2023 SABADO 12:00 PM</h4>        
-                        <hr class="hr-header">
-                    <p>Observaciones Generales: </p>
-                    <hr class="hr-header">
-                    <div style="text-align:center;">
-                        <p>PROFECO N. REGISTRO: 4390/2013</p>
-                        <p>N. EXPEDIENTE: PFC.B.E. 7/005243/20013</p>
-                        <p>FECHA: ${date}</p>
-                        <p>HORA: ${hour}</p>                    
-                        <p>GRACIAS POR SU VISITA</p>
-                    </div>
-                </div>
-            </div>
-        </form>
-    `;
 
   return (
     <div>
       <div className="title-container">
         <strong className="title-strong">Lista de Clientes</strong>
       </div>
-      <button onClick={n2word}>n2word</button>
       <div className="w-full pt-4">
         <button className="btn-primary" onClick={() => navigate("/addClient")}>
           Añadir Nuevo Cliente
@@ -154,18 +86,17 @@ function Clients() {
             <thead>
               <tr>
                 <th>No. Cliente</th>
-                <th>Nombre de usuario</th>
                 <th>Nombre del cliente</th>
                 <th>Apellido Paterno</th>
                 <th>Apellido Materno</th>
                 <th>Email</th>
                 <th>Telefono</th>
-                <th>Contraseña</th>
                 <th>Opciones</th>
               </tr>
             </thead>
             <tbody>
               {data
+                .filter((client) => client.id_client !== 1)
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
@@ -173,15 +104,11 @@ function Clients() {
                 .map((client, index) => (
                   <tr key={client.id_client}>
                     <td>{index + 1}</td>
-                    <td className="font-semibold text-slate-700">
-                      {client.username}
-                    </td>
                     <td>{client.name}</td>
                     <td>{client.firstLN}</td>
                     <td>{client.secondLN}</td>
                     <td>{client.email}</td>
                     <td>{client.phone}</td>
-                    <td>{client.pass || "N/A"}</td>
                     <td>
                       <button
                         onClick={() =>
@@ -268,28 +195,15 @@ function Clients() {
         }
       >
         Print Data ID HTML
-      </button>
-      <button
-        className="btn-cancel"
-        type="button"
-        onClick={() =>
-          printJS({
-            printable: html,
-            type: "raw-html",
-            header: "PrintJS - Form Element Selection",
-            css: "../../ticket.css",
-          })
-        }
-      >
-        Print Data Raw HTML
-      </button> */}
+      </button>*/}
       {/* -----------------------------PAGINADOR -----------------------------*/}
       <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(data.length / itemsPerPage)}
+          pageCount={Math.ceil(data
+            .filter((client) => client.id_client !== 1).length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

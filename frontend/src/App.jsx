@@ -19,7 +19,10 @@ import ServicesLavanderia from "./components/Service/ServicesLavanderia"
 import AddServiceLavanderia from './components/Service/AddServiceLavanderia'
 import EditServiceLavanderia from './components/Service/EditServiceLavanderia'
 
-
+//Tintoreria
+import ServicesTintoreria from "./components/Service/ServicesTintoreria"
+import AddServiceTintoreria from "./components/Service/AddServiceTintoreria"
+import EditServiceTintoreria from "./components/Service/EditServiceTintoreria"
 
 //punto venta
 import PuntoVenta from "./components/PuntoVenta/PuntoVenta"
@@ -49,9 +52,7 @@ import InicioCaja from "./components/Cajas/InicioCaja"
 import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 
-
-
-
+import Settings from './routes/Settings'
 import ProtectedRoute from './routes/ProtectedRoute'
 import { useAuth } from './hooks/auth/auth';
 import Logout from './routes/Logout'
@@ -62,17 +63,28 @@ import RecepcionLavanderia from "./components/Lavanderia/RecepcionLavanderia"
 import EntregaPlanchado from "./components/Planchado/EntregaPlanchado"
 import RecepcionPlanchado from "./components/Planchado/RecepcionPlanchado"
 import PedidosPlanchado from "./components/Pedidos/PedidosPlanchado"
+import PedidosAutoservicio from "./components/Pedidos/PedidosAutoservicio"
 import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
+import CajaChica from "./components/Cajas/CajaChica"
 import Reembolso from "./components/Cajas/Reembolso"
 
-import Settings from "./components/Settings"
 import ServicesPlanchado from "./components/Service/ServicesPlanchado"
 import AddServicePlanchado from "./components/Service/AddServicePlanchado"
 import EditServicePlanchado from "./components/Service/EditServicePlanchado"
 import ServicesAutoservicio from "./components/Service/ServicesAutoservicio"
 import AddServiceAutoservicio from "./components/Service/AddServiceAutoservicio"
 import EditServiceAutoservicio from "./components/Service/EditServiceAutoservicio"
+
+import EntregaTintoreria from "./components/Tintoreria/EntregaTintoreria"
+import RecepcionTintoreria from "./components/Tintoreria/RecepcionTintoreria"
+import PedidosTintoreria from "./components/Pedidos/PedidosTintoreria"
+import ServicesVarios from "./components/Service/ServicesVarios"
+import AddServiceVarios from "./components/Service/AddServiceVarios"
+import EditServiceVarios from "./components/Service/EditServiceVarios"
+import PedidosVarios from "./components/Pedidos/PedidosVarios"
+import RecepcionVarios from "./components/EncargoVarios/RecepcionVarios"
+import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
 
 function App() {
     const { cookies } = useAuth();
@@ -108,6 +120,7 @@ function App() {
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />
                     <Route path="/retiro" element={<Retiro />} />
+                    <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />
                     <Route path="/cajaPedidos" element={<CajaPedidos />} />
 
@@ -118,6 +131,10 @@ function App() {
                     <Route path="/addServiceLavanderia" element={<AddServiceLavanderia />} />
                     <Route path="/editServiceLavanderia/:id" element={<EditServiceLavanderia />} />
 
+                    <Route path="/ServicesTintoreria" element={<ServicesTintoreria />} />
+                    <Route path="/addServiceTintoreria" element={<AddServiceTintoreria />} />
+                    <Route path="/editServiceTintoreria/:id" element={<EditServiceTintoreria />} />
+
                     <Route path="/servicesPlanchado" element={<ServicesPlanchado />} />
                     <Route path="/addServicePlanchado" element={<AddServicePlanchado />} />
                     <Route path="/editServicePlanchado/:id" element={<EditServicePlanchado />} />
@@ -126,15 +143,25 @@ function App() {
                     <Route path="/addServiceAutoservicio" element={<AddServiceAutoservicio />} />
                     <Route path="/editServiceAutoservicio/:id" element={<EditServiceAutoservicio />} />
 
+                    <Route path="/servicesVarios" element={<ServicesVarios />} />
+                    <Route path="/addServiceVarios" element={<AddServiceVarios />} />
+                    <Route path="/editServiceVarios/:id" element={<EditServiceVarios />} />
+
 
                     {/* Pedidos */}
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
+                    <Route path="/pedidosAutoservicio" element={<PedidosAutoservicio />} />
 
                     {/*Lavanderia */}
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
                     <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
+                    
+                    {/**Encargo varios */}
+                    <Route path="/pedidosVarios" element={<PedidosVarios/>}/>
+                    <Route path="/recepcionVarios" element={<RecepcionVarios/>}/>
+                    <Route path="/entregaVarios" element={<EntregaVarios/>}/>
 
                     {/*Planchado */}
                     <Route path="/entregaPlanchado" element={<EntregaPlanchado />} />
@@ -142,6 +169,10 @@ function App() {
                     <Route path="/addClient" element={<AddClient/>}/>
                     <Route path="/settings" element={<Settings/>}/>
 
+                    {/*Tintoreria */}
+                    <Route path="/entregaTintoreria" element={<EntregaTintoreria />} />
+                    <Route path="/recepcionTintoreria" element={<RecepcionTintoreria/>} />
+                    <Route path="/pedidosTintoreria" element={<PedidosTintoreria/>} />
 
                     {/* Clients */}
                     {/* <Route path="/addClient" element={
@@ -186,6 +217,13 @@ function App() {
                             isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
                         >
                             <Users />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/settings" element={
+                        <ProtectedRoute
+                            isAuth={cookies.role === 'admin'} redirectTo='/autoServicio'
+                        >
+                            <Settings />
                         </ProtectedRoute>
                     } />
                 </Route>

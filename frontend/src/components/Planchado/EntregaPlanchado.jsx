@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { Link } from "react-router-dom";
 import { Modal, Button } from "antd";
+import { formatDate } from "../../utils/format";
 import {
   ExclamationCircleOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import jsPDF from "jspdf";
+import useSWR from "swr";
+import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
+import { orderTicket } from "../Ticket/Tickets";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth/auth";
+import api from "../../api/api";
 
 function EntregaPlanchado() {
+  const navigate = useNavigate();
+  const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
   const [cobroInfo, setCobroInfo] = useState({
-    metodoPago: "",
-    fechaPago: moment().format("YYYY-MM-DD"),
+    metodoPago: "cash",
+    fechaPago: moment(),
   });
 
   const [entregando, setEntregando] = useState(false);
+  const [fkPayment, setFkPayment] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
@@ -29,52 +38,19 @@ function EntregaPlanchado() {
     setCurrentPage(selectedPage.selected);
   };
 
-  useEffect(() => {
-    const dummyPedidos = [
-      {
-        id_pedido: 1,
-        user: "Saul",
-        cliente: "Juan",
-        id_cobro: 1,
-        pedidoDetalle: "Planchado de patas",
-        orderstatus: "Pagado",
-        totalPrice: 100,
-        fentregaEstimada: "15/09/2023",
-        f_recepcion: "17/09/2023",
-        empleadoRecibe: "Saul",
-        metodoPago: "Tarjeta",
-      },
-      {
-        id_pedido: 2,
-        user: "Maria",
-        cliente: "Axel",
-        id_cobro: 2,
-        pedidoDetalle: "Monas Chinas planchadas",
-        orderstatus: "Adeudo",
-        totalPrice: 150,
-        fentregaEstimada: "16/09/2023",
-        f_recepcion: "18/09/2023",
-        empleadoRecibe: "Maria",
-        metodoPago: "Efectivo",
-      },
-      {
-        id_pedido: 3,
-        user: "Luis",
-        cliente: "Carlos",
-        id_cobro: 3,
-        pedidoDetalle: "Planchado",
-        orderstatus: "Adeudo",
-        totalPrice: 80,
-        fentregaEstimada: "17/09/2023",
-        f_recepcion: "19/09/2023",
-        empleadoRecibe: "Luis",
-        metodoPago: "Tarjeta",
-      },
-    ];
+  const fetcher = async () => {
+    const response = await api.get("/ordersIron");
+    return response.data;
+  };
 
-    setPedidos(dummyPedidos);
-    setFilteredPedidos(dummyPedidos);
-  }, []);
+  const { data } = useSWR("ordersDeliveryIron", fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setPedidos(data);
+      setFilteredPedidos(data);
+    }
+  }, [data]);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
@@ -84,15 +60,33 @@ function EntregaPlanchado() {
   const filterPedidos = (filterText) => {
     const filtered = pedidos.filter((pedido) => {
       return (
-        pedido.cliente.toLowerCase().includes(filterText.toLowerCase()) ||
-        pedido.user.toLowerCase().includes(filterText.toLowerCase()) ||
-        pedido.id_pedido.toString().includes(filterText)
+        (pedido.client &&
+          pedido.client.name &&
+          pedido.client.name
+            .toLowerCase()
+            .includes(filterText.toLowerCase())) ||
+        (pedido.user &&
+          pedido.user.name &&
+          pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||
+        (pedido.id_order && pedido.id_order.toString().includes(filterText))
       );
     });
     setFilteredPedidos(filtered);
+    setCurrentPage(0);
   };
 
   const handleCobrar = (pedido) => {
+    if (!localStorage.getItem("cashCutId")) {
+      Swal.fire({
+        icon: "warning",
+        title: "No has inicializado caja!",
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
+      });
+      navigate("/inicioCaja");
+      return;
+    }
+    console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
     setVisible(true);
   };
@@ -105,41 +99,111 @@ function EntregaPlanchado() {
     });
   };
 
-  const handleGuardarCobro = (pedido) => {
+  const handleGuardarCobro = async (pedido) => {
     const fechaEntrega = moment(cobroInfo.fechaPago)
       .add(3, "days")
-      .format("YYYY-MM-DD");
+      .format("DD/MM/YYYY");
 
     const updatedPedido = {
       ...pedido,
-      orderstatus: "Pagado",
+      payStatus: "paid",
       metodoPago: cobroInfo.metodoPago,
-      f_recepcion: cobroInfo.fechaPago,
+      f_recepcion: cobroInfo.fechaPago.format("DD/MM/YYYY"),
       fentregaEstimada: fechaEntrega,
     };
 
+    console.log("Pedido actualizado:", updatedPedido);
+
     const updatedFilteredPedidos = filteredPedidos.map((p) =>
-      p.id_pedido === updatedPedido.id_pedido ? updatedPedido : p
+      p.id_order === updatedPedido.id_order ? updatedPedido : p
     );
     setFilteredPedidos(updatedFilteredPedidos);
 
     setVisible(false);
 
+    try {
+      const res = await api.post("/paymentsDelivery", {
+        payment: {
+          fk_idOrder: pedido.id_order,
+          payMethod: cobroInfo.metodoPago,
+          payDate: cobroInfo.fechaPago.toISOString(),
+          payTime: cobroInfo.fechaPago.toISOString(),
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          payTotal: pedido.totalPrice,
+        },
+        deliveryDetail: {
+          fk_userCashier: cookies.token,
+          deliveryDate: cobroInfo.fechaPago.toISOString(),
+          deliveryTime: cobroInfo.fechaPago.toISOString(),
+          fk_idOrder: pedido.id_order,
+        },
+      });
+      ///////////////////////////// TICKET //////////////////////////////////
+      const cart = [];
+      cart.push({
+        description: pedido.ServiceOrderDetail[0].IronService
+          ? pedido.ServiceOrderDetail[0].IronService.description
+          : "ERROR",
+        id_service: pedido.ServiceOrderDetail[0].fk_Service,
+        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
+        quantity: pedido.ServiceOrderDetail[0].units,
+      });
+      const order = {
+        id_order: pedido.id_order,
+        payForm: pedido.payForm,
+        payStatus: "paid",
+        payMethod: cobroInfo.metodoPago,
+        subtotal: pedido.totalPrice,
+        casher: pedido.user.name,
+        client: pedido.client.name,
+        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        receptionDate: pedido.receptionDate,
+        receptionTime: pedido.receptionTime,
+        pieces: pedido.ironPieces,
+        notes: pedido.notes,
+        cart: cart,
+      };
+      orderTicket(order);
+      setFkPayment(res.data.id_payment);
+      console.log(res.data.id_payment);
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
+      });
+      setFilteredPedidos(updatedFilteredPedidos);
+    } catch (err) {
+      console.log(err);
+    }
+
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.cliente}`, 10, 20);
-    doc.text(`Pedido: ${updatedPedido.pedidoDetalle}`, 10, 30);
-    doc.text(`Estatus: Adeudo`, 10, 40);
-    doc.text(`Método de Pago: ${updatedPedido.metodoPago}`, 10, 50);
+    doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
     doc.text(
-      `Fecha de Pago: ${moment(updatedPedido.f_recepcion).format(
-        "DD/MM/YYYY"
-      )}`,
+      `Pedido: ${
+        pedido.ServiceOrderDetail.find(
+          (service) => service.id_serviceOrderDetail
+        ) != undefined
+          ? pedido.ServiceOrderDetail.length
+          : 0
+      }`,
       10,
-      60
+      30
     );
+    doc.text(`Estatus: Adeudo`, 10, 40);
+    doc.text(
+      `Método de Pago: ${
+        pedido.payment
+          ? pedido.payment.payMethod === "cash"
+            ? "Efectivo"
+            : "Tarjeta"
+          : "N/A"
+      }`,
+      10,
+      50
+    );
+    doc.text(`Fecha de Pago: ${formatDate(pedido.receptionTime)}`, 10, 60);
     doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
-    doc.save(`pedido_${updatedPedido.id_pedido}.pdf`);
+    doc.save(`pedido_${updatedPedido.id_order}.pdf`);
   };
 
   const handleClose = () => {
@@ -147,27 +211,78 @@ function EntregaPlanchado() {
     setSelectedPedido(null);
   };
 
-  const handleEntregar = (pedido) => {
-    if (pedido.orderstatus === "Pagado") {
+  const handleEntregar = async (pedido) => {
+    if (!localStorage.getItem("cashCutId")) {
+      Swal.fire({
+        icon: "warning",
+        title: "No has inicializado caja!",
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
+      });
+      navigate("/inicioCaja");
+      return;
+    }
+
+    if (pedido.payStatus === "paid") {
       setSelectedPedido(pedido);
 
-      setEntregando(true);
+      console.log(pedido);
 
+      try {
+        await api.post("/deliveryDetails", {
+          fk_idOrder: pedido.id_order,
+          fk_idPayment: pedido.payment.id_payment,
+          fk_userCashier: cookies.token,
+          deliveryDate:
+            cobroInfo.fechaPago.toISOString().split("T")[0] + "T00:00:00.000Z",
+          deliveryTime:
+            "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+        });
+        // PIENSO ENVIAR EL TICKET PDF AL CLIENTE
+        const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+          return order.id_order !== pedido.id_order;
+        });
+        setFilteredPedidos(updatedFilteredPedidos);
+      } catch (err) {
+        console.log(err);
+      }
+
+      setEntregando(true);
       setTimeout(() => {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.cliente}`, 10, 20);
-        doc.text(`Pedido: ${pedido.pedidoDetalle}`, 10, 30);
-        doc.text(`Estatus: Entregado`, 10, 40);
-        doc.text(`Método de Pago: ${pedido.metodoPago}`, 10, 50);
+        doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
         doc.text(
-          `Fecha de Pago: ${moment(pedido.f_recepcion).format("DD/MM/YYYY")}`,
+          `Pedido: ${
+            pedido.ServiceOrderDetail.find(
+              (service) => service.id_serviceOrderDetail
+            ) != undefined
+              ? pedido.ServiceOrderDetail.length
+              : 0
+          }`,
+          10,
+          30
+        );
+        doc.text(`Estatus: Entregado`, 10, 40);
+        doc.text(
+          `Método de Pago: ${
+            pedido.payment
+              ? pedido.payment.payMethod === "cash"
+                ? "Efectivo"
+                : "Tarjeta"
+              : "N/A"
+          }`,
+          10,
+          50
+        );
+        doc.text(
+          `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
           10,
           60
         );
         doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
-        doc.save(`pedido_${pedido.id_pedido}.pdf`);
+        doc.save(`pedido_${pedido.id_order}.pdf`);
       }, 1500);
     }
   };
@@ -198,40 +313,58 @@ function EntregaPlanchado() {
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
               <th className="">No. Folio</th>
-              <th className="">Nombre del Cliente</th>
-              <th className="">Empleado que Recibe</th>
-              <th className="">Detalle del pedido</th>
-              <th className="">Fecha de Recepción</th>
+              <th className="">Cliente</th>
+              <th className="">Recibió</th>
+              <th className="">Detalles</th>
+              <th>Piezas</th>
+              <th className="">
+                Fecha <br />
+                de Recepción
+              </th>
               <th className="">Estatus</th>
-              <th className="">Fecha de Entrega Estimada</th>
+              <th className="">
+                Entrega <br /> Estimada
+              </th>
               <th className="">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {filteredPedidos
+              .filter((pedido) => pedido.orderStatus === "finished")
               .slice(
                 currentPage * itemsPerPage,
                 (currentPage + 1) * itemsPerPage
               )
               .map((pedido) => (
-                <tr className="bg-white border-b" key={pedido.id_pedido}>
-                  <td className="py-3 px-1 text-center">{pedido.id_pedido}</td>
+                <tr className="bg-white border-b" key={pedido.id_order}>
+                  <td className="py-3 px-1 text-center">{pedido.id_order}</td>
+                  <td className="th2 font-medium text-gray-900">
+                      {`${pedido.client.name} ${pedido.client.firstLN}`} <br />
+                      {pedido.client.secondLN}
+                    </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.cliente}
+                    {pedido.user.name} <br />
+                    {pedido.user.firstLN}
                   </td>
-                  <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.empleadoRecibe}
+                  <td className="py-3 px-6">
+                    {pedido.category.categoryDescription === "planchado"
+                      ? "Planchado"
+                      : pedido.category.categoryDescription}
                   </td>
-                  <td className="py-3 px-6">{pedido.pedidoDetalle}</td>
-                  <td className="py-3 px-6">{pedido.f_recepcion}</td>
+                  <td className="py-3 px-6">
+                    {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.receptionDate)}
+                  </td>
                   <td
                     className={`py-3 px-6 ${
-                      pedido.orderstatus === "Adeudo"
+                      pedido.payStatus === "unpaid"
                         ? "text-red-600"
                         : "text-green-600"
                     }`}
                   >
-                    {pedido.orderstatus === "Adeudo" ? (
+                    {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">
                         <ExclamationCircleOutlined /> Adeudo $
                         {pedido.totalPrice}
@@ -242,9 +375,11 @@ function EntregaPlanchado() {
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-6">{pedido.fentregaEstimada}</td>
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.scheduledDeliveryDate)}
+                  </td>
                   <td>
-                    {pedido.orderstatus === "Pagado" ? (
+                    {pedido.payStatus === "paid" ? (
                       <button
                         onClick={() => handleEntregar(pedido)}
                         className="btn-delivery"
@@ -270,7 +405,11 @@ function EntregaPlanchado() {
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(filteredPedidos.length / itemsPerPage)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
+              (pedido) => pedido.orderStatus === "finished"
+            ).length / itemsPerPage
+          )}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
@@ -282,25 +421,21 @@ function EntregaPlanchado() {
           activeLinkClassName="activeLinkClassName"
         />
       </div>
-      {selectedPedido &&
-        entregando &&
-        selectedPedido.orderstatus === "Pagado" && (
-          <Modal
-            title="Pedido Entregado"
-            visible={entregando}
-            closable={false}
-            footer={null}
-          >
-            <div className="text-center">
-              <CheckCircleOutlined
-                style={{ fontSize: "64px", color: "green" }}
-              />
-              <p className="text-green-600 font-bold text-lg mt-2">
-                Pedido Entregado...
-              </p>
-            </div>
-          </Modal>
-        )}
+      {selectedPedido && entregando && selectedPedido.payStatus === "paid" && (
+        <Modal
+          title="Pedido Entregado"
+          open={entregando}
+          closable={false}
+          footer={null}
+        >
+          <div className="text-center">
+            <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
+            <p className="text-green-600 font-bold text-lg mt-2">
+              Pedido Entregado...
+            </p>
+          </div>
+        </Modal>
+      )}
 
       <Modal
         title="Detalles del Pedido"
@@ -325,17 +460,17 @@ function EntregaPlanchado() {
           </Button>,
         ]}
       >
-        {selectedPedido?.orderstatus === "Adeudo" && (
+        {selectedPedido?.payStatus === "unpaid" && (
           <div>
             <p className="text-lg font-semibold">Detalles del Pedido</p>
             <p>
-              <strong>Cliente:</strong> {selectedPedido?.cliente}
+              <strong>Cliente:</strong> {selectedPedido?.client.name}
             </p>
             <p>
-              <strong>Pedido:</strong> {selectedPedido?.pedidoDetalle}
+              <strong>Pedido:</strong> {selectedPedido.id_order}
             </p>
             <p>
-              <strong>Estatus:</strong> Adeudo - <strong>Adeudo:</strong> $
+              <strong>Estatus:</strong> Adeudo - <strong>Monto:</strong> $
               {selectedPedido?.totalPrice}
             </p>
             <div className="mb-2">
@@ -346,32 +481,21 @@ function EntregaPlanchado() {
                 onChange={handleCobroInfoChange}
                 className="bg-gray-200 rounded-md p-1"
               >
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
+                <option value="cash">Efectivo</option>
+                <option value="credit">Tarjeta</option>
               </select>
-            </div>
-            <div>
-              <strong>Fecha de Pago:</strong>{" "}
-              <input
-                type="date"
-                name="fechaPago"
-                value={cobroInfo.fechaPago}
-                onChange={handleCobroInfoChange}
-                className="bg-gray-200 rounded-md p-1"
-                readOnly
-              />
             </div>
           </div>
         )}
         <div className="text-center">
-          {selectedPedido?.orderstatus === "Adeudo" ? (
+          {selectedPedido?.payStatus === "unpaid" ? (
             <ExclamationCircleOutlined
               style={{ fontSize: "64px", color: "red" }}
             />
           ) : (
             <CheckCircleOutlined style={{ fontSize: "64px", color: "green" }} />
           )}
-          {selectedPedido?.orderstatus === "Pagado" && (
+          {selectedPedido?.payStatus === "paid" && (
             <p className="text-green-600 font-bold text-lg mt-2">
               Pago Confirmado...
             </p>

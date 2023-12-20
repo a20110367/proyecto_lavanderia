@@ -4,10 +4,14 @@ import { Modal, Button, Input } from "antd";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
-import Axios from "axios";
 import useSWR from "swr";
+import { formatDate } from "../../utils/format";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import api from "../../api/api";
 
 function Retiro() {
+  const navigate = useNavigate();
   const [retiros, setRetiros] = useState([]);
   const [filteredRetiros, setFilteredRetiros] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -26,15 +30,17 @@ function Retiro() {
   };
 
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/cashWhithdrawals");
+    const response = await api.get("/cashWithdrawals");
     return response.data;
   };
 
-  const { data } = useSWR("cashWhithdrawals", fetcher);
+  const { data } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
-      const retirosFiltrados = data.filter((retiro) => retiro.cashWhithdrawalType === "withdrawal");
+      const retirosFiltrados = data.filter(
+        (retiro) => retiro.cashWithdrawalType === "withdrawal"
+      );
       setRetiros(retirosFiltrados);
       setFilteredRetiros(retirosFiltrados);
     }
@@ -50,9 +56,20 @@ function Retiro() {
     );
     setFiltro(event.target.value);
     setFilteredRetiros(filtered);
+    setCurrentPage(0);
   };
 
   const handleRetiro = () => {
+    if (!localStorage.getItem("cashCutId")) {
+      Swal.fire({
+        icon: "warning",
+        title: "No has inicializado caja!",
+        text: "Da click en Iniciar Caja.",
+        confirmButtonColor: "#034078",
+      });
+      navigate("/inicioCaja");
+      return;
+    }
     setVisible(true);
   };
 
@@ -91,8 +108,8 @@ function Retiro() {
     if (isValid) {
       const date = moment().format();
 
-      Axios.post("http://localhost:5000/cashWhithdrawals", {
-        cashWhithdrawalType: "withdrawal",
+      api.post("/cashWithdrawals", {
+        cashWithdrawalType: "withdrawal",
         fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
         fk_user: cookies.token,
         amount: parseInt(monto),
@@ -102,7 +119,7 @@ function Retiro() {
       setVisible(false);
 
       const nuevoRetiro = {
-        id_cashWhithdrawal: retiros.length + 1,
+        id_cashWithdrawal: retiros.length + 1,
         amount: parseInt(monto),
         cause: motivo,
         date: date,
@@ -116,15 +133,6 @@ function Retiro() {
 
   const handleClose = () => {
     setVisible(false);
-  };
-
-  const formatDateToGMTMinus6 = (dateStr) => {
-    const date = new Date(dateStr);
-    date.setHours(date.getHours() - 6);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -166,13 +174,15 @@ function Retiro() {
         </thead>
         <tbody>
           {filteredRetiros
+            .slice()
+            .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
             .map((retiro) => (
-              <tr className="bg-white border-b" key={retiro.id_cashWhithdrawal}>
+              <tr className="bg-white border-b" key={retiro.id_cashWithdrawal}>
                 <td className="py-3 px-1 text-center">
-                  {retiro.id_cashWhithdrawal}
+                  {retiro.id_cashWithdrawal}
                 </td>
-                <td className="py-3 px-6">{formatDateToGMTMinus6(retiro.date)}</td>
+                <td className="py-3 px-6">{formatDate(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>
                 <td className="py-3 px-6">{retiro.cause}</td>
                 <td className="py-3 px-6">{retiro.user.name}</td>

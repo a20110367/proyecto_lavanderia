@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -15,6 +15,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 function Planchas() {
+  const [machineSelModel, setMachineSelModel] = useState();
   const [ironSelId, setIronSelId] = useState();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function Planchas() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/ironStations");
+    const response = await api.get("/ironStations");
     return response.data;
   };
 
@@ -36,12 +37,13 @@ function Planchas() {
 
 
   const deleteIron = async (id_ironStation) => {
-    await Axios.delete(`http://localhost:5000/ironStations/${id_ironStation}`);
+    await api.delete(`/ironStations/${id_ironStation}`);
     mutate("ironStations");
   };
 
-  const handleClickOpen = (id_ironStation) => {
+  const handleClickOpen = (machineModel, id_ironStation) => {
     setIronSelId(id_ironStation);
+    setMachineSelModel(machineModel);
     setOpen(true);
   };
 
@@ -72,6 +74,7 @@ function Planchas() {
               <tr>
                 <th>No. Equipo</th>
                 <th>Tipo de Máquina</th>
+                <th>Modelo</th>
                 <th>Piezas</th>
                 <th>Estado</th>
                 <th>Notas</th>
@@ -101,6 +104,7 @@ function Planchas() {
                           ? "Plancha"
                           : "Secadora"}
                     </td>
+                    <td>{iron.description}</td>
                     <td>{iron.pieces}</td>
                     <td
                       className={`${iron.status === "available"
@@ -124,7 +128,7 @@ function Planchas() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(iron.id_ironStation)
+                          handleClickOpen(iron.description, iron.id_ironStation)
                         }
                         className="btn-cancel"
                       >
@@ -142,7 +146,7 @@ function Planchas() {
                         </DialogTitle>
                         <DialogContent>
                           <DialogContentText id="alert-dialog-description">
-                            ¿Deseas eliminar la máquina: {ironSelId}?
+                            ¿Deseas eliminar la máquina: {machineSelModel}?
                           </DialogContentText>
                         </DialogContent>
                         <DialogActions>

@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 export const getLaundryWashQueue = async (req, res) =>{
     try {
         const response = await prisma.laundryWashQueue.findMany();
+
+        
         res.status(200).json(response);
     }catch(e){
         res.status(500).json({msg:e.message});
@@ -29,7 +31,7 @@ export const getLaundryWashQueueByOrderId = async (req, res) =>{
     try {
         const response = await prisma.laundryWashQueue.findMany({
             where:{
-                fk_ServiceOrder: Number(req.params.fk_ServiceOrder)
+                fk_idServiceOrder: Number(req.params.fk_ServiceOrder)
             }
         });
         res.status(200).json(response);

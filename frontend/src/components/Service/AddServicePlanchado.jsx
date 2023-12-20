@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import api from '../../api/api'
 
 function AddServicePlanchado() {
   const descriptionRef = useRef();
@@ -11,9 +11,8 @@ function AddServicePlanchado() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [time, setTime] = useState(0);
-  const [weight, setWeight] = useState("");
-  const [pieces, setPieces] = useState("");
+  const [pieces, setPieces] = useState(0);
+  const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Planchado");
 
   const [errMsg, setErrMsg] = useState("");
@@ -37,27 +36,26 @@ function AddServicePlanchado() {
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-        setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
-        return;
-      }
-  
+      setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
+      return;
+    }
 
     try {
-      await Axios.post("http://localhost:5000/services", {
+      await api.post("/servicesIron", {
         description: description,
         price: parseFloat(price),
+        cycleTime: parseInt(time),
+        pieces: parseInt(pieces),
         category_id: 3,
       });
       setDescription("");
       setPrice(0);
-      setTime(0);
-      setWeight("");
-      setPieces("");
       setCategory("Planchado");
       setSuccess(true);
 
       navigate("/servicesPlanchado");
     } catch (err) {
+      console.info(err)
       setErrMsg("Failed to add service.");
     }
   };
@@ -105,6 +103,30 @@ function AddServicePlanchado() {
                 </div>
               )}
 
+              <label className="form-lbl" htmlFor="pieces">
+                Piezas
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="pieces"
+                onChange={(e) => setPieces(e.target.value)}
+                value={pieces}
+              />
+
+              <label className="form-lbl" htmlFor="time">
+                Tiempo de Ciclo en minutos:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="time"
+                ref={timeRef}
+                onChange={(e) => setTime(e.target.value)}
+                value={time}
+                required
+              />
+
               <label className="form-lbl" htmlFor="price">
                 Precio Unitario:
               </label>
@@ -117,42 +139,6 @@ function AddServicePlanchado() {
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
-              />
-
-              <label className="form-lbl" htmlFor="time">
-                Tiempo (minutos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="time"
-                ref={timeRef}
-                onChange={(e) => setTime(e.target.value)}
-                value={time}
-                required
-              />
-
-              <label className="form-lbl" htmlFor="weight">
-                Peso (Kilogramos):
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="weight"
-                ref={weightRef}
-                onChange={(e) => setWeight(e.target.value)}
-                value={weight}
-              />
-
-              <label className="form-lbl" htmlFor="pieces">
-                Piezas
-              </label>
-              <input
-                className="form-input"
-                type="number"
-                id="pieces"
-                onChange={(e) => setPieces(e.target.value)}
-                value={pieces}
               />
 
               <label className="form-lbl" htmlFor="category">

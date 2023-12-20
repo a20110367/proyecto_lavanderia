@@ -1,18 +1,19 @@
 import { useRef, useState, useEffect } from "react";
-import {
-  faCheck,
-  faTimes,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
-
-
+import api from "../../api/api";
 
 const WEIGHT_REGEX = /^[0-9]{1,}$/;
+const DESCRIPTION_REGEX = /^[A-z0-9-_ ]{1,191}$/;
 
 function AddPlancha() {
   const errRef = useRef();
+  const descriptionRef = useRef();
+
+  const [description, setDescription] = useState("");
+  const [validDescription, setValidDescription] = useState(false);
+  const [descriptionFocus, setDescriptionFocus] = useState(false);
 
   const [machineType, setMachineType] = useState("plancha");
 
@@ -28,6 +29,13 @@ function AddPlancha() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    descriptionRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    setValidDescription(DESCRIPTION_REGEX.test(description));
+  }, [description]);
 
   useEffect(() => {
     setValidPieces(WEIGHT_REGEX.test(pieces));
@@ -35,20 +43,21 @@ function AddPlancha() {
 
   useEffect(() => {
     setErrMsg("");
-  }, [pieces]);
+  }, [pieces, description]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validación de campos
-    if ( !validPieces) {
+    if (!validDescription || !validPieces) {
       setErrMsg("Por favor, complete los campos correctamente.");
       return;
     }
 
     try {
-      await Axios.post("http://localhost:5000/ironStations", {
+      await api.post("/ironStations", {
         machineType: machineType,
+        description: description,
         pieces: parseInt(pieces),
         status: status,
         notes: notes,
@@ -57,6 +66,7 @@ function AddPlancha() {
       setSuccess(true);
 
       // Limpiar los campos después de enviar el formulario
+      setDescription("");
       setPieces("");
       setNotes("");
       navigate("/planchas");
@@ -68,15 +78,18 @@ function AddPlancha() {
       }
       errRef.current.focus();
     }
-    
   };
 
   return (
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <h2 className="title text-white"><em>Añadir una Plancha</em></h2>
-          <p className="form-lbl text-white">Ingrese los detalle de la Plancha.</p>
+          <h2 className="title text-white">
+            <em>Añadir una Plancha</em>
+          </h2>
+          <p className="form-lbl text-white">
+            Ingrese los detalle de la Plancha.
+          </p>
           <div className="clearBoth"></div>
         </div>
         {success ? (
@@ -109,6 +122,31 @@ function AddPlancha() {
                 <option value="plancha">Plancha</option>
               </select>
 
+              {/** Modelo */}
+              <label className="form-lbl" htmlFor="model">
+                Modelo:
+                {validDescription ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="model"
+                ref={descriptionRef}
+                autoComplete="off"
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
+                required
+                aria-invalid={validDescription ? "false" : "true"}
+                onFocus={() => setDescriptionFocus(true)}
+                onBlur={() => setDescriptionFocus(false)}
+              />
 
               {/** Piezas */}
               <label className="form-lbl" htmlFor="weight">
@@ -161,7 +199,7 @@ function AddPlancha() {
               />
               <button
                 className="btn-primary"
-                disabled={ !validPieces}
+                disabled={!validPieces || !validDescription}
               >
                 Registrar Equipo
               </button>

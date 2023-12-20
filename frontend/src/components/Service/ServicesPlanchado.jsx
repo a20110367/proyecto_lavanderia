@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -28,11 +28,11 @@ function ServicesPlanchado() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/servicesIron");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesIron", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const filteredData = data.filter((service) => {
@@ -55,8 +55,9 @@ function ServicesPlanchado() {
   });
 
   const deleteService = async (serviceId) => {
-    await Axios.delete(`http://localhost:5000/services/${serviceId}`);
-    mutate("services");
+    console.log(serviceId)
+    await api.delete(`/servicesIron/${serviceId}`);
+    mutate("servicesIron");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {
@@ -77,7 +78,7 @@ function ServicesPlanchado() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Planchaduria</strong>
+        <strong className="title-strong">Servicios de Planchaduria</strong>
       </div>
       <div className="w-full pt-4">
         <button
@@ -94,6 +95,7 @@ function ServicesPlanchado() {
               <tr>
                 <th>No. servicio</th>
                 <th>Descripción</th>
+                <th>Piezas</th>
                 <th>Categoria</th>
                 <th>Precio</th>
                 <th>Opciones</th>
@@ -109,6 +111,7 @@ function ServicesPlanchado() {
                   <tr key={service.id_service}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
+                    <td>{service.pieces}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
                     <td>

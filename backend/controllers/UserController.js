@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { response } from "express";
+
 
 const prisma = new PrismaClient();
 
 export const authUser = async (req, res) =>{
     const {username, pass} = req.body
     try{
-        const response = await prisma.user.findFirst({
+        const auth = await prisma.user.findFirst({
             select:{
                 id_user: true,
                 username: true,
@@ -15,7 +17,18 @@ export const authUser = async (req, res) =>{
                 username: username,
                 pass: pass,
             }
+
         });
+
+        const lastServiceOrder = await prisma.serviceOrder.aggregate({
+            _max:{
+                id_order:true,
+            },
+        });
+
+        const lastOrder=lastServiceOrder._max;
+        const response= {...auth,id_lastOrder:lastOrder};
+
         res.status(200).json(response)
     }catch(e){
         res.status(500).json({msg:e.message})
@@ -45,7 +58,7 @@ export const getUsersById = async (req, res) =>{
 }
 
 export const createUser = async (req, res) =>{
-    //const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.create({
             data: req.body
@@ -60,7 +73,25 @@ export const createUser = async (req, res) =>{
             //     role: role
             // }
         });
-        res.status(201).json(user);
+
+        const staffMember = await prisma.staffMember.create({
+            data:{
+                name: name,
+                firstLN: firstLN,
+                secondLN: secondLN,
+                email: email,                
+                phone: phone            
+            }
+            
+        });
+
+        const response = {
+
+            "user": user,
+            "staffMember":staffMember
+        }
+
+        res.status(201).json(response);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

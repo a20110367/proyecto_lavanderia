@@ -2,6 +2,7 @@ import React from 'react'
 import {
     MdLocalLaundryService,
     MdIron,
+    MdOutlineLocalLaundryService
 } from "react-icons/md";
 import {
     FcEngineering,
@@ -13,6 +14,8 @@ import { HiUsers, HiTruck, HiCash, HiShoppingCart } from "react-icons/hi";
 import { HiWrenchScrewdriver } from "react-icons/hi2"
 import { RiHandCoinFill } from "react-icons/ri"
 import { useAuth } from '../../hooks/auth/auth'
+import { TbWashGentle } from "react-icons/tb";
+import { PiShirtFoldedDuotone } from "react-icons/pi";
 
 function getItem(label, key, icon, children, type) {
     return {
@@ -32,24 +35,47 @@ const iconStyle = {
 };
 
 const items1 = [
+    getItem("Autoservicio", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
+    
     getItem(
-        "Lavanderia",
-        "/lavanderia",
-        <MdLocalLaundryService style={iconStyle} />,
+        "Encargo Ropa",
+        "/Encargo",
+        <MdOutlineLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
         ]
     ),
+
     getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
     ]),
+
+    getItem(
+        "Tintoreria",
+        "/Tintoreria",
+        <PiShirtFoldedDuotone    style={iconStyle} />,
+        [
+            getItem("Recepcion", "/recepcionTintoreria"),
+            getItem("Entrega", "/entregaTintoreria"),
+
+        ]
+    ),
+
+    getItem("Encargo Varios", "/encargoVarios", <TbWashGentle  style={iconStyle} />, [
+        getItem("Recepcion", "/recepcionVarios"),
+        getItem("Entrega", "/entregaVarios"),
+    ]),
+
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Encargo Ropa", "/pedidosLavanderia"),
+        getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("Tintoreria", "/pedidosTintoreria"),
+        getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
     ]),
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
@@ -57,12 +83,11 @@ const items1 = [
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
         getItem("Inicio de caja", "/inicioCaja"),
         getItem("Corte de caja", "/corteCaja"),
-
+        getItem("Pedidos", "/cajaPedidos"),
+        getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Historial de cortes", "/historialCaja"),
-        getItem("Pedidos", "/cajaPedidos"),
-        
+        getItem("Caja Chica", "/cajaChica"),        
     ]),
     getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
@@ -73,48 +98,76 @@ const items1 = [
     getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
     
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Encargo Ropa", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
+        getItem("Tintoreria", "/servicesTintoreria"),
+        getItem("Encargo Varios", "/servicesVarios"),
 
     ]),
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
-    getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
+    getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />), 
+    getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
 const items2 = [
+    getItem("Lavanderia", "/autoServicio",  <MdLocalLaundryService style={iconStyle} />),
+
     getItem(
-        "Lavanderia",
-        "/lavanderia",
-        <MdLocalLaundryService style={iconStyle} />,
+        "Encargo Ropa",
+        "/Encargo",
+        <MdOutlineLocalLaundryService style={iconStyle} />,
         [
-            getItem("Autoservicio", "/autoServicio",),
             getItem("Recepcion", "/recepcionLavanderia"),
             getItem("Entrega", "/entregaLavanderia"),
 
         ]
     ),
+
     getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
         getItem("Recepcion", "/recepcionPlanchado"),
         getItem("Entrega", "/entregaPlanchado"),
     ]),
+
+    
+    getItem(
+        "Tintoreria",
+        "/Tintoreria",
+        <PiShirtFoldedDuotone    style={iconStyle} />,
+        [
+            getItem("Recepcion", "/recepcionTintoreria"),
+            getItem("Entrega", "/entregaTintoreria"),
+
+        ]
+    ),
+
+    getItem("Encargo Varios", "/encargoVarios", <TbWashGentle  style={iconStyle} />, [
+        getItem("Recepcion", "/recepcionVarios"),
+        getItem("Entrega", "/entregaVarios"),
+    ]),
+
     getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-        getItem("Lavanderia", "/pedidosLavanderia"),
+        getItem("Encargo Ropa", "/pedidosLavanderia"),
+        getItem("Autoservicio", "/pedidosAutoservicio"),
         getItem("Planchado", "/pedidosPlanchado"),
+        getItem("Tintoreria", "/pedidosTintoreria"),
+        getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
+
     ]),
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),
-
+    
     getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
-        //getItem("Inicio de caja", "/cajas"),
-        getItem("Corte de caja Turno", "/corteCajaTurno"),
-        getItem("Corte de caja Parcial", "/corteCajaParcial"),
+        getItem("Iniciar caja", "/inicioCaja"),
+        getItem("Corte de caja", "/corteCaja"),
+        getItem("Pedidos", "/cajaPedidos"),
+        getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Pedidos", "/cajaPedidos"),
+        getItem("Caja Chica", "/cajaChica"),        
     ]),
+        
     getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
         getItem("Administrar Equipos", "/equipos"),
@@ -122,16 +175,17 @@ const items2 = [
     ]),
 
     getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />,[
-        getItem("Lavanderia", "/servicesLavanderia"),
+        getItem("Encargo Ropa", "/servicesLavanderia"),
         getItem("Planchado", "/servicesPlanchado"),
         getItem("Autoservicio", "/servicesAutoservicio"),
+        getItem("Tintoreria", "/servicesTintoreria"),
+        getItem("Encargo Varios", "/servicesVarios"),
 
     ]),
 
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Settings", "/settings", <SettingFilled style={iconStyle} />), // Agregado: Settings
-    getItem("Logout", "/logout", <LogoutOutlined style={iconStyle} />),
+    getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 
 

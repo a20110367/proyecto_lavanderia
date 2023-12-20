@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Axios from "axios";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import api from '../../api/api'
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -28,11 +28,11 @@ function ServicesAutoservicio() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await Axios.get("http://localhost:5000/services");
+    const response = await api.get("/servicesSelfService");
     return response.data;
   };
 
-  const { data } = useSWR("services", fetcher);
+  const { data } = useSWR("servicesSelfService", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
   const filteredData = data.filter((service) => {
@@ -41,8 +41,8 @@ function ServicesAutoservicio() {
   });
 
   const deleteService = async (serviceId) => {
-    await Axios.delete(`http://localhost:5000/services/${serviceId}`);
-    mutate("services");
+    await api.delete(`/servicesSelfService/${serviceId}`);
+    mutate("servicesSelfService");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {
@@ -63,7 +63,7 @@ function ServicesAutoservicio() {
   return (
     <div>
       <div className="title-container">
-        <strong className="title-strong">Servicios De Autoservicio</strong>
+        <strong className="title-strong">Servicios de Autoservicio</strong>
       </div>
       <div className="w-full pt-4">
         <button
@@ -82,6 +82,7 @@ function ServicesAutoservicio() {
                 <th>Descripción</th>
                 <th>Categoria</th>
                 <th>Precio</th>
+                <th>Tipo de Servicio</th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -97,6 +98,7 @@ function ServicesAutoservicio() {
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
                     <td>${service.price}</td>
+                    <td>{service.machineType === 'secadora' ? 'Secadora' : 'Lavadora'}</td>
                     <td> 
                       <button
                         onClick={() =>

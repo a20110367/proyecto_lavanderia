@@ -28,23 +28,23 @@ export const getDeliveryDetailsById = async (req, res) =>{
 export const createDeliveryDetail = async (req, res) =>{
    
     try {
-        const deliveryDetail =  prisma.deliveryDetail.create({
+        const deliveryDetail = await prisma.deliveryDetail.create({
             data: req.body
        
         });
 
-        const orderUpdate =  prisma.order.update({
+        const orderUpdate = await prisma.serviceOrder.update({
             where:{
                 id_order: Number(req.body.fk_idOrder)
             },
              data:
              { 
-                orderStatus: delivered 
+                orderStatus:"delivered"  
             }
         });
 
-        response = await prisma.$transaction([deliveryDetail,orderUpdate]);
-        res.status(201).json(response);
+    
+        res.status(201).json(deliveryDetail);
     }catch(e){
         res.status(400).json({msg:e.message});
     }

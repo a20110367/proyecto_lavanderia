@@ -942,6 +942,10 @@ GET   http://localhost:5000/selfServiceQueue
 GET   http://localhost:5000/ironQueue
 ####
 
+
+GET   http://localhost:5000/otherQueue
+####
+
 GET   http://localhost:5000/servicesSelfService
 
 ###

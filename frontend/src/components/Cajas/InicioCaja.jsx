@@ -1,25 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button, Input, Select } from "antd";
+const { Option } = Select;
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function InicioCaja() {
-
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
+  const [turno, setTurno] = useState(moment().hours() < 12 ? 'Matutino' : 'Vespertino');
   const [dineroInicio, setDineroInicio] = useState(0);
   const [fechaHora, setFechaHora] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [errorVisible, setErrorVisible] = useState(false);
   const [cajaIniciada, setCajaIniciada] = useState(false);
-  const dateD = new Date()
-  const dateT = new Date()
+  const dateD = new Date();
+  const dateT = new Date();
 
   useEffect(() => {
-    const formattedDate = moment().format('DD/MM/yyyy HH:mm');
+    const formattedDate = moment().format("DD/MM/yyyy HH:mm");
     setFechaHora(formattedDate);
   }, []);
 
@@ -41,22 +42,23 @@ function InicioCaja() {
 
     if (!nombreUsuario && !dineroInicio) {
       setErrMsg("Algun campo vacio");
-      return
+      return;
     }
     try {
       const response = await api.post("/cashCuts", {
         initialCash: parseFloat(dineroInicio),
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
-        cashCutT: dateT.toJSON()
+        cashCutT: dateT.toJSON(),
+        turno: turno
       });
       localStorage.setItem("cashCutId", response.data.id_cashCut);
-      localStorage.setItem("initialCash", response.data.initialCash)
-      localStorage.removeItem('lastCashCut')
+      localStorage.setItem("initialCash", response.data.initialCash);
+      localStorage.removeItem("lastCashCut");
       setCajaIniciada(true);
       setVisible(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
       } else {
@@ -70,20 +72,20 @@ function InicioCaja() {
 
   const handleAbrirFormulario = async () => {
     try {
-      const res = await api.get("/cashCutStatus")
-      if (res.data.cashCutStatus === 'closed') {
+      const res = await api.get("/cashCutStatus");
+      if (res.data.cashCutStatus === "closed") {
         setVisible(true);
-      } else if (res.data.cashCutStatus === 'open') {
-        localStorage.removeItem('lastCashCut')
-        localStorage.setItem("cashCutId", res.data.id_cashCut)
+      } else if (res.data.cashCutStatus === "open") {
+        localStorage.removeItem("lastCashCut");
+        localStorage.setItem("cashCutId", res.data.id_cashCut);
         setCajaIniciada(true);
         setVisible(false);
-      } else{
-        setVisible(false)
+      } else {
+        setVisible(false);
       }
-    } catch (err) { 
-      console.log(err)
-      console.error('No entiendo como sucedio esto')
+    } catch (err) {
+      console.log(err);
+      console.error("No entiendo como sucedio esto");
     }
   };
 
@@ -111,7 +113,7 @@ function InicioCaja() {
             {nombreUsuario}
           </h1>
           <p className="text-2xl">{fechaHora}</p>
-          <p className="text-xl mt-4">¿Desea inicializar la caja    ?</p>
+          <p className="text-xl mt-4">¿Desea inicializar la caja ?</p>
           <button
             onClick={handleAbrirFormulario}
             className="mt-4 bg-NonPhotoblue font-bold px-14 py-3 rounded-md shadow-lg hover:bg-Cerulean hover:text-white hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
@@ -151,6 +153,19 @@ function InicioCaja() {
           value={nombreUsuario}
           readOnly
         />
+
+        <p className="mt-2">
+          <strong>Turno:</strong>
+        </p>
+        <Select
+          value={turno}
+          onChange={(value) => setTurno(value)}
+          style={{ width: "100%" }}
+        >
+          <Option value="Matutino">Matutino</Option>
+          <Option value="Vespertino">Vespertino</Option>
+        </Select>
+
         <p className="mt-2">
           <strong>Dinero de Inicio (Fondo):</strong>
         </p>

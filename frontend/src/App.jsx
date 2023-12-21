@@ -85,6 +85,7 @@ import EditServiceVarios from "./components/Service/EditServiceVarios"
 import PedidosVarios from "./components/Pedidos/PedidosVarios"
 import RecepcionVarios from "./components/EncargoVarios/RecepcionVarios"
 import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
+import Reportes from "./components/Cajas/Reportes"
 
 function App() {
     const { cookies } = useAuth();
@@ -119,6 +120,7 @@ function App() {
                     <Route path="/corteCaja" element={<CorteCaja />} />
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />
+                    <Route path="/reportes" element={<Reportes />} />
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />

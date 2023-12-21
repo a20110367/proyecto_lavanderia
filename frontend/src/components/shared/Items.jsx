@@ -87,7 +87,8 @@ const items1 = [
         getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Caja Chica", "/cajaChica"),        
+        getItem("Caja Chica", "/cajaChica"),    
+        getItem("Reportes", "/reportes"),        
     ]),
     getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
         getItem("Activar Equipos", "/activarEquipos"),
@@ -165,7 +166,8 @@ const items2 = [
         getItem("Historial de cortes", "/historialCaja"),
         getItem("Retiro de caja", "/retiro"),
         getItem("Reembolsos", "/reembolso"),
-        getItem("Caja Chica", "/cajaChica"),        
+        getItem("Caja Chica", "/cajaChica"),  
+        getItem("Reportes", "/reportes"),           
     ]),
         
     getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [

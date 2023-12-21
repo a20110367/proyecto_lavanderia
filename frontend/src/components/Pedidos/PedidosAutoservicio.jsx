@@ -86,27 +86,38 @@ function PedidosAutoservicio() {
   };
 
 
-  const activateMachine = async (machine) => {
+  const turnOnMachine = async (machine) => {
     // GET http://192.168.1.77/relay/0?turn=on&timer=300
     // Harcoded
     // const ip = '192.168.1.77'
     // const time = '30'
 
-    console.log(machine)
-
     const ip = machine.ipAddress
     if (ip === null) {
       console.warn('No se encontro IP del equipo')
     } else {
-      const time = machine.cicleTime
-      const res = api.get(`http://${ip}/relay/0?turn=on&timer=${time * 60}`)
-      res.status != 404 ?
-        (
-          console.log(res)
-        )
-        : (
-          console.warn('El equipo Shelly esta desconectado')
-        )
+      try {
+        const time = machine.cicleTime
+        const res = await api.get(`http://${ip}/relay/0?turn=on&timer=${time * 60}`)
+        console.log(res)
+      } catch (err) {
+        console.warn('El equipo Shelly esta desconectado')
+        // console.error(err)
+      }
+    }
+  }
+
+  const turnOffMachine = async (machine) => {
+    const ip = machine.ipAddress
+    if (ip === null) {
+      console.warn('No se encontro IP del equipo')
+    } else {
+      try {
+        const res = await api.get(`http://${ip}/relay/0?turn=off`)
+        console.log(res)
+      } catch (err) {
+        console.warn('El equipo Shelly esta desconectado')
+      }
     }
   }
 
@@ -169,7 +180,7 @@ function PedidosAutoservicio() {
         freeForUse: false,
       });
 
-      activateMachine(selectedMachine)
+      turnOnMachine(selectedMachine)
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
@@ -220,6 +231,8 @@ function PedidosAutoservicio() {
       await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
         freeForUse: true,
       });
+
+      turnOffMachine(selectedMachine.machine)
 
       // Actualizar localmente el estado de la máquina a "freeForUse"
       const updatedMachines = availableMachines.map((machine) =>

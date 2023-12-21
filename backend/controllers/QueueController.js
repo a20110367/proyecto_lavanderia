@@ -299,6 +299,15 @@ export const getSelfServiceQueueById = async (req, res) => {
         const response = await prisma.selfServiceQueue.findUnique({
             where: {
                 id_serviceEvent: Number(req.params.id)
+            },
+            include: {
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             }
         });
         res.status(200).json(response);

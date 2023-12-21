@@ -21,7 +21,8 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado"];
+  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+
 
   useEffect(() => {
     const getServiceById = async () => {
@@ -61,10 +62,14 @@ function EditServiceLavanderia() {
       return;
     }
 
-    if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
-      return;
-    }
+    const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
+    description.toLowerCase().includes(keyword)
+  );
+
+  if (hasForbiddenKeyword) {
+    setErrMsg("Error, no puedes añadir servicios Varios.");
+    return;
+  }
 
     try {
       await api.patch(`/servicesUpdateLaundry/${id}`, {

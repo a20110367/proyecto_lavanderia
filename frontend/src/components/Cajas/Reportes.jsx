@@ -11,6 +11,9 @@ import api from "../../api/api";
 function Reportes() {
   const [Cortes, setCortes] = useState([]);
   const [filteredCortes, setFilteredCortes] = useState([]);
+  const [totalCajaFechasSeleccionadas, setTotalCajaFechasSeleccionadas] =
+    useState(0);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [dateRange, setDateRange] = useState([null]);
@@ -62,11 +65,7 @@ function Reportes() {
       doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
-      doc.text(
-        `Fecha: ${formatDate(selectedCorte.cashCutD)}`,
-        10,
-        50
-      );
+      doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
       doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
 
       // Separación
@@ -153,13 +152,56 @@ function Reportes() {
         filtered.push(endCorte);
       }
 
+      const totalSelectedDate = filtered.reduce(
+        (acc, corte) => acc + (corte.total ? corte.total : 0),
+        0
+      );
+      setTotalCajaFechasSeleccionadas(totalSelectedDate);
+
       setFilteredCortes(filtered);
       setDatesSelected(true);
       setCurrentPage(0);
     } else {
+      setDatesSelected(false);
       if (!datesSelected) {
         setFilteredCortes(Cortes);
       }
+    }
+  };
+
+  const handleGenerarPDF = () => {
+    if (filteredCortes.length > 0 && dateRange.length === 2) {
+      const doc = new jsPDF();
+      doc.text(`Total de Caja de las Fechas Seleccionadas`, 10, 10);
+
+      // Obtener las fechas seleccionadas en formato legible
+      const startDate = formatDate(dateRange[0].toDate());
+      const endDate = formatDate(dateRange[1].toDate());
+
+      doc.text(`Fechas seleccionadas: ${startDate} - ${endDate}`, 10, 20);
+
+      doc.text(`Fechas:`, 10, 30);
+
+      let posY = 40;
+      filteredCortes.forEach((corte) => {
+        const corteDate = formatDate(corte.cashCutD);
+        const totalCorte = corte.total ? corte.total : 0;
+
+        doc.text(`${corteDate}`, 10, posY);
+        doc.text(`Total del reporte: $${totalCorte}`, 80, posY);
+        posY += 10;
+      });
+
+      // Calcular y mostrar el total de la suma de los totales individuales
+      const totalSuma = filteredCortes.reduce(
+        (acc, corte) => acc + (corte.total ? corte.total : 0),
+        0
+      );
+      posY += 10;
+      doc.text(`Total de la suma: $${totalSuma}`, 10, posY);
+      const formattedStartDate = startDate.split("/").join("-");
+      const formattedEndDate = endDate.split("/").join("-");
+      doc.save(`Reporte de ${formattedStartDate} - ${formattedEndDate}.pdf`);
     }
   };
 
@@ -190,6 +232,15 @@ function Reportes() {
               <button className="btn-search" onClick={handleFiltroPorFecha}>
                 Buscar
               </button>
+              {datesSelected && (
+                <button
+                  key="print"
+                  onClick={handleGenerarPDF}
+                  className="btn-search text-white ml-2"
+                >
+                  Imprimir Reporte
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -199,11 +250,26 @@ function Reportes() {
               <tr>
                 <th>No. Corte</th>
                 <th>FECHA</th>
-                <th>DINERO <br />EN FONDO</th>
-                <th>INGRESO <br />EN EFECTIVO</th>
-                <th>INGRESO <br />EN TARJETA</th>
-                <th>RETIROS <br />TOTALES</th>
-                <th>FINAL <br />TOTAL CAJA</th>
+                <th>
+                  DINERO <br />
+                  EN FONDO
+                </th>
+                <th>
+                  INGRESO <br />
+                  EN EFECTIVO
+                </th>
+                <th>
+                  INGRESO <br />
+                  EN TARJETA
+                </th>
+                <th>
+                  RETIROS <br />
+                  TOTALES
+                </th>
+                <th>
+                  FINAL <br />
+                  TOTAL CAJA
+                </th>
                 <th>USUARIO</th>
                 <th>TURNO</th>
                 <th></th>
@@ -220,9 +286,7 @@ function Reportes() {
                 .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id_cashCut}>
                     <td className="">{corte.id_cashCut}</td>
-                    <td className="">
-                      {formatDate(corte.cashCutD)}
-                    </td>
+                    <td className="">{formatDate(corte.cashCutD)}</td>
                     <td className="">
                       ${corte.initialCash ? corte.initialCash : 0}
                     </td>

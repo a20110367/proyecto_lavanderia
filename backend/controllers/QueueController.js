@@ -32,6 +32,13 @@ export const getLaundryQueue = async (req, res) => {
                 },
                 WashDetail: true,
                 DryDetail: true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             },
 
         });
@@ -246,6 +253,7 @@ export const getSelfServiceQueue = async (req, res) => {
 
             include: {
                 SelfService: true,
+
                 serviceOrder: {
                     select: {
                         user: {
@@ -270,6 +278,13 @@ export const getSelfServiceQueue = async (req, res) => {
                 },
                 //WashDetail:true,
                 //DryDetail:true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             },
 
         });
@@ -284,6 +299,15 @@ export const getSelfServiceQueueById = async (req, res) => {
         const response = await prisma.selfServiceQueue.findUnique({
             where: {
                 id_serviceEvent: Number(req.params.id)
+            },
+            include: {
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             }
         });
         res.status(200).json(response);
@@ -837,6 +861,13 @@ export const getOtherQueue = async (req, res) => {
                 },
                 //WashDetail:true,
                 //DryDetail:true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    },
+                },
             },
 
         });

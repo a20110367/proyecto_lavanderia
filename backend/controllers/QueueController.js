@@ -32,6 +32,13 @@ export const getLaundryQueue = async (req, res) => {
                 },
                 WashDetail: true,
                 DryDetail: true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             },
 
         });
@@ -246,6 +253,7 @@ export const getSelfServiceQueue = async (req, res) => {
 
             include: {
                 SelfService: true,
+
                 serviceOrder: {
                     select: {
                         user: {
@@ -270,6 +278,13 @@ export const getSelfServiceQueue = async (req, res) => {
                 },
                 //WashDetail:true,
                 //DryDetail:true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    }
+                },
             },
 
         });
@@ -837,6 +852,13 @@ export const getOtherQueue = async (req, res) => {
                 },
                 //WashDetail:true,
                 //DryDetail:true,
+                machine: {
+                    select: {
+                        ipAddress: true,
+                        id_machine: true,
+                        model: true,
+                    },
+                },
             },
 
         });

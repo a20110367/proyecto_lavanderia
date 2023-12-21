@@ -85,6 +85,35 @@ function PedidosAutoservicio() {
     setFiltro(event.target.value);
   };
 
+
+  const activateMachine = async (machine) => {
+    // GET http://192.168.1.77/relay/0?turn=on&timer=300
+    // Harcoded
+    // const ip = '192.168.1.77'
+    // const time = '30'
+
+    console.log(machine)
+
+    const ip = machine.ipAddress
+    if (ip === null) {
+      console.warn('No se encontro IP del equipo')
+    } else {
+      const time = machine.cicleTime
+      const res = api.get(`http://${ip}/relay/0?turn=on&timer=${time * 60}`)
+      res.status != 404 ?
+        (
+          console.log(res)
+        )
+        : (
+          console.warn('El equipo Shelly esta desconectado')
+        )
+    }
+  }
+
+  const checkStatusMachine = async () => {
+    const res = api.get(`http://${ip}/relay/0`)
+  }
+
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
   };
@@ -139,6 +168,8 @@ function PedidosAutoservicio() {
       await api.patch(`/machines/${selectedMachine.id_machine}`, {
         freeForUse: false,
       });
+
+      activateMachine(selectedMachine)
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
@@ -438,9 +469,8 @@ function PedidosAutoservicio() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

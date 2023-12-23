@@ -164,7 +164,6 @@ function InicioCaja() {
         >
           <Option value="morning">Matutino</Option>
           <Option value="evening">Vespertino</Option>
-          <Option value="nigth">Nocturno</Option>
         </Select>
 
         <p className="mt-2">

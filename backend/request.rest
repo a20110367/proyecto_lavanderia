@@ -48,7 +48,6 @@ POST http://localhost:5000/users
 Content-Type: application/json
 
 {
-   
     "username": "Juan1234",
     "name": "Juan24",
     "firstLN": "Perez4",
@@ -961,3 +960,6 @@ Content-Type: application/json
 
 ###
 PATCH http://localhost:5000/diaryIronControl/1
+
+###
+POST http://localhost:5000/generateTicket

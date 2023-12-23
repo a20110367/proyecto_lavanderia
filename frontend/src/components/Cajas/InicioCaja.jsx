@@ -158,7 +158,7 @@ function InicioCaja() {
           <strong>Turno:</strong>
         </p>
         <Select
-          value={workShift}
+          value={turno}
           onChange={(value) => setTurno(value)}
           style={{ width: "100%" }}
         >

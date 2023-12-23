@@ -391,6 +391,8 @@ model CashCut {
   totalEncargo        Float?
   totalOtros          Float?           @default(0)
   totalPlanchado      Float?
+  totalTintoreria     Float?           @default(0)
+  totalOtrosEncargo   Float?           @default(0)
   totalIncome         Float?
   pettyCashBalance    Float?
   user                User             @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)

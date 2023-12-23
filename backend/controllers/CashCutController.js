@@ -277,6 +277,62 @@ export const calculateCashCut = async (req, res) => {
 
         totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum + 0;
 
+        const totalTintoreria = await prisma.serviceOrder.aggregate({
+
+
+            where: {
+                AND: [
+
+                    {
+                        category: {
+                            categoryDescription: "tintoreria"
+                        },
+                    },
+                    {
+                        id_order: {
+                            in: orders,
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                totalPrice: true,
+            },
+
+        });
+
+        totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+
+        const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
+
+
+            where: {
+                AND: [
+
+                    {
+                        category: {
+                            categoryDescription: "varios"
+                        },
+                    },
+                    {
+                        id_order: {
+                            in: orders,
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                totalPrice: true,
+            },
+
+        });
+
+        totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {
                 id_movement: true,
@@ -302,13 +358,13 @@ export const calculateCashCut = async (req, res) => {
 
 
 
-        const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
+        const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 
         if (totalCashWithdrawal._sum.amount === null)
             totalCashWithdrawal._sum.amount = parseFloat(0.00);
         const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
 
-        console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice);
+        console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
         //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
         const today = new Date().toJSON();
@@ -325,6 +381,8 @@ export const calculateCashCut = async (req, res) => {
             "totalEncargo": totalEncargo._sum.totalPrice,
             "totalAutoservicio": totalAutoservicio._sum.totalPrice,
             "totalPlanchado": totalPlanchado._sum.totalPrice,
+            "totalTintoreria": totalTintoreria._sum.totalPrice,
+            "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
             "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
             "cashCutD": today,
@@ -523,6 +581,62 @@ export const closeCashCut = async (req, res) => {
 
             totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
 
+            const totalTintoreria = await prisma.serviceOrder.aggregate({
+
+
+                where: {
+                    AND: [
+
+                        {
+                            category: {
+                                categoryDescription: "tintoreria"
+                            },
+                        },
+                        {
+                            id_order: {
+                                in: orders,
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    totalPrice: true,
+                },
+
+            });
+
+            totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+
+            const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
+
+
+                where: {
+                    AND: [
+
+                        {
+                            category: {
+                                categoryDescription: "varios"
+                            },
+                        },
+                        {
+                            id_order: {
+                                in: orders,
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    totalPrice: true,
+                },
+
+            });
+
+            totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+
             const lastPettyCash = await prisma.pettyCash.aggregate({
                 _max: {
                     id_movement: true,
@@ -540,13 +654,13 @@ export const closeCashCut = async (req, res) => {
 
             lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
 
-            const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice);
+            const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 
             if (totalCashWithdrawal._sum.amount === null)
                 totalCashWithdrawal._sum.amount = parseFloat(0.00);
             const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
 
-            console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice);
+            console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
             //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
             const today = new Date().toJSON();
@@ -562,6 +676,8 @@ export const closeCashCut = async (req, res) => {
                 "totalEncargo": totalEncargo._sum.totalPrice,
                 "totalAutoservicio": totalAutoservicio._sum.totalPrice,
                 "totalPlanchado": totalPlanchado._sum.totalPrice,
+                "totalTintoreria": totalTintoreria._sum.totalPrice,
+                "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
                 "totalOtros": otherCategorys,
                 "ordersPayed": orders.length,
                 "cashCutStatus": "closed",
@@ -587,6 +703,8 @@ export const closeCashCut = async (req, res) => {
                     "totalEncargo": totalEncargo._sum.totalPrice,
                     "totalAutoservicio": totalAutoservicio._sum.totalPrice,
                     "totalPlanchado": totalPlanchado._sum.totalPrice,
+                    "totalTintoreria": totalTintoreria._sum.totalPrice,
+                    "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
                     "totalOtros": otherCategorys,
                     "ordersPayed": orders.length,
                     "cashCutStatus": "closed",

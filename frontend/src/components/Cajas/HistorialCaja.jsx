@@ -62,18 +62,16 @@ function HistorialCaja() {
       doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
       doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
-      doc.text(
-        `Fecha: ${formatDate(selectedCorte.cashCutD)}`,
-        10,
-        50
-      );
+      doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
       doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
 
       // Separación
       doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+
       selectedCorte.totalAutoservicio
         ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
         : doc.text("Autoservicio: $0", 10, 90);
+
       selectedCorte.totalEncargo
         ? doc.text(
             `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
@@ -81,31 +79,45 @@ function HistorialCaja() {
             100
           )
         : doc.text("Lavado por Encargo: $0", 10, 100);
+
       selectedCorte.totalPlanchado
         ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
         : doc.text("Planchado: $0", 10, 110);
+
+      selectedCorte.totalTintoreria
+        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 120)
+        : doc.text("Tintorería: $0", 10, 120);
+
+      selectedCorte.totalOtrosEncargo
+        ? doc.text(
+            `Encargo Varios: $${selectedCorte.totalOtrosEncargo}`,
+            10,
+            130
+          )
+        : doc.text("Encargo Varios: $0", 10, 130);
+
       doc.text(
         `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
         10,
-        120
+        140
       );
       selectedCorte.totalCash
-        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 130)
-        : doc.text("Ingreso en Efectivo: $0", 10, 130);
+        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 160)
+        : doc.text("Ingreso en Efectivo: $0", 10, 160);
 
       // Separación
       selectedCorte.totalCredit
-        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 150)
-        : doc.text("Ingreso en Tarjeta: $0", 10, 150);
+        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 170)
+        : doc.text("Ingreso en Tarjeta: $0", 10, 170);
 
       selectedCorte.totalCashWithdrawal
         ? doc.text(
             `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
             10,
-            160
+            180
           )
-        : doc.text("Retiros Totales: $0", 10, 160);
-      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 170);
+        : doc.text("Retiros Totales: $0", 10, 180);
+      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
 
       doc.save("detalle_corte.pdf");
     }
@@ -199,11 +211,26 @@ function HistorialCaja() {
               <tr>
                 <th>No. Corte</th>
                 <th>FECHA</th>
-                <th>DINERO <br />EN FONDO</th>
-                <th>INGRESO <br />EN EFECTIVO</th>
-                <th>INGRESO <br />EN TARJETA</th>
-                <th>RETIROS <br />TOTALES</th>
-                <th>FINAL <br />TOTAL CAJA</th>
+                <th>
+                  DINERO <br />
+                  EN FONDO
+                </th>
+                <th>
+                  INGRESO <br />
+                  EN EFECTIVO
+                </th>
+                <th>
+                  INGRESO <br />
+                  EN TARJETA
+                </th>
+                <th>
+                  RETIROS <br />
+                  TOTALES
+                </th>
+                <th>
+                  FINAL <br />
+                  TOTAL CAJA
+                </th>
                 <th>USUARIO</th>
                 <th>TURNO</th>
                 <th></th>
@@ -220,9 +247,7 @@ function HistorialCaja() {
                 .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id_cashCut}>
                     <td className="">{corte.id_cashCut}</td>
-                    <td className="">
-                      {formatDate(corte.cashCutD)}
-                    </td>
+                    <td className="">{formatDate(corte.cashCutD)}</td>
                     <td className="">
                       ${corte.initialCash ? corte.initialCash : 0}
                     </td>
@@ -343,6 +368,18 @@ function HistorialCaja() {
                   <span className="font-bold">Planchado:</span> $
                   {selectedCorte.totalPlanchado
                     ? selectedCorte.totalPlanchado
+                    : 0}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Tintorería:</span> $
+                  {selectedCorte.totalTintoreria
+                    ? selectedCorte.totalTintoreria
+                    : 0}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Encargo Varios:</span> $
+                  {selectedCorte.totalOtrosEncargo
+                    ? selectedCorte.totalOtrosEncargo
                     : 0}
                 </p>
                 <p className="text-lg">

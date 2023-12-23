@@ -1,7 +1,7 @@
 import React from "react";
+import IMAGES from "../images/images";
 import { useState } from "react";
 import { useAuth } from "../hooks/auth/auth";
-
 
 export default function Login() {
 
@@ -19,7 +19,6 @@ export default function Login() {
       setErr('Rellene los campos vacios')
     }
   }
-  
 
   return (
     // <div className="responsive-bg">
@@ -85,7 +84,7 @@ export default function Login() {
           <path className="st6" d="M390.8 975.7v-48.1h-63.5v-48.3h-63.5V831h-63.4v193h253.9v-48.3z"></path>
         </svg>
       </div>
-      <div className="bg-white w-1/2 rounded-lg shadow-lg p-6">
+      <div className="bg-white w-1/2">
         <h1 className="title">Bienvenido</h1>
         <p className="subtitle text-gray-500 mt-4">
           Bienvenido de vuelta! Por favor ingrese sus credenciales
@@ -112,22 +111,27 @@ export default function Login() {
                 value={pass}
               />
             </div>
-            <div className="mt-8 flex justify-between items-center">
-              <div>
+            <p className="instructions font-black">{err}</p>
+            <div className="mt-3 grid grid-cols-2 grid-rows-2 justify-between items-center">
+              {/* <div>
                 <input type={"checkbox"} id="recordar" />
                 <label className="ml-2 font-medium text-base" htmlFor="recordar">
                   Recordarme por 12 Horas
                 </label>
-              </div>
+              </div> */}
               <button className="link">
                 Olvidaste tu Contraseña
               </button>
-            </div>
-            <div className="mt-8 flex flex-col gap-y-4">
-              <button type="submit" className="btn-login">
-                Iniciar sesion
-              </button>
-              <p className="instructions font-black">{err}</p>
+              <img
+                src={IMAGES.caprelogo}
+                alt={`LOGO DE LA LAVANDERIA`}
+                className="w-40 row-span-2"
+              />
+              <div className="flex items-center justify-center">
+                <button type="submit" className="btn-login w-3/4">
+                  Iniciar sesion
+                </button>
+              </div>
             </div>
           </form>
         </div>

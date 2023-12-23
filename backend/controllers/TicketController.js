@@ -18,8 +18,11 @@ const execute = async () => {
 export const generateTicket = async () => {
 
     try {
+        printer.println('PROBANDO LINE')
+        // printer.cut()
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGray.png');
         // printer.print("Hello World");                               // Append text
-        printer.println("Hello World");                             // Append text with new line
+        // printer.println("Hello World");                             // Append text with new line
         printer.println('PROBANDO LINE')
         // printer.bold(true);                                         // Set text bold
         // printer.invert(true);                                       // Background/text color inversion
@@ -28,9 +31,9 @@ export const generateTicket = async () => {
         printer.drawLine();                                         // Draws a line
         // printer.newLine();                                          // Inserts break line 
 
-        printer.alignCenter();                                      // Align text to center
-        printer.alignLeft();                                        // Align text to left
-        printer.alignRight();                                       // Align text to right
+        // printer.alignCenter();                                      // Align text to center
+        // printer.alignLeft();                                        // Align text to left
+        // printer.alignRight();                                       // Align text to right
 
         // printer.setTypeFontA();                                     // Set font type to A (default)
         // printer.setTypeFontB();                                     // Set font type to B
@@ -41,8 +44,8 @@ export const generateTicket = async () => {
         // printer.setTextQuadArea();                                  // Set text to quad area
         // printer.setTextSize(7, 7);                                   // Set text height (0-7) and width (0-7)
 
-        printer.leftRight("Left", "Right");                         // Prints text left and right
-        printer.table(["One", "Two", "Three"]);                     // Prints table equally
+        // printer.leftRight("Left", "Right");                         // Prints text left and right
+        // printer.table(["One", "Two", "Three"]);                     // Prints table equally
         // printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
         //     { text: "Left", align: "LEFT", width: 0.5 },
         //     { text: "Center", align: "CENTER", width: 0.25, bold: true },
@@ -59,13 +62,13 @@ export const generateTicket = async () => {
         // printer.setBuffer(newBuffer);                                 // Set the printer buffer to a copy of newBuffer
         // printer.getWidth();
 
-        printer.printQR("Hola, Soy Homelo Pino", {
-            cellSize: 6,             // 1 - 8
-            correction: 'M',         // L(7%), M(15%), Q(25%), H(30%)
-            model: 2                 // 1 - Model 1
-                                     // 2 - Model 2 (standard)
-                                     // 3 - Micro QR
-        });
+        // printer.printQR("Hola, Soy Homelo Pino", {
+        //     cellSize: 6,             // 1 - 8
+        //     correction: 'M',         // L(7%), M(15%), Q(25%), H(30%)
+        //     model: 2                 // 1 - Model 1
+        //                              // 2 - Model 2 (standard)
+        //                              // 3 - Micro QR
+        // });
 
         // for(let i = 0 ; i < 5 ; i++){
         //     printer.print("SACAME LA VERGA LUPE " + process.env.INTERFACE);

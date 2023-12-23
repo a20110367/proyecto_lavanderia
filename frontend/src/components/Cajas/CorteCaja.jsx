@@ -13,6 +13,9 @@ function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
+  const [workShift, setWorkShift] = useState(
+    moment().hours() < 12 ? "moringn" : "evening"
+  );
   const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
     useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
@@ -22,7 +25,7 @@ function CorteCaja() {
   const navigate = useNavigate();
 
   const { cookies } = useAuth();
-  const [turno, setTurno] = useState("Matutino");
+
   const [initialCash, setInitialCash] = useState(
     localStorage.getItem("initialCash")
   );
@@ -90,7 +93,8 @@ function CorteCaja() {
       const now = new Date();
       const horaActual = now.getHours();
 
-      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+
+      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
 
@@ -198,7 +202,7 @@ function CorteCaja() {
       const now = new Date();
       const horaActual = now.getHours();
 
-      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
@@ -520,7 +524,7 @@ function CorteCaja() {
               <div className="w-1/2">
                 <p className="text-lg">
                   <span className="font-bold">ID:</span>{" "}
-                  {localStorage.getItem("lastCashCut").id}
+                  {selectedCorte.id_cashCut}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Usuario:</span> {cookies.username}
@@ -531,9 +535,7 @@ function CorteCaja() {
                     ? "Matutino"
                     : selectedCorte.workShift === "evening"
                     ? "Vespertino"
-                    : selectedCorte.workShift === "night"
-                    ? "Nocturno"
-                    : ""}
+                    : ""} {console.log(selectedCorte.workShift)}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}

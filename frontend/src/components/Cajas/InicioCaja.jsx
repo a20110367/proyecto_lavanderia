@@ -10,7 +10,10 @@ function InicioCaja() {
   const [visible, setVisible] = useState(false);
   const { cookies } = useAuth();
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
-  const [turno, setTurno] = useState(moment().hours() < 12 ? 'Matutino' : 'Vespertino');
+
+  const [workShift, setWorkShift] = useState(
+    moment().hours() < 12 ? "moringn" : "evening"
+  );
   const [dineroInicio, setDineroInicio] = useState(0);
   const [fechaHora, setFechaHora] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -18,6 +21,15 @@ function InicioCaja() {
   const [cajaIniciada, setCajaIniciada] = useState(false);
   const dateD = new Date();
   const dateT = new Date();
+
+  useEffect(() => {
+    // Verificar la hora actual al montar el componente y actualizar workShift
+    setWorkShift(moment().hours() < 12 ? "morning" : "evening");
+  }, []);
+
+  const handleWorkShiftChange = (value) => {
+    setWorkShift(value);
+  };
 
   useEffect(() => {
     const formattedDate = moment().format("DD/MM/yyyy HH:mm");
@@ -50,8 +62,9 @@ function InicioCaja() {
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON(),
-        workShift: workShift
+        workShift: workShift,
       });
+      console.log(workShift);
       localStorage.setItem("cashCutId", response.data.id_cashCut);
       localStorage.setItem("initialCash", response.data.initialCash);
       localStorage.removeItem("lastCashCut");
@@ -158,14 +171,13 @@ function InicioCaja() {
           <strong>Turno:</strong>
         </p>
         <Select
-          value={turno}
-          onChange={(value) => setTurno(value)}
+          value={workShift}
+          onChange={handleWorkShiftChange}
           style={{ width: "100%" }}
         >
           <Option value="morning">Matutino</Option>
           <Option value="evening">Vespertino</Option>
         </Select>
-
         <p className="mt-2">
           <strong>Dinero de Inicio (Fondo):</strong>
         </p>

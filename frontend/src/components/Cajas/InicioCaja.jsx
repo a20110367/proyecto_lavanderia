@@ -50,7 +50,7 @@ function InicioCaja() {
         fk_user: parseInt(cookies.token),
         cashCutD: dateD.toJSON(),
         cashCutT: dateT.toJSON(),
-        turno: turno
+        workShift: workShift
       });
       localStorage.setItem("cashCutId", response.data.id_cashCut);
       localStorage.setItem("initialCash", response.data.initialCash);
@@ -158,7 +158,7 @@ function InicioCaja() {
           <strong>Turno:</strong>
         </p>
         <Select
-          value={turno}
+          value={workShift}
           onChange={(value) => setTurno(value)}
           style={{ width: "100%" }}
         >

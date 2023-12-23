@@ -395,6 +395,7 @@ model CashCut {
   totalOtrosEncargo   Float?           @default(0)
   totalIncome         Float?
   pettyCashBalance    Float?
+  workShift           WorkShift @default(morning)
   user                User             @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   cashWithdrawal      CashWithdrawal[]
   payment             Payment[]
@@ -489,4 +490,10 @@ enum CashWithdrawalType {
 enum PettyCashType {
   withdrawal
   deposit
+}
+
+enum WorkShift {
+  morning
+  evening
+  nigth
 }

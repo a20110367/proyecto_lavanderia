@@ -64,7 +64,7 @@ function Reportes() {
       doc.text(`Detalles del Corte`, 10, 10);
       doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
-      doc.text(`Turno: ${selectedCorte.turno}`, 10, 40);
+      doc.text(`Turno: ${selectedCorte.workShift}`, 10, 40);
       doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
       doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
 
@@ -320,7 +320,7 @@ function Reportes() {
                     </td>
                     <td className="">${corte.total ? corte.total : 0}</td>
                     <td className="">{corte.user.name}</td>
-                    <td className="">{corte.turno}</td>
+                    <td className="">{corte.workShift}</td>
                     <td className="min-w-[60px]">
                       <button
                         className="btn-primary mt-1 mb-1"
@@ -373,7 +373,7 @@ function Reportes() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Turno:</span>{" "}
-                    {selectedCorte.turno}
+                    {selectedCorte.workShift}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}

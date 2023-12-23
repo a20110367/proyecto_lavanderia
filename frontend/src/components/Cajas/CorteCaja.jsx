@@ -106,7 +106,7 @@ function CorteCaja() {
       pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Turno: ${nuevoCorte.workShift}`, 10, 40);
       pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
       pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
       //Separación
@@ -203,7 +203,7 @@ function CorteCaja() {
       pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Turno: ${nuevoCorte.workShifto}`, 10, 40);
       pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
       initialCash
         ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
@@ -260,7 +260,7 @@ function CorteCaja() {
       pdf.text(`Detalles del Corte`, 10, 10);
       pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(`Turno: ${selectedCorte.workShift}`, 10, 40);
       pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
       initialCash
         ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
@@ -496,7 +496,7 @@ function CorteCaja() {
                   <span className="font-bold">Usuario:</span> {cookies.username}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Turno:</span> {turno}
+                  <span className="font-bold">Turno:</span> {selectedCorte.workShift}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}

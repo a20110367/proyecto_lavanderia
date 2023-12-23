@@ -48,7 +48,7 @@ export default function PuntoVenta() {
   const [isExpress, setIsExpress] = useState(false);
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState("");
   const [pieces, setPieces] = useState(0);
   const [numberOfPieces, setNumberOfPieces] = useState(
     localStorage.getItem("numberOfPieces")
@@ -213,10 +213,18 @@ export default function PuntoVenta() {
       .map((item) => {
         if (item.id_service === serviceId) {
           if (item.quantity > 1) {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : categoryId === 4 ? setPieces(pieces - item.pieces) : "";
+            categoryId === 3
+              ? setPieces(pieces - item.pieces)
+              : categoryId === 4
+              ? setPieces(pieces - item.pieces)
+              : "";
             return { ...item, quantity: item.quantity - 1 };
           } else {
-            categoryId === 3 ? setPieces(pieces - item.pieces) : categoryId === 4 ? setPieces(pieces - item.pieces) : "";
+            categoryId === 3
+              ? setPieces(pieces - item.pieces)
+              : categoryId === 4
+              ? setPieces(pieces - item.pieces)
+              : "";
             return null;
           }
         } else {
@@ -288,13 +296,13 @@ export default function PuntoVenta() {
     const totalWithDiscount =
       payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
 
-    let ironPieces = null
-    let drycleanPieces = null
+    let ironPieces = null;
+    let drycleanPieces = null;
 
-    if(categoryId === 3){
-      ironPieces = pieces
-    }else if(categoryId === 4){
-      drycleanPieces = pieces
+    if (categoryId === 3) {
+      ironPieces = pieces;
+    } else if (categoryId === 4) {
+      drycleanPieces = pieces;
     }
 
     try {
@@ -393,52 +401,52 @@ export default function PuntoVenta() {
   };
 
   const filteredServices = shouldShowAllServices
-  ? data
-  : data.filter((service) => {
-      // Aquí aplicamos las condiciones para filtrar los servicios
-      if (
-        serviceType === "encargo" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado") &&
-        !service.description.toLowerCase().includes("lavado edredon")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "planchado" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "tintoreria" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "varios" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("tintoreria") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "autoservicio" &&
-        service.description.toLowerCase().includes("autoservicio")
-      ) {
-        return true;
-      }
-      return false;
-    });
-
+    ? data
+    : data.filter((service) => {
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "encargo" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado") &&
+          !service.description.toLowerCase().includes("tintoreria") &&
+          !service.description.toLowerCase().includes("varios") 
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "tintoreria" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "varios" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("tintoreria") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "autoservicio" &&
+          service.description.toLowerCase().includes("autoservicio")
+        ) {
+          return true;
+        }
+        return false;
+      });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -509,6 +517,10 @@ export default function PuntoVenta() {
             ? "Lista de Servicios de Autoservicio"
             : serviceType === "planchado"
             ? "Lista de Servicios de Planchado"
+            : serviceType === "tintoreria"
+            ? "Lista de Servicios de Tintorería"
+            : serviceType === "varios"
+            ? "Lista de Servicios Encargo Varios"
             : "Lista de Servicios"}
         </strong>
       </div>

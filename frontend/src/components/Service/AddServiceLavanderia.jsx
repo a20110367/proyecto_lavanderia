@@ -25,7 +25,8 @@ function AddServiceLavanderia() {
   const navigate = useNavigate();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado"];
+  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,10 +40,14 @@ function AddServiceLavanderia() {
       return;
     }
 
-    if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
-      return;
-    }
+    const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
+    description.toLowerCase().includes(keyword)
+  );
+
+  if (hasForbiddenKeyword) {
+    setErrMsg("Error, no puedes añadir servicios Varios.");
+    return;
+  }
 
     try {
       await api.post("/servicesLaundry", {

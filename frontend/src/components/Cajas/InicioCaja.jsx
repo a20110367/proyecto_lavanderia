@@ -162,8 +162,9 @@ function InicioCaja() {
           onChange={(value) => setTurno(value)}
           style={{ width: "100%" }}
         >
-          <Option value="Matutino">Matutino</Option>
-          <Option value="Vespertino">Vespertino</Option>
+          <Option value="morning">Matutino</Option>
+          <Option value="evening">Vespertino</Option>
+          <Option value="nigth">Nocturno</Option>
         </Select>
 
         <p className="mt-2">

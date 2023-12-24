@@ -1,4 +1,10 @@
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
+import { NumerosALetras } from 'numero-a-letras'
+import moment from 'moment'
+moment.locale('es-mx'); 
+// import 'moment/locale/es.js'         //IMPORTS PARA MAS IDIOMAS PARA MOMENT
+// import 'moment/min/locales.min.js'   //IMPORTS PARA MAS IDIOMAS PARA MOMENT
+// import 'moment/min/locales.js';      //IMPORTS PARA MAS IDIOMAS PARA MOMENT
 
 console.log('PRINTER WORKING IN ' + process.env.INTERFACE)
 
@@ -16,7 +22,29 @@ const execute = async () => {
     console.log("Print done!");
 }
 
-export const generateTicket = async () => {
+export const generateTicket = async (req, res) => {
+
+    const { order } = req.body
+
+    let payMethod = ''
+    let payStatus = ''
+    let payForm = ''
+
+    if(order.payMethod === 'cash'){
+        payMethod = 'EFECTIVO'
+    }else{
+        payMethod = 'TARJETA'
+    }
+    if(order.payStatus === 'paid'){
+        payStatus = 'PAGADO'
+    }else{
+        payStatus = 'NO PAGADO'
+    }
+    if(order.payForm === 'advance'){
+        payForm = 'ANTICIPADO'
+    }else{
+        payForm = 'A LA ENTREGA'
+    }
 
     try {
         // LOGO DEL NEGOCIO
@@ -27,20 +55,20 @@ export const generateTicket = async () => {
         
         printer.setTextDoubleHeight();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: 12+1", align: "LEFT", bold: true},
-            { text: "PAGADO", align: "RIGHT" }
+            { text: "Folio: " + order.id_order, align: "LEFT", bold: true},
+            { text: payStatus, align: "RIGHT" }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "CATEGORIA: ENCARGO", align: "LEFT", bold: true},
-            { text: "TIPO PAGO: ANTICIPADO", align: "RIGHT" }
+            { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true},
+            { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Cajero: isra", align: "LEFT", bold: true},
-            { text: "FORMA PAGO: EFECTIVO", align: "RIGHT" }
+            { text: "Cajero: " + order.casher, align: "LEFT", bold: true},
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
         ]);
 
         printer.drawLine();
@@ -48,19 +76,19 @@ export const generateTicket = async () => {
         // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
         printer.tableCustom([
             { text: "Cant.", align: "LEFT"},
-            { text: "", align: 'LEFT'},
-            { text: "Descripción", align: "CENTER", bold: true },
-            { text: "Precio", align: "RIGHT" }
+            { text: "Descripción", align: "CENTER", bold: true},
+            { text: "Precio", align: "RIGHT"}
         ]);
 
         printer.newLine()
 
-        printer.tableCustom([
-            { text: "2", align: "LEFT"},
-            { text: "X", align: "LEFT", bold: true},
-            { text: "Lavado 8kg", align: "CENTER"},
-            { text: "$90", align: "RIGHT" }
-        ]);
+        order.cart.map(detail => {
+            printer.tableCustom([
+                { text: detail.quantity + '     X', align: "LEFT", bold: true},
+                { text: detail.description, align: "CENTER"},
+                { text: '$' + detail.totalPrice, align: "RIGHT"}
+            ]);
+        }).join('')
 
         printer.alignCenter()
 
@@ -69,23 +97,36 @@ export const generateTicket = async () => {
         // printer.println("Hello World");  
 
         printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $90')
+        printer.println('Total Pagado: $' + order.subtotal)
         printer.bold(false);
-        printer.println('Noventa Pesos 00/100 M.N.')
+        printer.println(n2word(order.subtotal))
 
         printer.alignLeft()
 
         printer.drawLine();
 
-        printer.println('Cliente: Janito')
-        printer.println('F.Recepción: 23/12/2023 SABADO 11:19PM')
+        printer.bold(true)
+        if(order.pieces === 0){
+            printer.println('Cliente: ' + order.client)           
+        }else{
+            printer.tableCustom([                                      
+                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true},
+                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
+            ]);
+        }
+        printer.bold(false)
+
+        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
         printer.bold(true);
-        printer.println('F.Entrega: 24/12/2023 DOMINGO 09:00AM')
+        printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
         printer.bold(false);   
 
         printer.drawLine();
 
-        printer.println('Observaciones Generales: ')
+        printer.bold(true)
+        printer.print('Observaciones Generales: ') 
+        printer.bold(false)
+        printer.println(order.notes)
 
         printer.drawLine();
 
@@ -93,8 +134,8 @@ export const generateTicket = async () => {
         printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
     
         printer.tableCustom([
-            { text: "FECHA: 23/12/2023", align: "LEFT", bold: true},
-            { text: "HORA: 11:19PM", align: "RIGHT"},
+            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true},
+            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT"},
         ]);
 
         // printer.bold(true);                                         // Set text bold
@@ -147,9 +188,28 @@ export const generateTicket = async () => {
         // }
         printer.cut();                                              // Cuts the paper (if printer only supports one mode use this)
         execute()
-
-
-    } catch (error) {
-        console.error("Print failed:", error);
+        res.status(200).json("Print done!");
+    } catch (err) {
+        console.error("Print failed:", err);
+        res.status(400).json({ msg: err.message });
     }
+}
+
+const n2word = (number) => {
+    try {
+        const word = NumerosALetras(number);
+        return word
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+const formatDate = (dateStr) => {
+    const date = moment(dateStr).format("L")
+    return date;
+};
+
+const formatTime = (dateStr) => {
+    const date =  moment(dateStr).format("dddd LT");
+    return date
 }

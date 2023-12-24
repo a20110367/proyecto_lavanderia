@@ -339,10 +339,15 @@ export default function PuntoVenta() {
         scheduledDeliveryDate: deliveryDate.toISOString(),
         scheduledDeliveryTime: deliveryDate.toISOString(),
         pieces: pieces,
+        serviceType: serviceType,
         notes: notes,
         cart: cart,
       };
-      orderTicket(order);
+      // GENERAR EL TICKET
+      await api.post('/generateTicket', {
+        order: order,
+      })
+      // orderTicket(order);
       if (categoryId === 3) {
         if (numberOfPieces + pieces < 130 || isExpress) {
           await api.patch(`/todayIronControl/${lastIronControlId}`, {

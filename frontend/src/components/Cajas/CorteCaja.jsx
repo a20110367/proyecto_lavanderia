@@ -13,6 +13,9 @@ function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
+  const [workShift, setWorkShift] = useState(
+    moment().hours() < 12 ? "moringn" : "evening"
+  );
   const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
     useState(false);
   const [mostrarTabla, setMostrarTabla] = useState(false);
@@ -22,7 +25,7 @@ function CorteCaja() {
   const navigate = useNavigate();
 
   const { cookies } = useAuth();
-  const [turno, setTurno] = useState("Matutino");
+
   const [initialCash, setInitialCash] = useState(
     localStorage.getItem("initialCash")
   );
@@ -90,7 +93,8 @@ function CorteCaja() {
       const now = new Date();
       const horaActual = now.getHours();
 
-      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+
+      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
 
@@ -106,7 +110,17 @@ function CorteCaja() {
       pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(
+        `Turno: ${
+          nuevoCorte.workShift === "morning"
+            ? "Matutino"
+            : nuevoCorte.workShift === "evening"
+            ? "Vespertino"
+            : "Nocturno"
+        }`,
+        10,
+        40
+      );
       pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
       pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
       //Separación
@@ -188,7 +202,7 @@ function CorteCaja() {
       const now = new Date();
       const horaActual = now.getHours();
 
-      setTurno(horaActual < 12 ? "Matutino" : "Vespertino");
+      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/calculateCashCut/${cashCutId}`);
 
@@ -203,7 +217,17 @@ function CorteCaja() {
       pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(
+        `Turno: ${
+          nuevoCorte.workShift === "morning"
+            ? "Matutino"
+            : nuevoCorte.workShift === "evening"
+            ? "Vespertino"
+            : "Nocturno"
+        }`,
+        10,
+        40
+      );
       pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
       initialCash
         ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
@@ -260,7 +284,17 @@ function CorteCaja() {
       pdf.text(`Detalles del Corte`, 10, 10);
       pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(`Turno: ${turno}`, 10, 40);
+      pdf.text(
+        `Turno: ${
+          selectedCorte.workShift === "morning"
+            ? "Matutino"
+            : selectedCorte.workShift === "evening"
+            ? "Vespertino"
+            : "Nocturno"
+        }`,
+        10,
+        40
+      );
       pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
       initialCash
         ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
@@ -490,13 +524,18 @@ function CorteCaja() {
               <div className="w-1/2">
                 <p className="text-lg">
                   <span className="font-bold">ID:</span>{" "}
-                  {localStorage.getItem("lastCashCut").id}
+                  {selectedCorte.id_cashCut}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Usuario:</span> {cookies.username}
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Turno:</span> {turno}
+                  <span className="font-bold">Turno:</span>{" "}
+                  {selectedCorte.workShift === "morning"
+                    ? "Matutino"
+                    : selectedCorte.workShift === "evening"
+                    ? "Vespertino"
+                    : ""} {console.log(selectedCorte.workShift)}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}

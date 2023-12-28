@@ -197,6 +197,34 @@ function CajaChica() {
       setMotivoError("");
     }
 
+    const saldoTotal = retiros.reduce((total, movimiento) => {
+      if (movimiento.pettyCashType === "deposit") {
+        return total + movimiento.amount;
+      } else {
+        return total - movimiento.amount;
+      }
+    }, 0);
+
+    if (saldoTotal === 0) {
+      Swal.fire({
+        icon: "warning",
+        title: "El saldo de la caja es $0",
+        text: "No puedes realizar retiros cuando el saldo es $0",
+        confirmButtonColor: "#034078",
+      });
+      return;
+    }
+
+    if (parseFloat(monto) > saldoTotal) {
+      Swal.fire({
+        icon: "warning",
+        title: "El monto del retiro excede el saldo total de la caja",
+        text: "Ingrese un monto menor o igual al saldo disponible",
+        confirmButtonColor: "#034078",
+      });
+      return;
+    }
+
     if (isValid) {
       try {
         const date = moment().format();
@@ -227,21 +255,21 @@ function CajaChica() {
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
 
-        await api.post("/sendMessage", {
-          id_order: nuevoRetiro.id_movement,
-          name: "Rafa",
-          email: "a20110341@ceti.mx",
-          tel: "5213313839768",
-          message: `Se ha realizado un RETIRO en la CAJA CHICA 
-          Monto: ${monto}, 
-          Motivo: ${motivo}. 
-          Cajero: ${cookies.username} 
-          Fecha: ${formatDate(date)}`,
-          subject: "Se ha realizado un RETIRO en la CAJA CHICA",
-          text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
-          warning: true,
-        });
-        console.log("NOTIFICACIÓN ENVIADA...");
+        // await api.post("/sendMessage", {
+        //   id_order: nuevoRetiro.id_movement,
+        //   name: "Rafa",
+        //   email: "a20110341@ceti.mx",
+        //   tel: "5213313839768",
+        //   message: `Se ha realizado un RETIRO en la CAJA CHICA
+        //   Monto: ${monto},
+        //   Motivo: ${motivo}.
+        //   Cajero: ${cookies.username}
+        //   Fecha: ${formatDate(date)}`,
+        //   subject: "Se ha realizado un RETIRO en la CAJA CHICA",
+        //   text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
+        //   warning: true,
+        // });
+        // console.log("NOTIFICACIÓN ENVIADA...");
       } catch (err) {
         console.log(err);
       }
@@ -353,12 +381,12 @@ function CajaChica() {
                 >
                   {pettyCash.pettyCashType === "withdrawal" ? (
                     <>
-                      <FaArrowTrendDown className="inline-block mr-1" />
+                      <FaArrowTrendDown className="inline-block mr-1" />$
                       {pettyCash.balance}
                     </>
                   ) : (
                     <>
-                      <FaArrowTrendUp className="inline-block mr-1" />
+                      <FaArrowTrendUp className="inline-block mr-1" />$
                       {pettyCash.balance}
                     </>
                   )}

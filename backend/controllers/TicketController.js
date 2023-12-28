@@ -17,11 +17,6 @@ let printer = new ThermalPrinter({
     breakLine: BreakLine.WORD,
 });
 
-const execute = async () => {
-    let execute = printer.execute()
-    console.log("Print done!");
-}
-
 export const generateTicket = async (req, res) => {
 
     const { order } = req.body
@@ -138,6 +133,10 @@ export const generateTicket = async (req, res) => {
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT"},
         ]);
 
+        printer.cut();       
+        let execute = printer.execute()
+        console.log("Print done!");
+
         // printer.bold(true);                                         // Set text bold
         // printer.invert(true);                                       // Background/text color inversion
         // printer.underline(true);                                    // Underline text (1 dot thickness)
@@ -185,9 +184,7 @@ export const generateTicket = async (req, res) => {
 
         // for(let i = 0 ; i < 5 ; i++){
         //     printer.print("SACAME LA VERGA LUPE " + process.env.INTERFACE);
-        // }
-        printer.cut();                                              // Cuts the paper (if printer only supports one mode use this)
-        execute()
+        // }                                       // Cuts the paper (if printer only supports one mode use this)
         res.status(200).json("Print done!");
     } catch (err) {
         console.error("Print failed:", err);

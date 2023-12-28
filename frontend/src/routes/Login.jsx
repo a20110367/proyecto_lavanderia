@@ -128,7 +128,7 @@ export default function Login() {
                 className="w-40 row-span-2"
               />
               <div className="flex items-center justify-center">
-                <button type="submit" className="btn-login w-3/4">
+                <button type="submit" className="btn-login w-3/4 text-base " >
                   Iniciar sesion
                 </button>
               </div>

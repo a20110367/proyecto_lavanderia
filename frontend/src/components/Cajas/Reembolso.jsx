@@ -153,6 +153,9 @@ function Reembolso() {
 
   const handleClose = () => {
     setVisible(false);
+    setMonto("");
+    setMotivo("");
+    setNumeroPedido("")
   };
 
   return (

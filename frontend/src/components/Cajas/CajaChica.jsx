@@ -278,10 +278,14 @@ function CajaChica() {
 
   const handleClose = () => {
     setVisible(false);
+    setMonto("");
+    setMotivo("");
   };
 
   const handleAbonoClose = () => {
     setVisibleAbono(false);
+    setMonto("");
+    setMotivo("");
   };
 
   return (

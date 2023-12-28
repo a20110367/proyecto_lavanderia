@@ -133,6 +133,8 @@ function Retiro() {
 
   const handleClose = () => {
     setVisible(false);
+    setMonto("");
+    setMotivo("");
   };
 
   return (

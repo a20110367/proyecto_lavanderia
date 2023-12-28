@@ -121,33 +121,63 @@ function CorteCaja() {
         10,
         40
       );
-      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
-      pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60);
-      //Separación
+
+      initialCash
+        ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
+        : pdf.text("Dinero en Fondo: $0", 10, 60);
+
+      // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
       nuevoCorte.totalAutoservicio
         ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
         : pdf.text("Autoservicio: $0", 10, 90);
-      nuevoCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        nuevoCorte.totalEncargo
+        ? pdf.text(
+            `Lavado por Encargo: $${nuevoCorte.totalEncargo}`,
+            10,
+            100
+          )
         : pdf.text("Lavado por Encargo: $0", 10, 100);
-      nuevoCorte.totalPlanchado
+        nuevoCorte.totalPlanchado
         ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
         : pdf.text("Planchado: $0", 10, 110);
-      pdf.text(
-        `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-        10,
-        120
-      );
+
+        nuevoCorte.totalTintoreria
+        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 120)
+        : pdf.text("Tintorería: $0", 10, 120);
+
+        nuevoCorte.totalOtrosEncargo
+        ? pdf.text(
+            `Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`,
+            10,
+            130
+          )
+        : pdf.text("Encargo Varios: $0", 10, 130);
+
+        nuevoCorte.totalIncome
+        ? pdf.text(
+            `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+            10,
+            140
+          )
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 140);
+      // Separación
       nuevoCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 130)
-        : pdf.text("Ingreso en Efectivo: $0", 10, 130);
-      nuevoCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
-        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
-      //Separación
-      pdf.text(`Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`, 10, 160);
-      pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170);
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 160)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 160);
+        nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 170)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 170);
+        nuevoCorte.totalCashWithdrawal
+        ? pdf.text(
+            `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
+            10,
+            180
+          )
+        : pdf.text("Retiros Totales: $0", 10, 180);
+        nuevoCorte.total
+        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 190)
+        : pdf.text("Final Total en Caja: $0", 10, 190);
       pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
       setLastCashCut(nuevoCorte);
@@ -228,46 +258,63 @@ function CorteCaja() {
         10,
         40
       );
-      pdf.text(`Fecha: ${moment().format("DD/MM/YYYY")}`, 10, 50);
+      pdf.text(`Fecha: ${formatDate(nuevoCorte.cashCutD)}`, 10, 50);
       initialCash
         ? pdf.text(`Dinero en Fondo: $${initialCash}`, 10, 60)
-        : pdf.text("Dinero en Fondo: $0", 10, 90);
+        : pdf.text("Dinero en Fondo: $0", 10, 60);
 
       // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 80);
       nuevoCorte.totalAutoservicio
         ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 90)
         : pdf.text("Autoservicio: $0", 10, 90);
-      nuevoCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 100)
+        nuevoCorte.totalEncargo
+        ? pdf.text(
+            `Lavado por Encargo: $${nuevoCorte.totalEncargo}`,
+            10,
+            100
+          )
         : pdf.text("Lavado por Encargo: $0", 10, 100);
-      nuevoCorte.totalPlanchado
+        nuevoCorte.totalPlanchado
         ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 110)
         : pdf.text("Planchado: $0", 10, 110);
-      nuevoCorte.totalIncome
+
+        nuevoCorte.totalTintoreria
+        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 120)
+        : pdf.text("Tintorería: $0", 10, 120);
+
+        nuevoCorte.totalOtrosEncargo
+        ? pdf.text(
+            `Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`,
+            10,
+            130
+          )
+        : pdf.text("Encargo Varios: $0", 10, 130);
+
+        nuevoCorte.totalIncome
         ? pdf.text(
             `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
             10,
-            120
+            140
           )
-        : pdf.text("Total (Suma de los Servicios): $0", 10, 120);
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 140);
       // Separación
       nuevoCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 140)
-        : pdf.text("Ingreso en Efectivo: $0", 10, 140);
-      nuevoCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 150)
-        : pdf.text("Ingreso en Tarjeta: $0", 10, 150);
-      nuevoCorte.totalCashWithdrawal
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 160)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 160);
+        nuevoCorte.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 170)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 170);
+        nuevoCorte.totalCashWithdrawal
         ? pdf.text(
             `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
             10,
-            160
+            180
           )
-        : pdf.text("Retiros Totales: $0", 10, 160);
-      nuevoCorte.total
-        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 170)
-        : pdf.text("Final Total en Caja: $0", 10, 170);
+        : pdf.text("Retiros Totales: $0", 10, 180);
+        nuevoCorte.total
+        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 190)
+        : pdf.text("Final Total en Caja: $0", 10, 190);
       pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
       setCortes([nuevoCorte]);
@@ -506,7 +553,7 @@ function CorteCaja() {
         onCancel={() => setModalVisible(false)}
         width={600}
         footer={[
-          <Button key="print" onClick={handleModalPrint} className="btn-print">
+          <Button key="print" onClick={handleModalPrint} className="btn-print text-white">
             Imprimir
           </Button>,
           <Button
@@ -526,7 +573,7 @@ function CorteCaja() {
                   <span className="font-bold">ID:</span>{" "}
                   {selectedCorte.id_cashCut}
                 </p>
-                <p className="text-lg">
+                <p className="text-lg text-white">
                   <span className="font-bold">Usuario:</span> {cookies.username}
                 </p>
                 <p className="text-lg">

@@ -7,6 +7,7 @@ import { formatDate } from "../../utils/format";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
+import moment from "moment";
 
 function Reportes() {
   const [Cortes, setCortes] = useState([]);
@@ -139,6 +140,11 @@ function Reportes() {
     if (dateRange.length === 2) {
       const [startDate, endDate] = dateRange.map((date) => date.toDate());
 
+      const filteredCortes = Cortes.filter((corte) => {
+        return moment(corte.cashCutD).isBetween(startDate, endDate, null, "[]");
+      });
+
+
       const startDateStr = startDate.toISOString().split("T")[0];
       const endDateStr = endDate.toISOString().split("T")[0];
 
@@ -177,12 +183,6 @@ function Reportes() {
         filtered.push(endCorte);
       }
 
-      const totalSelectedDate = filtered.reduce(
-        (acc, corte) => acc + (corte.total ? corte.total : 0),
-        0
-      );
-      setTotalCajaFechasSeleccionadas(totalSelectedDate);
-
       setFilteredCortes(filtered);
       setDatesSelected(true);
       setCurrentPage(0);
@@ -197,6 +197,33 @@ function Reportes() {
   const handleGenerarPDF = () => {
     if (filteredCortes.length > 0 && dateRange.length === 2) {
       const doc = new jsPDF();
+
+      const report = {
+        sumAutoservicio: 0,
+        sumEncargo: 0,
+        sumPlanchado: 0,
+        sumTintoreria: 0,
+        sumOtrosEncargo: 0,
+        sumTotalIncome: 0,
+        sumTotalCash: 0,
+        sumTotalCredit: 0,
+        sumTotalCashWithdrawal: 0,
+        sumTotal: 0,
+      };
+
+      filteredCortes.forEach((corte) => {
+        report.sumAutoservicio += corte.totalAutoservicio || 0;
+        report.sumEncargo += corte.totalEncargo || 0;
+        report.sumPlanchado += corte.totalPlanchado || 0;
+        report.sumTintoreria += corte.totalTintoreria || 0;
+        report.sumOtrosEncargo += corte.totalOtrosEncargo || 0;
+        report.sumTotalIncome += corte.totalIncome || 0;
+        report.sumTotalCash += corte.totalCash || 0;
+        report.sumTotalCredit += corte.totalCredit || 0;
+        report.sumTotalCashWithdrawal += corte.totalCashWithdrawal || 0;
+        report.sumTotal += corte.total || 0;
+      });
+
       doc.text(`Total de Caja de las Fechas Seleccionadas`, 10, 10);
 
       // Obtener las fechas seleccionadas en formato legible
@@ -205,25 +232,21 @@ function Reportes() {
 
       doc.text(`Fechas seleccionadas: ${startDate} - ${endDate}`, 10, 20);
 
-      doc.text(`Fechas:`, 10, 30);
 
-      let posY = 40;
-      filteredCortes.forEach((corte) => {
-        const corteDate = formatDate(corte.cashCutD);
-        const totalCorte = corte.total ? corte.total : 0;
+      doc.text(`Total de Ingresos en Efectivo: $${report.sumTotalCash}`, 10, 40);
+      doc.text(`Total de Ingresos en Tarjeta: $${report.sumTotalCredit}`, 10, 50);
+      // Mostrar detalles de ingresos por servicio
+      doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
+      doc.text(`Autoservicio: $${report.sumAutoservicio}`, 10, 80);
+      doc.text(`Lavado por Encargo: $${report.sumEncargo}`, 10, 90);
+      doc.text(`Planchado: $${report.sumPlanchado}`, 10, 100);
+      doc.text(`Tintorería: $${report.sumTintoreria}`, 10, 110);
+      doc.text(`Encargo Varios: $${report.sumOtrosEncargo}`, 10, 120);
+      doc.text(`Total (Suma de los Servicios): $${report.sumTotalIncome}`, 10, 130);
+      // Mostrar retiros y total de ingresos del intervalo de fechas
+      doc.text(`Retiros Totales: $${report.sumTotalCashWithdrawal}`, 10, 150);
+      doc.text(`Total de Ingresos de  ${startDate} - ${endDate}: $${report.sumTotal}`, 10, 170);
 
-        doc.text(`${corteDate}`, 10, posY);
-        doc.text(`Total del reporte: $${totalCorte}`, 80, posY);
-        posY += 10;
-      });
-
-      // Calcular y mostrar el total de la suma de los totales individuales
-      const totalSuma = filteredCortes.reduce(
-        (acc, corte) => acc + (corte.total ? corte.total : 0),
-        0
-      );
-      posY += 10;
-      doc.text(`Total de la suma: $${totalSuma}`, 10, posY);
       const formattedStartDate = startDate.split("/").join("-");
       const formattedEndDate = endDate.split("/").join("-");
       doc.save(`Reporte de ${formattedStartDate} - ${formattedEndDate}.pdf`);

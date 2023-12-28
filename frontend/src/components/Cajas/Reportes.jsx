@@ -249,7 +249,7 @@ function Reportes() {
 
       const formattedStartDate = startDate.split("/").join("-");
       const formattedEndDate = endDate.split("/").join("-");
-      doc.save(`Reporte de ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      doc.save(`Reporte: ${formattedStartDate} - ${formattedEndDate}.pdf`);
     }
   };
 

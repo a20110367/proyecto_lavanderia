@@ -16,6 +16,16 @@ import {
   DropboxOutlined,
 } from "@ant-design/icons";
 
+/*setTimeout 60000 const relays = [] 
+machine.map( machine => 
+    if(machine.ipAddress){
+      relays.push(api.get(`http://${machine.ipAddress}/relay/0?`)
+    }else{
+      relay.push('-')
+    }
+  ))
+*/
+
 function PedidosAutoservicio() {
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");

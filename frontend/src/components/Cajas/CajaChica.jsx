@@ -255,21 +255,21 @@ function CajaChica() {
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
 
-        // await api.post("/sendMessage", {
-        //   id_order: nuevoRetiro.id_movement,
-        //   name: "Rafa",
-        //   email: "a20110341@ceti.mx",
-        //   tel: "5213313839768",
-        //   message: `Se ha realizado un RETIRO en la CAJA CHICA
-        //   Monto: ${monto},
-        //   Motivo: ${motivo}.
-        //   Cajero: ${cookies.username}
-        //   Fecha: ${formatDate(date)}`,
-        //   subject: "Se ha realizado un RETIRO en la CAJA CHICA",
-        //   text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
-        //   warning: true,
-        // });
-        // console.log("NOTIFICACIÓN ENVIADA...");
+        await api.post("/sendMessage", {
+          id_order: nuevoRetiro.id_movement,
+          name: "Rafa",
+          email: "a20110341@ceti.mx",
+          tel: "5213313839768",
+          message: `Se ha realizado un RETIRO en la CAJA CHICA
+          Monto: ${monto},
+          Motivo: ${motivo}.
+          Cajero: ${cookies.username}
+          Fecha: ${formatDate(date)}`,
+          subject: "Se ha realizado un RETIRO en la CAJA CHICA",
+          text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
+          warning: true,
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
       } catch (err) {
         console.log(err);
       }

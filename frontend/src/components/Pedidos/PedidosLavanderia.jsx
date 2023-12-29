@@ -77,7 +77,8 @@ function PedidosLavanderia() {
         pedido.serviceOrder.user.name
           .toLowerCase()
           .includes(filtro.toLowerCase()) ||
-        pedido.id_laundryEvent.toString().includes(filtro)
+        pedido.id_laundryEvent.toString().includes(filtro) || pedido.id_laundryEvent.toString().includes(filtro) || 
+        pedido.id_description.toLowerCase().includes(filtro.toLowerCase())
       );
     });
 

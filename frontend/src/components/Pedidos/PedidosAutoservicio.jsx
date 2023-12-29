@@ -82,7 +82,8 @@ function PedidosAutoservicio() {
         pedido.serviceOrder.user.name
           .toLowerCase()
           .includes(filtro.toLowerCase()) ||
-        pedido.id_description.toString().includes(filtro)
+        pedido.id_description.toString().includes(filtro) ||
+        pedido.id_serviceEvent.toString().includes(filtro) || pedido.id_serviceEvent.toString().includes(filtro) 
       );
     });
 

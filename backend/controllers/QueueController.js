@@ -30,15 +30,35 @@ export const getLaundryQueue = async (req, res) => {
                         notes: true,
                     },
                 },
-                WashDetail: true,
-                DryDetail: true,
-                machine: {
+                WashDetail: {
                     select: {
-                        ipAddress: true,
-                        id_machine: true,
-                        model: true,
-                    }
+                        id_washDetail: true,
+                        fk_laundryEvent: true,
+                        fk_idStaffMember: true,
+                        machine: {
+                            select: {
+                                ipAddress: true,
+                                id_machine: true,
+                                model: true,
+                            }
+                        },
+                    },
                 },
+                DryDetail: {
+                    select: {
+                        id_dryDetail: true,
+                        fk_laundryEvent: true,
+                        fk_idStaffMember: true,
+                        machine: {
+                            select: {
+                                ipAddress: true,
+                                id_machine: true,
+                                model: true,
+                            }
+                        },
+                    },
+                },
+
             },
 
         });

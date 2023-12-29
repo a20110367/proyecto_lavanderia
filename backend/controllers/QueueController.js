@@ -35,7 +35,7 @@ export const getLaundryQueue = async (req, res) => {
                         id_washDetail: true,
                         fk_laundryEvent: true,
                         fk_idStaffMember: true,
-                        machine: {
+                        Machine: {
                             select: {
                                 ipAddress: true,
                                 id_machine: true,
@@ -49,7 +49,7 @@ export const getLaundryQueue = async (req, res) => {
                         id_dryDetail: true,
                         fk_laundryEvent: true,
                         fk_idStaffMember: true,
-                        machine: {
+                        Machine: {
                             select: {
                                 ipAddress: true,
                                 id_machine: true,

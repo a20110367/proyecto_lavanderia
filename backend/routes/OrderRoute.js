@@ -1,6 +1,7 @@
 import express from 'express';
 import {
     getOrders,
+    getActiveOrders,
     getOrdersById,
     getOrdersByIdClient,
     getOrdersByIdUser,
@@ -21,6 +22,8 @@ import {
     createOtherServiceOrder,
     createOrderMany,
     updateOrder,
+    updateStoredOrders,
+    updateCancelledOrder,
     deleteOrder,
     deleteOrderAll
 } from "../controllers/OrderController.js";
@@ -28,6 +31,7 @@ import {
 const router = express.Router();
 
 router.get('/orders', getOrders);
+router.get('/ordersActive', getActiveOrders);
 router.get('/orders/:id', getOrdersById);
 router.get('/ordersByClient/:fk_client', getOrdersByIdClient);
 router.get('/ordersByUser/:fk_user', getOrdersByIdUser);
@@ -52,6 +56,10 @@ router.post('/ordersOtherService', createOtherServiceOrder);
 router.post('/ordersMany', createOrderMany);
 
 router.patch('/orders/:id', updateOrder);
+router.patch('/storedOrders/', updateStoredOrders)
+router.patch('/cancelOrder/:id', updateCancelledOrder)
+
+
 router.delete('/orders/:id', deleteOrder);
 router.delete('/ordersAll/', deleteOrderAll);
 export default router;

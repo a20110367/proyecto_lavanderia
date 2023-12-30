@@ -583,6 +583,10 @@ GET http://localhost:5000/orders
 
 ###
 
+GET http://localhost:5000/ordersActive
+
+###
+
 GET http://localhost:5000/orders/1
 
 ####
@@ -639,6 +643,10 @@ Content-Type: application/json
 }
 
 ###
+PATCH    http://localhost:5000/storedOrders/
+
+###
+
 DELETE   http://localhost:5000/orders/1
 
 ###

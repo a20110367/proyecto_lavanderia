@@ -1,12 +1,15 @@
 import index from "@green-api/whatsapp-api-client";
-import { PrismaClient } from "@prisma/client";
+import { OrderStatus, PrismaClient } from "@prisma/client";
 import { response } from "express";
+import moment from 'moment'
+moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 
 export const getOrders = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findMany({
+
 
             include: {
                 client: {
@@ -53,11 +56,70 @@ export const getOrders = async (req, res) => {
     }
 }
 
+export const getActiveOrders = async (req, res) => {
+    var lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    console.log(lastDate)
+    try {
+        const response = await prisma.serviceOrder.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+
 export const getOrdersById = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findFirst({
             where: {
-                id_order: Number(req.body.id)
+                id_order: Number(req.params.id)
             },
             include: {
                 client: {
@@ -1200,7 +1262,62 @@ export const createDrycleanServiceOrder = async (req, res) => {
 //     }
 // }
 
+export const updateStoredOrders = async (req, res) => {
 
+    var lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    console.log(lastDate)
+    try {
+        const orderStored = await prisma.serviceOrder.updateMany({
+
+            where: {
+                AND: [
+                    {
+                        created: {
+                            lte: new Date(lastDate)
+                        },
+                    },
+                    {
+                        orderStatus: "finished"
+                    }
+
+
+                ]
+
+            },
+            data: {
+                orderStatus: "stored"
+            }
+        });
+        res.status(200).json(orderStored);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+export const updateCancelledOrder = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.update({
+            where: {
+                AND: [
+                    {
+                        id_order: Number(req.params.id)
+                    },
+                    {
+                        payStatus: "paid"
+                    }
+                ],
+
+            },
+            data: {
+                orderStatus: "cancelled"
+            }
+
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
 export const updateOrder = async (req, res) => {
 
     try {

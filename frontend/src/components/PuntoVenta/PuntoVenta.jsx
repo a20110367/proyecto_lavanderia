@@ -326,27 +326,6 @@ export default function PuntoVenta() {
         },
         services: arrayService,
       });
-      const order = {
-        id_order: res.data.serviceOrder.id_order,
-        payForm: payForm,
-        payStatus: payStatus,
-        payMethod: payMethod,
-        subtotal: totalWithDiscount,
-        casher: cookies.username,
-        client: clientName,
-        receptionDate: purchaseDate.toISOString(),
-        receptionTime: purchaseDate.toISOString(),
-        scheduledDeliveryDate: deliveryDate.toISOString(),
-        scheduledDeliveryTime: deliveryDate.toISOString(),
-        pieces: pieces,
-        serviceType: serviceType,
-        notes: notes,
-        cart: cart,
-      };
-      // GENERAR EL TICKET
-      await api.post('/generateTicket', {
-        order: order,
-      })
       // orderTicket(order);
       if (categoryId === 3) {
         if (numberOfPieces + pieces < 130 || isExpress) {
@@ -378,6 +357,36 @@ export default function PuntoVenta() {
             fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
             payTotal: calculateSubtotal(),
           },
+        });
+      }
+      const order = {
+        id_order: res.data.serviceOrder.id_order,
+        payForm: payForm,
+        payStatus: payStatus,
+        payMethod: payMethod,
+        subtotal: totalWithDiscount,
+        casher: cookies.username,
+        client: clientName,
+        receptionDate: purchaseDate.toISOString(),
+        receptionTime: purchaseDate.toISOString(),
+        scheduledDeliveryDate: deliveryDate.toISOString(),
+        scheduledDeliveryTime: deliveryDate.toISOString(),
+        pieces: pieces,
+        serviceType: serviceType,
+        notes: notes,
+        cart: cart,
+      };
+      // GENERAR EL TICKET
+      const resTicket = await api.post('/generateTicket', {
+        order: order,
+      })
+      if(resTicket.status === 400){
+        console.warn('Impresora desconectada o sin conexión.')
+        Swal.fire({
+          icon: "error",
+          title: "Impresora desconectada o sin conexión.",
+          text: "Revise la si la impresora se encuentra prendida y conectada.",
+          confirmButtonColor: "#034078",
         });
       }
     } catch (err) {

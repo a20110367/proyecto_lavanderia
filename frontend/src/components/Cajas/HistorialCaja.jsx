@@ -130,7 +130,6 @@ function HistorialCaja() {
 
   const handleFiltroPorFecha = () => {
     if (!dateRange || dateRange.length !== 2)  {
-      // Alert the user if start and end dates are not selected
       Swal.fire({
         icon: "error",
         title: "Error",

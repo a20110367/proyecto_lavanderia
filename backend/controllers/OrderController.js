@@ -1295,7 +1295,7 @@ export const updateStoredOrders = async (req, res) => {
 }
 export const updateCancelledOrder = async (req, res) => {
     try {
-        const response = await prisma.serviceOrder.update({
+        const response = await prisma.serviceOrder.updateMany({
             where: {
                 AND: [
                     {
@@ -1315,7 +1315,7 @@ export const updateCancelledOrder = async (req, res) => {
 
         res.status(200).json(response);
     } catch (e) {
-        res.status(404).json({ msg: e.message });
+        res.status(400).json({ msg: e.message });
     }
 }
 export const updateOrder = async (req, res) => {

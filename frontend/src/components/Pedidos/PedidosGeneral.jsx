@@ -47,11 +47,11 @@ function PedidosGeneral() {
   };
 
   const fetcher = async () => {
-    const response = await api.get("/orders");
+    const response = await api.get("/ordersActive");
     return response.data;
   };
 
-  const { data } = useSWR("orders", fetcher);
+  const { data } = useSWR("ordersActive", fetcher);
 
   useEffect(() => {
     if (data) {

@@ -135,7 +135,7 @@ export const generateTicket = async (req, res) => {
 
         printer.cut();
         let execute = printer.execute()
-        printer.clear();
+
         console.log("Print done!");
 
         // printer.bold(true);                                         // Set text bold
@@ -234,6 +234,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
         printer.drawLine();
 
         printer.println(`Cajero: ${cashCut.casher}`)
+        printer.println(`Cajero: ${cashCut.workShift}`)
         printer.println(`Fecha: ${cashCut.date}`)
         printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
 
@@ -258,7 +259,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
         printer.println(`Ingreso en Efectivo: ${cashCut.totalCash}`)
         printer.println(`Ingreso en Tarjeta: ${cashCut.totalCredit}`)
-        printer.println(`Retiros Totales: -${cashCut.totalCashWithdrawal}`)
+        printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' +cashCut.totalCashWithdrawal : '0'}`)
         printer.setTextDoubleHeight();
         printer.newLine()
         printer.println(`Final Total en Caja: ${cashCut.total}`)
@@ -266,7 +267,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
         printer.cut();
         let execute = printer.execute()
-        printer.clear();
+
         res.status(200).json("Print done!");
     } catch (err) {
         console.error(err)

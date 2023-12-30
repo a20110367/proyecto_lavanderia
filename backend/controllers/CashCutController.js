@@ -123,6 +123,18 @@ export const calculateCashCut = async (req, res) => {
                 payTotal: true,
             }
         });
+
+        const workShift = await prisma.cashCut.findFirst({
+
+            where: {
+                id_cashCut: Number(req.params.id)
+            },
+            select: {
+                workShift: true,
+            }
+
+        });
+
         total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
         const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
@@ -386,7 +398,8 @@ export const calculateCashCut = async (req, res) => {
             "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
             "cashCutD": today,
-            "pettyCashBalance": pettyCashBalance.balance
+            "pettyCashBalance": pettyCashBalance.balance,
+            "workShift": workShift.workShift
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -415,6 +428,18 @@ export const closeCashCut = async (req, res) => {
             },
 
         });
+
+        const workShift = await prisma.cashCut.findFirst({
+
+            where: {
+                id_cashCut: Number(req.params.id)
+            },
+            select: {
+                workShift: true,
+            }
+
+        });
+
         console.log(cashCutStatus.CashCutStatus);
         if (cashCutStatus.cashCutStatus === "open") {
 
@@ -683,7 +708,9 @@ export const closeCashCut = async (req, res) => {
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
-                "pettyCashBalance": pettyCashBalance.balance
+                "pettyCashBalance": pettyCashBalance.balance,
+                "workShift": workShift.workShift
+
                 //"selfService":selfService
                 //"ordersIds":ordersIds
             }

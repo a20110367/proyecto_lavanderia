@@ -609,7 +609,7 @@ function CorteCaja() {
                     ? "Matutino"
                     : selectedCorte.workShift === "evening"
                     ? "Vespertino"
-                    : ""} {console.log(selectedCorte.workShift)}
+                    : ""} 
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}

@@ -266,7 +266,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
         printer.setTextNormal()
 
         printer.cut();
-        let execute = printer.execute()
+        let execute = await printer.execute()
 
         res.status(200).json("Print done!");
     } catch (err) {

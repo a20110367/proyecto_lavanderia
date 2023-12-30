@@ -134,8 +134,8 @@ export const generateTicket = async (req, res) => {
         ]);
 
         printer.cut();
-        let execute = printer.execute()
-
+        let execute = await printer.execute()
+        console.log(execute)
         console.log("Print done!");
 
         // printer.bold(true);                                         // Set text bold

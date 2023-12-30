@@ -319,7 +319,7 @@ function CorteCaja() {
         nuevoCorte.total
         ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 190)
         : pdf.text("Final Total en Caja: $0", 10, 190);
-      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      pdf.save(`corte_de_caja_Parcial_${cookies.username}.pdf`);
 
       setCortes([nuevoCorte]);
       setPartialCorteDialogVisible(false);

@@ -163,10 +163,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-                ...item,
-                quantity: item.quantity + 1,
-                totalPrice: item.price * (item.quantity + 1),
-              }
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
             : item
         );
         setCart(updatedCart);
@@ -216,15 +216,15 @@ export default function PuntoVenta() {
             categoryId === 3
               ? setPieces(pieces - item.pieces)
               : categoryId === 4
-              ? setPieces(pieces - item.pieces)
-              : "";
+                ? setPieces(pieces - item.pieces)
+                : "";
             return { ...item, quantity: item.quantity - 1 };
           } else {
             categoryId === 3
               ? setPieces(pieces - item.pieces)
               : categoryId === 4
-              ? setPieces(pieces - item.pieces)
-              : "";
+                ? setPieces(pieces - item.pieces)
+                : "";
             return null;
           }
         } else {
@@ -377,10 +377,14 @@ export default function PuntoVenta() {
         cart: cart,
       };
       // GENERAR EL TICKET
-      const resTicket = await api.post('/generateTicket', {
+      await api.post('/generateTicket', {
         order: order,
       })
-      if(resTicket.status === 400){
+    } catch (err) {
+      console.log(err);
+      if (!err?.response) {
+        setErrMsg("Sin respuesta del Servidor");
+      } else if (err.response.status === 400) {
         console.warn('Impresora desconectada o sin conexión.')
         Swal.fire({
           icon: "error",
@@ -388,11 +392,6 @@ export default function PuntoVenta() {
           text: "Revise la si la impresora se encuentra prendida y conectada.",
           confirmButtonColor: "#034078",
         });
-      }
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del Servidor");
       } else {
         setErrMsg(
           "Hubo un error al registrar la Orden, comuniquese con Soporte"
@@ -405,9 +404,9 @@ export default function PuntoVenta() {
     localStorage.setItem(
       "numberOfPieces",
       pieces +
-        (localStorage.getItem("numberOfPieces")
-          ? parseInt(localStorage.getItem("numberOfPieces"))
-          : 0)
+      (localStorage.getItem("numberOfPieces")
+        ? parseInt(localStorage.getItem("numberOfPieces"))
+        : 0)
     );
 
     // Regresar a la página anterior
@@ -417,50 +416,50 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado") &&
-          !service.description.toLowerCase().includes("tintoreria") &&
-          !service.description.toLowerCase().includes("varios") 
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "tintoreria" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "varios" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("tintoreria") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado") &&
+        !service.description.toLowerCase().includes("tintoreria") &&
+        !service.description.toLowerCase().includes("varios")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "tintoreria" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "varios" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("tintoreria") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -528,14 +527,14 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-            ? "Lista de Servicios de Autoservicio"
-            : serviceType === "planchado"
-            ? "Lista de Servicios de Planchado"
-            : serviceType === "tintoreria"
-            ? "Lista de Servicios de Tintorería"
-            : serviceType === "varios"
-            ? "Lista de Servicios Encargo Varios"
-            : "Lista de Servicios"}
+              ? "Lista de Servicios de Autoservicio"
+              : serviceType === "planchado"
+                ? "Lista de Servicios de Planchado"
+                : serviceType === "tintoreria"
+                  ? "Lista de Servicios de Tintorería"
+                  : serviceType === "varios"
+                    ? "Lista de Servicios Encargo Varios"
+                    : "Lista de Servicios"}
         </strong>
       </div>
       <div className="relative w-full">
@@ -576,11 +575,10 @@ export default function PuntoVenta() {
                       </h3>
                       <h5 className="text-gray-600">${service.price}</h5>
                       <button
-                        className={`${
-                          isAddButtonDisabled
+                        className={`${isAddButtonDisabled
                             ? "bg-gray-400"
                             : "bg-blue-500 hover:bg-blue-700"
-                        } text-white font-bold py-2 px-4 rounded mt-2`}
+                          } text-white font-bold py-2 px-4 rounded mt-2`}
                         onClick={() => addToCart(service.id_service, service)}
                         disabled={isAddButtonDisabled}
                       >
@@ -884,7 +882,7 @@ export default function PuntoVenta() {
                       }}
                       value={
                         serviceType === "autoservicio" ||
-                        serviceType === "tintoreria"
+                          serviceType === "tintoreria"
                           ? "advance"
                           : payForm
                       }
@@ -906,20 +904,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

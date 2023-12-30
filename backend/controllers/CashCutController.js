@@ -399,7 +399,7 @@ export const calculateCashCut = async (req, res) => {
             "ordersPayed": orders.length,
             "cashCutD": today,
             "pettyCashBalance": pettyCashBalance.balance,
-            "workShift": workShift
+            "workShift": workShift.workShift
             //"selfService":selfService
             //"ordersIds":ordersIds
         }
@@ -709,7 +709,7 @@ export const closeCashCut = async (req, res) => {
                 "cashCutD": today,
                 "cashCutT": time,
                 "pettyCashBalance": pettyCashBalance.balance,
-                "workShift": workShift
+                "workShift": workShift.workShift
 
                 //"selfService":selfService
                 //"ordersIds":ordersIds

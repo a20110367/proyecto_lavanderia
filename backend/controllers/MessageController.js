@@ -108,13 +108,13 @@ export const sendReport = async (req, res) => {
 
 export const sendCashCut = async (req, res) => {
 
-    const { pdf, startDate, endDate} = req.body
+    const { pdf, date, hour} = req.body
     
     try{
         const info = await transporter.sendMail({
-            from: `"Corte de caja realizado el dia de ${date} a la hora de ${hour}" <pyrop59@gmail.com>`, // sender address
+            from: `"Corte de caja realizado el dia de ${date} a las ${hour}" <pyrop59@gmail.com>`, // sender address
             to: 'proveedores.tyc@gmail.com', // list of receivers
-            subject: 'Reporte de la fecha de ' + startDate + ' a la fecha de ' + endDate, // Subject line
+            subject: `Corte de caja realizado el dia de ${date} a las ${hour}`, // Subject line
             text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
             attachments: [{
                 filename: `corteCaja_${date}_${hour}.pdf`,
@@ -123,7 +123,7 @@ export const sendCashCut = async (req, res) => {
                 encoding: 'base64'
             }],
         });
-        console.log("Mail Message sent:  %s", info.messageId);
+        console.log("Cash Cut Mail Message sent:  %s", info.messageId);
         res.status(200).json('Report Sent!')
     }catch(err){
         console.error(err)

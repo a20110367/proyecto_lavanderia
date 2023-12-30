@@ -90,10 +90,6 @@ function CorteCaja() {
     }
 
     try {
-      const now = new Date();
-      const horaActual = now.getHours();
-
-
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
@@ -179,7 +175,7 @@ function CorteCaja() {
         ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 190)
         : pdf.text("Final Total en Caja: $0", 10, 190);
       pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
-
+      
       setLastCashCut(nuevoCorte);
       setCortes([nuevoCorte]);
 
@@ -189,6 +185,14 @@ function CorteCaja() {
       setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
       setDialogVisible(false);
+
+      const out = pdf.output('datauristring');
+      await api.post('/sendCashCut', {
+        date: moment().format('DD-MM-YYYY'),
+        hour: moment().format('LT'),
+        pdf: out.split('base64,')[1],
+      })
+
     } catch (err) {
       console.log(err);
     }

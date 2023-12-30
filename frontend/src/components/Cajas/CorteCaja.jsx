@@ -14,7 +14,7 @@ function CorteCaja() {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
   const [workShift, setWorkShift] = useState(
-    moment().hours() < 12 ? "moringn" : "evening"
+    moment().hours() < 12 ? "morning" : "evening"
   );
   const [partialCorteDialogVisible, setPartialCorteDialogVisible] =
     useState(false);

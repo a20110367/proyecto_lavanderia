@@ -56,6 +56,65 @@ export const getOrders = async (req, res) => {
     }
 }
 
+export const getActiveOrders = async (req, res) => {
+    var lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    console.log(lastDate)
+    try {
+        const response = await prisma.serviceOrder.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+
 export const getOrdersById = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findFirst({

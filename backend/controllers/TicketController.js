@@ -234,7 +234,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
         printer.drawLine();
 
         printer.println(`Cajero: ${cashCut.casher}`)
-        printer.println(`Cajero: ${cashCut.workShift}`)
+        printer.println(`Cajero: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
         printer.println(`Fecha: ${cashCut.date}`)
         printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
 
@@ -259,7 +259,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
         printer.println(`Ingreso en Efectivo: ${cashCut.totalCash}`)
         printer.println(`Ingreso en Tarjeta: ${cashCut.totalCredit}`)
-        printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' +cashCut.totalCashWithdrawal : '0'}`)
+        printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
         printer.setTextDoubleHeight();
         printer.newLine()
         printer.println(`Final Total en Caja: ${cashCut.total}`)

@@ -68,8 +68,9 @@ function PedidosVarios() {
         pedido.serviceOrder.user.name
           .toLowerCase()
           .includes(filtro.toLowerCase()) ||
-          pedido.id_otherEvent.toString().includes(filtro) || pedido.id_otherEvent.toString().includes(filtro) || 
-          pedido.id_description.toLowerCase().includes(filtro.toLowerCase())
+        pedido.id_otherEvent.toString().includes(filtro) ||
+        pedido.id_otherEvent.toString().includes(filtro) ||
+        pedido.id_description.toLowerCase().includes(filtro.toLowerCase())
       );
     });
 
@@ -292,9 +293,13 @@ function PedidosVarios() {
                       <span className="text-green-600 pl-1">
                         <CheckCircleOutlined /> Finalizado Entregado
                       </span>
-                    ) : (
+                    ) : pedido.serviceStatus === "cancelled" ? (
                       <span className="text-red-600 pl-1">
                         <StopOutlined /> Cancelado
+                      </span>
+                    ) : (
+                      <span className="text-gray-600 pl-1">
+                        Estado Desconocido
                       </span>
                     )}
                   </td>

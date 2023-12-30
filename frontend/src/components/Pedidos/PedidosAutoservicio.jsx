@@ -83,7 +83,8 @@ function PedidosAutoservicio() {
           .toLowerCase()
           .includes(filtro.toLowerCase()) ||
         pedido.id_description.toString().includes(filtro) ||
-        pedido.id_serviceEvent.toString().includes(filtro) || pedido.id_serviceEvent.toString().includes(filtro) 
+        pedido.id_serviceEvent.toString().includes(filtro) ||
+        pedido.id_serviceEvent.toString().includes(filtro)
       );
     });
 
@@ -96,45 +97,46 @@ function PedidosAutoservicio() {
     setFiltro(event.target.value);
   };
 
-
   const turnOnMachine = async (machine) => {
     // GET http://192.168.1.77/relay/0?turn=on&timer=300
     // Harcoded
     // const ip = '192.168.1.77'
     // const time = '30'
 
-    const ip = machine.ipAddress
+    const ip = machine.ipAddress;
     if (ip === null) {
-      console.warn('No se encontro IP del equipo')
+      console.warn("No se encontro IP del equipo");
     } else {
       try {
-        const time = machine.cicleTime
-        const res = await api.get(`http://${ip}/relay/0?turn=on&timer=${time * 60}`)
-        console.log(res)
+        const time = machine.cicleTime;
+        const res = await api.get(
+          `http://${ip}/relay/0?turn=on&timer=${time * 60}`
+        );
+        console.log(res);
       } catch (err) {
-        console.warn('El equipo Shelly esta desconectado')
+        console.warn("El equipo Shelly esta desconectado");
         // console.error(err)
       }
     }
-  }
+  };
 
   const turnOffMachine = async (machine) => {
-    const ip = machine.ipAddress
+    const ip = machine.ipAddress;
     if (ip === null) {
-      console.warn('No se encontro IP del equipo')
+      console.warn("No se encontro IP del equipo");
     } else {
       try {
-        const res = await api.get(`http://${ip}/relay/0?turn=off`)
-        console.log(res)
+        const res = await api.get(`http://${ip}/relay/0?turn=off`);
+        console.log(res);
       } catch (err) {
-        console.warn('El equipo Shelly esta desconectado')
+        console.warn("El equipo Shelly esta desconectado");
       }
     }
-  }
+  };
 
   const checkStatusMachine = async () => {
-    const res = api.get(`http://${ip}/relay/0`)
-  }
+    const res = api.get(`http://${ip}/relay/0`);
+  };
 
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
@@ -191,7 +193,7 @@ function PedidosAutoservicio() {
         freeForUse: false,
       });
 
-      turnOnMachine(selectedMachine)
+      turnOnMachine(selectedMachine);
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
@@ -243,7 +245,7 @@ function PedidosAutoservicio() {
         freeForUse: true,
       });
 
-      turnOffMachine(selectedMachine.machine)
+      turnOffMachine(selectedMachine.machine);
 
       // Actualizar localmente el estado de la máquina a "freeForUse"
       const updatedMachines = availableMachines.map((machine) =>
@@ -374,10 +376,12 @@ function PedidosAutoservicio() {
                       <span className="text-blue-600 pl-1">
                         <IssuesCloseOutlined /> Finalizado
                       </span>
-                    ) : (
+                    ) : pedido.serviceStatus === "cancelled" ? (
                       <span className="text-red-600 pl-1">
                         <StopOutlined /> Cancelado
                       </span>
+                    ) : (
+                      <span className="text-gray-600 pl-1">Desconocido</span>
                     )}
                   </td>
                   <td>
@@ -493,8 +497,9 @@ function PedidosAutoservicio() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

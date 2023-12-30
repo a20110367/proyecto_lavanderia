@@ -19,7 +19,7 @@ import api from "../../api/api";
 
 function PedidosPlanchado() {
   const { cookies } = useAuth();
-  const lastIronControlId = parseInt(localStorage.getItem('lastIronControl'))
+  const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
   const [pedidos, setPedidos] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -174,16 +174,14 @@ function PedidosPlanchado() {
 
     const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
     const availableMachines = [...ironsResponse.data];
-    const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`)
-    const selectedMachine = res.data[0]
+    const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`);
+    const selectedMachine = res.data[0];
 
     try {
       if (selectedMachine && availableMachines) {
         // Actualizar localmente el estado del pedido a "finished"
         const updatedPedidos = pedidos.map((p) =>
-          p.id_order === pedido.id_order
-            ? { ...p, orderStatus: "finished" }
-            : p
+          p.id_order === pedido.id_order ? { ...p, orderStatus: "finished" } : p
         );
         setPedidos(updatedPedidos);
 
@@ -204,14 +202,21 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        await api.patch(`/cahsCutIronControl/${lastIronControlId}`,{
-          pieces: pedido.ironPieces
-        })
+        await api.patch(`/cahsCutIronControl/${lastIronControlId}`, {
+          pieces: pedido.ironPieces,
+        });
 
-        showNotification("Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA...");
+        showNotification(
+          "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
+        );
         await api.post("/sendMessage", {
           id_order: pedido.id_order,
-          name: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
+          name:
+            pedido.client.name +
+            " " +
+            pedido.client.firstLN +
+            " " +
+            pedido.client.secondLN,
           email: pedido.client.email,
           tel: "521" + pedido.client.phone,
           message: `Tu pedido con el folio: ${pedido.id_order} está listo, Ya puedes pasar a recogerlo.`,
@@ -360,17 +365,17 @@ function PedidosPlanchado() {
                       <span className="text-green-600 pl-1">
                         <CheckCircleOutlined /> Finalizado Entregado
                       </span>
-                    ) : (
+                    ) : pedido.serviceStatus === "canceled" ? (
                       <span className="text-red-600 pl-1">
                         <StopOutlined /> Cancelado
                       </span>
+                    ) : (
+                      <span className="text-gray-600 pl-1">
+                        Estado Desconocido
+                      </span>
                     )}
                   </td>
-                  <td>
-                    {pedido.notes
-                      ? pedido.notes
-                      : "No hay notas"}
-                  </td>
+                  <td>{pedido.notes ? pedido.notes : "No hay notas"}</td>
                   <td>
                     {pedido.orderStatus === "pending" && (
                       <button
@@ -459,14 +464,17 @@ function PedidosPlanchado() {
                 .map((machine) => (
                   <tr key={machine.id_ironStation}>
                     <td>
-  {machine.machineType === "plancha" ? "Plancha" : machine.machineType}
-</td>
+                      {machine.machineType === "plancha"
+                        ? "Plancha"
+                        : machine.machineType}
+                    </td>
 
                     <td>{machine.description}</td>
                     <td>{machine.pieces}</td>
                     <td
-                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                        }`}
+                      className={`${
+                        machine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

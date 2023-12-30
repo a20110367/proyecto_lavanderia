@@ -73,7 +73,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
           <p className="user font-bold">{cookies.role === 'admin' ? 'Administrador:' : 'Empleado:'}</p>
           <p className="user text-RedPantone">{cookies.username}</p>
       </div>
-      <div className="flex items-center gap-2 mr-2">
+      {/* <div className="flex items-center gap-2 mr-2">
         <Popover className="relative">
           {({ open }) => (
             <>
@@ -210,7 +210,7 @@ export default function Header({ toggleCollapsed, collapsed, items }) {
             </Menu.Items>
           </Transition>
         </Menu>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -194,7 +194,8 @@ function Reportes() {
     }
   };
 
-  const handleGenerarPDF = () => {
+  const handleGenerarPDF = async () => {
+    try{
     if (filteredCortes.length > 0 && dateRange.length === 2) {
       const doc = new jsPDF();
 
@@ -211,7 +212,7 @@ function Reportes() {
         sumTotal: 0,
       };
 
-      filteredCortes.forEach((corte) => {
+      filteredCortes.map((corte) => {
         report.sumAutoservicio += corte.totalAutoservicio || 0;
         report.sumEncargo += corte.totalEncargo || 0;
         report.sumPlanchado += corte.totalPlanchado || 0;
@@ -250,6 +251,16 @@ function Reportes() {
       const formattedStartDate = startDate.split("/").join("-");
       const formattedEndDate = endDate.split("/").join("-");
       doc.save(`Reporte ${formattedStartDate} - ${formattedEndDate}.pdf`);
+
+      const out = doc.output('datauristring');
+      await api.post('/sendReport', {
+        startDate: moment(dateRange[0]).format('DD-MM-YYYY'),
+        endDate: moment(dateRange[1]).format('DD-MM-YYYY'),
+        pdf: out.split('base64,')[1],
+      })
+      }
+    }catch(err){
+      console.error(err)
     }
   };
 
@@ -286,7 +297,7 @@ function Reportes() {
                   onClick={handleGenerarPDF}
                   className="btn-search text-white ml-2"
                 >
-                  Imprimir Reporte
+                  Guardar Reporte
                 </button>
               )}
             </div>
@@ -387,7 +398,7 @@ function Reportes() {
               onClick={handleModalPrint}
               className="btn-print text-white"
             >
-              Imprimir
+              Guardar
             </Button>,
             <Button
               key="close"

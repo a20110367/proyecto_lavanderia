@@ -1,19 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { transporter } from "./utils/mailer.js";
 import { restAPI } from "./utils/greenapi.js";
-import { NumerosALetras } from 'numero-a-letras'
-
-const prisma = new PrismaClient();
-
-export const n2word = async (req, res) => {
-    const { number } = req.body
-    try {
-        const word = NumerosALetras(number);
-        res.status(200).json(word);
-    } catch (err) {
-        res.status(400).json({ msg: err.message });
-    }
-}
 
 export const sendMessage = async (req, res) => {
     const { id_order, name, email, tel, message, subject, text, warning } = req.body
@@ -92,5 +78,55 @@ export const notifyAll = async (req, res) => {
             console.log(err)
             return res.status(400).json({ message: 'Algo salio mal!' })
         }
+    }
+}
+
+export const sendReport = async (req, res) => {
+
+    const { pdf, startDate, endDate} = req.body
+    
+    try{
+        const info = await transporter.sendMail({
+            from: `"Reporte del ${startDate} al ${endDate}." <pyrop59@gmail.com>`, // sender address
+            to: 'proveedores.tyc@gmail.com', // list of receivers
+            subject: `Reporte del ${startDate} al ${endDate}.`, // Subject line
+            text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
+            attachments: [{
+                filename: `reporte_${startDate}_${endDate}.pdf`,
+                content: pdf,
+                contentType: 'application/pdf',
+                encoding: 'base64'
+            }],
+        });
+        console.log("Report Mail Message sent:  %s", info.messageId);
+        res.status(200).json('Report Sent!')
+    }catch(err){
+        console.error(err)
+        res.status(400).json({ message: 'Algo salio mal!' })
+    }
+}
+
+export const sendCashCut = async (req, res) => {
+
+    const { pdf, startDate, endDate} = req.body
+    
+    try{
+        const info = await transporter.sendMail({
+            from: `"Corte de caja realizado el dia de ${date} a la hora de ${hour}" <pyrop59@gmail.com>`, // sender address
+            to: 'proveedores.tyc@gmail.com', // list of receivers
+            subject: 'Reporte de la fecha de ' + startDate + ' a la fecha de ' + endDate, // Subject line
+            text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
+            attachments: [{
+                filename: `corteCaja_${date}_${hour}.pdf`,
+                content: pdf,
+                contentType: 'application/pdf',
+                encoding: 'base64'
+            }],
+        });
+        console.log("Mail Message sent:  %s", info.messageId);
+        res.status(200).json('Report Sent!')
+    }catch(err){
+        console.error(err)
+        res.status(400).json({ message: 'Algo salio mal!' })
     }
 }

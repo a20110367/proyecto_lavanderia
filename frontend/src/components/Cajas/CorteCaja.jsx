@@ -329,7 +329,7 @@ function CorteCaja() {
         casher: cookies.username,
         workShift: nuevoCorte.workShift,
         date: moment().format('DD/MM/YYYY'),
-        initialCash: initialCash,
+        initialCash: initialCash ? initialCash : 0,
         selfService: nuevoCorte.totalAutoservicio,
         laundry: nuevoCorte.totalEncargo,
         iron: nuevoCorte.totalPlanchado,

@@ -639,6 +639,10 @@ Content-Type: application/json
 }
 
 ###
+PATCH    http://localhost:5000/storedOrders/
+
+###
+
 DELETE   http://localhost:5000/orders/1
 
 ###

@@ -21,6 +21,8 @@ import {
     createOtherServiceOrder,
     createOrderMany,
     updateOrder,
+    updateStoredOrders,
+    updateCancelledOrder,
     deleteOrder,
     deleteOrderAll
 } from "../controllers/OrderController.js";
@@ -52,6 +54,10 @@ router.post('/ordersOtherService', createOtherServiceOrder);
 router.post('/ordersMany', createOrderMany);
 
 router.patch('/orders/:id', updateOrder);
+router.patch('/storedOrders/', updateStoredOrders)
+router.patch('/canceldOrder/:id', updateCancelledOrder)
+
+
 router.delete('/orders/:id', deleteOrder);
 router.delete('/ordersAll/', deleteOrderAll);
 export default router;

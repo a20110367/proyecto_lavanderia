@@ -1,7 +1,7 @@
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
 import { NumerosALetras } from 'numero-a-letras'
 import moment from 'moment'
-moment.locale('es-mx'); 
+moment.locale('es-mx');
 // import 'moment/locale/es.js'         //IMPORTS PARA MAS IDIOMAS PARA MOMENT
 // import 'moment/min/locales.min.js'   //IMPORTS PARA MAS IDIOMAS PARA MOMENT
 // import 'moment/min/locales.js';      //IMPORTS PARA MAS IDIOMAS PARA MOMENT
@@ -25,19 +25,19 @@ export const generateTicket = async (req, res) => {
     let payStatus = ''
     let payForm = ''
 
-    if(order.payMethod === 'cash'){
+    if (order.payMethod === 'cash') {
         payMethod = 'EFECTIVO'
-    }else{
+    } else {
         payMethod = 'TARJETA'
     }
-    if(order.payStatus === 'paid'){
+    if (order.payStatus === 'paid') {
         payStatus = 'PAGADO'
-    }else{
+    } else {
         payStatus = 'NO PAGADO'
     }
-    if(order.payForm === 'advance'){
+    if (order.payForm === 'advance') {
         payForm = 'ANTICIPADO'
-    }else{
+    } else {
         payForm = 'A LA ENTREGA'
     }
 
@@ -47,22 +47,22 @@ export const generateTicket = async (req, res) => {
 
         printer.drawLine();
         printer.setTypeFontB();
-        
+
         printer.setTextDoubleHeight();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: " + order.id_order, align: "LEFT", bold: true},
+            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
             { text: payStatus, align: "RIGHT" }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true},
+            { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true },
             { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Cajero: " + order.casher, align: "LEFT", bold: true},
+            { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
             { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
         ]);
 
@@ -70,18 +70,18 @@ export const generateTicket = async (req, res) => {
 
         // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT"},
-            { text: "Descripción", align: "CENTER", bold: true},
-            { text: "Precio", align: "RIGHT"}
+            { text: "Cant.", align: "LEFT" },
+            { text: "Descripción", align: "CENTER", bold: true },
+            { text: "Precio", align: "RIGHT" }
         ]);
 
         printer.newLine()
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity + '     X', align: "LEFT", bold: true},
-                { text: detail.description, align: "CENTER"},
-                { text: '$' + detail.totalPrice, align: "RIGHT"}
+                { text: detail.quantity + '     X', align: "LEFT", bold: true },
+                { text: detail.description, align: "CENTER" },
+                { text: '$' + detail.totalPrice, align: "RIGHT" }
             ]);
         }).join('')
 
@@ -101,11 +101,11 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if(order.pieces === 0){
-            printer.println('Cliente: ' + order.client)           
-        }else{
-            printer.tableCustom([                                      
-                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true},
+        if (order.pieces === 0) {
+            printer.println('Cliente: ' + order.client)
+        } else {
+            printer.tableCustom([
+                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
                 { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
             ]);
         }
@@ -114,12 +114,12 @@ export const generateTicket = async (req, res) => {
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
         printer.bold(true);
         printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
-        printer.bold(false);   
+        printer.bold(false);
 
         printer.drawLine();
 
         printer.bold(true)
-        printer.print('Observaciones Generales: ') 
+        printer.print('Observaciones Generales: ')
         printer.bold(false)
         printer.println(order.notes)
 
@@ -127,14 +127,15 @@ export const generateTicket = async (req, res) => {
 
         printer.println('PROFECO NO. REGISTRO: 4390/2013')
         printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
-    
+
         printer.tableCustom([
-            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true},
-            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT"},
+            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
+            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
 
-        printer.cut();       
+        printer.cut();
         let execute = printer.execute()
+        printer.clear();
         console.log("Print done!");
 
         // printer.bold(true);                                         // Set text bold
@@ -207,6 +208,68 @@ const formatDate = (dateStr) => {
 };
 
 const formatTime = (dateStr) => {
-    const date =  moment(dateStr).format("dddd LT");
+    const date = moment(dateStr).format("dddd LT");
     return date
+}
+
+export const generatePartialCashCutTicket = async (req, res) => {
+    try {
+
+        const { cashCut } = req.body
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        printer.setTextQuadArea()
+        printer.println('CORTE DE CAJA PARCIAL')
+
+        printer.setTextDoubleHeight();
+        printer.println(`Folio No.: ${cashCut.cashCutId}`)
+
+        printer.setTextNormal()
+        printer.drawLine();
+
+        printer.println(`Cajero: ${cashCut.casher}`)
+        printer.println(`Fecha: ${cashCut.date}`)
+        printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+
+        printer.drawLine()
+
+        printer.setTextDoubleHeight();
+        printer.println("Detalles de Ingresos por Servicio")
+        printer.newLine()
+
+        printer.setTextNormal()
+        printer.println(`Total Autoservicio: ${cashCut.selfService}`)
+        printer.println(`Total Lavado por Encargo: ${cashCut.laundry}`)
+        printer.println(`Total Planchado: ${cashCut.iron}`)
+        printer.println(`Total Tintoreria: ${cashCut.dryCleaning}`)
+        printer.println(`Total Encargo Varios: ${cashCut.others}`)
+        printer.setTextDoubleHeight();
+        printer.newLine()
+        printer.println(`Total (Suma de los Servicios): ${cashCut.total}`)
+        printer.setTextNormal()
+
+        printer.newLine()
+
+        printer.println(`Ingreso en Efectivo: ${cashCut.totalCash}`)
+        printer.println(`Ingreso en Tarjeta: ${cashCut.totalCredit}`)
+        printer.println(`Retiros Totales: -${cashCut.totalCashWithdrawal}`)
+        printer.setTextDoubleHeight();
+        printer.newLine()
+        printer.println(`Final Total en Caja: ${cashCut.total}`)
+        printer.setTextNormal()
+
+        printer.cut();
+        let execute = printer.execute()
+        printer.clear();
+        res.status(200).json("Print done!");
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message });
+    }
 }

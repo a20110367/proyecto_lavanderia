@@ -323,6 +323,29 @@ function CorteCaja() {
 
       setCortes([nuevoCorte]);
       setPartialCorteDialogVisible(false);
+
+      const partialCashCut = {
+        cashCutId: nuevoCorte.id_cashCut,
+        casher: cookies.username,
+        workShift: nuevoCorte.workShift,
+        date: moment().format('DD/MM/YYYY'),
+        initialCash: initialCash,
+        selfService: nuevoCorte.totalAutoservicio,
+        laundry: nuevoCorte.totalEncargo,
+        iron: nuevoCorte.totalPlanchado,
+        dryCleaning: nuevoCorte.totalTintoreria,
+        others: nuevoCorte.totalOtrosEncargo,
+        totalIncome: nuevoCorte.totalIncome,
+        totalCash: nuevoCorte.totalCash,
+        totalCredit: nuevoCorte.totalCredit,
+        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
+        total: nuevoCorte.total
+      }
+
+    await api.post('/generatePartialCashCutTicket', {
+      cashCut: partialCashCut,
+    })
+
     } catch (err) {
       console.error(err);
     }

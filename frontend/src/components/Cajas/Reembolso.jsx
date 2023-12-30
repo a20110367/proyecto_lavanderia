@@ -90,7 +90,8 @@ function Reembolso() {
     setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
 
-  const handleConfirmReembolso = () => {
+  const handleConfirmReembolso = async () => {
+   try{
     // Validación de campos obligatorios
     let isValid = true;
 
@@ -125,7 +126,7 @@ function Reembolso() {
     if (isValid) {
       const date = moment().format();
 
-      api.post("/cashWithdrawals", {
+     await api.post("/cashWithdrawals", {
         cashWithdrawalType: "refound",
         fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
         fk_user: cookies.token,
@@ -134,6 +135,9 @@ function Reembolso() {
         cause: motivo,
         date: date,
       });
+
+      await api.patch(`/cancelOrder/${numeroPedido}`)
+      
 
       const nuevoReembolso = {
         id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
@@ -149,6 +153,10 @@ function Reembolso() {
 
       setVisible(false);
     }
+  }
+  catch(err){
+    console.log(err)
+  }
   };
 
   const handleClose = () => {

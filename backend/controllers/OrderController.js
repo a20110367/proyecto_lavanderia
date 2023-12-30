@@ -1238,7 +1238,15 @@ export const updateCancelledOrder = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.update({
             where: {
-                id_order: Number(req.params.id)
+                AND: [
+                    {
+                        id_order: Number(req.params.id)
+                    },
+                    {
+                        payStatus: "paid"
+                    }
+                ],
+
             },
             data: {
                 orderStatus: "cancelled"

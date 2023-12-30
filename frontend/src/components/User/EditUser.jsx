@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   faCheck,
@@ -7,6 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import api from '../../api/api'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?=!@#$%*]).{8,24}$/;
@@ -81,7 +81,7 @@ function EditUser() {
 
   useEffect(() => {
     const getUserById = async () => {
-      const response = await Axios.get(`http://localhost:5000/users/${id}`);
+      const response = await api.get(`/users/${id}`);
       setUserName(response.data.username);
       setName(response.data.name);
       setFirstLN(response.data.firstLN);

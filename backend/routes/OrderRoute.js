@@ -55,7 +55,7 @@ router.post('/ordersMany', createOrderMany);
 
 router.patch('/orders/:id', updateOrder);
 router.patch('/storedOrders/', updateStoredOrders);
-router.patch('/canceldOrder/:id', updateCancelledOrder);
+router.patch('/cancelOrder/:id', updateCancelledOrder);
 
 
 router.delete('/orders/:id', deleteOrder);

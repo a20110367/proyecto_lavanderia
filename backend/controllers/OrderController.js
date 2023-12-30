@@ -1305,7 +1305,6 @@ export const updateCancelledOrder = async (req, res) => {
                         payStatus: "paid"
                     }
                 ],
-
             },
             data: {
                 orderStatus: "cancelled"
@@ -1315,7 +1314,7 @@ export const updateCancelledOrder = async (req, res) => {
 
         res.status(200).json(response);
     } catch (e) {
-        res.status(404).json({ msg: e.message });
+        res.status(400).json({ msg: e.message });
     }
 }
 export const updateOrder = async (req, res) => {
@@ -1329,7 +1328,7 @@ export const updateOrder = async (req, res) => {
         });
         res.status(200).json(serviceOrder);
     } catch (e) {
-        res.status(400).json({ msg: e.message });
+        res.status(404).json({ msg: e.message });
     }
 }
 

@@ -50,18 +50,18 @@ function Reembolso() {
   const handleFiltroChange = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = reembolsos.filter(
-      (reembolso) =>{
-      const formattedDate = moment(reembolso.date).format("DD/MM/YYYY");
-      return(
-        reembolso.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
-        reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
-        reembolso.cause.toLowerCase().includes(searchTerm) ||
-        formattedDate.toLowerCase().includes(searchTerm)
+      (reembolso) => {
+        const formattedDate = moment(reembolso.date).format("DD/MM/YYYY");
+        return (
+          reembolso.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
+          reembolso.amount.toString().toLowerCase().includes(searchTerm) ||
+          reembolso.cause.toLowerCase().includes(searchTerm) ||
+          formattedDate.toLowerCase().includes(searchTerm)
         );
       });
-      setFiltro(event.target.value);
-      setFilteredReembolsos(filtered);
-      setCurrentPage(0);
+    setFiltro(event.target.value);
+    setFilteredReembolsos(filtered);
+    setCurrentPage(0);
   };
 
   const handleReembolso = () => {
@@ -91,72 +91,71 @@ function Reembolso() {
   };
 
   const handleConfirmReembolso = async () => {
-   try{
-    // Validación de campos obligatorios
-    let isValid = true;
+    try {
+      // Validación de campos obligatorios
+      let isValid = true;
 
-    if (!numeroPedido) {
-      setNumeroPedidoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setNumeroPedidoError("");
+      if (!numeroPedido) {
+        setNumeroPedidoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setNumeroPedidoError("");
+      }
+
+      if (!monto) {
+        setMontoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMontoError("");
+      }
+
+      if (!motivo) {
+        setMotivoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
+
+      if (!localStorage.getItem("cashCutId")) {
+        setMotivoError("No se ha inicializado la caja");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
+
+      if (isValid) {
+        const date = moment().format();
+
+        await api.post("/cashWithdrawals", {
+          cashWithdrawalType: "refound",
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          fk_user: cookies.token,
+          serviceOrder: parseInt(numeroPedido),
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        });
+
+        await api.patch(`/cancelOrder/${numeroPedido}`);
+
+        const nuevoReembolso = {
+          id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
+          cashWithdrawalType: "refound",
+          serviceOrder: parseInt(numeroPedido),
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        };
+
+        setReembolsos([...reembolsos, nuevoReembolso]);
+        setFilteredReembolsos([...reembolsos, nuevoReembolso]);
+
+        setVisible(false);
+      }
     }
-
-    if (!monto) {
-      setMontoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMontoError("");
+    catch (err) {
+      console.log(err)
     }
-
-    if (!motivo) {
-      setMotivoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (!localStorage.getItem("cashCutId")) {
-      setMotivoError("No se ha inicializado la caja");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (isValid) {
-      const date = moment().format();
-
-     await api.post("/cashWithdrawals", {
-        cashWithdrawalType: "refound",
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        fk_user: cookies.token,
-        serviceOrder: parseInt(numeroPedido),
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-      });
-
-      await api.patch(`/cancelOrder/${numeroPedido}`)
-      
-
-      const nuevoReembolso = {
-        id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
-        cashWithdrawalType : "refound",
-        serviceOrder: parseInt(numeroPedido),
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-      };
-
-      setReembolsos([...reembolsos, nuevoReembolso]);
-      setFilteredReembolsos([...reembolsos, nuevoReembolso]);
-
-      setVisible(false);
-    }
-  }
-  catch(err){
-    console.log(err)
-  }
   };
 
   const handleClose = () => {

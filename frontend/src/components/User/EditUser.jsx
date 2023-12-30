@@ -104,7 +104,7 @@ function EditUser() {
       return;
     }
     try {
-      await Axios.patch(`http://localhost:5000/users/${id}`, {
+      await api.patch(`/users/${id}`, {
         name: name,
         username: userName,
         firstLN: firstLN,

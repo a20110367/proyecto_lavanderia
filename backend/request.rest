@@ -971,3 +971,6 @@ PATCH http://localhost:5000/diaryIronControl/1
 
 ###
 POST http://localhost:5000/generateTicket
+
+###
+PATCH http://localhost:5000/cancelOrder/244

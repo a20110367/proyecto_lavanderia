@@ -7,6 +7,7 @@ import { formatDate } from "../../utils/format";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
+import Swal from "sweetalert2";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -128,6 +129,16 @@ function HistorialCaja() {
   };
 
   const handleFiltroPorFecha = () => {
+    if (!dateRange || dateRange.length !== 2)  {
+      // Alert the user if start and end dates are not selected
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Debes seleccionar una fecha de inicio y una fecha de término para buscar.",
+        confirmButtonColor: "#034078",
+      });
+      return;
+    }
     if (dateRange.length === 2) {
       const [startDate, endDate] = dateRange.map((date) => date.toDate());
 

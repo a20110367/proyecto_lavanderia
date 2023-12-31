@@ -86,6 +86,7 @@ import PedidosVarios from "./components/Pedidos/PedidosVarios"
 import RecepcionVarios from "./components/EncargoVarios/RecepcionVarios"
 import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
 import Reportes from "./components/Cajas/Reportes"
+import PedidosAlmacenados from "./components/Pedidos/PedidosAlmacenados"
 
 function App() {
     const { cookies } = useAuth();
@@ -153,6 +154,7 @@ function App() {
                     {/* Pedidos */}
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
                     <Route path="/pedidosAutoservicio" element={<PedidosAutoservicio />} />
+                    <Route path="/pedidosAlmacenados" element={<PedidosAlmacenados />} />
 
                     {/*Lavanderia */}
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />

@@ -77,6 +77,7 @@ const items1 = [
         getItem("Tintoreria", "/pedidosTintoreria"),
         getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
+        getItem("Almacenados","/pedidosAlmacenados"),
     ]),
     getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
@@ -155,6 +156,7 @@ const items2 = [
         getItem("Tintoreria", "/pedidosTintoreria"),
         getItem("Encargo Varios", "/pedidosVarios"),
         getItem("General", "/pedidosGeneral"),
+        getItem("Almacenados","/pedidosAlmacenados"),
 
     ]),
     getItem("Añadir Clientes", "/addClient", <HiShoppingCart style={iconStyle} />),

@@ -427,7 +427,6 @@ function EntregaVarios() {
       )}
 
       <Modal
-        title="Detalles del Pedido"
         open={visible}
         onOk={() => handleGuardarCobro(selectedPedido)}
         onCancel={handleClose}

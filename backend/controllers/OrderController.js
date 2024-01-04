@@ -168,71 +168,105 @@ export const getOrdersById = async (req, res) => {
 
 export const getOrdersByClientName = async (req, res) => {
 
+  
     var clientNameArray = req.body.name.split(" ")
     const clienSecondLN = clientNameArray.pop()
     const clientFirstLN = clientNameArray.pop()
-    const clientName = clientNameArray.toString()
-    clientName = clientName.replace(/,/g, '')
-    console.log(clientName, clientFirstLN, clienSecondLN)
+    const clientNewName = clientNameArray.toString()
+    const clientName = clientNewName.replace(/,/g, ' ')
+    console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
 
     try {
-        const response = await prisma.serviceOrder.findMany({
+        const client = await prisma.client.findFirst({
             where: {
                 AND: [
                     {
-                        name: clientName
+                        name: clientName,
                     },
                     {
-                        firstLN: clientFirstLN
+                        firstLN: clientFirstLN,
                     },
                     {
-                        secondLN: clienSecondLN
+                        secondLN: clienSecondLN,
                     }
-                    , {
-                        NOT: {
-                            orderStatus: "delivered"
-                        },
-                    }
-                ]
+
+                ],
             },
-            include: {
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        email: true,
-                        phone: true,
+
+            select: {
+                id_client: true,
+            }
+
+        });
+
+        console.log (client)
+
+        var response
+        if (client != null) {
+
+            response = await prisma.serviceOrder.findMany({
+                where: {
+                    AND: [
+                        {
+                            fk_client: client.id_client
+                        },
+                        {
+                            OR: [
+                                {
+                                    orderStatus: "finished"
+                                },
+                                {
+                                    orderStatus: "stored"
+                                }
+                            ]
+                        }
+
+                    ]
+
+                },
+                include: {
+                    client: {
+                        select: {
+                            name: true,
+                            firstLN: true,
+                            secondLN: true,
+                            email: true,
+                            phone: true,
+                        },
                     },
-                },
-                category: {
-                    select: {
-                        categoryDescription: true,
-                    }
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
+                    category: {
+                        select: {
+                            categoryDescription: true,
+                        }
                     },
-                },
-                ServiceOrderDetail: true,
-                payment: true,
-                deliveryDetail: {
-                    select: {
-                        user: {
-                            select: {
-                                name: true,
-                                firstLN: true,
-                                secondLN: true,
+                    user: {
+                        select: {
+                            name: true,
+                            firstLN: true,
+                            secondLN: true,
+                        },
+                    },
+                    ServiceOrderDetail: true,
+                    payment: true,
+                    deliveryDetail: {
+                        select: {
+                            user: {
+                                select: {
+                                    name: true,
+                                    firstLN: true,
+                                    secondLN: true,
+                                },
                             },
                         },
                     },
                 },
-            },
 
-        });
+            });
+
+        }
+        else {
+            response = null
+        }
 
         res.status(200).json(response);
     } catch (e) {

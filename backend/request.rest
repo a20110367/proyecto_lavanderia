@@ -587,7 +587,7 @@ GET http://localhost:5000/ordersActive
 
 ###
 
-GET http://localhost:5000/orders/1
+GET http://localhost:5000/orders/252
 
 ####
 
@@ -597,6 +597,17 @@ GET http://localhost:5000/ordersByUser/1
 
 GET http://localhost:5000/ordersByClient/1
 
+
+###
+
+GET http://localhost:5000/ordersByClientName
+Content-Type: application/json
+
+{
+
+  "name":"Janito Pedro Lopez Perez"
+
+}
 ###
 
 GET http://localhost:5000/ordersLaundry

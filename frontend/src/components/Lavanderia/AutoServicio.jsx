@@ -129,6 +129,7 @@ function AutoServicio() {
                     <td className="py-3 px-1 text-center">{index + 1}</td>
                     <td className="th2 font-medium text-gray-900">
                       {client.name}
+                      {client.firstLN}
                     </td>
                     <td className="th2">{client.phone}</td>
                     <td className="th2">{client.email}</td>

@@ -319,7 +319,7 @@ function PedidosGeneral() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.deliveryDetail
@@ -327,7 +327,7 @@ function PedidosGeneral() {
                       : ""}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name}
+                     {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category

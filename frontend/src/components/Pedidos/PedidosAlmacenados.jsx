@@ -13,11 +13,13 @@ import {
 } from "@ant-design/icons";
 import moment from "moment";
 import { orderTicket } from "../Ticket/Tickets";
+import api from "../../api/api";
 
 const PedidosAlmacenados = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+  const [pedidos, setPedidos] = useState([]);
+  const [client, setClient] = useState("");
+  const [id_order, setId_order] = useState("");
   const [searchType, setSearchType] = useState("client");
-  const [searchValue, setSearchValue] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -40,118 +42,15 @@ const PedidosAlmacenados = () => {
   });
 
   useEffect(() => {
-    setSearchValue("");
+    setClient("");
+    setId_order("");
   }, [searchType]);
 
-  const pedidos = [
-    {
-      id_order: 1,
-      user: "Nombre1",
-      client: "Cliente1",
-      categoryDescription: "Encargo",
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 150,
-    },
-    {
-      id_order: 2,
-      user: "Nombre2",
-      client: "Cliente2",
-      categoryDescription: "Planchado",
-      pieces: 10,
-      orderStatus: "stored",
-      payStatus: "paid",
-      notes: "Observaciones del pedido 2",
-      totalPrice: 120,
-    },
-    {
-      id_order: 3,
-      user: "Nombre3",
-      client: "Cliente1",
-      categoryDescription: "Varios",
-      orderStatus: "stored",
-      payStatus: "paid",
-      notes: "Sin notas",
-      totalPrice: 100,
-    },
-    {
-      id_order: 4,
-      user: "Nombre4",
-      client: "Cliente3",
-      categoryDescription: "Tintoreria",
-      pieces: 5,
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 250,
-    },
-    {
-      id_order: 5,
-      user: "Nombre5",
-      client: "Cliente2",
-      categoryDescription: "Encargo",
-      orderStatus: "stored",
-      payStatus: "paid",
-      notes: "Observaciones del pedido 5",
-      totalPrice: 50,
-    },
-    {
-      id_order: 6,
-      user: "Nombre6",
-      client: "Cliente4",
-      categoryDescription: "Planchado",
-      pieces: 10,
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 180,
-    },
-    {
-      id_order: 7,
-      user: "Nombre7",
-      client: "Cliente5",
-      categoryDescription: "Encargo",
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 150,
-    },
-    {
-      id_order: 8,
-      user: "Nombre8",
-      client: "Cliente6",
-      categoryDescription: "Varios",
-      orderStatus: "stored",
-      payStatus: "paid",
-      notes: "Observaciones del pedido 8",
-      totalPrice: 100,
-    },
-    {
-      id_order: 9,
-      user: "Nombre9",
-      client: "Cliente7",
-      categoryDescription: "Varios",
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 120,
-    },
-    {
-      id_order: 10,
-      user: "Nombre10",
-      client: "Cliente8",
-      categoryDescription: "Tintoreria",
-      pieces: 5,
-      orderStatus: "stored",
-      payStatus: "unpaid",
-      notes: "Sin notas",
-      totalPrice: 350,
-    },
-  ];
-
-  const handleSearch = () => {
-    if (!searchValue) {
+  const handleSearch = async () => {
+    if (
+      (searchType === "client" && !client) ||
+      (searchType === "id_order" && !id_order)
+    ) {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -161,37 +60,62 @@ const PedidosAlmacenados = () => {
       return;
     }
 
-    const results = pedidos.filter((pedido) => {
-      if (searchType === "client") {
-        return pedido.client.toLowerCase().includes(searchValue.toLowerCase());
-      } else if (searchType === "id_order") {
-        return pedido.id_order === parseInt(searchValue);
-      }
-      return false;
-    });
-
-    if (results.length > 0) {
-      setSearchResults(results);
-      setShowTable(true);
-    } else {
-      setShowTable(false);
+    if (searchType === "client" && !isNaN(client)) {
       Swal.fire({
-        icon: "info",
-        title: "Lo sentimos",
-        text: "No se encontraron coincidencias.",
+        icon: "warning",
+        title: "Error",
+        text: 'Para buscar por número de pedido, selecciona la opción "Número de pedido"',
+        confirmButtonColor: "#034078",
+      });
+      return;
+    }
+
+    try { 
+      let results;
+
+      if (searchType === "client") {
+       
+        const res = await api.get(`/ordersByClientName`, {
+           name: client 
+          });
+        results = res.data ? res.data : [];
+      } else if (searchType === "id_order") {
+        const res = await api.get(`/orders/${id_order}`);
+        results = res.data ? [res.data] : []; // Verifica si existe data en la respuesta
+      }
+
+      if (results.length > 0) {
+        setSearchResults(results);
+        setShowTable(true);
+      } else {
+        setShowTable(false);
+        Swal.fire({
+          icon: "info",
+          title: "Lo sentimos",
+          text: "No se encontraron coincidencias.",
+          confirmButtonColor: "#034078",
+        });
+      }
+
+      console.log("Resultados de búsqueda:", results);
+    } catch (error) {
+      console.error("Error al realizar la búsqueda:", error);
+      // Aquí puedes manejar el error según sea necesario
+      // Por ejemplo, mostrar un mensaje de error genérico
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ha ocurrido un error al buscar los pedidos.",
         confirmButtonColor: "#034078",
       });
     }
-
-    setSearchResults(results);
-
-    console.log("Resultados de búsqueda:", results);
   };
 
   const handleReturn = () => {
     setShowTable(false);
     setSearchType("client");
-    setSearchValue("");
+    setClient("");
+    setId_order("");
     setSearchResults([]);
     setCurrentPage(0);
   };
@@ -432,12 +356,26 @@ const PedidosAlmacenados = () => {
                 .map((pedido) => (
                   <tr key={pedido.id_order}>
                     <td>{pedido.id_order}</td>
-                    <td>{pedido.user}</td>
+                    <td>{pedido.user.name}</td>
                     <td className="py-3 px-6 font-medium text-gray-900">
-                      {pedido.client}
+                      {pedido.client.name}
                     </td>
-                    <td>{pedido.categoryDescription}</td>
-                    <td>{pedido.pieces}</td>
+                    <td>
+                      {pedido.category
+                        ? pedido.category.categoryDescription === "autoservicio"
+                          ? "Autoservicio"
+                          : pedido.category.categoryDescription === "planchado"
+                          ? "Planchado"
+                          : pedido.category.categoryDescription === "encargo"
+                          ? "Encargo Ropa"
+                          : pedido.category.categoryDescription === "tintoreria"
+                          ? "Tintoreria"
+                          : pedido.category.categoryDescription === "varios"
+                          ? "Encargo Varios"
+                          : "Otro"
+                        : "Categoría no definida"}
+                    </td>
+                    <td>{pedido.ironPieces ? pedido.ironPieces : "-"}</td>
                     <td className="py-3 px-6 font-bold">
                       {pedido.orderStatus === "stored" ? (
                         <span className="text-fuchsia-600 pl-1">
@@ -623,36 +561,36 @@ const PedidosAlmacenados = () => {
             >
               <Select
                 defaultValue="client"
-                className="w-32 mr-2 font-bold"
+                className=" mr-2 font-bold"
                 onChange={(value) => setSearchType(value)}
               >
                 <Select.Option
                   className="text-base font-semibold"
                   value="client"
                 >
-                  Cliente
+                  Nombre del Cliente
                 </Select.Option>
                 <Select.Option
                   className="text-base font-semibold"
                   value="id_order"
                 >
-                  Número
+                  Número del pedido
                 </Select.Option>
               </Select>
               {searchType === "id_order" ? (
                 <Input
                   className="mr-2"
                   type="number"
-                  placeholder="Número de pedido"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Escriba el número de pedido"
+                  value={id_order}
+                  onChange={(e) => setId_order(e.target.value)}
                 />
               ) : (
                 <Input
                   className="mr-2"
-                  placeholder="Nombre del cliente"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+                  placeholder="Escriba el nombre completo del cliente"
+                  value={client}
+                  onChange={(e) => setClient(e.target.value)}
                 />
               )}
               <Button

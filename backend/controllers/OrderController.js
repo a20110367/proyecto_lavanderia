@@ -168,15 +168,15 @@ export const getOrdersById = async (req, res) => {
 
 export const getOrdersByClientName = async (req, res) => {
 
-  
-    var clientNameArray = req.body.name.split(" ")
-    const clienSecondLN = clientNameArray.pop()
-    const clientFirstLN = clientNameArray.pop()
-    const clientNewName = clientNameArray.toString()
-    const clientName = clientNewName.replace(/,/g, ' ')
-    console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
-
     try {
+        var clientNameArray = req.body.name.split(" ")
+        const clienSecondLN = clientNameArray.pop()
+        const clientFirstLN = clientNameArray.pop()
+        const clientNewName = clientNameArray.toString()
+        const clientName = clientNewName.replace(/,/g, ' ')
+        console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
+
+
         const client = await prisma.client.findFirst({
             where: {
                 AND: [
@@ -199,9 +199,9 @@ export const getOrdersByClientName = async (req, res) => {
 
         });
 
-        console.log (client)
+        console.log(client)
 
-        var response
+        var response = "";
         if (client != null) {
 
             response = await prisma.serviceOrder.findMany({

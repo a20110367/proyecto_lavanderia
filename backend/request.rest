@@ -605,7 +605,7 @@ Content-Type: application/json
 
 {
 
-  "name":"Janito Pedro Lopez Perez"
+  "name":"Janito Lopez Perez"
 
 }
 ###

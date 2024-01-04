@@ -127,7 +127,14 @@ export const getOrdersById = async (req, res) => {
                         name: true,
                         firstLN: true,
                         secondLN: true,
+                        email: true,
+                        phone: true,
                     },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
                 },
                 user: {
                     select: {
@@ -137,6 +144,88 @@ export const getOrdersById = async (req, res) => {
                     },
                 },
                 ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
+            },
+
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const getOrdersByClientName = async (req, res) => {
+
+    var clientNameArray = req.body.name.split(" ")
+    const clienSecondLN = clientNameArray.pop()
+    const clientFirstLN = clientNameArray.pop()
+    const clientName = clientNameArray.toString()
+    clientName = clientName.replace(/,/g, '')
+    console.log(clientName, clientFirstLN, clienSecondLN) 
+
+    try {
+        const response = await prisma.serviceOrder.findMany({
+            where: {
+                AND:[
+                    {
+                        name:clientName
+                    },
+                    {
+                        firstLN:clientFirstLN
+                    },
+                    {
+                        secondLN:clienSecondLN
+                    }
+                ]
+                id_order: Number(req.params.id)
+            },
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
             },
 
         });

@@ -4,6 +4,7 @@ import {
     getActiveOrders,
     getOrdersById,
     getOrdersByIdClient,
+    getOrdersByClientName,
     getOrdersByIdUser,
     getOrdersSelfService,
     getOrdersLaundry,
@@ -34,6 +35,7 @@ router.get('/orders', getOrders);
 router.get('/ordersActive', getActiveOrders);
 router.get('/orders/:id', getOrdersById);
 router.get('/ordersByClient/:fk_client', getOrdersByIdClient);
+router.get('/ordersByClientName/', getOrdersByIdClient);
 router.get('/ordersByUser/:fk_user', getOrdersByIdUser);
 router.get('/ordersSelfService', getOrdersSelfService);
 router.get('/ordersLaundry', getOrdersLaundry);

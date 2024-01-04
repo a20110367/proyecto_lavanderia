@@ -173,23 +173,27 @@ export const getOrdersByClientName = async (req, res) => {
     const clientFirstLN = clientNameArray.pop()
     const clientName = clientNameArray.toString()
     clientName = clientName.replace(/,/g, '')
-    console.log(clientName, clientFirstLN, clienSecondLN) 
+    console.log(clientName, clientFirstLN, clienSecondLN)
 
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
-                AND:[
+                AND: [
                     {
-                        name:clientName
+                        name: clientName
                     },
                     {
-                        firstLN:clientFirstLN
+                        firstLN: clientFirstLN
                     },
                     {
-                        secondLN:clienSecondLN
+                        secondLN: clienSecondLN
+                    }
+                    , {
+                        NOT: {
+                            orderStatus: "delivered"
+                        },
                     }
                 ]
-                id_order: Number(req.params.id)
             },
             include: {
                 client: {

@@ -35,7 +35,7 @@ router.get('/orders', getOrders);
 router.get('/ordersActive', getActiveOrders);
 router.get('/orders/:id', getOrdersById);
 router.get('/ordersByClient/:fk_client', getOrdersByIdClient);
-router.get('/ordersByClientName', getOrdersByClientName);
+
 router.get('/ordersByUser/:fk_user', getOrdersByIdUser);
 router.get('/ordersSelfService', getOrdersSelfService);
 router.get('/ordersLaundry', getOrdersLaundry);
@@ -56,6 +56,7 @@ router.post('/ordersIronService', createIronServiceOrder);
 router.post('/ordersDryclean', createDrycleanServiceOrder);
 router.post('/ordersOtherService', createOtherServiceOrder);
 router.post('/ordersMany', createOrderMany);
+router.post('/ordersByClientName', getOrdersByClientName);
 
 router.patch('/orders/:id', updateOrder);
 router.patch('/storedOrders/', updateStoredOrders);

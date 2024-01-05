@@ -169,7 +169,7 @@ export const getOrdersById = async (req, res) => {
 export const getOrdersByClientName = async (req, res) => {
 
     try {
-        let clientNameArray = req.body.name.split(" ")
+        let clientNameArray = req.body.clientName.split(" ")
         const clienSecondLN = clientNameArray.pop()
         const clientFirstLN = clientNameArray.pop()
         const clientNewName = clientNameArray.toString()

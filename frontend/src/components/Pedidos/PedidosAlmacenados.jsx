@@ -70,17 +70,14 @@ const PedidosAlmacenados = () => {
       return;
     }
 
-    try { 
+    try {
       let results;
 
       if (searchType === "client") {
-       
-        const res = await api.get(`/ordersByClientName`, {
-           name: client 
-          });
+        const res = await api.post('/ordersByClientName', { clientName: client });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
-        const res = await api.get(`/orders/${id_order}`);
+        const res = await api.get(`/orders/${id_order}`); 
         results = res.data ? [res.data] : []; // Verifica si existe data en la respuesta
       }
 
@@ -100,8 +97,6 @@ const PedidosAlmacenados = () => {
       console.log("Resultados de búsqueda:", results);
     } catch (error) {
       console.error("Error al realizar la búsqueda:", error);
-      // Aquí puedes manejar el error según sea necesario
-      // Por ejemplo, mostrar un mensaje de error genérico
       Swal.fire({
         icon: "error",
         title: "Error",

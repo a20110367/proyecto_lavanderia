@@ -74,10 +74,12 @@ const PedidosAlmacenados = () => {
       let results;
 
       if (searchType === "client") {
-        const res = await api.post('/ordersByClientName', { clientName: client });
+        const res = await api.post("/ordersByClientName", {
+          clientName: client,
+        });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
-        const res = await api.get(`/orders/${id_order}`); 
+        const res = await api.get(`/orders/${id_order}`);
         results = res.data ? [res.data] : []; // Verifica si existe data en la respuesta
       }
 
@@ -376,6 +378,10 @@ const PedidosAlmacenados = () => {
                         <span className="text-fuchsia-600 pl-1">
                           <DropboxOutlined /> Almacenado
                         </span>
+                      ) : pedido.orderStatus === "finished" ? (
+                        <span className="text-blue-600 pl-1">
+                          <IssuesCloseOutlined /> Finalizado no entregado
+                        </span>
                       ) : (
                         <span className="text-gray-600 pl-1">Otro estado</span>
                       )}
@@ -545,7 +551,8 @@ const PedidosAlmacenados = () => {
             </div>
             <p>
               Bienvenido a pedidos almacenados. <br />
-              Busca tu pedido por el completo nombre  del cliente o número del pedido.
+              Busca tu pedido por el completo nombre del cliente o número del
+              pedido.
             </p>
             <form
               className="flex items-center mt-4"

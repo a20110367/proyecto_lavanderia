@@ -83,7 +83,7 @@ const PedidosAlmacenados = () => {
         });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
-        const res = await api.get(`/orders/${id_order}`);
+        const res = await api.get(`orders/ ${id_order}`);
         results = res.data ? [res.data] : []; // Verifica si existe data en la respuesta
       }
 
@@ -159,7 +159,11 @@ const PedidosAlmacenados = () => {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
+        doc.text(
+          `Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`,
+          10,
+          20
+        );
         doc.text(
           `Pedido: ${
             pedido.ServiceOrderDetail.find(
@@ -175,12 +179,12 @@ const PedidosAlmacenados = () => {
         doc.text(
           `Método de Pago: ${
             pedido.payment
-            ? pedido.payment.payMethod === "cash"
-              ? "Efectivo"
-              : pedido.payment.payMethod === "credit"
+              ? pedido.payment.payMethod === "cash"
+                ? "Efectivo"
+                : pedido.payment.payMethod === "credit"
                 ? "Tarjeta"
                 : "N/A"
-                :"N/A"
+              : "N/A"
           }`,
           10,
           50
@@ -342,7 +346,11 @@ const PedidosAlmacenados = () => {
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
+    doc.text(
+      `Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`,
+      10,
+      20
+    );
     doc.text(
       `Pedido: ${
         pedido.ServiceOrderDetail.find(
@@ -358,12 +366,12 @@ const PedidosAlmacenados = () => {
     doc.text(
       `Método de Pago: ${
         pedido.payment
-        ? pedido.payment.payMethod === "cash"
-          ? "Efectivo"
-          : pedido.payment.payMethod === "credit"
+          ? pedido.payment.payMethod === "cash"
+            ? "Efectivo"
+            : pedido.payment.payMethod === "credit"
             ? "Tarjeta"
             : "N/A"
-            :"N/A"
+          : "N/A"
       }`,
       10,
       50
@@ -445,16 +453,34 @@ const PedidosAlmacenados = () => {
                         : "-"}
                     </td>
                     <td className="py-3 px-6 font-bold">
-                      {pedido.orderStatus === "stored" ? (
+                      {pedido.orderStatus === "pending" ? (
+                        <span className="text-gray-600 pl-1">
+                          <MinusCircleOutlined /> Pendiente
+                        </span>
+                      ) : pedido.orderStatus === "stored" ? (
                         <span className="text-fuchsia-600 pl-1">
                           <DropboxOutlined /> Almacenado
+                        </span>
+                      ) : pedido.orderStatus === "inProgress" ? (
+                        <span className="text-yellow-600 pl-1">
+                          <ClockCircleOutlined /> En Proceso
                         </span>
                       ) : pedido.orderStatus === "finished" ? (
                         <span className="text-blue-600 pl-1">
                           <IssuesCloseOutlined /> Finalizado no entregado
                         </span>
+                      ) : pedido.orderStatus === "delivered" ? (
+                        <span className="text-green-600 pl-1">
+                          <CheckCircleOutlined /> Finalizado Entregado
+                        </span>
+                      ) : pedido.orderStatus === "cancelled" ? (
+                        <span className="text-red-600 pl-1">
+                          <StopOutlined /> Cancelado
+                        </span>
                       ) : (
-                        <span className="text-gray-600 pl-1">Otro estado</span>
+                        <span className="text-gray-600 pl-1">
+                          Estado Desconocido
+                        </span>
                       )}
                     </td>
                     <td
@@ -478,7 +504,11 @@ const PedidosAlmacenados = () => {
                     </td>
                     <td>{pedido.notes}</td>
                     <td>
-                      {pedido.payStatus === "paid" ? (
+                      {pedido.orderStatus === "delivered" ||
+                      pedido.orderStatus === "pending" ||
+                      pedido.orderStatus === "inprogress" ||
+                      pedido.orderStatus ===
+                        "canceled" ? null : pedido.payStatus === "paid" ? ( // No mostrar ningún botón si el estado del pedido es uno de estos
                         <button
                           onClick={() => handleEntregar(pedido)}
                           className="btn-delivery"
@@ -570,7 +600,9 @@ const PedidosAlmacenados = () => {
               <div>
                 <p className="text-lg font-semibold">Detalles del Pedido</p>
                 <p>
-                  <strong>Cliente:</strong> {selectedPedido?.client.name} {selectedPedido?.client.firstLN} {selectedPedido?.client.secondLN}
+                  <strong>Cliente:</strong> {selectedPedido?.client.name}{" "}
+                  {selectedPedido?.client.firstLN}{" "}
+                  {selectedPedido?.client.secondLN}
                 </p>
                 <p>
                   <strong>Pedido:</strong> {selectedPedido.id_order}
@@ -622,8 +654,9 @@ const PedidosAlmacenados = () => {
             </div>
             <p>
               Bienvenido a pedidos almacenados. <br />
-              Busca tu pedido por el completo nombre del cliente o número del
-              pedido.
+              Busca tu pedido por el{" "}
+              <strong className="font-bold">nombre completo</strong> del cliente
+              o por número del pedido.
             </p>
             <form
               className="flex items-center mt-4"

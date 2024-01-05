@@ -282,7 +282,7 @@ const PedidosAlmacenados = () => {
         payMethod: cobroInfo.metodoPago,
         subtotal: totalWithDiscount,
         casher: pedido.user.name,
-        client: pedido.client.name + pedido.client.firstLN + pedido.client.secondLN,
+        client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,

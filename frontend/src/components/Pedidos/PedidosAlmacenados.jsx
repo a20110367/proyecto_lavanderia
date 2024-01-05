@@ -12,7 +12,6 @@ import {
   DropboxOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 
 const PedidosAlmacenados = () => {
@@ -77,7 +76,7 @@ const PedidosAlmacenados = () => {
         const res = await api.post('/ordersByClientName', { clientName: client });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
-        const res = await api.get(`/orders/${id_order}`); 
+        const res = await api.get(`/orders/${id_order}`);
         results = res.data ? [res.data] : []; // Verifica si existe data en la respuesta
       }
 
@@ -155,24 +154,22 @@ const PedidosAlmacenados = () => {
         doc.text(`Detalles del Pedido`, 10, 10);
         doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
         doc.text(
-          `Pedido: ${
-            pedido.ServiceOrderDetail.find(
-              (service) => service.id_serviceOrderDetail
-            ) != undefined
-              ? pedido.ServiceOrderDetail.length
-              : 0
+          `Pedido: ${pedido.ServiceOrderDetail.find(
+            (service) => service.id_serviceOrderDetail
+          ) != undefined
+            ? pedido.ServiceOrderDetail.length
+            : 0
           }`,
           10,
           30
         );
         doc.text(`Estatus: Entregado`, 10, 40);
         doc.text(
-          `Método de Pago: ${
-            pedido.payment
-              ? pedido.payment.payMethod === "cash"
-                ? "Efectivo"
-                : "Tarjeta"
-              : "N/A"
+          `Método de Pago: ${pedido.payment
+            ? pedido.payment.payMethod === "cash"
+              ? "Efectivo"
+              : "Tarjeta"
+            : "N/A"
           }`,
           10,
           50
@@ -261,22 +258,58 @@ const PedidosAlmacenados = () => {
         totalPrice: pedido.ServiceOrderDetail[0].subtotal,
         quantity: pedido.ServiceOrderDetail[0].units,
       });
+      
+      let serviceType
+      pedido.fk_categoryId === 1 ? serviceType = 'autoservicio' : 
+      pedido.fk_categoryId === 2 ? serviceType = 'encargo' : 
+      pedido.fk_categoryId === 3 ? serviceType = 'planchado' :
+      pedido.fk_categoryId === 4 ? serviceType = 'tintoneria' :
+      pedido.fk_categoryId === 5 ? serviceType = 'varios' : 
+      serviceType = 'ERROR'
+
+      if (order.payMethod === 'cash') {
+        payMethod = 'EFECTIVO'
+      } else {
+        payMethod = 'TARJETA'
+      }
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
         payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
+        subtotal: totalWithDiscount,
         casher: pedido.user.name,
-        client: pedido.client.name,
-        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        client: pedido.client.name + pedido.client.firstLN + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
+        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        pieces: pedido.pieces,
+        serviceType: serviceType,
         notes: pedido.notes,
         cart: cart,
       };
-      orderTicket(order);
+      // GENERAR EL TICKET
+      await api.post('/generateTicket', {
+        order: order,
+      })
+      // const order = {
+      //   id_order: pedido.id_order,
+      //   payForm: pedido.payForm,
+      //   payStatus: "paid",
+      //   payMethod: cobroInfo.metodoPago,
+      //   subtotal: pedido.totalPrice,
+      //   casher: pedido.user.name,
+      //   client: pedido.client.name,
+      //   scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+      //   scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+      //   receptionDate: pedido.receptionDate,
+      //   receptionTime: pedido.receptionTime,
+      //   notes: pedido.notes,
+      //   cart: cart,
+      // };
+      // orderTicket(order);
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
         return order.id_order !== pedido.id_order;
       });
@@ -289,24 +322,22 @@ const PedidosAlmacenados = () => {
     doc.text(`Detalles del Pedido`, 10, 10);
     doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
     doc.text(
-      `Pedido: ${
-        pedido.ServiceOrderDetail.find(
-          (service) => service.id_serviceOrderDetail
-        ) != undefined
-          ? pedido.ServiceOrderDetail.length
-          : 0
+      `Pedido: ${pedido.ServiceOrderDetail.find(
+        (service) => service.id_serviceOrderDetail
+      ) != undefined
+        ? pedido.ServiceOrderDetail.length
+        : 0
       }`,
       10,
       30
     );
     doc.text(`Estatus: Adeudo`, 10, 40);
     doc.text(
-      `Método de Pago: ${
-        pedido.payment
-          ? pedido.payment.payMethod === "cash"
-            ? "Efectivo"
-            : "Tarjeta"
-          : "N/A"
+      `Método de Pago: ${pedido.payment
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : "Tarjeta"
+        : "N/A"
       }`,
       10,
       50
@@ -360,14 +391,14 @@ const PedidosAlmacenados = () => {
                         ? pedido.category.categoryDescription === "autoservicio"
                           ? "Autoservicio"
                           : pedido.category.categoryDescription === "planchado"
-                          ? "Planchado"
-                          : pedido.category.categoryDescription === "encargo"
-                          ? "Encargo Ropa"
-                          : pedido.category.categoryDescription === "tintoreria"
-                          ? "Tintoreria"
-                          : pedido.category.categoryDescription === "varios"
-                          ? "Encargo Varios"
-                          : "Otro"
+                            ? "Planchado"
+                            : pedido.category.categoryDescription === "encargo"
+                              ? "Encargo Ropa"
+                              : pedido.category.categoryDescription === "tintoreria"
+                                ? "Tintoreria"
+                                : pedido.category.categoryDescription === "varios"
+                                  ? "Encargo Varios"
+                                  : "Otro"
                         : "Categoría no definida"}
                     </td>
                     <td>{pedido.ironPieces ? pedido.ironPieces : "-"}</td>
@@ -381,11 +412,10 @@ const PedidosAlmacenados = () => {
                       )}
                     </td>
                     <td
-                      className={`py-3 px-6 ${
-                        pedido.payStatus === "unpaid"
-                          ? "text-red-600"
-                          : "text-green-600"
-                      }`}
+                      className={`py-3 px-6 ${pedido.payStatus === "unpaid"
+                        ? "text-red-600"
+                        : "text-green-600"
+                        }`}
                     >
                       {pedido.payStatus === "unpaid" ? (
                         <span className="text-red-600 pl-1">

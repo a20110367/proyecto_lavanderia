@@ -193,10 +193,12 @@ function EntregaPlanchado() {
     doc.text(
       `Método de Pago: ${
         pedido.payment
-          ? pedido.payment.payMethod === "cash"
-            ? "Efectivo"
-            : "Tarjeta"
-          : "N/A"
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : pedido.payment.payMethod === "credit"
+            ? "Tarjeta"
+            : "N/A"
+            :"N/A"
       }`,
       10,
       50
@@ -268,10 +270,12 @@ function EntregaPlanchado() {
         doc.text(
           `Método de Pago: ${
             pedido.payment
-              ? pedido.payment.payMethod === "cash"
-                ? "Efectivo"
-                : "Tarjeta"
-              : "N/A"
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : pedido.payment.payMethod === "credit"
+            ? "Tarjeta"
+            : "N/A"
+            :"N/A"
           }`,
           10,
           50

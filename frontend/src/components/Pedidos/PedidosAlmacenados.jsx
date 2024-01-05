@@ -12,11 +12,14 @@ import {
   DropboxOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 import jsPDF from "jspdf";
 import { formatDate } from "../../utils/format";
+import { useAuth } from "../../hooks/auth/auth";
 
 const PedidosAlmacenados = () => {
+  const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
   const [clientSelected, setClientSelected] = useState("");
   const [id_order, setId_order] = useState("");
@@ -156,7 +159,7 @@ const PedidosAlmacenados = () => {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
+        doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
         doc.text(
           `Pedido: ${
             pedido.ServiceOrderDetail.find(
@@ -172,10 +175,12 @@ const PedidosAlmacenados = () => {
         doc.text(
           `Método de Pago: ${
             pedido.payment
-              ? pedido.payment.payMethod === "cash"
-                ? "Efectivo"
-                : "Tarjeta"
-              : "N/A"
+            ? pedido.payment.payMethod === "cash"
+              ? "Efectivo"
+              : pedido.payment.payMethod === "credit"
+                ? "Tarjeta"
+                : "N/A"
+                :"N/A"
           }`,
           10,
           50
@@ -337,7 +342,7 @@ const PedidosAlmacenados = () => {
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
+    doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
     doc.text(
       `Pedido: ${
         pedido.ServiceOrderDetail.find(
@@ -353,10 +358,12 @@ const PedidosAlmacenados = () => {
     doc.text(
       `Método de Pago: ${
         pedido.payment
-          ? pedido.payment.payMethod === "cash"
-            ? "Efectivo"
-            : "Tarjeta"
-          : "N/A"
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : pedido.payment.payMethod === "credit"
+            ? "Tarjeta"
+            : "N/A"
+            :"N/A"
       }`,
       10,
       50
@@ -563,7 +570,7 @@ const PedidosAlmacenados = () => {
               <div>
                 <p className="text-lg font-semibold">Detalles del Pedido</p>
                 <p>
-                  <strong>Cliente:</strong> {selectedPedido?.client}
+                  <strong>Cliente:</strong> {selectedPedido?.client.name} {selectedPedido?.client.firstLN} {selectedPedido?.client.secondLN}
                 </p>
                 <p>
                   <strong>Pedido:</strong> {selectedPedido.id_order}

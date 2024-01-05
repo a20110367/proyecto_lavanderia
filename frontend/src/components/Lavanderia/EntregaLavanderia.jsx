@@ -143,8 +143,7 @@ function EntregaLavanderia() {
         cart.push({
           description: service.LaundryService.description
             ? service.LaundryService.description
-            : "ERROR",
-          id_service: service.LaundryService.fk_Service,
+            : "ERROR",          
           totalPrice: service.subtotal,
           quantity: service.units,
         });

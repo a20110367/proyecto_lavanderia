@@ -187,7 +187,7 @@ function Retiro() {
                 <td className="py-3 px-6">{formatDate(retiro.date)}</td>
                 <td className="py-3 px-6">{"$" + retiro.amount}</td>
                 <td className="py-3 px-6">{retiro.cause}</td>
-                <td className="py-3 px-6">{retiro.user.name}</td>
+                <td className="py-3 px-6">{retiro.user.name} {retiro.user.firsLN} {retiro.user.secondLN}</td>
               </tr>
             ))}
         </tbody>

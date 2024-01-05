@@ -157,7 +157,7 @@ function CajaPedidos() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name}
+                    {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category

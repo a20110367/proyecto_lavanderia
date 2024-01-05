@@ -71,9 +71,20 @@ function PedidosPlanchado() {
       }
     });
 
-    const textFiltered = filtered.filter((pedido) => {
+     const textFiltered = filtered.filter((pedido) => {
+      const searchTerm = filtro.toLowerCase();
+      const searchTermsArray = searchTerm.split(" ");
+
+
+      const isMatch = searchTermsArray.every((term) =>
+        [pedido.client.name, pedido.client.firstLN, pedido.client.secondLN]
+          .join(" ")
+          .toLowerCase()
+          .includes(term)
+      );
+
       return (
-        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        isMatch ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.id_order.toString().includes(filtro)
@@ -319,10 +330,10 @@ function PedidosPlanchado() {
                 <tr key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name} <br /> {pedido.user.firstLN}
+                    {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.client.name} <br /> {pedido.client.firstLN}
+                    {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "planchado"

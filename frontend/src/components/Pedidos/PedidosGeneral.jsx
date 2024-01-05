@@ -70,8 +70,18 @@ function PedidosGeneral() {
     });
 
     const textFiltered = filtered.filter((pedido) => {
+      const searchTerm = filtro.toLowerCase();
+      const searchTermsArray = searchTerm.split(" ");
+
+      const isMatch = searchTermsArray.every((term) =>
+        [pedido.client.name, pedido.client.firstLN, pedido.client.secondLN]
+          .join(" ")
+          .toLowerCase()
+          .includes(term)
+      );
+
       return (
-        pedido.client.name.toLowerCase().includes(filtro.toLowerCase()) ||
+        isMatch ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.user.name.toLowerCase().includes(filtro.toLowerCase()) ||
         pedido.id_order.toString().includes(filtro)
@@ -319,15 +329,17 @@ function PedidosGeneral() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
+                    {pedido.user.name} {pedido.user.firstLN}{" "}
+                    {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.deliveryDetail
-                      ? pedido.deliveryDetail.user.name
+                      ? `${pedido.deliveryDetail.user.name} ${pedido.deliveryDetail.user.firstLN} ${pedido.deliveryDetail.user.secondLN}`
                       : ""}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                     {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
+                    {pedido.client.name} {pedido.client.firstLN}{" "}
+                    {pedido.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category

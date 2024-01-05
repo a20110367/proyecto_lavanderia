@@ -67,10 +67,18 @@ function PedidosLavanderia() {
     });
 
     const textFiltered = filtered.filter((pedido) => {
-      return (
-        pedido.serviceOrder.client.name
+      const searchTerm = filtro.toLowerCase();
+      const searchTermsArray = searchTerm.split(" ");
+
+
+      const isMatch = searchTermsArray.every((term) =>
+        [pedido.serviceOrder.client.name, pedido.serviceOrder.client.firstLN, pedido.serviceOrder.client.secondLN]
+          .join(" ")
           .toLowerCase()
-          .includes(filtro.toLowerCase()) ||
+          .includes(term)
+      );
+      return (
+        isMatch ||
         pedido.serviceOrder.user.name
           .toLowerCase()
           .includes(filtro.toLowerCase()) ||
@@ -445,13 +453,11 @@ function PedidosLavanderia() {
                     {pedido.id_description}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.serviceOrder.user.name} <br />{" "}
-                    {pedido.serviceOrder.user.firstLN}
+                    {pedido.serviceOrder.user.name} {pedido.serviceOrder.user.firstLN} {pedido.serviceOrder.user.secondLN}
                   </td>
 
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.serviceOrder.client.name} <br />{" "}
-                    {pedido.serviceOrder.client.firstLN}
+                    {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}  
                   </td>
                   <td className="py-3 px-6">
                     {pedido.LaundryService.description}

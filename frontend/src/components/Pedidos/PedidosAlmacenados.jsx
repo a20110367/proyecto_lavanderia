@@ -269,7 +269,8 @@ const PedidosAlmacenados = () => {
       pedido.fk_categoryId === 5 ? serviceType = 'varios' : 
       serviceType = 'ERROR'
 
-      if (order.payMethod === 'cash') {
+      let payMethod
+      if (cobroInfo.metodoPago === 'cash') {
         payMethod = 'EFECTIVO'
       } else {
         payMethod = 'TARJETA'

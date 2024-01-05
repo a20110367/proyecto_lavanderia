@@ -545,7 +545,7 @@ const PedidosAlmacenados = () => {
             </div>
             <p>
               Bienvenido a pedidos almacenados. <br />
-              Busca tu pedido por nombre del cliente o número del pedido.
+              Busca tu pedido por el completo nombre  del cliente o número del pedido.
             </p>
             <form
               className="flex items-center mt-4"

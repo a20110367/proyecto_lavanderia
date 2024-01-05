@@ -833,8 +833,20 @@ export const createLaudryServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
+            include:{
+                client:{
+                    select:{
+
+                        name:true,
+                        firstLN:true,
+                        secondLN:true
+                    },
+                },
+            }
+
         });
         console.log(serviceOrder.id_order);
+        console.log(serviceOrder.client);
 
         const serviceDetail = req.body.services.map(item => ({ fk_laundryService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
         console.log(serviceDetail);
@@ -916,6 +928,17 @@ export const createOtherServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
+            include:{
+                client:{
+                    select:{
+
+                        name:true,
+                        firstLN:true,
+                        secondLN:true
+                    },
+                },
+            }
+
         });
         console.log(serviceOrder.id_order);
 
@@ -990,6 +1013,17 @@ export const createSelfServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
+            include:{
+                client:{
+                    select:{
+
+                        name:true,
+                        firstLN:true,
+                        secondLN:true
+                    },
+                },
+            }
+
         });
         console.log(serviceOrder.id_order);
 
@@ -1059,6 +1093,17 @@ export const createIronServiceOrder = async (req, res) => {
         const serviceOrder = await prisma.serviceOrder.create({
 
             data: req.body.serviceOrder,
+
+            include:{
+                client:{
+                    select:{
+
+                        name:true,
+                        firstLN:true,
+                        secondLN:true
+                    },
+                },
+            }
 
         });
         console.log(serviceOrder.id_order);
@@ -1132,6 +1177,17 @@ export const createDrycleanServiceOrder = async (req, res) => {
         const serviceOrder = await prisma.serviceOrder.create({
 
             data: req.body.serviceOrder,
+
+            include:{
+                client:{
+                    select:{
+
+                        name:true,
+                        firstLN:true,
+                        secondLN:true
+                    },
+                },
+            }
 
         });
         console.log(serviceOrder.id_order);

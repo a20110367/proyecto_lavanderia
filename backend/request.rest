@@ -600,12 +600,12 @@ GET http://localhost:5000/ordersByClient/1
 
 ###
 
-GET http://localhost:5000/ordersByClientName
+POST  http://localhost:5000/ordersByClientName
 Content-Type: application/json
 
 {
 
-  "name":"janito lopez perez"
+  "clientName":"janito lopez perez"
 
 }
 ###

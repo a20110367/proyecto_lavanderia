@@ -376,6 +376,8 @@ export default function PuntoVenta() {
         notes: notes,
         cart: cart,
       };
+
+      console.log(res.data)
       // GENERAR EL TICKET
       await api.post('/generateTicket', {
         order: order,

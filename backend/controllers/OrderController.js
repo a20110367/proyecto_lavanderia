@@ -182,6 +182,7 @@ export const getOrdersByClientName = async (req, res) => {
                 AND: [
                     {
                         name: clientName,
+                        
                     },
                     {
                         firstLN: clientFirstLN,

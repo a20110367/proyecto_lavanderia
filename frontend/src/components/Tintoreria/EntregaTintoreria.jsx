@@ -177,7 +177,7 @@ function EntregaTintoreria() {
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
+    doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
     doc.text(
       `Pedido: ${
         pedido.ServiceOrderDetail.find(
@@ -252,7 +252,7 @@ function EntregaTintoreria() {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
+        doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
         doc.text(
           `Pedido: ${
             pedido.ServiceOrderDetail.find(

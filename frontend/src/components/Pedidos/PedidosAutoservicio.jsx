@@ -39,6 +39,7 @@ function PedidosAutoservicio() {
   const itemsPerPage = 10;
   const [showMachineName, setShowMachineName] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState(false);
+  const [shellyTime, setShellyTime] = useState()
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
@@ -48,9 +49,21 @@ function PedidosAutoservicio() {
     setCurrentPage(selectedPage.selected);
   };
 
+  const checkShelly = async (machine) => {
+    const ip = machine.ipAddress;
+    const res = await api.get(`http://${ip}/relay/0`);
+    return res.data.timer_remaining
+  };
+
   const fetcher = async () => {
     const response = await api.get("/selfServiceQueue");
-    return response.data;
+    const data = response.data.filter((pedido) => pedido.serviceStatus !== "finished")
+    // const shellyData = data.map((p) =>
+    //   p.serviceStatus === 'inProgress'
+    //     ? { ...p, timerRemaining: shellyTime }
+    //     : { ...p, timerRemaining: '-' }
+    // );
+    return data
   };
 
   const { data } = useSWR("selfServiceQueue", fetcher);
@@ -61,6 +74,29 @@ function PedidosAutoservicio() {
       setFilteredPedidos(data);
     }
   }, [data]);
+
+  // const fetcherShelly = async () => {
+  //   const shellyData = data.forEach(p => {
+  //     p.serviceStatus === 'inProgress' ? checkShelly(p.machine).then((response) => {
+  //       setShellyTime(response.data)
+  //       return response.data
+  //     }) : '-'
+  //   });
+  //   return shellyData
+  // };
+
+  // const { shellyData } = useSWR("shellyInfoWithSelfServiceQueue", fetcherShelly);
+
+  // console.log(shellyData)
+
+  // console.log(shellyTime)
+
+  // useEffect(() => {
+  //   if (shellyData) {
+  //     setPedidos(shellyData);
+  //     setFilteredPedidos(shellyData);
+  //   }
+  // }, [shellyData]);
 
   useEffect(() => {
     const filtered = pedidos.filter((pedido) => {
@@ -142,15 +178,6 @@ function PedidosAutoservicio() {
     }
   };
 
-  const checkStatusMachine = async (machine) => {
-    const ip = machine.ipAddress;
-    try {
-      const res = await api.get(`http://${ip}/relay/0`);
-    } catch (err) {
-      console.error(err)
-    }
-  };
-
   const handleFiltroEstatusChange = (event) => {
     setFiltroEstatus(event.target.value);
   };
@@ -210,7 +237,7 @@ function PedidosAutoservicio() {
 
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
-          ? { ...p, serviceStatus: "inProgress" }
+          ? { ...p, serviceStatus: "inProgress"}
           : p
       );
       setPedidos(updatedPedidos);
@@ -248,7 +275,7 @@ function PedidosAutoservicio() {
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === pedido.id_serviceEvent
-          ? { ...p, serviceStatus: "finished" }
+          ? { ...p, serviceStatus: "finished"}
           : p
       );
       setPedidos(updatedPedidos);
@@ -343,6 +370,7 @@ function PedidosAutoservicio() {
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
               <th>Estatus</th>
+              {/* <th>Tiempo Restante</th> */}
               <th>Observaciones</th>
               <th></th>
             </tr>
@@ -395,6 +423,19 @@ function PedidosAutoservicio() {
                       <span className="text-gray-600 pl-1">Desconocido</span>
                     )}
                   </td>
+                  {/* <td>
+                    {pedido.timerRemaining}
+                  </td> */}
+                  {/* {pedido.fk_idMachine ? (
+                    <td>
+                      {pedido.machine ?  checkShelly(pedido.machine).then((response) =>
+                        response.data).then((user) => { return 'Pito' })
+                      : 'No ha comenzado'}
+                    </td>
+                  ) : (
+                    <td>-</td>
+                  )} */}
+
                   <td>
                     {pedido.serviceOrder.notes
                       ? pedido.serviceOrder.notes

@@ -985,3 +985,7 @@ POST http://localhost:5000/generateTicket
 
 ###
 PATCH http://localhost:5000/cancelOrder/244
+
+### 
+
+GET http://192.168.1.77/relay/0?turn=off

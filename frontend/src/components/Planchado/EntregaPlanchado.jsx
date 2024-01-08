@@ -59,12 +59,17 @@ function EntregaPlanchado() {
 
   const filterPedidos = (filterText) => {
     const filtered = pedidos.filter((pedido) => {
+      const searchTerm = filtro.toLowerCase();
+      const searchTermsArray = searchTerm.split(" ");
+
+      const isMatch = searchTermsArray.every((term) =>
+        [pedido.client.name, pedido.client.firstLN, pedido.client.secondLN]
+          .join(" ")
+          .toLowerCase()
+          .includes(term)
+      );
       return (
-        (pedido.client &&
-          pedido.client.name &&
-          pedido.client.name
-            .toLowerCase()
-            .includes(filterText.toLowerCase())) ||
+        isMatch||
         (pedido.user &&
           pedido.user.name &&
           pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||

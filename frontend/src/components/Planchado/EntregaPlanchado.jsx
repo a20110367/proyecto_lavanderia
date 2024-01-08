@@ -185,8 +185,8 @@ function EntregaPlanchado() {
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        pieces: pedido.pieces,
-        serviceType: 'encargo',
+        pieces: pedido.ironPieces,
+        serviceType: 'planchado',
         notes: pedido.notes,
         cart: cart,
       };

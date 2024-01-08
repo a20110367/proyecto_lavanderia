@@ -13,7 +13,6 @@ import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import { useAuth } from "../../hooks/auth/auth";
 import { useNavigate } from "react-router-dom";
-import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 
 function EntregaVarios() {
@@ -184,8 +183,8 @@ function EntregaVarios() {
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        pieces: pedido.pieces,
-        serviceType: 'encargo',
+        pieces: 0,
+        serviceType: 'varios',
         notes: pedido.notes,
         cart: cart,
       };

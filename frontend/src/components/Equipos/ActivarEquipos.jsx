@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+// import { useNavigate, Link } from "react-router-dom";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
 
 function ActivarEquipos() {
+  const [availableMachines, setAvailableMachines] = useState([]);
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
@@ -14,7 +15,6 @@ function ActivarEquipos() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
-  const [allEquipment, setAllEquipment] = useState([]);
 
   const fetcher = async () => {
     const machinesResponse = await api.get("/machines");
@@ -28,10 +28,17 @@ function ActivarEquipos() {
       type: "iron", // Agregar un campo 'type' para diferenciar las planchas
     }));
     const allData = [...machinesData, ...ironsData];
-    setAllEquipment(allData);
-    return allData;
+    const available = (allData.filter((machine) => machine.status === 'available'))
+    return available;
   };
-  const { data } = useSWR("turnOnMachines", fetcher);
+
+  const { data } = useSWR("activeMachines", fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setAvailableMachines(data)
+    }
+  }, [data]);
   if (!data) return <h2>Loading...</h2>;
 
   const handleClickOpen = (machineModel, machineId) => {
@@ -39,10 +46,6 @@ function ActivarEquipos() {
     setMachineSelModel(machineModel);
     setOpen(true);
   };
-
-  const availableMachines = data.filter(
-    (machine) => machine.status === "available"
-  );
 
   const turnOnMachine = async (machine) => {
     // GET http://192.168.1.77/relay/0?turn=on&timer=300
@@ -56,12 +59,18 @@ function ActivarEquipos() {
     } else {
       try {
         const time = machine.cicleTime;
-        const res = await api.get(
+        const res = await api.post(
           `http://${ip}/relay/0?turn=on&timer=${time * 60}`
         );
+        const available = availableMachines.map((mach) =>
+          mach.id_machine === machine.id_machine
+            ? { ...mach, freeForUse: false }
+            : mach
+        );
+        setAvailableMachines(available);
         console.log(res);
-        await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
-          freeForUse: false,
+        await api.patch(`/machines/${machine.id_machine}`, {
+          freeForUse: false
         });
       } catch (err) {
         console.warn("El equipo Shelly esta desconectado");
@@ -76,10 +85,16 @@ function ActivarEquipos() {
       console.warn("No se encontro IP del equipo");
     } else {
       try {
-        const res = await api.get(`http://${ip}/relay/0?turn=off`);
+        const res = await api.post(`http://${ip}/relay/0?turn=off`);
+        const available = availableMachines.map((mach) =>
+          mach.id_machine === machine.id_machine
+            ? { ...mach, freeForUse: true }
+            : mach
+        );
+        setAvailableMachines(available);
         console.log(res);
-        await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {
-          freeForUse: true,
+        await api.patch(`/machines/${machine.id_machine}`, {
+          freeForUse: true
         });
       } catch (err) {
         console.warn("El equipo Shelly esta desconectado");
@@ -104,6 +119,7 @@ function ActivarEquipos() {
                 <th>Peso / Piezas</th>
                 <th>Estado</th>
                 <th>Notas</th>
+                <th>Dirección IP</th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -167,32 +183,41 @@ function ActivarEquipos() {
                     </td>
                     <td>{machine.notes}</td>
                     <td>
+                      {machine.ipAddress ? machine.ipAddress : '-'}
+                    </td>
+                    <td>
                       {/* <Link
                         to={`/pedidosGeneral?machineId=${machine.id_machine}&machineModel=${machine.model}`}
                       > */}
-                      {machine.status === 'available' ? (
+                      {(machine.freeForUse && machine.ipAddress) ? (
                         <button
                           onClick={() =>
                             turnOnMachine(machine)
                           }
-                          className={`btn-primary mt-1 mb-1 ${machine.status === "available" ? "" : "btn-disabled"
-                            }`}
-                          disabled={machine.status !== "available"}
+                          className={`${machine.status === "available" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled={machine.status === "unavailable"}
                         >
                           Activar Equipo
                         </button>
-                      ) : (
+                      ) : (!machine.freeForUse && machine.ipAddress) ? (
                         <button
                           onClick={() =>
                             turnOffMachine(machine)
                           }
-                          className={`btn-primary mt-1 mb-1 ${machine.status === "unavailable" ? "" : "btn-disabled"
-                            }`}
-                          disabled={machine.status !== "unavailable"}
+                          className={`${machine.status === "unavailable" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled={machine.status === "unavailable"}
                         >
                           Desactivar Equipo
                         </button>
-                        )}
+                      ) : (
+                        <button
+                          className={`${machine.status === "unavailable" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled
+                        >
+                          No tiene
+                        </button>
+                      )
+                      }
                       {/* </Link> */}
                     </td>
                   </tr>

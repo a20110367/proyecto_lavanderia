@@ -294,6 +294,13 @@ const PedidosAlmacenados = () => {
         payMethod = "TARJETA";
       }
 
+      let pieces = 0
+      if (pedido.fk_categoryId === 3) {
+        pieces = pedido.ironPieces;
+      } else if (pedido.fk_categoryId === 4) {
+        pieces = pedido.drycleanPieces;
+      }
+  
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
@@ -311,7 +318,7 @@ const PedidosAlmacenados = () => {
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        pieces: pedido.pieces,
+        pieces: pieces,
         serviceType: serviceType,
         notes: pedido.notes,
         cart: cart,

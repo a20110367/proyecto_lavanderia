@@ -104,7 +104,7 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if (order.pieces === 0) {
+        if (order.pieces === 0 || !order.pieces) {
             printer.println('Cliente: ' + order.client)
         } else {
             printer.tableCustom([

@@ -185,8 +185,8 @@ function EntregaTintoreria() {
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        pieces: pedido.pieces,
-        serviceType: 'encargo',
+        pieces: pedido.drycleanPieces,
+        serviceType: 'tintoreria',
         notes: pedido.notes,
         cart: cart,
       };

@@ -142,8 +142,13 @@ function PedidosAutoservicio() {
     }
   };
 
-  const checkStatusMachine = async () => {
-    const res = api.get(`http://${ip}/relay/0`);
+  const checkStatusMachine = async (machine) => {
+    const ip = machine.ipAddress;
+    try {
+      const res = await api.get(`http://${ip}/relay/0`);
+    } catch (err) {
+      console.error(err)
+    }
   };
 
   const handleFiltroEstatusChange = (event) => {
@@ -352,11 +357,11 @@ function PedidosAutoservicio() {
                     {pedido.id_description}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.serviceOrder.user.name} {pedido.serviceOrder.user.firstLN} {pedido.serviceOrder.user.secondLN}
+                    {pedido.serviceOrder.user.name} {pedido.serviceOrder.user.firstLN} {pedido.serviceOrder.user.secondLN}
                   </td>
 
                   <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN} 
+                    {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.SelfService.description}
@@ -503,9 +508,8 @@ function PedidosAutoservicio() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

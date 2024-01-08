@@ -184,7 +184,7 @@ function EntregaLavanderia() {
         receptionTime: pedido.receptionTime,
         scheduledDeliveryDate: pedido.scheduledDeliveryDate,
         scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-        pieces: pedido.pieces,
+        pieces: 0,
         serviceType: 'encargo',
         notes: pedido.notes,
         cart: cart,

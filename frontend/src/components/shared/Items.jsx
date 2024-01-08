@@ -109,7 +109,7 @@ const items1 = [
     ]),
     { type: "divider", style: { margin: "140px " } },
 
-    getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />), 
+    // getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />), 
     getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];
 

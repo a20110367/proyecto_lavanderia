@@ -42,6 +42,9 @@ export const generateTicket = async (req, res) => {
     }
 
     try {
+
+        printer.clear();
+        
         // LOGO DEL NEGOCIO
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
@@ -101,7 +104,7 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if (order.pieces === 0) {
+        if (order.pieces === 0 || !order.pieces) {
             printer.println('Cliente: ' + order.client)
         } else {
             printer.tableCustom([
@@ -216,6 +219,8 @@ export const generatePartialCashCutTicket = async (req, res) => {
     try {
 
         const { cashCut } = req.body
+
+        printer.clear();
 
         printer.setTypeFontB();
 

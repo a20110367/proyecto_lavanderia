@@ -366,7 +366,7 @@ export default function PuntoVenta() {
         payMethod: payMethod,
         subtotal: totalWithDiscount,
         casher: cookies.username,
-        client: clientName,
+        client: res.data.serviceOrder.client.name + ' ' + res.data.serviceOrder.client.firstLN + ' ' + res.data.serviceOrder.client.secondLN,
         receptionDate: purchaseDate.toISOString(),
         receptionTime: purchaseDate.toISOString(),
         scheduledDeliveryDate: deliveryDate.toISOString(),

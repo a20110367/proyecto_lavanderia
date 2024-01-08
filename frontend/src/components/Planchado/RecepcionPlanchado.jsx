@@ -23,17 +23,24 @@ function RecepcionPlanchado() {
     if (clients) {
       const filtered = clients.filter((client) => {
         const searchTerm = filtro.toLowerCase();
+        const searchTermsArray = searchTerm.split(" ");
+
+        const isMatch = searchTermsArray.every((term) =>
+          [client.name, client.firstLN, client.secondLN]
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+        );
         return (
-          client.name.toLowerCase().includes(searchTerm) ||
+          isMatch ||
           client.email.toLowerCase().includes(searchTerm) ||
           client.phone.toLowerCase().includes(searchTerm)
         );
       });
-      setFilteredClients(filtered); 
-      setCurrentPage(0)
+      setFilteredClients(filtered);
+      setCurrentPage(0);
     }
   }, [filtro, clients]);
-
   const shouldShowTable = filtro !== "" && filteredClients.length > 0;
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -127,8 +134,7 @@ function RecepcionPlanchado() {
                   <tr className="bg-white border-b" key={index}>
                     <td className="py-3 px-1 text-center">{index + 1}</td>
                     <td className="th2 font-medium text-gray-900">
-                      {`${client.name} ${client.firstLN}`} <br />
-                      {client.secondLN}
+                    {client.name} {client.firstLN} {client.secondLN}
                     </td>
                     <td className="th2">{client.phone}</td>
                     <td className="th2">{client.email}</td>

@@ -5,33 +5,40 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import useSWR from "swr";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
-import api from '../../api/api'
+import api from "../../api/api";
 
 function AutoServicio() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [filtro, setFiltro] = useState("");
   const { data: clients } = useSWR("clients", async () => {
     const response = await api.get("/clients");
     return response.data;
   });
 
-  const [filteredClients, setFilteredClients] = useState([]); 
+  const [filteredClients, setFilteredClients] = useState([]);
 
   useEffect(() => {
     if (clients) {
       const filtered = clients.filter((client) => {
         const searchTerm = filtro.toLowerCase();
+        const searchTermsArray = searchTerm.split(" ");
+
+        const isMatch = searchTermsArray.every((term) =>
+          [client.name, client.firstLN, client.secondLN]
+            .join(" ")
+            .toLowerCase()
+            .includes(term)
+        );
         return (
-          client.name.toLowerCase().includes(searchTerm) ||
+          isMatch ||
           client.email.toLowerCase().includes(searchTerm) ||
           client.phone.toLowerCase().includes(searchTerm)
         );
       });
-      setFilteredClients(filtered); 
-      setCurrentPage(0)
+      setFilteredClients(filtered);
+      setCurrentPage(0);
     }
   }, [filtro, clients]);
 
@@ -52,13 +59,13 @@ function AutoServicio() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Si",
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate(url)
+        navigate(url);
       }
     });
-  }
+  };
 
   useEffect(() => {
     // Verificar si estamos regresando desde PuntoVenta
@@ -128,7 +135,7 @@ function AutoServicio() {
                   <tr className="bg-white border-b" key={index}>
                     <td className="py-3 px-1 text-center">{index + 1}</td>
                     <td className="th2 font-medium text-gray-900">
-                      {client.name}
+                      {client.name} {client.firstLN} {client.secondLN}
                     </td>
                     <td className="th2">{client.phone}</td>
                     <td className="th2">{client.email}</td>
@@ -182,7 +189,10 @@ function AutoServicio() {
       <div className="fcol-container">
         <div className="flex justify-between items-center">
           <div>
-            <button className="btn-big-light" onClick={() => launchModal('/addClient?source=autoservicio')}>
+            <button
+              className="btn-big-light"
+              onClick={() => launchModal("/addClient?source=autoservicio")}
+            >
               <div className="subtitle m-1">Añadir Cliente</div>
             </button>
             <div className="text-IndigoDye font-semibold mt-2">

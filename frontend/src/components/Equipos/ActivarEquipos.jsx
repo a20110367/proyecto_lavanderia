@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+// import { useNavigate, Link } from "react-router-dom";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
 
 function ActivarEquipos() {
+  const [availableMachines, setAvailableMachines] = useState([]);
   const [machineSelModel, setMachineSelModel] = useState();
   const [machineSelId, setMachineSelId] = useState();
   const [open, setOpen] = useState(false);
@@ -14,7 +15,6 @@ function ActivarEquipos() {
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
-  const [allEquipment, setAllEquipment] = useState([]);
 
   const fetcher = async () => {
     const machinesResponse = await api.get("/machines");
@@ -28,10 +28,17 @@ function ActivarEquipos() {
       type: "iron", // Agregar un campo 'type' para diferenciar las planchas
     }));
     const allData = [...machinesData, ...ironsData];
-    setAllEquipment(allData);
-    return allData;
+    const available = (allData.filter((machine) => machine.status === 'available'))
+    return available;
   };
-  const { data } = useSWR("turnOnMachines", fetcher);
+
+  const { data } = useSWR("activeMachines", fetcher);
+
+  useEffect(() => {
+    if (data) {
+      setAvailableMachines(data)
+    }
+  }, [data]);
   if (!data) return <h2>Loading...</h2>;
 
   const handleClickOpen = (machineModel, machineId) => {
@@ -40,9 +47,60 @@ function ActivarEquipos() {
     setOpen(true);
   };
 
-  const availableMachines = data.filter(
-    (machine) => machine.status === "available"
-  );
+  const turnOnMachine = async (machine) => {
+    // GET http://192.168.1.77/relay/0?turn=on&timer=300
+    // Harcoded
+    // const ip = '192.168.1.77'
+    // const time = '30'
+
+    const ip = machine.ipAddress;
+    if (ip === null) {
+      console.warn("No se encontro IP del equipo");
+    } else {
+      try {
+        const time = machine.cicleTime;
+        const res = await api.post(
+          `http://${ip}/relay/0?turn=on&timer=${time * 60}`
+        );
+        const available = availableMachines.map((mach) =>
+          mach.id_machine === machine.id_machine
+            ? { ...mach, freeForUse: false }
+            : mach
+        );
+        setAvailableMachines(available);
+        console.log(res);
+        await api.patch(`/machines/${machine.id_machine}`, {
+          freeForUse: false
+        });
+      } catch (err) {
+        console.warn("El equipo Shelly esta desconectado");
+        // console.error(err)
+      }
+    }
+  };
+
+  const turnOffMachine = async (machine) => {
+    const ip = machine.ipAddress;
+    if (ip === null) {
+      console.warn("No se encontro IP del equipo");
+    } else {
+      try {
+        const res = await api.post(`http://${ip}/relay/0?turn=off`);
+        const available = availableMachines.map((mach) =>
+          mach.id_machine === machine.id_machine
+            ? { ...mach, freeForUse: true }
+            : mach
+        );
+        setAvailableMachines(available);
+        console.log(res);
+        await api.patch(`/machines/${machine.id_machine}`, {
+          freeForUse: true
+        });
+      } catch (err) {
+        console.warn("El equipo Shelly esta desconectado");
+      }
+    }
+  };
 
   return (
     <div>
@@ -61,6 +119,7 @@ function ActivarEquipos() {
                 <th>Peso / Piezas</th>
                 <th>Estado</th>
                 <th>Notas</th>
+                <th>Dirección IP</th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -74,18 +133,17 @@ function ActivarEquipos() {
                   <tr
                     key={
                       machine.machineType === "lavadora" ||
-                      machine.machineType === "secadora"
+                        machine.machineType === "secadora"
                         ? machine.id_machine + "-" + machine.machineType
                         : machine.id_ironStation + "-" + machine.machineType
                     }
                   >
                     <td>{index + 1}</td>
                     <td
-                      className={`font-semibold ${
-                        machine.machineType === "lavadora"
-                          ? "text-dodgerBlue"
-                          : "text-green-500"
-                      }`}
+                      className={`font-semibold ${machine.machineType === "lavadora"
+                        ? "text-dodgerBlue"
+                        : "text-green-500"
+                        }`}
                     >
                       {machine.machineType === "lavadora" ? (
                         "Lavadora"
@@ -99,26 +157,25 @@ function ActivarEquipos() {
                       {machine.machineType === "plancha"
                         ? machine.description
                         : machine.machineType === "lavadora"
-                        ? machine.model
-                        : machine.machineType === "secadora"
-                        ? machine.model
-                        : ""}
+                          ? machine.model
+                          : machine.machineType === "secadora"
+                            ? machine.model
+                            : ""}
                     </td>
                     <td>{machine.cicleTime}</td>
                     <td>
                       {" "}
                       {
                         machine.machineType === "plancha"
-                          ? machine.pieces 
-                          : machine.weight 
+                          ? machine.pieces
+                          : machine.weight
                       }
                     </td>
                     <td
-                      className={`${
-                        machine.status === "available"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
+                      className={`${machine.status === "available"
+                        ? "text-green-500"
+                        : "text-red-500"
+                        }`}
                     >
                       {machine.status === "available"
                         ? "Disponible"
@@ -126,21 +183,42 @@ function ActivarEquipos() {
                     </td>
                     <td>{machine.notes}</td>
                     <td>
-                      <Link
+                      {machine.ipAddress ? machine.ipAddress : '-'}
+                    </td>
+                    <td>
+                      {/* <Link
                         to={`/pedidosGeneral?machineId=${machine.id_machine}&machineModel=${machine.model}`}
-                      >
+                      > */}
+                      {(machine.freeForUse && machine.ipAddress) ? (
                         <button
                           onClick={() =>
-                            handleClickOpen(machine.model, machine.id_machine)
+                            turnOnMachine(machine)
                           }
-                          className={`btn-primary mt-1 mb-1 ${
-                            machine.status === "available" ? "" : "btn-disabled"
-                          }`}
-                          disabled={machine.status !== "available"}
+                          className={`${machine.status === "available" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled={machine.status === "unavailable"}
                         >
                           Activar Equipo
                         </button>
-                      </Link>
+                      ) : (!machine.freeForUse && machine.ipAddress) ? (
+                        <button
+                          onClick={() =>
+                            turnOffMachine(machine)
+                          }
+                          className={`${machine.status === "unavailable" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled={machine.status === "unavailable"}
+                        >
+                          Desactivar Equipo
+                        </button>
+                      ) : (
+                        <button
+                          className={`${machine.status === "unavailable" ? "btn-primary mt-1 mb-1" : "btn-disabled"}`}
+                          disabled
+                        >
+                          No tiene
+                        </button>
+                      )
+                      }
+                      {/* </Link> */}
                     </td>
                   </tr>
                 ))}

@@ -485,8 +485,20 @@ export const getIronQueue = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
+                AND: [
+                    {
+                        fk_categoryId: 3
+                    },
+                    {
+                        NOT: {
 
-                fk_categoryId: 3
+                            orderStatus: "stored"
+
+                        },
+                    }
+                ],
+
+
             },
 
             select: {
@@ -670,8 +682,20 @@ export const getDrycleanQueue = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
+                AND: [
+                    {
+                        fk_categoryId: 4
+                    },
+                    {
+                        NOT: {
 
-                fk_categoryId: 4
+                            orderStatus: "stored"
+
+                        },
+                    }
+                ],
+
+
             },
 
             select: {

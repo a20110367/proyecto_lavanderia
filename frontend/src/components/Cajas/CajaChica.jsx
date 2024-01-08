@@ -375,7 +375,7 @@ function CajaChica() {
                 </td>
                 <td className="py-3 px-6">${pettyCash.amount}</td>
                 <td className="py-3 px-6">{pettyCash.cause}</td>
-                <td className="py-3 px-6">{pettyCash.user.name}</td>
+                <td className="py-3 px-6">{pettyCash.user.name} {pettyCash.user.firsLN} {pettyCash.user.secondLN}</td>
                 <td
                   className={`py-3 px-6 ${
                     pettyCash.pettyCashType === "withdrawal"

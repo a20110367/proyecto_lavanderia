@@ -373,7 +373,7 @@ function Reportes() {
                         : 0}
                     </td>
                     <td className="">${corte.total ? corte.total : 0}</td>
-                    <td className="">{corte.user.name}</td>
+                    <td className="">{corte.user.name} {corte.user.firstLN} {corte.user.secondLN}</td>
                     <td className="">
                       {corte.workShift === "morning"
                         ? "Matutino"

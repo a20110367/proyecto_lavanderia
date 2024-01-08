@@ -587,7 +587,7 @@ GET http://localhost:5000/ordersActive
 
 ###
 
-GET http://localhost:5000/orders/1
+GET http://localhost:5000/orders/252
 
 ####
 
@@ -597,6 +597,17 @@ GET http://localhost:5000/ordersByUser/1
 
 GET http://localhost:5000/ordersByClient/1
 
+
+###
+
+POST  http://localhost:5000/ordersByClientName
+Content-Type: application/json
+
+{
+
+  "clientName":"janito lopez perez"
+
+}
 ###
 
 GET http://localhost:5000/ordersLaundry
@@ -975,13 +986,6 @@ POST http://localhost:5000/generateTicket
 ###
 PATCH http://localhost:5000/cancelOrder/244
 
-###
-
-GET http://localhost:5000/lastIronControl
-
-###
-
-GET http://192.168.1.77/relay/0?
-
 ### 
-POST http://192.168.1.77/relay/0?turn=on&timer=300
+
+GET http://192.168.1.77/relay/0?turn=off

@@ -59,12 +59,17 @@ function EntregaPlanchado() {
 
   const filterPedidos = (filterText) => {
     const filtered = pedidos.filter((pedido) => {
+      const searchTerm = filtro.toLowerCase();
+      const searchTermsArray = searchTerm.split(" ");
+
+      const isMatch = searchTermsArray.every((term) =>
+        [pedido.client.name, pedido.client.firstLN, pedido.client.secondLN]
+          .join(" ")
+          .toLowerCase()
+          .includes(term)
+      );
       return (
-        (pedido.client &&
-          pedido.client.name &&
-          pedido.client.name
-            .toLowerCase()
-            .includes(filterText.toLowerCase())) ||
+        isMatch||
         (pedido.user &&
           pedido.user.name &&
           pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||
@@ -140,31 +145,60 @@ function EntregaPlanchado() {
       });
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
-      cart.push({
-        description: pedido.ServiceOrderDetail[0].IronService
-          ? pedido.ServiceOrderDetail[0].IronService.description
-          : "ERROR",
-        id_service: pedido.ServiceOrderDetail[0].fk_Service,
-        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
-        quantity: pedido.ServiceOrderDetail[0].units,
+      pedido.ServiceOrderDetail.forEach(service => {
+        cart.push({
+          description: service.LaundryService.description
+            ? service.LaundryService.description
+            : "ERROR",          
+          totalPrice: service.subtotal,
+          quantity: service.units,
+        });
       });
+      
+      // const order = {
+      //   id_order: pedido.id_order,
+      //   payForm: pedido.payForm,
+      //   payStatus: "paid",
+      //   payMethod: cobroInfo.metodoPago,
+      //   subtotal: pedido.totalPrice,
+      //   casher: pedido.user.name,
+      //   client: pedido.client.name,
+      //   scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+      //   scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+      //   receptionDate: pedido.receptionDate,
+      //   receptionTime: pedido.receptionTime,
+      //   notes: pedido.notes,
+      //   cart: cart,
+      // };
+      // orderTicket(order);
+      let payMethod
+      if (cobroInfo.metodoPago === 'cash') {
+        payMethod = 'EFECTIVO'
+      } else {
+        payMethod = 'TARJETA'
+      }
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
-        payMethod: cobroInfo.metodoPago,
+        payMethod: payMethod,
         subtotal: pedido.totalPrice,
         casher: pedido.user.name,
-        client: pedido.client.name,
-        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
+        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
         pieces: pedido.ironPieces,
+        serviceType: 'planchado',
         notes: pedido.notes,
         cart: cart,
       };
-      orderTicket(order);
+      // GENERAR EL TICKET
+      await api.post('/generateTicket', {
+        order: order,
+      })
       setFkPayment(res.data.id_payment);
       console.log(res.data.id_payment);
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
@@ -177,7 +211,7 @@ function EntregaPlanchado() {
 
     const doc = new jsPDF();
     doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.client.name}`, 10, 20);
+    doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
     doc.text(
       `Pedido: ${
         pedido.ServiceOrderDetail.find(
@@ -193,10 +227,12 @@ function EntregaPlanchado() {
     doc.text(
       `Método de Pago: ${
         pedido.payment
-          ? pedido.payment.payMethod === "cash"
-            ? "Efectivo"
-            : "Tarjeta"
-          : "N/A"
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : pedido.payment.payMethod === "credit"
+            ? "Tarjeta"
+            : "N/A"
+            :"N/A"
       }`,
       10,
       50
@@ -252,7 +288,7 @@ function EntregaPlanchado() {
         setEntregando(false);
         const doc = new jsPDF();
         doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.client.name}`, 10, 20);
+        doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN} `, 10, 20);
         doc.text(
           `Pedido: ${
             pedido.ServiceOrderDetail.find(
@@ -268,10 +304,12 @@ function EntregaPlanchado() {
         doc.text(
           `Método de Pago: ${
             pedido.payment
-              ? pedido.payment.payMethod === "cash"
-                ? "Efectivo"
-                : "Tarjeta"
-              : "N/A"
+        ? pedido.payment.payMethod === "cash"
+          ? "Efectivo"
+          : pedido.payment.payMethod === "credit"
+            ? "Tarjeta"
+            : "N/A"
+            :"N/A"
           }`,
           10,
           50
@@ -339,12 +377,10 @@ function EntregaPlanchado() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="th2 font-medium text-gray-900">
-                      {`${pedido.client.name} ${pedido.client.firstLN}`} <br />
-                      {pedido.client.secondLN}
+                  {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
                     </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.user.name} <br />
-                    {pedido.user.firstLN}
+                  {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "planchado"

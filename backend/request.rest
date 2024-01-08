@@ -974,3 +974,14 @@ POST http://localhost:5000/generateTicket
 
 ###
 PATCH http://localhost:5000/cancelOrder/244
+
+###
+
+GET http://localhost:5000/lastIronControl
+
+###
+
+GET http://192.168.1.77/relay/0?
+
+### 
+POST http://192.168.1.77/relay/0?turn=on&timer=300

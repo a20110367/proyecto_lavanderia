@@ -140,31 +140,60 @@ function EntregaTintoreria() {
       });
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
-      cart.push({
-        description: pedido.ServiceOrderDetail[0].DrycleanService
-          ? pedido.ServiceOrderDetail[0].DrycleanService.description
-          : "ERROR",
-        id_service: pedido.ServiceOrderDetail[0].fk_Service,
-        totalPrice: pedido.ServiceOrderDetail[0].subtotal,
-        quantity: pedido.ServiceOrderDetail[0].units,
+      pedido.ServiceOrderDetail.forEach(service => {
+        cart.push({
+          description: service.LaundryService.description
+            ? service.LaundryService.description
+            : "ERROR",          
+          totalPrice: service.subtotal,
+          quantity: service.units,
+        });
       });
+      
+      // const order = {
+      //   id_order: pedido.id_order,
+      //   payForm: pedido.payForm,
+      //   payStatus: "paid",
+      //   payMethod: cobroInfo.metodoPago,
+      //   subtotal: pedido.totalPrice,
+      //   casher: pedido.user.name,
+      //   client: pedido.client.name,
+      //   scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+      //   scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+      //   receptionDate: pedido.receptionDate,
+      //   receptionTime: pedido.receptionTime,
+      //   notes: pedido.notes,
+      //   cart: cart,
+      // };
+      // orderTicket(order);
+      let payMethod
+      if (cobroInfo.metodoPago === 'cash') {
+        payMethod = 'EFECTIVO'
+      } else {
+        payMethod = 'TARJETA'
+      }
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
-        payMethod: cobroInfo.metodoPago,
+        payMethod: payMethod,
         subtotal: pedido.totalPrice,
         casher: pedido.user.name,
-        client: pedido.client.name,
-        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
         receptionTime: pedido.receptionTime,
-        pieces: pedido.drycleanPieces,
+        scheduledDeliveryDate: pedido.scheduledDeliveryDate,
+        scheduledDeliveryTime: pedido.scheduledDeliveryTime,
+        pieces: pedido.pieces,
+        serviceType: 'encargo',
         notes: pedido.notes,
         cart: cart,
       };
-      orderTicket(order);
+      // GENERAR EL TICKET
+      await api.post('/generateTicket', {
+        order: order,
+      })
       setFkPayment(res.data.id_payment);
       console.log(res.data.id_payment);
       const updatedFilteredPedidos = filteredPedidos.filter(function (order) {

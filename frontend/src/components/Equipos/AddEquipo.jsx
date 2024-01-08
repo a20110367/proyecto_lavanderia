@@ -17,6 +17,7 @@ function AddEquipo() {
   const errRef = useRef();
 
   const [model, setModel] = useState("");
+  const [ipAddress, setIpAddress] = useState('')
   const [validModel, setValidModel] = useState(false);
   const [modelFocus, setModelFocus] = useState(false);
 
@@ -73,6 +74,7 @@ function AddEquipo() {
         cicleTime: parseInt(cicleTime),
         weight: parseInt(weight),
         status: status,
+        ipAddress: ipAddress ? ipAddress : null,
         notes: notes,
       });
 
@@ -204,6 +206,19 @@ function AddEquipo() {
                 aria-invalid={validWeight ? "false" : "true"}
                 onFocus={() => setWeightFocus(true)}
                 onBlur={() => setWeightFocus(false)}
+              />
+
+              {/* Dirección IP */}
+              <label className="form-lbl" htmlFor="weight">
+                Dirección IP:
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="ipAddress"
+                onChange={(e) => setIpAddress(e.target.value)}
+                value={ipAddress}
+                required
               />
 
               {/** Estado */}

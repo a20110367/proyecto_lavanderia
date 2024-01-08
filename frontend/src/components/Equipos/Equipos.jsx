@@ -106,6 +106,7 @@ function Equipos() {
                 <th>Tiempo de Ciclo</th>
                 <th>Peso</th>
                 <th>Estado</th>
+                <th>Dirección IP</th>
                 <th>Notas</th>
                 <th>Opciones</th>
               </tr>
@@ -149,6 +150,9 @@ function Equipos() {
                       {machine.status === "available"
                         ? "Disponible"
                         : "No Disponible"}
+                    </td>
+                    <td>
+                      {machine.ipAddress ? machine.ipAddress : '-'}
                     </td>
                     <td>{machine.notes}</td>
                     <td>

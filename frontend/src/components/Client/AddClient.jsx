@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack } from "react-icons/io";
 import {
   faCheck,
   faTimes,
@@ -7,13 +7,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import api from '../../api/api'
-
+import api from "../../api/api";
 
 function AddClient() {
   const userRef = useRef();
   const errRef = useRef();
-
 
   const [name, setName] = useState("");
   const [firstLN, setFirstLN] = useState("");
@@ -58,7 +56,6 @@ function AddClient() {
     setValidEmail(email.trim().length > 0);
   }, [email]);
 
-
   useEffect(() => {
     setErrMsg("");
   }, [name, firstLN, secondLN, email]);
@@ -66,12 +63,7 @@ function AddClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !validName ||
-      !validFirstName ||
-      !validSecondName ||
-      !validEmail 
-    ) {
+    if (!validName || !validFirstName || !validSecondName || !validEmail) {
       setErrMsg("Invalid Entry");
       return;
     }
@@ -105,11 +97,13 @@ function AddClient() {
         navigate(`/recepcionTintoreria?serviceType=${source}`);
       } else if (source === "varios") {
         navigate(`/recepcionVarios?serviceType=${source}`);
+      } else if (source === "productos") {
+        navigate(`/recepcionProductos?serviceType=${source}`);
       } else {
         navigate("/clients");
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
@@ -123,7 +117,7 @@ function AddClient() {
   const handleCancel = () => {
     const source = new URLSearchParams(location.search).get("source");
     console.log("Source:", source);
-  
+
     if (source === "encargo") {
       navigate(`/recepcionLavanderia?serviceType=${source}`);
     } else if (source === "autoservicio") {
@@ -134,21 +128,26 @@ function AddClient() {
       navigate(`/recepcionTintoreria?serviceType=${source}`);
     } else if (source === "varios") {
       navigate(`/recepcionVarios?serviceType=${source}`);
+    } else if (source === "productos") {
+      navigate(`/recepcionProductos?serviceType=${source}`);
     } else {
       navigate("/clients");
     }
   };
-  
-  
+
   return (
     <div className="signup-form">
       <div className="form-container">
-          {/* <button className="flex-none px-2 py-2 rounded-rtn shadow-md bg-NonPhotoblue hover:text-white"><IoIosArrowBack size={30}/></button> */}
-          <div className="HeadContent">
-            <h2 className="title text-white"><em>Añadir a un Cliente</em></h2>
-            <p className="form-lbl text-white">Ingrese los detalle del cliente.</p>
-            <div className="clearBoth"></div>
-          </div>
+        {/* <button className="flex-none px-2 py-2 rounded-rtn shadow-md bg-NonPhotoblue hover:text-white"><IoIosArrowBack size={30}/></button> */}
+        <div className="HeadContent">
+          <h2 className="title text-white">
+            <em>Añadir a un Cliente</em>
+          </h2>
+          <p className="form-lbl text-white">
+            Ingrese los detalle del cliente.
+          </p>
+          <div className="clearBoth"></div>
+        </div>
         {success ? (
           <section>
             <h1>Success!</h1>
@@ -191,7 +190,7 @@ function AddClient() {
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
               />
-             
+
               {/* First Name */}
               <label className="form-lbl" htmlFor="firstName">
                 Apellido Paterno:
@@ -201,7 +200,10 @@ function AddClient() {
                     className="ml-3 text-green-500"
                   />
                 ) : (
-                  <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="ml-3 text-red-500"
+                  />
                 )}
               </label>
               <input
@@ -225,7 +227,10 @@ function AddClient() {
                     className="ml-3 text-green-500"
                   />
                 ) : (
-                  <FontAwesomeIcon icon={faTimes} className="ml-3 text-red-500" />
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="ml-3 text-red-500"
+                  />
                 )}
               </label>
               <input
@@ -256,40 +261,37 @@ function AddClient() {
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
               />
-            
-                {/* Phone */}
-                <label className="form-lbl" htmlFor="phone">
-                  Telefono:
-                </label>
-                <input
-                  className="form-input"
-                  type="tel"
-                  id="phone"
-                  onChange={(e) => setPhone(e.target.value)}
-                  value={phone}
-                  required
-                  pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                />
-                <div className="float-right">
-                  <button
-                    className="btn-primary"
-                    type='submit'
-                    disabled={
-                      !validName ||
-                      !validFirstName ||
-                      !validSecondName ||
-                      !validEmail 
-                    }
-                  >
-                    Registrar Cliente
-                  </button>
-                  <button
-                    className="btn-cancel"
-                    onClick={handleCancel}>
-                  
-                    Cancelar
-                  </button>
-                </div>
+
+              {/* Phone */}
+              <label className="form-lbl" htmlFor="phone">
+                Telefono:
+              </label>
+              <input
+                className="form-input"
+                type="tel"
+                id="phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+              />
+              <div className="float-right">
+                <button
+                  className="btn-primary"
+                  type="submit"
+                  disabled={
+                    !validName ||
+                    !validFirstName ||
+                    !validSecondName ||
+                    !validEmail
+                  }
+                >
+                  Registrar Cliente
+                </button>
+                <button className="btn-cancel" onClick={handleCancel}>
+                  Cancelar
+                </button>
+              </div>
             </form>
           </section>
         )}

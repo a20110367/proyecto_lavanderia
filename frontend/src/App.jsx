@@ -91,6 +91,7 @@ import Productos from "./components/Service/Productos"
 import AddProductos from "./components/Service/AddProductos"
 import EditProductos from "./components/Service/EditProductos"
 import RecepcionProductos from "./components/Productos/RecepcionProductos"
+import BuscarPedidos from "./components/Pedidos/BuscarPedidos"
 
 function App() {
     const { cookies } = useAuth();
@@ -159,6 +160,7 @@ function App() {
                     <Route path="/pedidosLavanderia" element={<PedidosLavanderia />} />
                     <Route path="/pedidosAutoservicio" element={<PedidosAutoservicio />} />
                     <Route path="/pedidosAlmacenados" element={<PedidosAlmacenados />} />
+                    <Route path="/buscarPedidos" element={<BuscarPedidos />} />
 
                     {/*Lavanderia */}
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />

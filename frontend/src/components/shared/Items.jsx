@@ -5,6 +5,7 @@ import {
   MdOutlineLocalLaundryService,
 } from "react-icons/md";
 import { FcEngineering } from "react-icons/fc";
+import { LuPackageSearch } from "react-icons/lu";
 import { LuListOrdered } from "react-icons/lu";
 import { GiHandTruck } from "react-icons/gi";
 import { SettingFilled, LogoutOutlined } from "@ant-design/icons";
@@ -39,7 +40,11 @@ const items1 = [
     "/autoServicio",
     <MdLocalLaundryService style={iconStyle} />
   ),
-  getItem("Productos", "/recepcionProductos", <BsBasketFill style={iconStyle} />),
+  getItem(
+    "Productos",
+    "/recepcionProductos",
+    <BsBasketFill style={iconStyle} />
+  ),
 
   getItem(
     "Encargo Ropa",
@@ -83,8 +88,15 @@ const items1 = [
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
     getItem("General", "/pedidosGeneral"),
+
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
+
+  getItem(
+    "Encontrar Pedido",
+    "/buscarPedidos",
+    <LuPackageSearch style={iconStyle} />
+  ),
   getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
 
   getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
@@ -125,7 +137,11 @@ const items2 = [
     "/autoServicio",
     <MdLocalLaundryService style={iconStyle} />
   ),
-  getItem("Productos", "/recepcionProductos", <BsBasketFill style={iconStyle} />),
+  getItem(
+    "Productos",
+    "/recepcionProductos",
+    <BsBasketFill style={iconStyle} />
+  ),
 
   getItem(
     "Encargo Ropa",
@@ -171,6 +187,12 @@ const items2 = [
     getItem("General", "/pedidosGeneral"),
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
+  getItem(
+    "Encontrar Pedido",
+    "/buscarPedidos",
+    <LuPackageSearch style={iconStyle} />
+  ),
+
   getItem(
     "Añadir Clientes",
     "/addClient",

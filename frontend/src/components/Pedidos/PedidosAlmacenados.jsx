@@ -78,7 +78,7 @@ const PedidosAlmacenados = () => {
       let results;
 
       if (searchType === "client") {
-        const res = await api.post("/ordersByClientName", {
+        const res = await api.post("/storedOrdersByClientName", { //orderstored 
           clientName: clientSelected,
         });
         results = res.data ? res.data : [];

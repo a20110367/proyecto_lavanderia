@@ -242,6 +242,8 @@ export const getOrdersByClientName = async (req, res) => {
                                     secondLN: true,
                                 },
                             },
+                            deliveryDate: true,
+                            deliveryTime: true,
                         },
                     },
                 },
@@ -352,6 +354,8 @@ export const getStoredOrdersByClientName = async (req, res) => {
                                 },
                             },
                         },
+                        deliveryDate: true,
+                        deliveryTime: true,
                     },
                 },
 

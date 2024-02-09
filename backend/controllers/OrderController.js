@@ -154,6 +154,8 @@ export const getOrdersById = async (req, res) => {
                                 secondLN: true,
                             },
                         },
+                        deliveryDate: true,
+                        deliveryTime: true,
                     },
                 },
             },
@@ -235,6 +237,8 @@ export const getOrdersByClientName = async (req, res) => {
                     payment: true,
                     deliveryDetail: {
                         select: {
+                            deliveryDate: true,
+                            deliveryTime: true,
                             user: {
                                 select: {
                                     name: true,
@@ -242,9 +246,11 @@ export const getOrdersByClientName = async (req, res) => {
                                     secondLN: true,
                                 },
                             },
-                            deliveryDate: true,
-                            deliveryTime: true,
+
+
+
                         },
+
                     },
                 },
 

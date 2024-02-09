@@ -87,6 +87,10 @@ import RecepcionVarios from "./components/EncargoVarios/RecepcionVarios"
 import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
 import Reportes from "./components/Cajas/Reportes"
 import PedidosAlmacenados from "./components/Pedidos/PedidosAlmacenados"
+import Productos from "./components/Service/Productos"
+import AddProductos from "./components/Service/AddProductos"
+import EditProductos from "./components/Service/EditProductos"
+import RecepcionProductos from "./components/Productos/RecepcionProductos"
 
 function App() {
     const { cookies } = useAuth();
@@ -177,6 +181,12 @@ function App() {
                     <Route path="/entregaTintoreria" element={<EntregaTintoreria />} />
                     <Route path="/recepcionTintoreria" element={<RecepcionTintoreria/>} />
                     <Route path="/pedidosTintoreria" element={<PedidosTintoreria/>} />
+
+                    {/*Productos */}
+                    <Route path="/productos" element={<Productos />} />
+                    <Route path="/addProductos" element={<AddProductos />} />
+                    <Route path="/editProductos" element={<EditProductos />} />
+                    <Route path="/recepcionProductos" element={<RecepcionProductos />} />
 
                     {/* Clients */}
                     {/* <Route path="/addClient" element={

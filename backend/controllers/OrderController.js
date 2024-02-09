@@ -182,7 +182,100 @@ export const getOrdersByClientName = async (req, res) => {
                 AND: [
                     {
                         name: clientName,
-                        
+
+                    },
+                    {
+                        firstLN: clientFirstLN,
+                    },
+                    {
+                        secondLN: clienSecondLN,
+                    }
+
+                ],
+            },
+
+            select: {
+                id_client: true,
+            }
+
+        });
+
+        console.log(client)
+
+        var response = "";
+        if (client != null) {
+
+            response = await prisma.serviceOrder.findMany({
+                where: {
+                    fk_client: client.id_client
+                },
+                include: {
+                    client: {
+                        select: {
+                            name: true,
+                            firstLN: true,
+                            secondLN: true,
+                            email: true,
+                            phone: true,
+                        },
+                    },
+                    category: {
+                        select: {
+                            categoryDescription: true,
+                        }
+                    },
+                    user: {
+                        select: {
+                            name: true,
+                            firstLN: true,
+                            secondLN: true,
+                        },
+                    },
+                    ServiceOrderDetail: true,
+                    payment: true,
+                    deliveryDetail: {
+                        select: {
+                            user: {
+                                select: {
+                                    name: true,
+                                    firstLN: true,
+                                    secondLN: true,
+                                },
+                            },
+                        },
+                    },
+                },
+
+            });
+
+        }
+        else {
+            response = null
+        }
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
+export const getStoredOrdersByClientName = async (req, res) => {
+
+    try {
+        let clientNameArray = req.body.clientName.split(" ")
+        const clienSecondLN = clientNameArray.pop()
+        const clientFirstLN = clientNameArray.pop()
+        const clientNewName = clientNameArray.toString()
+        const clientName = clientNewName.replace(/,/g, ' ')
+        console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
+
+
+        const client = await prisma.client.findFirst({
+            where: {
+                AND: [
+                    {
+                        name: clientName,
+
                     },
                     {
                         firstLN: clientFirstLN,
@@ -833,13 +926,13 @@ export const createLaudryServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
-            include:{
-                client:{
-                    select:{
+            include: {
+                client: {
+                    select: {
 
-                        name:true,
-                        firstLN:true,
-                        secondLN:true
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
                     },
                 },
             }
@@ -928,13 +1021,13 @@ export const createOtherServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
-            include:{
-                client:{
-                    select:{
+            include: {
+                client: {
+                    select: {
 
-                        name:true,
-                        firstLN:true,
-                        secondLN:true
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
                     },
                 },
             }
@@ -1013,13 +1106,13 @@ export const createSelfServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
-            include:{
-                client:{
-                    select:{
+            include: {
+                client: {
+                    select: {
 
-                        name:true,
-                        firstLN:true,
-                        secondLN:true
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
                     },
                 },
             }
@@ -1094,13 +1187,13 @@ export const createIronServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
-            include:{
-                client:{
-                    select:{
+            include: {
+                client: {
+                    select: {
 
-                        name:true,
-                        firstLN:true,
-                        secondLN:true
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
                     },
                 },
             }
@@ -1178,13 +1271,13 @@ export const createDrycleanServiceOrder = async (req, res) => {
 
             data: req.body.serviceOrder,
 
-            include:{
-                client:{
-                    select:{
+            include: {
+                client: {
+                    select: {
 
-                        name:true,
-                        firstLN:true,
-                        secondLN:true
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
                     },
                 },
             }

@@ -5,6 +5,7 @@ import {
     getOrdersById,
     getOrdersByIdClient,
     getOrdersByClientName,
+    getStoredOrdersByClientName,
     getOrdersByIdUser,
     getOrdersSelfService,
     getOrdersLaundry,
@@ -57,6 +58,7 @@ router.post('/ordersDryclean', createDrycleanServiceOrder);
 router.post('/ordersOtherService', createOtherServiceOrder);
 router.post('/ordersMany', createOrderMany);
 router.post('/ordersByClientName', getOrdersByClientName);
+router.post('/storedOrdersByClientName', getStoredOrdersByClientName);
 
 router.patch('/orders/:id', updateOrder);
 router.patch('/storedOrders/', updateStoredOrders);

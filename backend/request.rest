@@ -611,6 +611,16 @@ Content-Type: application/json
 }
 ###
 
+POST  http://localhost:5000/storedOrdersByClientName
+Content-Type: application/json
+
+{
+
+  "clientName":"janito lopez perez"
+
+}
+###
+
 GET http://localhost:5000/ordersLaundry
 
 ###

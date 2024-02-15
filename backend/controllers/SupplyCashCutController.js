@@ -136,7 +136,7 @@ export const calculateSupplyCashCut = async (req, res) => {
         });
 
         total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
-     
+
         const cash = await prisma.supplyPayment.aggregate({
             where: {
                 AND: [
@@ -193,22 +193,24 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
         });
 
-        const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
+        const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_supplyOrder);
         console.log(orders)
 
-        const totalEncargo = await prisma.serviceOrder.aggregate({
+        const totalJabon = await prisma.supplyOrderDetail.aggregate({
 
             where: {
                 AND: [
 
                     {
-                        category: {
-                            categoryDescription: "encargo"
-                        },
+                        Supply: {
+                            category: "jabon"
+                        }
                     },
                     {
-                        id_order: {
-                            in: orders,
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
                         },
                     }
 
@@ -216,55 +218,29 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
 
             _sum: {
-                totalPrice: true,
+                subtotal: true,
             },
 
         });
 
-        totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
+        totalJabon._sum.totalPrice === null ? totalJabon._sum.totalPrice = 0 : totalJabon._sum.totalPrice + 0;
 
-        const totalAutoservicio = await prisma.serviceOrder.aggregate({
+
+        const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
 
             where: {
                 AND: [
 
                     {
-                        category: {
-                            categoryDescription: "autoservicio"
-                        },
+                        Supply: {
+                            category: "suavitel"
+                        }
                     },
                     {
-                        id_order: {
-                            in: orders,
-                        },
-                    }
-
-                ],
-
-            },
-
-            _sum: {
-                totalPrice: true,
-            },
-
-        });
-
-        totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
-
-        const totalPlanchado = await prisma.serviceOrder.aggregate({
-
-
-            where: {
-                AND: [
-
-                    {
-                        category: {
-                            categoryDescription: "planchado"
-                        },
-                    },
-                    {
-                        id_order: {
-                            in: orders,
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
                         },
                     }
 
@@ -272,27 +248,28 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
 
             _sum: {
-                totalPrice: true,
+                subtotal: true,
             },
 
         });
 
-        totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum + 0;
+        totalSuavitel._sum.totalPrice === null ? totalSuavitel._sum.totalPrice = 0 : totalSuavitel._sum.totalPrice + 0;
 
-        const totalTintoreria = await prisma.serviceOrder.aggregate({
-
+        const totalPinol = await prisma.supplyOrderDetail.aggregate({
 
             where: {
                 AND: [
 
                     {
-                        category: {
-                            categoryDescription: "tintoreria"
-                        },
+                        Supply: {
+                            category: "pinol"
+                        }
                     },
                     {
-                        id_order: {
-                            in: orders,
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
                         },
                     }
 
@@ -300,27 +277,28 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
 
             _sum: {
-                totalPrice: true,
+                subtotal: true,
             },
 
         });
 
-        totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+        totalPinol._sum.totalPrice === null ? totalPinol._sum.totalPrice = 0 : totalPinol._sum.totalPrice + 0;
 
-        const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
-
+        const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
 
             where: {
                 AND: [
 
                     {
-                        category: {
-                            categoryDescription: "varios"
-                        },
+                        Supply: {
+                            category: "desengrasante"
+                        }
                     },
                     {
-                        id_order: {
-                            in: orders,
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
                         },
                     }
 
@@ -328,45 +306,196 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
 
             _sum: {
-                totalPrice: true,
+                subtotal: true,
             },
 
         });
 
-        totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+        totalDesengrasante._sum.totalPrice === null ? totalDesengrasante._sum.totalPrice = 0 : totalDesengrasante._sum.totalPrice + 0;
 
-        const lastPettyCash = await prisma.pettyCash.aggregate({
-            _max: {
-                id_movement: true,
-            }
-        });
+        const totalCloro = await prisma.supplyOrderDetail.aggregate({
 
-
-
-        console.log(lastPettyCash);
-
-        const pettyCashBalance = await prisma.pettyCash.findFirst({
             where: {
-                id_movement: lastPettyCash._max.id_movement,
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "cloro"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
             },
-            select: {
-                balance: true,
-            }
+
+            _sum: {
+                subtotal: true,
+            },
+
         });
 
-        lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
+        totalCloro._sum.totalPrice === null ? totalCloro._sum.totalPrice = 0 : totalCloro._sum.totalPrice + 0;
 
-        console.log(pettyCashBalance.balance);
+        const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "sanitizante"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                subtotal: true,
+            },
+
+        });
+
+        totalSanitizante._sum.totalPrice === null ? totalSanitizante._sum.totalPrice = 0 : totalSanitizante._sum.totalPrice + 0;
+
+        const totalBolsa = await prisma.supplyOrderDetail.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "bolsa"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                subtotal: true,
+            },
+
+        });
+
+        totalBolsa._sum.totalPrice === null ? totalBolsa._sum.totalPrice = 0 : totalBolsa._sum.totalPrice + 0;
+
+        const totalReforzado = await prisma.supplyOrderDetail.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "reforzado"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                subtotal: true,
+            },
+
+        });
+
+        totalReforzado._sum.totalPrice === null ? totalReforzado._sum.totalPrice = 0 : totalReforzado._sum.totalPrice + 0;
+
+        const totalGanchos = await prisma.supplyOrderDetail.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "ganchos"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                subtotal: true,
+            },
+
+        });
+
+        totalGanchos._sum.totalPrice === null ? totalGanchos._sum.totalPrice = 0 : totalGanchos._sum.totalPrice + 0;
+
+        const totalWC = await prisma.supplyOrderDetail.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        Supply: {
+                            category: "wc"
+                        }
+                    },
+                    {
+                        SupplyOrder: {
+                            id_supplyOrder: {
+                                in: orders,
+                            },
+                        },
+                    }
+
+                ],
+            },
+
+            _sum: {
+                subtotal: true,
+            },
+
+        });
+
+        totalWC._sum.totalPrice === null ? totalWC._sum.totalPrice = 0 : totalWC._sum.totalPrice + 0;
 
 
 
-        const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
+        const totalOtros = (parseFloat(total._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
+            totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
 
-        if (totalCashWithdrawal._sum.amount === null)
-            totalCashWithdrawal._sum.amount = parseFloat(0.00);
-        const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
 
-        console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
+
+        console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
+            totalBolsa._sum.subtotal, totalReforzado._sum.subtotal, totalGanchos._sum.subtotal, totalWC._sum.subtotal);
         //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
         const today = new Date().toJSON();
@@ -378,17 +507,19 @@ export const calculateSupplyCashCut = async (req, res) => {
             "totalCash": cash._sum.payTotal,
             "totalCredit": credit._sum.payTotal,
             "totalIncome": totalIncome,
-            "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
-            "total": totalC,
-            "totalEncargo": totalEncargo._sum.totalPrice,
-            "totalAutoservicio": totalAutoservicio._sum.totalPrice,
-            "totalPlanchado": totalPlanchado._sum.totalPrice,
-            "totalTintoreria": totalTintoreria._sum.totalPrice,
-            "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-            "totalOtros": otherCategorys,
+            "totalJabon": totalJabon._sum.subtotal,
+            "totalSuavitel": totalSuavitel._sum.subtotal,
+            "totalPinol": totalPinol._sum.subtotal,
+            "totalDesengrasante": totalDesengrasante._sum.subtotal,
+            "totalCloro": totalCloro._sum.subtotal,
+            "totalSanitizante": totalSanitizante._sum.subtotal,
+            "totalBolsa": totalBolsa._sum.subtotal,
+            "totalReforzado": totalReforzado._sum.subtotal,
+            "totalGanchos": totalGanchos._sum.subtotal,
+            "totalWC": totalWC._sum.subtotal,
+            "totalOtros": totalOtros,
             "ordersPayed": orders.length,
             "cashCutD": today,
-            "pettyCashBalance": pettyCashBalance.balance,
             "workShift": workShift.workShift
             //"selfService":selfService
             //"ordersIds":ordersIds
@@ -408,9 +539,9 @@ export const closeCashCut = async (req, res) => {
     try {
         var response;
 
-        const cashCutStatus = await prisma.cashCut.findFirst({
+        const cashCutStatus = await prisma.supplyCashCut.findFirst({
             where: {
-                id_cashCut: Number(req.params.id)
+                id_supplyCashCut: Number(req.params.id)
             },
 
             select: {
@@ -419,10 +550,10 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        const workShift = await prisma.cashCut.findFirst({
+        const workShift = await prisma.supplyCashCut.findFirst({
 
             where: {
-                id_cashCut: Number(req.params.id)
+                id_supplyCashCut: Number(req.params.id)
             },
             select: {
                 workShift: true,
@@ -430,10 +561,11 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        console.log(cashCutStatus.CashCutStatus);
+        console.log(cashCutStatus.cashCutStatus);
+
         if (cashCutStatus.cashCutStatus === "open") {
 
-            const total = await prisma.payment.aggregate({
+            const total = await prisma.supplyPayment.aggregate({
 
                 where: {
                     fk_cashCut: Number(req.params.id)
@@ -442,19 +574,21 @@ export const closeCashCut = async (req, res) => {
                     payTotal: true,
                 }
             });
+
+            // const workShift = await prisma.supplyCashCut.findFirst({
+
+            //     where: {
+            //         id_supplyCashCut: Number(req.params.id)
+            //     },
+            //     select: {
+            //         workShift: true,
+            //     }
+
+            // });
+
             total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
-            const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
-                where: {
-                    fk_cashCut: Number(req.params.id)
-                },
-                _sum: {
-                    amount: true,
-                }
-            });
-            totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
-
-            const cash = await prisma.payment.aggregate({
+            const cash = await prisma.supplyPayment.aggregate({
                 where: {
                     AND: [
                         {
@@ -475,8 +609,7 @@ export const closeCashCut = async (req, res) => {
             });
             cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
 
-            const credit = await prisma.payment.aggregate({
-
+            const credit = await prisma.supplyPayment.aggregate({
                 where: {
                     AND: [
                         {
@@ -494,39 +627,41 @@ export const closeCashCut = async (req, res) => {
                     payTotal: true
                 }
             });
+
+
             credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-            const ordersPayed = await prisma.payment.findMany({
+
+            const ordersPayed = await prisma.supplyPayment.findMany({
 
                 where: {
                     fk_cashCut: Number(req.params.id)
                 }, select: {
-                    serviceOrder: {
+                    SupplyOrder: {
                         select: {
-                            id_order: true
+                            id_supplyOrder: true
                         },
                     },
                 },
             });
 
-            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+            const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_supplyOrder);
+            console.log(orders)
 
-
-            const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
-
-
-            const totalEncargo = await prisma.serviceOrder.aggregate({
+            const totalJabon = await prisma.supplyOrderDetail.aggregate({
 
                 where: {
                     AND: [
 
                         {
-                            category: {
-                                categoryDescription: "encargo"
-                            },
+                            Supply: {
+                                category: "jabon"
+                            }
                         },
                         {
-                            id_order: {
-                                in: orders,
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
                             },
                         }
 
@@ -534,54 +669,29 @@ export const closeCashCut = async (req, res) => {
                 },
 
                 _sum: {
-                    totalPrice: true,
+                    subtotal: true,
                 },
 
             });
 
-            totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
+            totalJabon._sum.totalPrice === null ? totalJabon._sum.totalPrice = 0 : totalJabon._sum.totalPrice + 0;
 
-            const totalAutoservicio = await prisma.serviceOrder.aggregate({
+
+            const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
 
                 where: {
                     AND: [
 
                         {
-                            category: {
-                                categoryDescription: "autoservicio"
-                            },
+                            Supply: {
+                                category: "suavitel"
+                            }
                         },
                         {
-                            id_order: {
-                                in: orders,
-                            },
-                        }
-
-                    ],
-
-                },
-
-                _sum: {
-                    totalPrice: true,
-                },
-
-            });
-            totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
-
-            const totalPlanchado = await prisma.serviceOrder.aggregate({
-
-
-                where: {
-                    AND: [
-
-                        {
-                            category: {
-                                categoryDescription: "planchado"
-                            },
-                        },
-                        {
-                            id_order: {
-                                in: orders,
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
                             },
                         }
 
@@ -589,27 +699,28 @@ export const closeCashCut = async (req, res) => {
                 },
 
                 _sum: {
-                    totalPrice: true,
+                    subtotal: true,
                 },
 
             });
 
-            totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
+            totalSuavitel._sum.totalPrice === null ? totalSuavitel._sum.totalPrice = 0 : totalSuavitel._sum.totalPrice + 0;
 
-            const totalTintoreria = await prisma.serviceOrder.aggregate({
-
+            const totalPinol = await prisma.supplyOrderDetail.aggregate({
 
                 where: {
                     AND: [
 
                         {
-                            category: {
-                                categoryDescription: "tintoreria"
-                            },
+                            Supply: {
+                                category: "pinol"
+                            }
                         },
                         {
-                            id_order: {
-                                in: orders,
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
                             },
                         }
 
@@ -617,27 +728,28 @@ export const closeCashCut = async (req, res) => {
                 },
 
                 _sum: {
-                    totalPrice: true,
+                    subtotal: true,
                 },
 
             });
 
-            totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+            totalPinol._sum.totalPrice === null ? totalPinol._sum.totalPrice = 0 : totalPinol._sum.totalPrice + 0;
 
-            const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
-
+            const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
 
                 where: {
                     AND: [
 
                         {
-                            category: {
-                                categoryDescription: "varios"
-                            },
+                            Supply: {
+                                category: "desengrasante"
+                            }
                         },
                         {
-                            id_order: {
-                                in: orders,
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
                             },
                         }
 
@@ -645,99 +757,263 @@ export const closeCashCut = async (req, res) => {
                 },
 
                 _sum: {
-                    totalPrice: true,
+                    subtotal: true,
                 },
 
             });
 
-            totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+            totalDesengrasante._sum.totalPrice === null ? totalDesengrasante._sum.totalPrice = 0 : totalDesengrasante._sum.totalPrice + 0;
 
-            const lastPettyCash = await prisma.pettyCash.aggregate({
-                _max: {
-                    id_movement: true,
-                }
-            });
+            const totalCloro = await prisma.supplyOrderDetail.aggregate({
 
-            const pettyCashBalance = await prisma.pettyCash.findFirst({
                 where: {
-                    id_movement: lastPettyCash._max.id_movement,
+                    AND: [
+
+                        {
+                            Supply: {
+                                category: "cloro"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
                 },
-                select: {
-                    balance: true,
-                }
+
+                _sum: {
+                    subtotal: true,
+                },
+
             });
 
-            lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
+            totalCloro._sum.totalPrice === null ? totalCloro._sum.totalPrice = 0 : totalCloro._sum.totalPrice + 0;
 
-            const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
+            const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
 
-            if (totalCashWithdrawal._sum.amount === null)
-                totalCashWithdrawal._sum.amount = parseFloat(0.00);
-            const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
+                where: {
+                    AND: [
 
-            console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
+                        {
+                            Supply: {
+                                category: "sanitizante"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            totalSanitizante._sum.totalPrice === null ? totalSanitizante._sum.totalPrice = 0 : totalSanitizante._sum.totalPrice + 0;
+
+            const totalBolsa = await prisma.supplyOrderDetail.aggregate({
+
+                where: {
+                    AND: [
+
+                        {
+                            Supply: {
+                                category: "bolsa"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            totalBolsa._sum.totalPrice === null ? totalBolsa._sum.totalPrice = 0 : totalBolsa._sum.totalPrice + 0;
+
+            const totalReforzado = await prisma.supplyOrderDetail.aggregate({
+
+                where: {
+                    AND: [
+
+                        {
+                            Supply: {
+                                category: "reforzado"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            totalReforzado._sum.totalPrice === null ? totalReforzado._sum.totalPrice = 0 : totalReforzado._sum.totalPrice + 0;
+
+            const totalGanchos = await prisma.supplyOrderDetail.aggregate({
+
+                where: {
+                    AND: [
+
+                        {
+                            Supply: {
+                                category: "ganchos"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            totalGanchos._sum.totalPrice === null ? totalGanchos._sum.totalPrice = 0 : totalGanchos._sum.totalPrice + 0;
+
+            const totalWC = await prisma.supplyOrderDetail.aggregate({
+
+                where: {
+                    AND: [
+
+                        {
+                            Supply: {
+                                category: "wc"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            totalWC._sum.totalPrice === null ? totalWC._sum.totalPrice = 0 : totalWC._sum.totalPrice + 0;
+
+
+
+            const totalOtros = (parseFloat(total._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
+                totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
+
+
+
+            console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
+                totalBolsa._sum.subtotal, totalReforzado._sum.subtotal, totalGanchos._sum.subtotal, totalWC._sum.subtotal);
             //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
             const today = new Date().toJSON();
             const time = new Date().toJSON();
             const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
 
-            response = {
+            response =
+            {
                 "totalCash": cash._sum.payTotal,
                 "totalCredit": credit._sum.payTotal,
                 "totalIncome": totalIncome,
-                "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
-                "total": totalC,
-                "totalEncargo": totalEncargo._sum.totalPrice,
-                "totalAutoservicio": totalAutoservicio._sum.totalPrice,
-                "totalPlanchado": totalPlanchado._sum.totalPrice,
-                "totalTintoreria": totalTintoreria._sum.totalPrice,
-                "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-                "totalOtros": otherCategorys,
+                "totalJabon": totalJabon._sum.subtotal,
+                "totalSuavitel": totalSuavitel._sum.subtotal,
+                "totalPinol": totalPinol._sum.subtotal,
+                "totalDesengrasante": totalDesengrasante._sum.subtotal,
+                "totalCloro": totalCloro._sum.subtotal,
+                "totalSanitizante": totalSanitizante._sum.subtotal,
+                "totalBolsa": totalBolsa._sum.subtotal,
+                "totalReforzado": totalReforzado._sum.subtotal,
+                "totalGanchos": totalGanchos._sum.subtotal,
+                "totalWC": totalWC._sum.subtotal,
+                "totalOtros": totalOtros,
                 "ordersPayed": orders.length,
-                "cashCutStatus": "closed",
                 "cashCutD": today,
-                "cashCutT": time,
-                "pettyCashBalance": pettyCashBalance.balance,
                 "workShift": workShift.workShift
 
-                //"selfService":selfService
-                //"ordersIds":ordersIds
             }
 
-            const closeCash = await prisma.cashCut.update({
+            // console.log(total);
+            // console.log(cash);
+            // console.log(credit);
+            const closeCash = await prisma.supplyCashCut.update({
 
                 where: {
 
-                    id_cashCut: Number(req.params.id)
+                    id_supplyCashCut: Number(req.params.id)
                 },
                 data: {
                     "totalCash": cash._sum.payTotal,
                     "totalCredit": credit._sum.payTotal,
                     "totalIncome": totalIncome,
-                    "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
-                    "total": totalC,
-                    "totalEncargo": totalEncargo._sum.totalPrice,
-                    "totalAutoservicio": totalAutoservicio._sum.totalPrice,
-                    "totalPlanchado": totalPlanchado._sum.totalPrice,
-                    "totalTintoreria": totalTintoreria._sum.totalPrice,
-                    "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-                    "totalOtros": otherCategorys,
+                    "totalJabon": totalJabon._sum.subtotal,
+                    "totalSuavitel": totalSuavitel._sum.subtotal,
+                    "totalPinol": totalPinol._sum.subtotal,
+                    "totalDesengrasante": totalDesengrasante._sum.subtotal,
+                    "totalCloro": totalCloro._sum.subtotal,
+                    "totalSanitizante": totalSanitizante._sum.subtotal,
+                    "totalBolsa": totalBolsa._sum.subtotal,
+                    "totalReforzado": totalReforzado._sum.subtotal,
+                    "totalGanchos": totalGanchos._sum.subtotal,
+                    "totalWC": totalWC._sum.subtotal,
+                    "totalOtros": totalOtros,
                     "ordersPayed": orders.length,
+                    "cashCutD": today,
+                    "workShift": workShift.workShift,
                     "cashCutStatus": "closed",
                     "cashCutD": today,
-                    "cashCutT": time,
-                    "pettyCashBalance": pettyCashBalance.balance
-
+                    "cashCutT": time
                 }
             });
 
         } else {
-            response = await prisma.cashCut.findFirst({
+            response = await prisma.supplyCashCut.findFirst({
 
                 where: {
 
-                    id_cashCut: Number(req.params.id)
+                    id_supplyCashCut: Number(req.params.id)
                 },
             });
         }
@@ -754,10 +1030,10 @@ export const closeCashCut = async (req, res) => {
 
 export const getCashCutStatus = async (req, res) => {
     try {
-        const lastCashCut = await prisma.cashCut.aggregate({
+        const lastCashCut = await prisma.supplyCashCut.aggregate({
 
             _max: {
-                id_cashCut: true,
+                id_supplyCashCut: true,
             }
 
         });
@@ -775,15 +1051,15 @@ export const getCashCutStatus = async (req, res) => {
         }
         else {
 
-            lastCashCutStatus = await prisma.cashCut.findUnique({
+            lastCashCutStatus = await prisma.supplyCashCut.findUnique({
 
                 where: {
-                    id_cashCut: lastCashCut._max.id_cashCut,
+                    id_supplyCashCut: lastCashCut._max.id_supplyCashCut,
                 },
 
                 select: {
                     cashCutStatus: true,
-                    id_cashCut: true,
+                    id_supplyCashCut: true,
                 }
 
             })
@@ -801,17 +1077,17 @@ export const getCashCutStatus = async (req, res) => {
 
 export const getLastCashCut = async (req, res) => {
     try {
-        const lastCashCutId = await prisma.cashCut.aggregate({
+        const lastCashCutId = await prisma.supplyCashCut.aggregate({
 
             _max: {
-                id_cashCut: true,
+                id_supplyCashCut: true,
             }
         });
 
-        const cashCutStatus = await prisma.cashCut.findFirst({
+        const cashCutStatus = await prisma.supplyCashCut.findFirst({
 
             where: {
-                id_cashCut: lastCashCutId._max.id_cashCut
+                id_supplyCashCut: lastCashCutId._max.id_cashCut
             },
 
             select: {
@@ -821,7 +1097,7 @@ export const getLastCashCut = async (req, res) => {
         });
 
         const response = {
-            "id_cashCut ": lastCashCutId._max.id_cashCut,
+            "id_cashCut ": lastCashCutId._max.id_supplyCashCut,
             "cashCutStatus": cashCutStatus.cashCutStatus
         };
 

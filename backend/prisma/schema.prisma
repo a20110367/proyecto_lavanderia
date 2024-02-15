@@ -491,7 +491,7 @@ model SupplyOrder {
 
   client            Client              @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
   user              User                @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  SupplyPayment     SupplyPayment?  
+  SupplyPayment     SupplyPayment?
   SupplyOrderDetail SupplyOrderDetail[]
 }
 
@@ -512,6 +512,7 @@ model Supply {
   id_supply         Int                 @id @default(autoincrement())
   description       String              @unique
   price             Float
+  category          SupplyCategory
   unit              Unit
   value             Int
   created           DateTime            @default(now())
@@ -592,4 +593,18 @@ enum WorkShift {
   morning
   evening
   nigth
+}
+
+enum SupplyCategory {
+  jabon
+  suavitel
+  pinol
+  desengrasante
+  cloro
+  sanitizante
+  bolsa
+  reforzado
+  ganchos
+  wc
+  otros
 }

@@ -20,10 +20,12 @@ model User {
   username       String           @unique
   updatedAt      DateTime         @updatedAt
   CashCut        CashCut[]
+  SupplyCashCut  SupplyCashCut[]
   CashWithdrawal CashWithdrawal[]
   DeliveryDetail DeliveryDetail[]
   ServiceOrders  ServiceOrder[]
   PettyCash      PettyCash[]
+  SupplyOrder    SupplyOrder[]
 }
 
 model Client {
@@ -38,6 +40,7 @@ model Client {
   username      String?        @unique
   updatedAt     DateTime       @updatedAt
   ServiceOrders ServiceOrder[]
+  SupplyOrder   SupplyOrder[]
 }
 
 model Machine {
@@ -395,7 +398,7 @@ model CashCut {
   totalOtrosEncargo   Float?           @default(0)
   totalIncome         Float?
   pettyCashBalance    Float?
-  workShift           WorkShift @default(morning)
+  workShift           WorkShift        @default(morning)
   user                User             @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   cashWithdrawal      CashWithdrawal[]
   payment             Payment[]
@@ -427,6 +430,99 @@ model PettyCash {
   updatedAt     DateTime      @updatedAt
   fk_user       Int?
   user          User?         @relation(fields: [fk_user], references: [id_user], onDelete: SetNull, onUpdate: Cascade)
+}
+
+model SupplyCashCut {
+  fk_user           Int
+  total             Float?
+  created           DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  cashCutD          DateTime?     @db.Date
+  cashCutT          DateTime?     @db.Time(0)
+  id_supplyCashCut  Int           @id @default(autoincrement())
+  cashCutStatus     CashCutStatus @default(open)
+  initialCash       Float?        @default(0)
+  ordersPayed       Int?
+  totalJabon        Float?
+  totalSuavitel     Float?
+  totalPinol        Float?
+  totalDesegrasante Float?
+  totalCloro        Float?
+  totalSanitisante  Float?
+  totalBolsa        Float?
+  totalReforzado    Float?
+  totalGanchos      Float?
+  totalWC           Float?
+  totalOtros        Float?        @default(0)
+  totalIncome       Float?
+
+  workShift     WorkShift       @default(morning)
+  user          User            @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  SupplyPayment SupplyPayment[]
+}
+
+model SupplyPayment {
+  id_payment Int       @id @default(autoincrement())
+  fk_idOrder Int       @unique
+  payMethod  PayMethod
+  payDate    DateTime  @db.Date
+  created    DateTime  @default(now())
+  fk_cashCut Int
+  payTime    DateTime  @db.Time(0)
+  payTotal   Float
+  updatedAt  DateTime  @updatedAt
+
+  SupplyCashCut SupplyCashCut @relation(fields: [fk_cashCut], references: [id_supplyCashCut], onDelete: Cascade, onUpdate: Cascade)
+  SupplyOrder   SupplyOrder   @relation(fields: [fk_idOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model SupplyOrder {
+  id_supplyOrder Int       @id @default(autoincrement())
+  receptionDate  DateTime  @db.Date
+  totalPrice     Float
+  fk_client      Int
+  created        DateTime  @default(now())
+  numberOfItems  Int       @default(1)
+  payForm        PayForm   @default(delivery) //eliminar en la proxima revision
+  payStatus      PayStatus @default(unpaid)
+  updatedAt      DateTime  @updatedAt
+  fk_user        Int
+  id_payment     Int? //Checar la dependencia con las pruebas
+
+  client            Client              @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
+  user              User                @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  SupplyPayment     SupplyPayment?  
+  SupplyOrderDetail SupplyOrderDetail[]
+}
+
+model SupplyOrderDetail {
+  id_supplyOrderDetail Int      @id @default(autoincrement())
+  units                Int      @default(1)
+  subtotal             Float    @default(0.00)
+  created              DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  fk_supplyOrder       Int
+  fk_supplyId          Int
+
+  SupplyOrder SupplyOrder @relation(fields: [fk_supplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+  Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Supply {
+  id_supply         Int                 @id @default(autoincrement())
+  description       String              @unique
+  price             Float
+  unit              Unit
+  value             Int
+  created           DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  SupplyOrderDetail SupplyOrderDetail[]
+}
+
+enum Unit {
+  mililitros
+  gramos
+  piezas
 }
 
 enum Role {

@@ -1,13 +1,13 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from "../../api/api";
 
-function EditProductos() {
+function AddProductos() {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const valorRef = useRef();
-  
+
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState("piezas");
@@ -18,7 +18,6 @@ function EditProductos() {
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-  const { id } = useParams();
 
   const productosKeywords = [
     "jabon",
@@ -32,6 +31,7 @@ function EditProductos() {
     "ganchos",
     "wc",
   ];
+
   const forbiddenKeyword = [
     "autoservicio",
     "planchado",
@@ -45,40 +45,9 @@ function EditProductos() {
     "lavado",
   ];
 
-  useEffect(() => {
-    const getServiceById = async () => {
-      try {
-        const response = await api.get(`/supplies/${id}`);
-        
-        setDescription(response.data.description || "");
-        setPrice(response.data.price || 0);
-        setCategory(response.data.category);
-        setUnit(response.data.unit);
-        setValor(response.data.value || 0);
-      } catch (error) {
-        console.error("Error fetching service:", error);
-      }
-    };
-
-    getServiceById();
-  }, [id]);
-    
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasProductosKeyword = productosKeywords.some((keyword) =>
-      description.toLowerCase().includes(keyword)
-    );
-
-    if (!hasProductosKeyword) {
-      setErrMsg("Error, solo puedes editar servicios de lavandería.");
-      return;
-    }
-
-    if (!description || !price || !unit) {
-      setErrMsg("Todos los campos son obligatorios.");
-      return;
-    }
 
     const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
       description.toLowerCase().includes(keyword)
@@ -90,18 +59,22 @@ function EditProductos() {
     }
 
     try {
-      await api.patch(`/supplies/${id}`, {
+      await api.post("/supplies", {
         description: description,
         price: parseFloat(price),
         category: category,
         unit: unit,
         value: parseInt(valor),
       });
-      navigate("/productos");
+      setDescription("");
+      setPrice(0);
+      setValor(0);
       setSuccess(true);
+
+      navigate("/productos");
     } catch (err) {
+      setErrMsg("Failed to add service.");
       console.log(err);
-      setErrMsg("Error al actualizar el servicio.");
     }
   };
 
@@ -109,12 +82,17 @@ function EditProductos() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">Editando el Producto:</p>
-          <strong className="title-strong">{description}</strong>
+          <h2 className="title text-white">
+            <em>Añadir un nuevo Producto </em>
+          </h2>
+          <p className="form-lbl text-white">
+            Ingrese los detalles del Producto.
+          </p>
+          <div className="clearBoth"></div>
         </div>
         {success ? (
           <section>
-            <h1>Éxito</h1>
+            <h1>Success!</h1>
           </section>
         ) : (
           <section>
@@ -126,8 +104,8 @@ function EditProductos() {
                 className="form-input"
                 type="text"
                 id="description"
-                autoComplete="off"
                 ref={descriptionRef}
+                autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
@@ -139,7 +117,7 @@ function EditProductos() {
                     className="text-red-500"
                     style={{ fontSize: "1rem" }}
                   />
-                  <p className="errmsg text-red-500">{errMsg}</p>
+                  <p className="errmsg text-red-500 ">{errMsg}</p>
                 </div>
               )}
 
@@ -205,8 +183,8 @@ function EditProductos() {
                 required
               />
 
-              <button className="btn-edit" type="submit">
-                Actualizar
+              <button className="btn-primary" type="submit">
+                Añadir Servicio
               </button>
               <button
                 className="btn-cancel"
@@ -222,4 +200,4 @@ function EditProductos() {
   );
 }
 
-export default EditProductos;
+export default AddProductos;

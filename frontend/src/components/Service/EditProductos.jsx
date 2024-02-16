@@ -4,10 +4,15 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from "../../api/api";
 
 function EditProductos() {
+  const descriptionRef = useRef();
+  const priceRef = useRef();
+  const valorRef = useRef();
+  
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [medidaType, setMedidaType] = useState("pieza");
-  const [unity, setUnity] = useState(0);
+  const [unit, setUnit] = useState("piezas");
+  const [category, setCategory] = useState("jabon");
+  const [valor, setValor] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -15,7 +20,18 @@ function EditProductos() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const productosKeywords = ["lavado", "lavados", "lavandería"];
+  const productosKeywords = [
+    "jabon",
+    "suavitel",
+    "pinol",
+    "desengrasante",
+    "cloro",
+    "sanitizante",
+    "bolsa",
+    "reforzado",
+    "ganchos",
+    "wc",
+  ];
   const forbiddenKeyword = [
     "autoservicio",
     "planchado",
@@ -26,16 +42,19 @@ function EditProductos() {
     "toalla",
     "colchas",
     "toallas",
+    "lavado",
   ];
 
   useEffect(() => {
     const getServiceById = async () => {
       try {
-        const response = await api.get(`/servicesLaundry/${id}`);
+        const response = await api.get(`/supplies/${id}`);
+        
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
-        setMedidaType(response.data.medidaType);
-        setUnity(response.data.washWeight || 0);
+        setCategory(response.data.category);
+        setUnit(response.data.unit);
+        setValor(response.data.value || 0);
       } catch (error) {
         console.error("Error fetching service:", error);
       }
@@ -43,7 +62,7 @@ function EditProductos() {
 
     getServiceById();
   }, [id]);
-
+    
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -56,7 +75,7 @@ function EditProductos() {
       return;
     }
 
-    if (!description || !price || !medidaType) {
+    if (!description || !price || !unit) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
@@ -71,11 +90,12 @@ function EditProductos() {
     }
 
     try {
-      await api.patch(`/servicesUpdateLaundry/${id}`, {
+      await api.patch(`/supplies/${id}`, {
         description: description,
         price: parseFloat(price),
-        medidaType: medidaType,
-        unity: parseInt(unity),
+        category: category,
+        unit: unit,
+        value: parseInt(valor),
       });
       navigate("/productos");
       setSuccess(true);
@@ -89,9 +109,7 @@ function EditProductos() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <p className="title text-white">
-            Editando el Producto:
-          </p>
+          <p className="title text-white">Editando el Producto:</p>
           <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
@@ -109,6 +127,7 @@ function EditProductos() {
                 type="text"
                 id="description"
                 autoComplete="off"
+                ref={descriptionRef}
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
@@ -124,29 +143,52 @@ function EditProductos() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="washCycleTime">
+              <label className="form-lbl" htmlFor="category">
+                Categoria:
+              </label>
+              <select
+                className="form-input"
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="jabon">Jabon</option>
+                <option value="suavitel">Suavitel</option>
+                <option value="pinol">Pinol</option>
+                <option value="desengrasante">Desengrasante</option>
+                <option value="cloro">Cloro</option>
+                <option value="sanitizante">Sanitizante</option>
+                <option value="bolsa">Bolsa</option>
+                <option value="reforzado">Reforzado</option>
+                <option value="ganchos">Ganchos</option>
+                <option value="wc">WC</option>
+                <option value="otros">Otros</option>
+              </select>
+
+              <label className="form-lbl" htmlFor="unit">
                 Medida:
               </label>
               <select
                 className="form-input"
-                id="medidaType"
-                value={medidaType}
-                onChange={(e) => setMedidaType(e.target.value)}
+                id="unit"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
               >
-                <option value="lavadora">Pieza</option>
-                <option value="secadora">Gramos</option>
-                <option value="secadora">Mililitros</option>
+                <option value="mililitros">Mililitros</option>
+                <option value="gramos">Gramos</option>
+                <option value="piezas">Piezas</option>
               </select>
 
-              <label className="form-lbl" htmlFor="washWeight">
+              <label className="form-lbl" htmlFor="valor">
                 Unidad:
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="washWeight"
-                onChange={(e) => setUnity(e.target.value)}
-                value={unity}
+                id="valor"
+                ref={valorRef}
+                onChange={(e) => setValor(e.target.value)}
+                value={valor}
               />
 
               <label className="form-lbl" htmlFor="price">
@@ -155,7 +197,9 @@ function EditProductos() {
               <input
                 className="form-input"
                 type="number"
+                step="0.1"
                 id="price"
+                ref={priceRef}
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required

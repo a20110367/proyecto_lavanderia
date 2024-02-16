@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
-import { BsFillTrashFill } from "react-icons/bs"
-import { AiFillEdit } from "react-icons/ai"
-import api from '../../api/api'
+import { BsFillTrashFill } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
+import api from "../../api/api";
 
 // Dialogs
 import Button from "@mui/material/Button";
@@ -28,36 +28,18 @@ function Productos() {
 
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
-    const response = await api.get("/servicesLaundry");
+    const response = await api.get("/supplies");
     return response.data;
   };
 
-  const { data } = useSWR("servicesLaundry", fetcher);
+  const { data } = useSWR("supplies", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
-  // Filtrar servicios relacionados con lavandería
-  const filteredData = data.filter((service) => {
-    const description = service.description.toLowerCase();
-    const exclusionKeywords = [
-      "autoservicio",
-      "auto servicio",
-      "autoservicios",
-      "auto servicios",
-    ];
-    const excludeService = exclusionKeywords.some((keyword) =>
-      new RegExp(keyword, "i").test(description)
-    );
-    return (
-      (description.includes("lavado") ||
-        description.includes("lavados") ||
-        description.includes("lavanderia")) &&
-      !excludeService
-    );
-  });
+ 
 
   const deleteService = async (serviceId) => {
-    await api.delete(`/servicesLaundry/${serviceId}`);
-    mutate("servicesLaundry");
+    await api.delete(`/supplies/${serviceId}`);
+    mutate("supplies");
   };
 
   const handleClickOpen = (serviceDesc, serviceId) => {
@@ -91,8 +73,9 @@ function Productos() {
           <table>
             <thead>
               <tr>
-              <th>ID Producto</th> 
+                <th>ID Producto</th>
                 <th>Descripción</th>
+                <th>Categoria</th>
                 <th>Medida</th>
                 <th>Unidades</th>
                 <th>Precio</th>
@@ -100,38 +83,40 @@ function Productos() {
               </tr>
             </thead>
             <tbody>
-              {filteredData
+              {data
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
                 )
                 .map((service, index) => (
-                  <tr key={service.id_service}>
+                  <tr key={service.id_supply}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
-                    <td>{service.Category.categoryDescription}</td>
+                    <td>{service.category}</td>
+                    <td>{service.unit}</td>
+                    <td>{service.value}</td>
                     <td>${service.price}</td>
                     <td>
                       <button
                         onClick={() =>
                           navigate(
-                            `/editProductos/${service.id_service}`
+                            `/editProductos/${service.id_supply}`
                           )
                         }
                         className=" btn-edit"
                       >
-                        <AiFillEdit/>
+                        <AiFillEdit />
                       </button>
                       <button
                         onClick={() =>
                           handleClickOpen(
                             service.description,
-                            service.id_service
+                            service.id_supply
                           )
                         }
                         className="btn-cancel"
                       >
-                        <BsFillTrashFill/>
+                        <BsFillTrashFill />
                       </button>
                       <Dialog
                         open={open}
@@ -169,7 +154,7 @@ function Productos() {
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(filteredData.length / itemsPerPage)}
+          pageCount={Math.ceil(data.length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

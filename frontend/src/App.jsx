@@ -187,7 +187,7 @@ function App() {
                     {/*Productos */}
                     <Route path="/productos" element={<Productos />} />
                     <Route path="/addProductos" element={<AddProductos />} />
-                    <Route path="/editProductos" element={<EditProductos />} />
+                    <Route path="/editProductos/:id" element={<EditProductos />} />
                     <Route path="/recepcionProductos" element={<RecepcionProductos />} />
 
                     {/* Clients */}

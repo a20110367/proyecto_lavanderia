@@ -6,19 +6,32 @@ import api from "../../api/api";
 function AddProductos() {
   const descriptionRef = useRef();
   const priceRef = useRef();
-  const unityRef = useRef();
+  const valorRef = useRef();
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
-  const [medidaType, setMedidaType] = useState("pieza");
-  const [unity, setUnity] = useState(0);
+  const [unit, setUnit] = useState("piezas");
+  const [category, setCategory] = useState("jabon");
+  const [valor, setValor] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const productosKeywords = ["lavado", "lavados", "lavandería"];
+  const productosKeywords = [
+    "jabon",
+    "suavitel",
+    "pinol",
+    "desengrasante",
+    "cloro",
+    "sanitizante",
+    "bolsa",
+    "reforzado",
+    "ganchos",
+    "wc",
+  ];
+
   const forbiddenKeyword = [
     "autoservicio",
     "planchado",
@@ -29,6 +42,7 @@ function AddProductos() {
     "toalla",
     "colchas",
     "toallas",
+    "lavado",
   ];
 
   const handleSubmit = async (e) => {
@@ -53,20 +67,22 @@ function AddProductos() {
     }
 
     try {
-      await api.post("/servicesLaundry", {
+      await api.post("/supplies", {
         description: description,
         price: parseFloat(price),
-        medidaType: medidaType,
-        unity: parseInt(unity),
+        category: category,
+        unit: unit,
+        value: parseInt(valor),
       });
       setDescription("");
       setPrice(0);
-      setUnity(0);
+      setValor(0);
       setSuccess(true);
 
       navigate("/productos");
     } catch (err) {
       setErrMsg("Failed to add service.");
+      console.log(err);
     }
   };
 
@@ -113,30 +129,52 @@ function AddProductos() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="washCycleTime">
+              <label className="form-lbl" htmlFor="category">
+                Categoria:
+              </label>
+              <select
+                className="form-input"
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="jabon">Jabon</option>
+                <option value="suavitel">Suavitel</option>
+                <option value="pinol">Pinol</option>
+                <option value="desengrasante">Desengrasante</option>
+                <option value="cloro">Cloro</option>
+                <option value="sanitizante">Sanitizante</option>
+                <option value="bolsa">Bolsa</option>
+                <option value="reforzado">Reforzado</option>
+                <option value="ganchos">Ganchos</option>
+                <option value="wc">WC</option>
+                <option value="otros">Otros</option>
+              </select>
+
+              <label className="form-lbl" htmlFor="unit">
                 Medida:
               </label>
               <select
                 className="form-input"
-                id="medidaType"
-                value={medidaType}
-                onChange={(e) => setMedidaType(e.target.value)}
+                id="unit"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
               >
-                <option value="lavadora">Pieza</option>
-                <option value="secadora">Gramos</option>
-                <option value="secadora">Mililitros</option>
+                <option value="mililitros">Mililitros</option>
+                <option value="gramos">Gramos</option>
+                <option value="piezas">Piezas</option>
               </select>
 
-              <label className="form-lbl" htmlFor="washWeight">
+              <label className="form-lbl" htmlFor="valor">
                 Unidad:
               </label>
               <input
                 className="form-input"
                 type="number"
-                id="weight"
-                ref={unityRef}
-                onChange={(e) => setUnity(e.target.value)}
-                value={unity}
+                id="valor"
+                ref={valorRef}
+                onChange={(e) => setValor(e.target.value)}
+                value={valor}
               />
 
               <label className="form-lbl" htmlFor="price">

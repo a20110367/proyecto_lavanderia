@@ -29,6 +29,7 @@ import IronControlRoute from './routes/IronControlRoute.js'
 import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
 import OtherService from './routes/ServiceOtherServiceRoute.js'
 import Ticket from './routes/TicketRoute.js'
+import SupplyRoute  from "./routes/SupplyRoute.js";
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -63,6 +64,7 @@ app.use(IronControlRoute)
 app.use(ServiceDryclean)
 app.use(OtherService)
 app.use(Ticket)
+app.use(SupplyRoute)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

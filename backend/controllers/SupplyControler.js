@@ -14,7 +14,7 @@ export const getSupplies = async (req, res) => {
 
 export const getSuppliesById = async (req, res) => {
     try {
-        const response = await prisma.supply.findMany({
+        const response = await prisma.supply.findUnique({
             where: {
                 id_supply: Number(req.params.id)
             }

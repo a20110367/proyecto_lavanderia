@@ -351,7 +351,7 @@ export const getStoredOrdersByClientName = async (req, res) => {
                     ServiceOrderDetail: true,
                     payment: true,
                     deliveryDetail: {
-                      
+
                         select: {
                             deliveryDate: true,
                             deliveryTime: true,

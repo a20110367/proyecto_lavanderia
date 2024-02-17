@@ -242,10 +242,39 @@ export const getSupplyOrdersByIdClient = async (req, res) => {
 export const createOrder = async (req, res) => {
 
     try {
+
+        //const supplyOrderDetail =[]
+
         const supplyOrder = await prisma.supplyOrder.create({
-            data: req.body
+            data: req.body.productOrder,
+
+            include: {
+                client: {
+                    select: {
+
+                        name: true,
+                        firstLN: true,
+                        secondLN: true
+                    },
+                },
+            }
 
         });
+
+        const orderDetail = req.body.products.map(item => ({ fk_supplyId: item.fk_supplyId, units: item.units, subtotal: item.subtotal, fk_supplyOrder: serviceOrder.id_order }))
+
+        const supplyOrderDetail = await prisma.supplyOrderDetail.createMany({
+
+            data: orderDetail
+        });
+
+
+        const response = {
+
+            "supplyOrder": supplyOrder,
+            "supplyOrderDetail": orderDetail,
+        }
+
         res.status(201).json(supplyOrder);
     } catch (e) {
         res.status(400).json({ msg: e.message });

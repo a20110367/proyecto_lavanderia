@@ -261,61 +261,6 @@ export default function PuntoVenta() {
 
     const filteredServices = data    
 
-    const handleOnChange = () => {
-        if (cart.length === 0) {
-            Swal.fire({
-                icon: "error",
-                title: "La lista de servicios esta vacia!",
-                text: "Intenta añadir un servicio a la lista.",
-                confirmButtonColor: "#034078",
-            });
-            return console.log("carrito vacio weon");
-        } else {
-            if (!isExpress) {
-                Swal.fire({
-                    title: "Esta seguro de poner el pedido como Servicio Express?",
-                    text: "El Precio sera uno mayor a lo habitual en caso de confirmar",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Si",
-                    cancelButtonText: "Cancelar",
-                }).then(async (result) => {
-                    if (result.isConfirmed) {
-                        setIsExpress(!isExpress);
-                        changePrice();
-                    }
-                });
-            } else {
-                setIsExpress(!isExpress);
-                changePrice();
-            }
-        }
-    };
-
-    const changePrice = () => {
-        const expressMultiplier = localStorage.getItem("expressMultiplier")
-            ? localStorage.getItem("expressMultiplier")
-            : 2;
-
-        if (isExpress) {
-            const updatedCart = cart.map((detail) => ({
-                ...detail,
-                price: detail.price / expressMultiplier,
-                totalPrice: detail.price / expressMultiplier,
-            }));
-            setCart(updatedCart);
-        } else {
-            const updatedCart = cart.map((detail) => ({
-                ...detail,
-                price: detail.price * expressMultiplier,
-                totalPrice: detail.price * expressMultiplier,
-            }));
-            setCart(updatedCart);
-        }
-    };
-
     const handleFiltroChange = (e) => {
         setFiltro(e.target.value);
     };

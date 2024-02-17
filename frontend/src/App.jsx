@@ -62,8 +62,6 @@ import CajaChica from "./components/Cajas/CajaChica"
 import Reembolso from "./components/Cajas/Reembolso"
 import Reportes from "./components/Cajas/Reportes"
 
-
-
 //COLA PEDIDOS
 import EntregaLavanderia from "./components/Lavanderia/EntregaLavanderia"
 import RecepcionLavanderia from "./components/Lavanderia/RecepcionLavanderia"
@@ -97,9 +95,9 @@ import EntregaVarios from "./components/EncargoVarios/EntregaVarios"
 
 // PRODUCTOS
 import RecepcionProductos from "./components/Productos/RecepcionProductos"
-import Productos from "./components/Service/Productos"
-import AddProductos from "./components/Service/AddProductos"
-import EditProductos from "./components/Service/EditProductos"
+import Productos from "./components/Productos/Productos"
+import AddProductos from "./components/Productos/AddProductos"
+import EditProductos from "./components/Productos/EditProductos"
 import BuscarPedidos from "./components/Pedidos/BuscarPedidos"
 
 function App() {

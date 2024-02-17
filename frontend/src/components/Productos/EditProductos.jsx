@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import api from "../../api/api";
 
-function AddProductos() {
+function EditProductos() {
   const descriptionRef = useRef();
   const priceRef = useRef();
   const valorRef = useRef();
-
+  
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [unit, setUnit] = useState("piezas");
@@ -18,6 +18,7 @@ function AddProductos() {
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const productosKeywords = [
     "jabon",
@@ -31,7 +32,6 @@ function AddProductos() {
     "ganchos",
     "wc",
   ];
-
   const forbiddenKeyword = [
     "autoservicio",
     "planchado",
@@ -45,15 +45,30 @@ function AddProductos() {
     "lavado",
   ];
 
+  useEffect(() => {
+    const getServiceById = async () => {
+      try {
+        const response = await api.get(`/supplies/${id}`);
+        
+        setDescription(response.data.description || "");
+        setPrice(response.data.price || 0);
+        setCategory(response.data.category);
+        setUnit(response.data.unit);
+        setValor(response.data.value || 0);
+      } catch (error) {
+        console.error("Error fetching service:", error);
+      }
+    };
+
+    getServiceById();
+  }, [id]);
+    
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasProductosKeyword = productosKeywords.some((keyword) =>
-      description.toLowerCase().includes(keyword)
-    );
 
-    if (!hasProductosKeyword) {
-      setErrMsg("Error, solo puedes añadir productos.");
+    if (!description || !price || !unit) {
+      setErrMsg("Todos los campos son obligatorios.");
       return;
     }
 
@@ -67,22 +82,18 @@ function AddProductos() {
     }
 
     try {
-      await api.post("/supplies", {
+      await api.patch(`/supplies/${id}`, {
         description: description,
         price: parseFloat(price),
         category: category,
         unit: unit,
         value: parseInt(valor),
       });
-      setDescription("");
-      setPrice(0);
-      setValor(0);
-      setSuccess(true);
-
       navigate("/productos");
+      setSuccess(true);
     } catch (err) {
-      setErrMsg("Failed to add service.");
       console.log(err);
+      setErrMsg("Error al actualizar el servicio.");
     }
   };
 
@@ -90,17 +101,12 @@ function AddProductos() {
     <div className="signup-form">
       <div className="form-container">
         <div className="HeadContent">
-          <h2 className="title text-white">
-            <em>Añadir un nuevo Producto </em>
-          </h2>
-          <p className="form-lbl text-white">
-            Ingrese los detalles del Producto.
-          </p>
-          <div className="clearBoth"></div>
+          <p className="title text-white">Editando el Producto:</p>
+          <strong className="title-strong">{description}</strong>
         </div>
         {success ? (
           <section>
-            <h1>Success!</h1>
+            <h1>Éxito</h1>
           </section>
         ) : (
           <section>
@@ -112,8 +118,8 @@ function AddProductos() {
                 className="form-input"
                 type="text"
                 id="description"
-                ref={descriptionRef}
                 autoComplete="off"
+                ref={descriptionRef}
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
@@ -125,7 +131,7 @@ function AddProductos() {
                     className="text-red-500"
                     style={{ fontSize: "1rem" }}
                   />
-                  <p className="errmsg text-red-500 ">{errMsg}</p>
+                  <p className="errmsg text-red-500">{errMsg}</p>
                 </div>
               )}
 
@@ -191,8 +197,8 @@ function AddProductos() {
                 required
               />
 
-              <button className="btn-primary" type="submit">
-                Añadir Servicio
+              <button className="btn-edit" type="submit">
+                Actualizar
               </button>
               <button
                 className="btn-cancel"
@@ -208,4 +214,4 @@ function AddProductos() {
   );
 }
 
-export default AddProductos;
+export default EditProductos;

@@ -35,8 +35,6 @@ function Productos() {
   const { data } = useSWR("supplies", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
- 
-
   const deleteService = async (serviceId) => {
     await api.delete(`/supplies/${serviceId}`);
     mutate("supplies");
@@ -92,16 +90,45 @@ function Productos() {
                   <tr key={service.id_supply}>
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
-                    <td>{service.category}</td>
-                    <td>{service.unit}</td>
+                    <td>
+                      {service.category === "jabon"
+                        ? "Jabon"
+                        : service.category === "suavitel"
+                        ? "Suavitel"
+                        : service.category === "pinol"
+                        ? "Pinol"
+                        : service.category === "desengrasante"
+                        ? "Desengrasante"
+                        : service.category === "cloro"
+                        ? "Cloro"
+                        : service.category === "sanitizante"
+                        ? "Sanitizante"
+                        : service.category === "bolsa"
+                        ? "Bolsa"
+                        : service.category === "reforzado"
+                        ? "Reforzado"
+                        : service.category === "ganchos"
+                        ? "Ganchos"
+                        : service.category === "wc"
+                        ? "WC"
+                        : "Otro"}
+                    </td>
+
+                    <td>
+                      {service.unit === "mililitros"
+                        ? "Mililitros"
+                        : service.unit === "gramos"
+                        ? "Gramos"
+                        : service.unit === "piezas"
+                        ? "Piezas"
+                        : "Otro"}
+                    </td>
                     <td>{service.value}</td>
                     <td>${service.price}</td>
                     <td>
                       <button
                         onClick={() =>
-                          navigate(
-                            `/editProductos/${service.id_supply}`
-                          )
+                          navigate(`/editProductos/${service.id_supply}`)
                         }
                         className=" btn-edit"
                       >

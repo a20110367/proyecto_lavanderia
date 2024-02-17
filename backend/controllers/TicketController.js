@@ -17,6 +17,8 @@ let printer = new ThermalPrinter({
     breakLine: BreakLine.WORD,
 });
 
+let lastOrder
+
 export const generateTicket = async (req, res) => {
 
     const { order } = req.body
@@ -137,6 +139,7 @@ export const generateTicket = async (req, res) => {
         ]);
 
         printer.cut();
+        lastOrder = order
         let execute = await printer.execute()
         console.log(execute)
         console.log("Print done!");
@@ -277,5 +280,15 @@ export const generatePartialCashCutTicket = async (req, res) => {
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message });
+    }
+}
+
+export const reprintTicket = async (req, res) => {
+    try{
+        generateTicket(lastOrder)   
+        res.status(200).json('Print done!')
+    }catch(err){
+        console.error(err)
+        res.status(400).json({msg: err.message})
     }
 }

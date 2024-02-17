@@ -830,6 +830,7 @@ export default function PuntoVenta() {
                         <p style={{ fontSize: "16px" }}>
                           Costo: ${service.price * service.quantity}
                         </p>
+                        <hr/>
                       </div>
                     ))}
                     {

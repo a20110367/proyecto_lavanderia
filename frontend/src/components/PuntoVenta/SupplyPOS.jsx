@@ -46,7 +46,6 @@ export default function PuntoVenta() {
     const [isExpress, setIsExpress] = useState(false);
     const [postUrl, setPostUrl] = useState("");
     const [fetch, setFetch] = useState("");
-    const [notes, setNotes] = useState("");
     const [pieces, setPieces] = useState(0);
 
     const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
@@ -75,16 +74,16 @@ export default function PuntoVenta() {
     const { data } = useSWR(fetch, fetcher);
     if (!data) return <h2>Loading...</h2>;
 
-    const addToCart = (serviceId, service) => {
+    const addToCart = (supplyId, service) => {
         // if (serviceType === "autoservicio") {
         const serviceToAdd = service;
         if (serviceToAdd) {
             const existingService = cart.find(
-                (item) => item.id_service === serviceId
+                (item) => item.id_supply === supplyId
             );
             if (existingService) {
                 const updatedCart = cart.map((item) =>
-                    item.id_service === serviceId
+                    item.id_supply === supplyId
                         ? {
                             ...item,
                             quantity: item.quantity + 1,
@@ -102,13 +101,13 @@ export default function PuntoVenta() {
         }
     };
 
-    const removeFromCart = (serviceId) => {
+    const removeFromCart = (supplyId) => {
         if (cart.length === 1) {
             setIsExpress(false);
         }
         const updatedCart = cart
             .map((item) => {
-                if (item.id_service === serviceId) {
+                if (item.id_supply === supplyId) {
                     if (item.quantity > 1) {
                         categoryId === 3
                             ? setPieces(pieces - item.pieces)
@@ -116,13 +115,6 @@ export default function PuntoVenta() {
                                 ? setPieces(pieces - item.pieces)
                                 : "";
                         return { ...item, quantity: item.quantity - 1 };
-                    } else {
-                        categoryId === 3
-                            ? setPieces(pieces - item.pieces)
-                            : categoryId === 4
-                                ? setPieces(pieces - item.pieces)
-                                : "";
-                        return null;
                     }
                 } else {
                     return item;
@@ -132,7 +124,7 @@ export default function PuntoVenta() {
         // setSelectedProducts([]);
         setCart(updatedCart);
 
-        if (serviceId === selectedServiceId) {
+        if (supplyId === selectedServiceId) {
             setSelectedServiceId(null);
             setIsAddButtonDisabled(false);
         }
@@ -175,16 +167,16 @@ export default function PuntoVenta() {
     const handleSaveAndGenerateTicket = async () => {
         setIsSaved(true);
         setIsModalVisible(false);
-        const arrayService = [];
+        const arrayProducts = [];
 
         let noOfItems = 0;
-        cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
+        cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
-        cart.map((detail) =>
-            arrayService.push({
+        cart.forEach((detail) =>
+        arrayProducts.push({
                 units: detail.quantity,
                 subtotal: detail.quantity * detail.price,
-                fk_Service: detail.id_service,
+                fk_supplyId: detail.id_supply,
             })
         );
 
@@ -193,34 +185,22 @@ export default function PuntoVenta() {
         const totalWithDiscount =
             payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
 
-        let ironPieces = null;
-        let drycleanPieces = null;
-
-        if (categoryId === 3) {
-            ironPieces = pieces;
-        } else if (categoryId === 4) {
-            drycleanPieces = pieces;
-        }
-
         try {
             const res = await api.post(postUrl, {
-                serviceOrder: {
+                productOrder: {
                     totalPrice: totalWithDiscount,
                     fk_client: parseInt(clientId),
                     payForm: payForm,
                     payStatus: payStatus,
                     fk_user: cookies.token,
                     receptionDate: purchaseDate.toISOString(),
-                    receptionTime: purchaseDate.toISOString(),
-                    scheduledDeliveryDate: deliveryDate.toISOString(),
-                    scheduledDeliveryTime: deliveryDate.toISOString(),
-                    notes: notes,
+                    numberOfItems: noOfItems,
                 },
-                services: arrayService,
+                products: arrayProducts,
             });
-            // orderTicket(order);
-            
-            const idOrder = res.data.serviceOrder.id_order;
+            console.log(res)
+            // orderTicket(order);   
+            const idOrder = res.data.id_supplyOrder;
             console.log(idOrder);
             if (payForm === "advance") {
                 await api.post("/supplyPayment", {
@@ -235,7 +215,7 @@ export default function PuntoVenta() {
                 });
             }
             const order = {
-                id_order: res.data.serviceOrder.id_order,
+                id_order: res.data.id_supplyOrder,
                 payForm: payForm,
                 payStatus: payStatus,
                 payMethod: payMethod,
@@ -244,11 +224,9 @@ export default function PuntoVenta() {
                 client: res.data.serviceOrder.client.name + ' ' + res.data.serviceOrder.client.firstLN + ' ' + res.data.serviceOrder.client.secondLN,
                 receptionDate: purchaseDate.toISOString(),
                 receptionTime: purchaseDate.toISOString(),
-                scheduledDeliveryDate: deliveryDate.toISOString(),
-                scheduledDeliveryTime: deliveryDate.toISOString(),
                 pieces: pieces,
                 serviceType: serviceType,
-                notes: notes,
+                notes: '',
                 cart: cart,
             };
             // GENERAR EL TICKET
@@ -391,7 +369,7 @@ export default function PuntoVenta() {
                                                     ? "bg-gray-400"
                                                     : "bg-blue-500 hover:bg-blue-700"
                                                     } text-white font-bold py-2 px-4 rounded mt-2`}
-                                                onClick={() => addToCart(service.id_service, service)}
+                                                onClick={() => addToCart(service.id_supply, service)}
                                                 disabled={isAddButtonDisabled}
                                             >
                                                 Agregar
@@ -403,14 +381,6 @@ export default function PuntoVenta() {
                     </div>
 
                     <div className="col-md-3 ml-10">
-                        {categoryId === 3 || categoryId === 4 ? ( //|| categoryId === 4 Solo para ver si jala
-                            <p className="text-3xl font-semibold text-center">
-                                Piezas del Pedido:{" "}
-                                <span className="text-orange-600">{pieces}</span>
-                            </p>
-                        ) : (
-                            ""
-                        )}
                         <div className="card card-body mt-2">
                             <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                                 <p className="font-bold">Cliente seleccionado:</p>{" "}
@@ -433,7 +403,7 @@ export default function PuntoVenta() {
                                         </div>
                                         <button
                                             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded ml-2"
-                                            onClick={() => removeFromCart(service.id_service)}
+                                            onClick={() => removeFromCart(service.id_supply)}
                                         >
                                             Eliminar
                                         </button>
@@ -445,23 +415,6 @@ export default function PuntoVenta() {
                                     <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
                                     {/*+ calculateProductTotal()*/}
                                 </div>
-                                {categoryId === 3 ? (
-                                    <div className="flex items-center">
-                                        <BsFillLightningFill
-                                            className="text-yellow-500 mr-1"
-                                            fontSize={19}
-                                        />
-                                        <strong>Servicio Express</strong>
-                                        <input
-                                            type="checkbox"
-                                            className="ml-2"
-                                            checked={isExpress}
-                                            onChange={handleOnChange}
-                                        />
-                                    </div>
-                                ) : (
-                                    ""
-                                )}
                             </div>
                             <div className="mt-4 flex justify-between">
                                 <button
@@ -486,11 +439,6 @@ export default function PuntoVenta() {
                                             key="submit"
                                             className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                             onClick={handleSaveAndGenerateTicket}
-                                            disabled={
-                                                serviceType === "autoservicio"
-                                                    ? false
-                                                    : !isDeliveryDateSelected || isSaved
-                                            }
                                         >
                                             Guardar
                                         </button>,
@@ -512,55 +460,16 @@ export default function PuntoVenta() {
                                     <div>
                                         <div>
                                             <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                                                Fecha de Recepcion:
+                                                Fecha de Venta:
                                             </p>
                                             <div style={{ fontSize: "16px" }}>
                                                 {purchaseDate.format("DD/MM/YYYY HH:mm:ss")}
                                             </div>
                                         </div>{" "}
                                     </div>
-                                    {!shouldShowAllServices && serviceType !== "autoservicio" && (
-                                        <div>
-                                            <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                                                Fecha de Entrega:
-                                            </p>
-                                            <DatePicker
-                                                selected={moment(deliveryDate).toDate()}
-                                                showTimeSelect
-                                                timeFormat="HH:mm"
-                                                timeIntervals={15}
-                                                dateFormat={customDateFormat}
-                                                onChange={(date) => {
-                                                    setDeliveryDate(moment(date));
-                                                    setIsDeliveryDateSelected(true);
-                                                }}
-                                                locale={es}
-                                                timeCaption="Hora"
-                                                minDate={moment().toDate()}
-                                                required
-                                                className="form-control border-black"
-                                            />
-                                            {!isDeliveryDateSelected && (
-                                                <p style={{ color: "red", fontSize: "14px" }}>
-                                                    Seleccione una fecha por favor.
-                                                </p>
-                                            )}
-                                        </div>
-                                    )}
                                     <div>
                                         <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                                            Observaciones:
-                                        </p>
-                                        <textarea
-                                            className="notes"
-                                            placeholder="Añadir observaciones..."
-                                            value={notes}
-                                            onChange={(e) => setNotes(e.target.value)}
-                                        />
-                                    </div>
-                                    <div>
-                                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                                            Detalles del Servicio:
+                                            Detalles de la Venta:
                                         </p>
                                         {cart.map((service) => (
                                             <div key={service.id_service}>
@@ -570,6 +479,7 @@ export default function PuntoVenta() {
                                                 <p style={{ fontSize: "16px" }}>
                                                     Costo: ${service.price * service.quantity}
                                                 </p>
+                                                <hr/>
                                             </div>
                                         ))}
                                     </div>
@@ -599,21 +509,16 @@ export default function PuntoVenta() {
                                                 }
                                             }}
                                             value={
-                                                serviceType === "autoservicio" ||
-                                                    serviceType === "tintoreria"
+                                                serviceType === "producto"
                                                     ? "advance"
                                                     : payForm
                                             }
-                                            disabled={
-                                                serviceType === "autoservicio" ||
-                                                serviceType === "tintoreria"
-                                            }
+                                            disabled
                                         >
                                             <Option
                                                 value="delivery"
                                                 disabled={
-                                                    serviceType === "autoservicio" ||
-                                                    serviceType === "tintoreria"
+                                                    serviceType === "producto"
                                                 }
                                             >
                                                 A la Entrega
@@ -621,7 +526,7 @@ export default function PuntoVenta() {
                                             <Option value="advance">Anticipado</Option>
                                         </Select>
                                         {(payForm === "advance" ||
-                                            serviceType === "autoservicio") && (
+                                            serviceType === "producto") && (
                                                 <div>
                                                     <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                                                         Método de Pago Anticipado:
@@ -641,7 +546,7 @@ export default function PuntoVenta() {
                             </div>
                         </div>
                         <Link
-                            to="/recepcionLavanderia"
+                            to="/recepcionProductos"
                             className="mt-2 flex text-center text-decoration-none"
                         ></Link>
                     </div>

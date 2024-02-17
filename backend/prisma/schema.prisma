@@ -433,28 +433,30 @@ model PettyCash {
 }
 
 model SupplyCashCut {
-  fk_user           Int
-  total             Float?
-  created           DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
-  cashCutD          DateTime?     @db.Date
-  cashCutT          DateTime?     @db.Time(0)
-  id_supplyCashCut  Int           @id @default(autoincrement())
-  cashCutStatus     CashCutStatus @default(open)
-  initialCash       Float?        @default(0)
-  ordersPayed       Int?
-  totalJabon        Float?
-  totalSuavitel     Float?
-  totalPinol        Float?
-  totalDesegrasante Float?
-  totalCloro        Float?
-  totalSanitisante  Float?
-  totalBolsa        Float?
-  totalReforzado    Float?
-  totalGanchos      Float?
-  totalWC           Float?
-  totalOtros        Float?        @default(0)
-  totalIncome       Float?
+  fk_user            Int
+  total              Float?
+  created            DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  cashCutD           DateTime?     @db.Date
+  cashCutT           DateTime?     @db.Time(0)
+  id_supplyCashCut   Int           @id @default(autoincrement())
+  cashCutStatus      CashCutStatus @default(open)
+  initialCash        Float?        @default(0)
+  ordersPayed        Int?
+  totalJabon         Float?
+  totalSuavitel      Float?
+  totalPinol         Float?
+  totalDesengrasante Float? //typo
+  totalCloro         Float?
+  totalSanitizante   Float? //typo
+  totalBolsa         Float?
+  totalReforzado     Float?
+  totalGanchos       Float?
+  totalWC            Float?
+  totalOtros         Float?        @default(0)
+  totalCredit        Float?
+  totalCash          Float?
+  totalIncome        Float?
 
   workShift     WorkShift       @default(morning)
   user          User            @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)

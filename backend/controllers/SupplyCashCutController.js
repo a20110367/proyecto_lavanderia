@@ -206,7 +206,7 @@ export const calculateSupplyCashCut = async (req, res) => {
             },
         });
 
-        const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_supplyOrder);
+        const orders = Object.values(ordersPayed).map(ord => ord.SupplyOrder.id_supplyOrder);
         console.log(orders)
 
         const totalJabon = await prisma.supplyOrderDetail.aggregate({
@@ -236,7 +236,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalJabon._sum.totalPrice === null ? totalJabon._sum.totalPrice = 0 : totalJabon._sum.totalPrice + 0;
+        totalJabon._sum.subtotal === null ? totalJabon._sum.subtotal = 0 : totalJabon._sum.subtotal + 0;
 
 
         const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
@@ -266,7 +266,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalSuavitel._sum.totalPrice === null ? totalSuavitel._sum.totalPrice = 0 : totalSuavitel._sum.totalPrice + 0;
+        totalSuavitel._sum.subtotal === null ? totalSuavitel._sum.subtotal = 0 : totalSuavitel._sum.subtotal + 0;
 
         const totalPinol = await prisma.supplyOrderDetail.aggregate({
 
@@ -295,7 +295,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalPinol._sum.totalPrice === null ? totalPinol._sum.totalPrice = 0 : totalPinol._sum.totalPrice + 0;
+        totalPinol._sum.subtotal === null ? totalPinol._sum.subtotal = 0 : totalPinol._sum.subtotal + 0;
 
         const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
 
@@ -324,7 +324,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalDesengrasante._sum.totalPrice === null ? totalDesengrasante._sum.totalPrice = 0 : totalDesengrasante._sum.totalPrice + 0;
+        totalDesengrasante._sum.subtotal === null ? totalDesengrasante._sum.subtotal = 0 : totalDesengrasante._sum.subtotal + 0;
 
         const totalCloro = await prisma.supplyOrderDetail.aggregate({
 
@@ -353,7 +353,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalCloro._sum.totalPrice === null ? totalCloro._sum.totalPrice = 0 : totalCloro._sum.totalPrice + 0;
+        totalCloro._sum.subtotal === null ? totalCloro._sum.subtotal = 0 : totalCloro._sum.subtotal + 0;
 
         const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
 
@@ -382,7 +382,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalSanitizante._sum.totalPrice === null ? totalSanitizante._sum.totalPrice = 0 : totalSanitizante._sum.totalPrice + 0;
+        totalSanitizante._sum.subtotal === null ? totalSanitizante._sum.subtotal = 0 : totalSanitizante._sum.subtotal + 0;
 
         const totalBolsa = await prisma.supplyOrderDetail.aggregate({
 
@@ -411,7 +411,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalBolsa._sum.totalPrice === null ? totalBolsa._sum.totalPrice = 0 : totalBolsa._sum.totalPrice + 0;
+        totalBolsa._sum.subtotal === null ? totalBolsa._sum.subtotal = 0 : totalBolsa._sum.subtotal + 0;
 
         const totalReforzado = await prisma.supplyOrderDetail.aggregate({
 
@@ -440,7 +440,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalReforzado._sum.totalPrice === null ? totalReforzado._sum.totalPrice = 0 : totalReforzado._sum.totalPrice + 0;
+        totalReforzado._sum.subtotal === null ? totalReforzado._sum.subtotal = 0 : totalReforzado._sum.subtotal + 0;
 
         const totalGanchos = await prisma.supplyOrderDetail.aggregate({
 
@@ -469,7 +469,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalGanchos._sum.totalPrice === null ? totalGanchos._sum.totalPrice = 0 : totalGanchos._sum.totalPrice + 0;
+        totalGanchos._sum.subtotal === null ? totalGanchos._sum.subtotal = 0 : totalGanchos._sum.subtotal + 0;
 
         const totalWC = await prisma.supplyOrderDetail.aggregate({
 
@@ -498,7 +498,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        totalWC._sum.totalPrice === null ? totalWC._sum.totalPrice = 0 : totalWC._sum.totalPrice + 0;
+        totalWC._sum.subtotal === null ? totalWC._sum.subtotal = 0 : totalWC._sum.subtotal + 0;
 
 
 
@@ -657,7 +657,7 @@ export const closeCashCut = async (req, res) => {
                 },
             });
 
-            const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_supplyOrder);
+            const orders = Object.values(ordersPayed).map(ord => ord.SupplyOrder.id_supplyOrder);
             console.log(orders)
 
             const totalJabon = await prisma.supplyOrderDetail.aggregate({
@@ -687,7 +687,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalJabon._sum.totalPrice === null ? totalJabon._sum.totalPrice = 0 : totalJabon._sum.totalPrice + 0;
+            totalJabon._sum.subtotal === null ? totalJabon._sum.subtotal = 0 : totalJabon._sum.subtotal + 0;
 
 
             const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
@@ -717,7 +717,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalSuavitel._sum.totalPrice === null ? totalSuavitel._sum.totalPrice = 0 : totalSuavitel._sum.totalPrice + 0;
+            totalSuavitel._sum.subtotal === null ? totalSuavitel._sum.subtotal = 0 : totalSuavitel._sum.subtotal + 0;
 
             const totalPinol = await prisma.supplyOrderDetail.aggregate({
 
@@ -746,7 +746,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalPinol._sum.totalPrice === null ? totalPinol._sum.totalPrice = 0 : totalPinol._sum.totalPrice + 0;
+            totalPinol._sum.subtotal === null ? totalPinol._sum.subtotal = 0 : totalPinol._sum.subtotal + 0;
 
             const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
 
@@ -775,7 +775,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalDesengrasante._sum.totalPrice === null ? totalDesengrasante._sum.totalPrice = 0 : totalDesengrasante._sum.totalPrice + 0;
+            totalDesengrasante._sum.subtotal === null ? totalDesengrasante._sum.subtotal = 0 : totalDesengrasante._sum.subtotal + 0;
 
             const totalCloro = await prisma.supplyOrderDetail.aggregate({
 
@@ -804,7 +804,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalCloro._sum.totalPrice === null ? totalCloro._sum.totalPrice = 0 : totalCloro._sum.totalPrice + 0;
+            totalCloro._sum.subtotal === null ? totalCloro._sum.subtotal = 0 : totalCloro._sum.subtotal + 0;
 
             const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
 
@@ -833,7 +833,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalSanitizante._sum.totalPrice === null ? totalSanitizante._sum.totalPrice = 0 : totalSanitizante._sum.totalPrice + 0;
+            totalSanitizante._sum.subtotal === null ? totalSanitizante._sum.subtotal = 0 : totalSanitizante._sum.subtotal + 0;
 
             const totalBolsa = await prisma.supplyOrderDetail.aggregate({
 
@@ -862,7 +862,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalBolsa._sum.totalPrice === null ? totalBolsa._sum.totalPrice = 0 : totalBolsa._sum.totalPrice + 0;
+            totalBolsa._sum.subtotal === null ? totalBolsa._sum.subtotal = 0 : totalBolsa._sum.subtotal + 0;
 
             const totalReforzado = await prisma.supplyOrderDetail.aggregate({
 
@@ -891,7 +891,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalReforzado._sum.totalPrice === null ? totalReforzado._sum.totalPrice = 0 : totalReforzado._sum.totalPrice + 0;
+            totalReforzado._sum.subtotal === null ? totalReforzado._sum.subtotal = 0 : totalReforzado._sum.subtotal + 0;
 
             const totalGanchos = await prisma.supplyOrderDetail.aggregate({
 
@@ -920,7 +920,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalGanchos._sum.totalPrice === null ? totalGanchos._sum.totalPrice = 0 : totalGanchos._sum.totalPrice + 0;
+            totalGanchos._sum.subtotal === null ? totalGanchos._sum.subtotal = 0 : totalGanchos._sum.subtotal + 0;
 
             const totalWC = await prisma.supplyOrderDetail.aggregate({
 
@@ -949,7 +949,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalWC._sum.totalPrice === null ? totalWC._sum.totalPrice = 0 : totalWC._sum.totalPrice + 0;
+            totalWC._sum.subtotal === null ? totalWC._sum.subtotal = 0 : totalWC._sum.subtotal + 0;
 
 
 

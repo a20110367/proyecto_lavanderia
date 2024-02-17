@@ -1,6 +1,4 @@
-import index from "@green-api/whatsapp-api-client";
 import { OrderStatus, PrismaClient } from "@prisma/client";
-import { response } from "express";
 import moment from 'moment'
 moment.locale('es-mx');
 

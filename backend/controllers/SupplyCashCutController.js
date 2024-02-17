@@ -46,7 +46,7 @@ export const createCashCut = async (req, res) => {
 
         });
         var cashCut;
-        if (lastSupplyCashCut._max == null) {
+        if (lastSupplyCashCut._max.id_supplyCashCut == null) {
             cashCut = await prisma.supplyCashCut.create({
                 data: req.body
 

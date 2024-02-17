@@ -45,37 +45,50 @@ export const createCashCut = async (req, res) => {
             }
 
         });
-
-        const cashCutStatus = await prisma.supplyCashCut.findFirst({
-            where: {
-                id_supplyCashCut: lastSupplyCashCut._max.id_cashCut,
-            },
-
-            select: {
-                cashCutStatus: true,
-            },
-
-        });
         var cashCut;
-        if (cashCutStatus.cashCutStatus === "open") {
-
-            console.log(lastSupplyCashCut._max.id_cashCut);
-            cashCut = await prisma.supplyCashCut.findFirst({
-                where: {
-                    id_supplyCashCut: lastSupplyCashCut._max.id_cashCut
-                },
-                select: {
-                    initialCash: true,
-                    id_cashCut: true,
-                },
-            });
-
-        } else {
+        if (lastSupplyCashCut == null) {
             cashCut = await prisma.supplyCashCut.create({
                 data: req.body
 
             });
+
         }
+        else {
+
+            const cashCutStatus = await prisma.supplyCashCut.findFirst({
+                where: {
+                    id_supplyCashCut: lastSupplyCashCut._max.id_cashCut,
+                },
+
+                select: {
+                    cashCutStatus: true,
+                },
+
+            });
+
+            if (cashCutStatus.cashCutStatus === "open") {
+
+                console.log(lastSupplyCashCut._max.id_cashCut);
+                cashCut = await prisma.supplyCashCut.findFirst({
+                    where: {
+                        id_supplyCashCut: lastSupplyCashCut._max.id_cashCut
+                    },
+                    select: {
+                        initialCash: true,
+                        id_cashCut: true,
+                    },
+                });
+
+            } else {
+                cashCut = await prisma.supplyCashCut.create({
+                    data: req.body
+
+                });
+            }
+
+        }
+
+
 
         res.status(201).json(cashCut);
     } catch (e) {

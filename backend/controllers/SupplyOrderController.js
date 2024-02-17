@@ -275,7 +275,7 @@ export const createOrder = async (req, res) => {
             "supplyOrderDetail": orderDetail,
         }
 
-        res.status(201).json(supplyOrder);
+        res.status(201).json(response);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

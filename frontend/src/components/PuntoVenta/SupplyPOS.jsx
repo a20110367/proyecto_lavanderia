@@ -187,20 +187,19 @@ export default function PuntoVenta() {
 
         try {
             const res = await api.post(postUrl, {
-                serviceOrder: {
+                productOrder: {
                     totalPrice: totalWithDiscount,
                     fk_client: parseInt(clientId),
                     payForm: payForm,
                     payStatus: payStatus,
                     fk_user: cookies.token,
                     receptionDate: purchaseDate.toISOString(),
-                    receptionTime: purchaseDate.toISOString(),
                     numberOfItems: noOfItems,
                 },
                 products: arrayProducts,
             });
-            // orderTicket(order);
-            
+            console.log(res)
+            // orderTicket(order);   
             const idOrder = res.data.id_supplyOrder;
             console.log(idOrder);
             if (payForm === "advance") {
@@ -440,11 +439,6 @@ export default function PuntoVenta() {
                                             key="submit"
                                             className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                                             onClick={handleSaveAndGenerateTicket}
-                                            disabled={
-                                                serviceType === "autoservicio"
-                                                    ? false
-                                                    : !isDeliveryDateSelected || isSaved
-                                            }
                                         >
                                             Guardar
                                         </button>,

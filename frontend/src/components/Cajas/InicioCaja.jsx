@@ -64,8 +64,15 @@ function InicioCaja() {
         cashCutT: dateT.toJSON(),
         workShift: workShift,
       });
+      const resProducts = await api.post('/supplyCashCuts', {
+        fk_user: parseInt(cookies.token),
+        cashCutD: dateD.toJSON(),
+        cashCutT: dateT.toJSON(),
+        workShift: workShift,
+      })
       console.log(workShift);
       localStorage.setItem("cashCutId", response.data.id_cashCut);
+      localStorage.setItem('id_supplyCashCut', resProducts.data.id_supplyCashCut)
       localStorage.setItem("initialCash", response.data.initialCash);
       localStorage.removeItem("lastCashCut");
       setCajaIniciada(true);

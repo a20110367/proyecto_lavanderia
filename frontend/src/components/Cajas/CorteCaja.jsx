@@ -93,12 +93,14 @@ function CorteCaja() {
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
+      const resProduts = await api.get(`/closeSupplyCashCut'/${localStorage.getItem('id_supplyCashCut')}`)
 
       const corte = response.data;
 
       const nuevoCorte = {
         ...corte,
         id_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
       };
 
       const pdf = new jsPDF();
@@ -182,6 +184,7 @@ function CorteCaja() {
       localStorage.setItem("lastCashCut", JSON.stringify(nuevoCorte));
       localStorage.removeItem("initialCash");
       localStorage.removeItem("cashCutId");
+      localStorage.removeItem('id_supplyCashCut')
       setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
       setDialogVisible(false);
@@ -244,6 +247,7 @@ function CorteCaja() {
 
       const nuevoCorte = {
         ...corte,
+        id_supplyCashCut: parseInt(localStorage.getItem('id_supplyCashCut')),
         id_cashCut: parseInt(localStorage.getItem("cashCutId")),
       };
 

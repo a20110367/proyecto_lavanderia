@@ -143,7 +143,7 @@ export default function PuntoVenta() {
                 confirmButtonColor: "#034078",
             });
             return;
-        } else if (!localStorage.getItem("cashCutId")) {
+        } else if (!localStorage.getItem("id_supplyCashCut")) {
             Swal.fire({
                 icon: "warning",
                 title: "No has inicializado caja!",
@@ -173,7 +173,7 @@ export default function PuntoVenta() {
         cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
         cart.forEach((detail) =>
-        arrayProducts.push({
+            arrayProducts.push({
                 units: detail.quantity,
                 subtotal: detail.quantity * detail.price,
                 fk_supplyId: detail.id_supply,
@@ -204,14 +204,12 @@ export default function PuntoVenta() {
             console.log(idOrder);
             if (payForm === "advance") {
                 await api.post("/supplyPayment", {
-                    payment: {
-                        fk_idOrder: idOrder,
-                        payMethod: payMethod,
-                        payDate: purchaseDate.toISOString(),
-                        payTime: purchaseDate.toISOString(),
-                        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-                        payTotal: calculateSubtotal(),
-                    },
+                    fk_idOrder: idOrder,
+                    payMethod: payMethod,
+                    payDate: purchaseDate.toISOString(),
+                    payTime: purchaseDate.toISOString(),
+                    fk_cashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
+                    payTotal: calculateSubtotal(),
                 });
             }
             const order = {
@@ -259,7 +257,7 @@ export default function PuntoVenta() {
         window.history.back();
     };
 
-    const filteredServices = data    
+    const filteredServices = data
 
     const handleFiltroChange = (e) => {
         setFiltro(e.target.value);
@@ -424,7 +422,7 @@ export default function PuntoVenta() {
                                                 <p style={{ fontSize: "16px" }}>
                                                     Costo: ${service.price * service.quantity}
                                                 </p>
-                                                <hr/>
+                                                <hr />
                                             </div>
                                         ))}
                                     </div>

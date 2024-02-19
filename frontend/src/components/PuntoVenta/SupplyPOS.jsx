@@ -200,7 +200,7 @@ export default function PuntoVenta() {
             });
             console.log(res)
             // orderTicket(order);   
-            const idOrder = res.data.id_supplyOrder;
+            const idOrder = res.data.supplyOrder.id_supplyOrder;
             console.log(idOrder);
             if (payForm === "advance") {
                 await api.post("/supplyPayment", {
@@ -213,13 +213,13 @@ export default function PuntoVenta() {
                 });
             }
             const order = {
-                id_order: res.data.id_supplyOrder,
+                id_order: res.data.supplyOrder.id_supplyOrder,
                 payForm: payForm,
                 payStatus: payStatus,
                 payMethod: payMethod,
                 subtotal: totalWithDiscount,
                 casher: cookies.username,
-                client: res.data.serviceOrder.client.name + ' ' + res.data.serviceOrder.client.firstLN + ' ' + res.data.serviceOrder.client.secondLN,
+                client: res.data.supplyOrder.client.name + ' ' + res.data.supplyOrder.client.firstLN + ' ' + res.data.supplyOrder.client.secondLN,
                 receptionDate: purchaseDate.toISOString(),
                 receptionTime: purchaseDate.toISOString(),
                 pieces: pieces,

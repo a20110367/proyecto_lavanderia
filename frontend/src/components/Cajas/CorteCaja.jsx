@@ -93,7 +93,7 @@ function CorteCaja() {
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
-      await api.get(`/closeSupplyCashCut'/${localStorage.getItem('id_supplyCashCut')}`)
+      const supplyResponse = await api.patch(`/closeSupplyCashCut/${localStorage.getItem('id_supplyCashCut')}`)
 
       const corte = response.data;
 

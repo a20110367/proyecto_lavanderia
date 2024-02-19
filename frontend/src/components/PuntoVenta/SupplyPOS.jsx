@@ -415,7 +415,7 @@ export default function PuntoVenta() {
                                             Detalles de la Venta:
                                         </p>
                                         {cart.map((service) => (
-                                            <div key={service.id_service}>
+                                            <div key={service.id_supply}>
                                                 <p style={{ fontSize: "16px" }}>
                                                     {service.description}
                                                 </p>

@@ -99,6 +99,8 @@ import Productos from "./components/Productos/Productos"
 import AddProductos from "./components/Productos/AddProductos"
 import EditProductos from "./components/Productos/EditProductos"
 import BuscarPedidos from "./components/Pedidos/BuscarPedidos"
+import HistorialCajaProductos from "./components/Cajas/HistorialCajaProductos";
+import ReportesProductos from "./components/Cajas/ReportesProductos";
 
 function App() {
     const { cookies } = useAuth();
@@ -133,7 +135,9 @@ function App() {
                     <Route path="/corteCaja" element={<CorteCaja />} />
                     <Route path="/inicioCaja" element={<InicioCaja />} />
                     <Route path="/HistorialCaja" element={<HistorialCaja />} />
+                    <Route path="/HistorialCajaProductos" element={<HistorialCajaProductos />} />
                     <Route path="/reportes" element={<Reportes />} />
+                    <Route path="/reportesProductos" element={<ReportesProductos />} />
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />

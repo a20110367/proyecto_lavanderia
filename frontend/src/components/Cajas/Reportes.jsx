@@ -280,7 +280,7 @@ function Reportes() {
       <div>
         <div className="mb-3">
           <div className="title-container">
-            <strong className="title-strong">Reportes</strong>
+            <strong className="title-strong">Reportes de Servicios</strong>
           </div>
         </div>
         <div className="flex items-center mb-4">

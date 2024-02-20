@@ -194,7 +194,7 @@ function HistorialCaja() {
       <div>
         <div className="mb-3">
           <div className="title-container">
-            <strong className="title-strong">Historial de Cortes</strong>
+            <strong className="title-strong">Historial de Cortes <br /> de Servicios</strong>
           </div>
         </div>
         <div className="flex items-center mb-4">

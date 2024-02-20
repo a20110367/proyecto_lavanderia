@@ -104,10 +104,18 @@ const items1 = [
     getItem("Corte de caja", "/corteCaja"),
     getItem("Pedidos", "/cajaPedidos"),
     getItem("Historial de cortes", "/historialCaja"),
+    getItem(
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Productos</span>
+      </div>,
+      "/historialCajaProductos"
+    ),
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
     getItem("Reportes", "/reportes"),
+    getItem("Reportes Productos", "/reportesProductos"),
   ]),
   getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
@@ -204,10 +212,18 @@ const items2 = [
     getItem("Corte de caja", "/corteCaja"),
     getItem("Pedidos", "/cajaPedidos"),
     getItem("Historial de cortes", "/historialCaja"),
+    getItem(
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Productos</span>
+      </div>,
+      "/historialCajaProductos"
+    ),
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
     getItem("Reportes", "/reportes"),
+    getItem("Reportes Productos", "/reportesProductos"),
   ]),
 
   getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [

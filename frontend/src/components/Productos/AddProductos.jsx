@@ -184,7 +184,7 @@ function AddProductos() {
               />
 
               <button className="btn-primary" type="submit">
-                Añadir Servicio
+                Añadir Producto
               </button>
               <button
                 className="btn-cancel"

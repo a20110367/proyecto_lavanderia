@@ -968,9 +968,9 @@ export const closeCashCut = async (req, res) => {
 
             response =
             {
-                "totalCash": cash._sum.payTotal,
-                "totalCredit": credit._sum.payTotal,
-                "totalIncome": totalIncome,
+                "totalCashSupply": cash._sum.payTotal,
+                "totalCreditSupply": credit._sum.payTotal,
+                "totalIncomeSupply": totalIncome,
                 "totalJabon": totalJabon._sum.subtotal,
                 "totalSuavitel": totalSuavitel._sum.subtotal,
                 "totalPinol": totalPinol._sum.subtotal,
@@ -982,7 +982,7 @@ export const closeCashCut = async (req, res) => {
                 "totalGanchos": totalGanchos._sum.subtotal,
                 "totalWC": totalWC._sum.subtotal,
                 "totalOtros": totalOtros,
-                "ordersPayed": orders.length,
+                "ordersPayedSupply": orders.length,
                 "cashCutD": today,
                 "workShift": workShift.workShift
 

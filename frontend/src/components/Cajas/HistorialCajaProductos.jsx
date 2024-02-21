@@ -74,40 +74,34 @@ function HistorialCajaProductos() {
         40
       );
       pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
-      pdf.text(
-        `Efectivo Inicial: ${
-          selectedCorte.initialCash ? `$${selectedCorte.initialCash}` : "$0"
-        }`,
-        10,
-        70
-      );
+    
       pdf.text(
         `Ordenes Pagadas: ${
           selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
         }`,
         10,
-        80
+        70
       );
       pdf.text(
         `Total Jabon: ${
           selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
         }`,
         10,
-        100
+        90
       );
       pdf.text(
         `Total Suavitel: ${
           selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
         }`,
         10,
-        110
+        100
       );
       pdf.text(
         `Total Pinol: ${
           selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
         }`,
         10,
-        120
+        110
       );
       pdf.text(
         `Total Desengrasante: ${
@@ -116,14 +110,14 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        130
+        120
       );
       pdf.text(
         `Total Cloro: ${
           selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
         }`,
         10,
-        140
+        130
       );
       pdf.text(
         `Total Sanitizante: ${
@@ -132,14 +126,14 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        150
+        140
       );
       pdf.text(
         `Total Bolsa: ${
           selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
         }`,
         10,
-        160
+        150
       );
       pdf.text(
         `Total Reforzado: ${
@@ -148,52 +142,52 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        170
+        160
       );
       pdf.text(
         `Total Ganchos: ${
           selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
         }`,
         10,
-        180
+        170
       );
       pdf.text(
         `Total WC: ${
           selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
         }`,
         10,
-        190
+        180
       );
       pdf.text(
         `Total Otros: ${
           selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
         }`,
         10,
-        200
+        190
       );
       pdf.text(
         `Total Tarjeta: ${
           selectedCorte.totalCredit ? `$${selectedCorte.totalCredit}` : "$0"
         }`,
         10,
-        220
+        210
       );
       pdf.text(
         `Total Efectivo: ${
           selectedCorte.totalCash ? `$${selectedCorte.totalCash}` : "$0"
         }`,
         10,
-        230
+        220
       );
       pdf.text(
         `Total Ingresos: ${
           selectedCorte.totalIncome ? `$${selectedCorte.totalIncome}` : "$0"
         }`,
         10,
-        240
+        230
       );
 
-      pdf.save("detalle_corte.pdf");
+      pdf.save("detalle_corte_productos.pdf");
     }
   };
 
@@ -297,10 +291,6 @@ function HistorialCajaProductos() {
                 <th>No. Corte</th>
                 <th>FECHA</th>
                 <th>
-                  DINERO <br />
-                  EN FONDO
-                </th>
-                <th>
                   INGRESO <br />
                   EN EFECTIVO
                 </th>
@@ -332,9 +322,7 @@ function HistorialCajaProductos() {
                   >
                     <td className="">{corte.id_supplyCashCut}</td>
                     <td className="">{formatDate(corte.cashCutD)}</td>
-                    <td className="">
-                      ${corte.initialCash ? corte.initialCash : 0}
-                    </td>
+                    
                     <td className="">
                       ${corte.totalCash ? corte.totalCash : 0}
                     </td>
@@ -419,10 +407,7 @@ function HistorialCajaProductos() {
                   <span className="font-bold">Fecha:</span>{" "}
                   {formatDate(selectedCorte.cashCutD)}
                 </p>
-                <p className="text-lg">
-                  <span className="font-bold">Dinero en Fondo:</span> $
-                  {selectedCorte.initialCash}
-                </p>
+                
                 <p className="text-lg">
                   <span className="font-bold">Ordenes Pagadas: </span>
                   {selectedCorte.ordersPayed}
@@ -488,7 +473,7 @@ function HistorialCajaProductos() {
                 </p>
               </div>
               {/* Segunda Columna */}
-              <div className="w-1/1">
+              <div className="w-1/2">
                 <p className="text-lg">
                   <span className="font-bold">
                     Ingresos totales de productos:

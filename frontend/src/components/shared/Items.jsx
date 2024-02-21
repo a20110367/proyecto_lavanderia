@@ -103,9 +103,15 @@ const items1 = [
     getItem("Inicio de caja", "/inicioCaja"),
     getItem("Corte de caja", "/corteCaja"),
     getItem("Pedidos", "/cajaPedidos"),
-    getItem("Historial de cortes", "/historialCaja"),
     getItem(
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Servicioss</span>
+      </div>,
+      "/historialCaja"
+    ),
+    getItem(
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>
         <span style={{ lineHeight: 1 }}>Productos</span>
       </div>,
@@ -114,7 +120,7 @@ const items1 = [
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
-    getItem("Reportes", "/reportes"),
+    getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
   ]),
   getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
@@ -211,9 +217,15 @@ const items2 = [
     getItem("Iniciar caja", "/inicioCaja"),
     getItem("Corte de caja", "/corteCaja"),
     getItem("Pedidos", "/cajaPedidos"),
-    getItem("Historial de cortes", "/historialCaja"),
     getItem(
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Servicioss</span>
+      </div>,
+      "/historialCaja"
+    ),
+    getItem(
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>
         <span style={{ lineHeight: 1 }}>Productos</span>
       </div>,
@@ -222,7 +234,7 @@ const items2 = [
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
-    getItem("Reportes", "/reportes"),
+    getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
   ]),
 

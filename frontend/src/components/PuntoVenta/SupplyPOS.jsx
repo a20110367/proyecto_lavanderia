@@ -222,9 +222,7 @@ export default function PuntoVenta() {
                 client: res.data.supplyOrder.client.name + ' ' + res.data.supplyOrder.client.firstLN + ' ' + res.data.supplyOrder.client.secondLN,
                 receptionDate: purchaseDate.toISOString(),
                 receptionTime: purchaseDate.toISOString(),
-                pieces: pieces,
                 serviceType: serviceType,
-                notes: '',
                 cart: cart,
             };
             // GENERAR EL TICKET

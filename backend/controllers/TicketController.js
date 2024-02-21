@@ -46,7 +46,7 @@ export const generateTicket = async (req, res) => {
     try {
 
         printer.clear();
-        
+
         // LOGO DEL NEGOCIO
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
@@ -117,16 +117,19 @@ export const generateTicket = async (req, res) => {
         printer.bold(false)
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
-        printer.bold(true);
-        printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
-        printer.bold(false);
 
-        printer.drawLine();
+        if (serviceType != 'productos') {
+            printer.bold(true);
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
+            printer.bold(false);
 
-        printer.bold(true)
-        printer.print('Observaciones Generales: ')
-        printer.bold(false)
-        printer.println(order.notes)
+            printer.drawLine();
+
+            printer.bold(true)
+            printer.print('Observaciones Generales: ')
+            printer.bold(false)
+            printer.println(order.notes)
+        }
 
         printer.drawLine();
 
@@ -284,11 +287,11 @@ export const generatePartialCashCutTicket = async (req, res) => {
 }
 
 export const reprintTicket = async (req, res) => {
-    try{
-        generateTicket(lastOrder)   
+    try {
+        generateTicket(lastOrder)
         res.status(200).json('Print done!')
-    }catch(err){
+    } catch (err) {
         console.error(err)
-        res.status(400).json({msg: err.message})
+        res.status(400).json({ msg: err.message })
     }
 }

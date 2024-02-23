@@ -68,7 +68,7 @@ export const generateTicket = async (req, res) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
+            { text: "FORMA PAGO: " + order.payForm === 'advance' ? payMethod : '----', align: "RIGHT" }
         ]);
 
         printer.drawLine();
@@ -146,6 +146,10 @@ export const generateTicket = async (req, res) => {
         let execute = await printer.execute()
         console.log(execute)
         console.log("Print done!");
+
+        if(order.serviceType === 'encargo'){
+            generateTicket(order)
+        }
 
         // printer.bold(true);                                         // Set text bold
         // printer.invert(true);                                       // Background/text color inversion

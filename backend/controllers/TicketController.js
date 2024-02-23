@@ -277,7 +277,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
         printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
         printer.setTextDoubleHeight();
         printer.newLine()
-        printer.println(`Final Total en Caja: ${cashCut.total}`)
+        printer.println(`Final Total en Caja: ${cashCut.totalIncome}`)
         printer.setTextNormal()
 
         printer.cut();
@@ -303,7 +303,7 @@ export const reprintTicket = async (req, res) => {
 export const cashCutTicket = async (req, res) => {
     try {
         const {services, products} = req.body
-        
+
     }catch(err){
         console.error(err)
         res.status(400).json({msg:err.message})

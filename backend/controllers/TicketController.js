@@ -299,3 +299,13 @@ export const reprintTicket = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+export const cashCutTicket = async (req, res) => {
+    try {
+        const {services, products} = req.body
+        
+    }catch(err){
+        console.error(err)
+        res.status(400).json({msg:err.message})
+    }
+}

@@ -205,37 +205,37 @@ function EntregaVarios() {
       console.log(err);
     }
 
-    const doc = new jsPDF();
-    doc.text(`Detalles del Pedido`, 10, 10);
-    doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
-    doc.text(
-      `Pedido: ${
-        pedido.ServiceOrderDetail.find(
-          (service) => service.id_serviceOrderDetail
-        ) != undefined
-          ? pedido.ServiceOrderDetail.length
-          : 0
-      }`,
-      10,
-      30
-    );
-    doc.text(`Estatus: Adeudo`, 10, 40);
-    doc.text(
-      `Método de Pago: ${
-        pedido.payment
-        ? pedido.payment.payMethod === "cash"
-          ? "Efectivo"
-          : pedido.payment.payMethod === "credit"
-            ? "Tarjeta"
-            : "N/A"
-            :"N/A"
-      }`,
-      10,
-      50
-    );
-    doc.text(`Fecha de Pago: ${formatDate(pedido.receptionTime)}`, 10, 60);
-    doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
-    doc.save(`pedido_${updatedPedido.id_order}.pdf`);
+    // const doc = new jsPDF();
+    // doc.text(`Detalles del Pedido`, 10, 10);
+    // doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
+    // doc.text(
+    //   `Pedido: ${
+    //     pedido.ServiceOrderDetail.find(
+    //       (service) => service.id_serviceOrderDetail
+    //     ) != undefined
+    //       ? pedido.ServiceOrderDetail.length
+    //       : 0
+    //   }`,
+    //   10,
+    //   30
+    // );
+    // doc.text(`Estatus: Adeudo`, 10, 40);
+    // doc.text(
+    //   `Método de Pago: ${
+    //     pedido.payment
+    //     ? pedido.payment.payMethod === "cash"
+    //       ? "Efectivo"
+    //       : pedido.payment.payMethod === "credit"
+    //         ? "Tarjeta"
+    //         : "N/A"
+    //         :"N/A"
+    //   }`,
+    //   10,
+    //   50
+    // );
+    // doc.text(`Fecha de Pago: ${formatDate(pedido.receptionTime)}`, 10, 60);
+    // doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
+    // doc.save(`pedido_${updatedPedido.id_order}.pdf`);
   };
 
   const handleClose = () => {
@@ -277,44 +277,44 @@ function EntregaVarios() {
 
       setEntregando(true);
       console.log(pedido);
-      setTimeout(() => {
-        setEntregando(false);
-        const doc = new jsPDF();
-        doc.text(`Detalles del Pedido`, 10, 10);
-        doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
-        doc.text(
-          `Pedido: ${
-            pedido.ServiceOrderDetail.find(
-              (service) => service.id_serviceOrderDetail
-            ) != undefined
-              ? pedido.ServiceOrderDetail.length
-              : 0
-          }`,
-          10,
-          30
-        );
-        doc.text(`Estatus: Entregado`, 10, 40);
-        doc.text(
-          `Método de Pago: ${
-            pedido.payment
-            ? pedido.payment.payMethod === "cash"
-              ? "Efectivo"
-              : pedido.payment.payMethod === "credit"
-                ? "Tarjeta"
-                : "N/A"
-                :"N/A"
-          }`,
-          10,
-          50
-        );
-        doc.text(
-          `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
-          10,
-          60
-        );
-        doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
-        doc.save(`pedido_${pedido.id_order}.pdf`);
-      }, 1500);
+      // setTimeout(() => {
+      //   setEntregando(false);
+      //   const doc = new jsPDF();
+      //   doc.text(`Detalles del Pedido`, 10, 10);
+      //   doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
+      //   doc.text(
+      //     `Pedido: ${
+      //       pedido.ServiceOrderDetail.find(
+      //         (service) => service.id_serviceOrderDetail
+      //       ) != undefined
+      //         ? pedido.ServiceOrderDetail.length
+      //         : 0
+      //     }`,
+      //     10,
+      //     30
+      //   );
+      //   doc.text(`Estatus: Entregado`, 10, 40);
+      //   doc.text(
+      //     `Método de Pago: ${
+      //       pedido.payment
+      //       ? pedido.payment.payMethod === "cash"
+      //         ? "Efectivo"
+      //         : pedido.payment.payMethod === "credit"
+      //           ? "Tarjeta"
+      //           : "N/A"
+      //           :"N/A"
+      //     }`,
+      //     10,
+      //     50
+      //   );
+      //   doc.text(
+      //     `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
+      //     10,
+      //     60
+      //   );
+      //   doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
+      //   doc.save(`pedido_${pedido.id_order}.pdf`);
+      // }, 1500);
     }
   };
 

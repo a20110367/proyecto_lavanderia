@@ -124,7 +124,7 @@ function HistorialCaja() {
         : doc.text("Retiros Totales: $0", 10, 180);
       doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
 
-      doc.save("detalle_corte.pdf");
+      doc.save("detalle_corte_servicios.pdf");
     }
   };
 

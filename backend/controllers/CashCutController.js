@@ -135,6 +135,21 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
+        const initialCash = await prisma.cashCut.findFirst({
+
+            where: {
+                id_cashCut: Number(req.params.id)
+            },
+            select: {
+                initialCash: true,
+            }
+
+        });
+
+        if (initialCash.initialCash === null) initialCash.initialCash == 0;
+
+
+
         total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
         const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
@@ -372,9 +387,10 @@ export const calculateCashCut = async (req, res) => {
 
         const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 
+
         if (totalCashWithdrawal._sum.amount === null)
             totalCashWithdrawal._sum.amount = parseFloat(0.00);
-        const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
+        const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount + initialCash.initialCash;
 
         console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
         //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
@@ -389,6 +405,7 @@ export const calculateCashCut = async (req, res) => {
             "totalCredit": credit._sum.payTotal,
             "totalIncome": totalIncome,
             "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
+            "initialCash": initialCash.initialCash,
             "total": totalC,
             "totalEncargo": totalEncargo._sum.totalPrice,
             "totalAutoservicio": totalAutoservicio._sum.totalPrice,
@@ -439,6 +456,19 @@ export const closeCashCut = async (req, res) => {
             }
 
         });
+
+        const initialCash = await prisma.cashCut.findFirst({
+
+            where: {
+                id_cashCut: Number(req.params.id)
+            },
+            select: {
+                initialCash: true,
+            }
+
+        });
+
+        if (initialCash.initialCash === null) initialCash.initialCash == 0;
 
         console.log(cashCutStatus.CashCutStatus);
         if (cashCutStatus.cashCutStatus === "open") {
@@ -683,7 +713,7 @@ export const closeCashCut = async (req, res) => {
 
             if (totalCashWithdrawal._sum.amount === null)
                 totalCashWithdrawal._sum.amount = parseFloat(0.00);
-            const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount;
+            const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount + initialCash.initialCash;
 
             console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
             //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
@@ -697,6 +727,7 @@ export const closeCashCut = async (req, res) => {
                 "totalCredit": credit._sum.payTotal,
                 "totalIncome": totalIncome,
                 "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
+                "initialCash": initialCash.initialCash,
                 "total": totalC,
                 "totalEncargo": totalEncargo._sum.totalPrice,
                 "totalAutoservicio": totalAutoservicio._sum.totalPrice,
@@ -726,6 +757,7 @@ export const closeCashCut = async (req, res) => {
                     "totalCredit": credit._sum.payTotal,
                     "totalIncome": totalIncome,
                     "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
+                    "initialCash": initialCash.initialCash,
                     "total": totalC,
                     "totalEncargo": totalEncargo._sum.totalPrice,
                     "totalAutoservicio": totalAutoservicio._sum.totalPrice,

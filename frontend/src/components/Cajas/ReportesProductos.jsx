@@ -60,7 +60,7 @@ function ReportesProductos() {
   };
 
   const handleModalPrint = () => {
-    const doc = new jsPDF();
+    const pdf = new jsPDF();
 
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
@@ -78,40 +78,34 @@ function ReportesProductos() {
         40
       );
       pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
-      pdf.text(
-        `Efectivo Inicial: ${
-          selectedCorte.initialCash ? `$${selectedCorte.initialCash}` : "$0"
-        }`,
-        10,
-        70
-      );
+     
       pdf.text(
         `Ordenes Pagadas: ${
           selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
         }`,
         10,
-        80
+        70
       );
       pdf.text(
         `Total Jabon: ${
           selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
         }`,
         10,
-        100
+        90
       );
       pdf.text(
         `Total Suavitel: ${
           selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
         }`,
         10,
-        110
+        100
       );
       pdf.text(
         `Total Pinol: ${
           selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
         }`,
         10,
-        120
+        110
       );
       pdf.text(
         `Total Desengrasante: ${
@@ -120,14 +114,14 @@ function ReportesProductos() {
             : "$0"
         }`,
         10,
-        130
+        120
       );
       pdf.text(
         `Total Cloro: ${
           selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
         }`,
         10,
-        140
+        130
       );
       pdf.text(
         `Total Sanitizante: ${
@@ -136,14 +130,14 @@ function ReportesProductos() {
             : "$0"
         }`,
         10,
-        150
+        140
       );
       pdf.text(
         `Total Bolsa: ${
           selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
         }`,
         10,
-        160
+        150
       );
       pdf.text(
         `Total Reforzado: ${
@@ -152,51 +146,52 @@ function ReportesProductos() {
             : "$0"
         }`,
         10,
-        170
+        160
       );
       pdf.text(
         `Total Ganchos: ${
           selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
         }`,
         10,
-        180
+        170
       );
       pdf.text(
         `Total WC: ${
           selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
         }`,
         10,
-        190
+        180
       );
       pdf.text(
         `Total Otros: ${
           selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
         }`,
         10,
-        200
+        190
       );
       pdf.text(
         `Total Tarjeta: ${
           selectedCorte.totalCredit ? `$${selectedCorte.totalCredit}` : "$0"
         }`,
         10,
-        220
+        210
       );
       pdf.text(
         `Total Efectivo: ${
           selectedCorte.totalCash ? `$${selectedCorte.totalCash}` : "$0"
         }`,
         10,
-        230
+        220
       );
       pdf.text(
         `Total Ingresos: ${
           selectedCorte.totalIncome ? `$${selectedCorte.totalIncome}` : "$0"
         }`,
         10,
-        240
+        230
       );
     }
+    pdf.save("detalle_corte_productos.pdf");
   };
 
   const handleFiltroPorFecha = () => {
@@ -350,7 +345,7 @@ function ReportesProductos() {
 
         const formattedStartDate = startDate.split("/").join("-");
         const formattedEndDate = endDate.split("/").join("-");
-        doc.save(`Reporte ${formattedStartDate} - ${formattedEndDate}.pdf`);
+        doc.save(`Reporte de productos ${formattedStartDate} - ${formattedEndDate}.pdf`);
 
         const out = doc.output("datauristring");
         await api.post("/sendReport", {
@@ -410,10 +405,6 @@ function ReportesProductos() {
                 <th>No. Corte</th>
                 <th>FECHA</th>
                 <th>
-                  DINERO <br />
-                  EN FONDO
-                </th>
-                <th>
                   INGRESO <br />
                   EN EFECTIVO
                 </th>
@@ -445,9 +436,7 @@ function ReportesProductos() {
                   >
                     <td className="">{corte.id_supplyCashCut}</td>
                     <td className="">{formatDate(corte.cashCutD)}</td>
-                    <td className="">
-                      ${corte.initialCash ? corte.initialCash : 0}
-                    </td>
+                    
                     <td className="">
                       ${corte.totalCash ? corte.totalCash : 0}
                     </td>
@@ -493,12 +482,12 @@ function ReportesProductos() {
           width={900} // Ajusta el ancho según necesidades
           footer={[
             <Button
-              key="print"
-              onClick={handleModalPrint}
-              className="btn-print text-white"
-            >
-              Imprimir
-            </Button>,
+            key="print"
+            onClick={handleModalPrint}
+            className="btn-print text-white"
+          >
+            Guardar
+          </Button>,
             <Button
               key="close"
               onClick={() => setModalVisible(false)}
@@ -510,121 +499,118 @@ function ReportesProductos() {
         >
           {selectedCorte && (
             <div className="flex">
-              {/* Primera Columna */}
-              <div className="w-1/3">
-                <p className="text-lg">
-                  <span className="font-bold">ID:</span>{" "}
-                  {selectedCorte.id_supplyCashCut}
-                </p>
-                <p className="text-lg text-white">
-                  <span className="font-bold">Usuario:</span>{" "}
-                  {selectedCorte.user.name}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Turno:</span>{" "}
-                  {selectedCorte.workShift === "morning"
-                    ? "Matutino"
-                    : selectedCorte.workShift === "evening"
-                    ? "Vespertino"
-                    : ""}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Fecha:</span>{" "}
-                  {formatDate(selectedCorte.cashCutD)}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Dinero en Fondo:</span> $
-                  {selectedCorte.initialCash}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Ordenes Pagadas: </span>
-                  {selectedCorte.ordersPayed}
-                </p>
-                <br />
-              </div>
-              {/* Tercera Columna */}
-              <div className="w-1/3">
-                <p className="text-lg">
-                  <span className="font-bold">Ingreso de Productos:</span>
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Jabón:</span> $
-                  {selectedCorte.totalJabon ? selectedCorte.totalJabon : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Suavitel:</span> $
-                  {selectedCorte.totalSuavitel
-                    ? selectedCorte.totalSuavitel
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Pinol:</span> $
-                  {selectedCorte.totalPinol ? selectedCorte.totalPinol : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Desengrasante:</span> $
-                  {selectedCorte.totalDesengrasante
-                    ? selectedCorte.totalDesengrasante
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Cloro:</span> $
-                  {selectedCorte.totalCloro ? selectedCorte.totalCloro : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Sanitizante:</span> $
-                  {selectedCorte.totalSanitizante
-                    ? selectedCorte.totalSanitizante
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Bolsa:</span> $
-                  {selectedCorte.totalBolsa ? selectedCorte.totalBolsa : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Reforzado:</span> $
-                  {selectedCorte.totalReforzado
-                    ? selectedCorte.totalReforzado
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Ganchos:</span> $
-                  {selectedCorte.totalGanchos ? selectedCorte.totalGanchos : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">WC:</span> $
-                  {selectedCorte.totalWC ? selectedCorte.totalWC : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Otros:</span> $
-                  {selectedCorte.totalOtros ? selectedCorte.totalOtros : 0}
-                </p>
-              </div>
-              {/* Segunda Columna */}
-              <div className="w-1/1">
-                <p className="text-lg">
-                  <span className="font-bold">
-                    Ingresos totales de productos:
-                  </span>
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">
-                    Ingreso de productos con Efectivo:
-                  </span>{" "}
-                  ${selectedCorte.totalCash ? selectedCorte.totalCash : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">
-                    Ingreso de productos con Tarjeta:
-                  </span>{" "}
-                  ${selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Ingreso total de productos:</span>{" "}
-                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
-                </p>
-              </div>
+            {/* Primera Columna */}
+            <div className="w-1/3">
+              <p className="text-lg">
+                <span className="font-bold">ID:</span>{" "}
+                {selectedCorte.id_supplyCashCut}
+              </p>
+              <p className="text-lg text-white">
+                <span className="font-bold">Usuario:</span>{" "}
+                {selectedCorte.user.name}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Turno:</span>{" "}
+                {selectedCorte.workShift === "morning"
+                  ? "Matutino"
+                  : selectedCorte.workShift === "evening"
+                  ? "Vespertino"
+                  : ""}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Fecha:</span>{" "}
+                {formatDate(selectedCorte.cashCutD)}
+              </p>
+              
+              <p className="text-lg">
+                <span className="font-bold">Ordenes Pagadas: </span>
+                {selectedCorte.ordersPayed}
+              </p>
+              <br />
             </div>
+            {/* Tercera Columna */}
+            <div className="w-1/3">
+              <p className="text-lg">
+                <span className="font-bold">Ingreso de Productos:</span>
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Jabón:</span> $
+                {selectedCorte.totalJabon ? selectedCorte.totalJabon : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Suavitel:</span> $
+                {selectedCorte.totalSuavitel
+                  ? selectedCorte.totalSuavitel
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Pinol:</span> $
+                {selectedCorte.totalPinol ? selectedCorte.totalPinol : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Desengrasante:</span> $
+                {selectedCorte.totalDesengrasante
+                  ? selectedCorte.totalDesengrasante
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Cloro:</span> $
+                {selectedCorte.totalCloro ? selectedCorte.totalCloro : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Sanitizante:</span> $
+                {selectedCorte.totalSanitizante
+                  ? selectedCorte.totalSanitizante
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Bolsa:</span> $
+                {selectedCorte.totalBolsa ? selectedCorte.totalBolsa : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Reforzado:</span> $
+                {selectedCorte.totalReforzado
+                  ? selectedCorte.totalReforzado
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ganchos:</span> $
+                {selectedCorte.totalGanchos ? selectedCorte.totalGanchos : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">WC:</span> $
+                {selectedCorte.totalWC ? selectedCorte.totalWC : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Otros:</span> $
+                {selectedCorte.totalOtros ? selectedCorte.totalOtros : 0}
+              </p>
+            </div>
+            {/* Segunda Columna */}
+            <div className="w-1/2">
+              <p className="text-lg">
+                <span className="font-bold">
+                  Ingresos totales de productos:
+                </span>
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">
+                  Ingreso de productos con Efectivo:
+                </span>{" "}
+                ${selectedCorte.totalCash ? selectedCorte.totalCash : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">
+                  Ingreso de productos con Tarjeta:
+                </span>{" "}
+                ${selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ingreso total de productos:</span>{" "}
+                ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+              </p>
+            </div>
+          </div>
           )}
         </Modal>
       </div>

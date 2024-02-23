@@ -133,7 +133,7 @@ function Reportes() {
         : doc.text("Retiros Totales: $0", 10, 180);
       doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
 
-      doc.save("detalle_corte.pdf");
+      doc.save("detalle_corte_servicios.pdf");
     }
   };
 
@@ -261,7 +261,7 @@ function Reportes() {
 
       const formattedStartDate = startDate.split("/").join("-");
       const formattedEndDate = endDate.split("/").join("-");
-      doc.save(`Reporte ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      doc.save(`Reporte de servicios ${formattedStartDate} - ${formattedEndDate}.pdf`);
 
       const out = doc.output('datauristring');
       await api.post('/sendReport', {

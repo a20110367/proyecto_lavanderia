@@ -25,6 +25,6 @@ router.delete('/supplyCashCuts/:id', deleteSupplyCashCut);
 router.get('/calculateSupplyCashCut/:id', calculateSupplyCashCut);
 router.get('/getSupplyCashCutStatus', getCashCutStatus);
 router.get('/getSupplyLastCashCut', getLastCashCut);
-router.patch('/closeSupplyCashCut/:id', closeCashCut);
+router.get('/closeSupplyCashCut/:id', closeCashCut);
 
 export default router;

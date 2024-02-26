@@ -277,8 +277,8 @@ function EntregaVarios() {
 
       setEntregando(true);
       console.log(pedido);
-      // setTimeout(() => {
-      //   setEntregando(false);
+      setTimeout(() => {
+        setEntregando(false);
       //   const doc = new jsPDF();
       //   doc.text(`Detalles del Pedido`, 10, 10);
       //   doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
@@ -314,7 +314,7 @@ function EntregaVarios() {
       //   );
       //   doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
       //   doc.save(`pedido_${pedido.id_order}.pdf`);
-      // }, 1500);
+      }, 1500);
     }
   };
 

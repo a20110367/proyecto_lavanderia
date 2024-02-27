@@ -108,8 +108,43 @@ function CorteCaja() {
         ...corteSupply
       };
 
-      
+      const cashCut = {
+        cashCutId: nuevoCorte.id_cashCut,
+        workShift: nuevoCorte.workShift,
+        initialCash: nuevoCorte.initialCash,
+        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
+        total: nuevoCorte.total
+      }
 
+      const services = {
+        numberOfItems: nuevoCorte.ordersPayed,
+        selfService: nuevoCorte.totalAutoservicio,
+        laundry: nuevoCorte.totalEncargo,
+        iron: nuevoCorte.totalPlanchado,
+        dryCleaning: nuevoCorte.totalTintoreria,
+        others: nuevoCorte.totalOtrosEncargo,
+        totalIncome: nuevoCorte.totalIncome,
+        totalCash: nuevoCorte.totalCash,
+        totalCredit: nuevoCorte.totalCredit,
+      }
+
+      const products = {
+        numberOfItems: corteSupply.ordersPayedSupply,
+        soap: corteSupply.totalJabon,
+        suavitel: corteSupply.totalSuavitel,
+        pinol: corteSupply.totalDesengrasante,
+        chlorine: corteSupply.totalCloro,
+        sanitizer: corteSupply.totalSanitizante,
+        bag: corteSupply.totalBolsa,
+        reinforced: corteSupply.totalReforzado,
+        hook: corteSupply.totalGanchos,
+        wc: corteSupply.totalWC,
+        others: corteSupply.totalOtros,
+        totalIncome: corteSupply.totalIncomeSupply,
+        totalCash: corteSupply.totalCashSupply,
+        totalCredit: corteSupply.totalCreditSupply
+      }
+      
       const pdf = new jsPDF();
       pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
@@ -210,7 +245,13 @@ function CorteCaja() {
       
       }
 
-      pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+      // pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
+
+      await api.post('/generateCashCutTicket', {
+        cashCut: cashCut,
+        services: services,
+        products: products
+      })
 
       setLastCashCut(nuevoCorte);
       setCortes([nuevoCorte]);
@@ -358,7 +399,6 @@ function CorteCaja() {
         ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 200)
         : pdf.text("Final Total en Caja: $0", 10, 200);
 
-     
       if (
         pdf.internal.getNumberOfPages() > 0 &&
         pdf.internal.getCurrentPageInfo().pageNumber === 1
@@ -419,110 +459,151 @@ function CorteCaja() {
     }
   };
 
-  const handleModalPrint = () => {
-    const pdf = new jsPDF();
+  const handleModalPrint = async () => {
+    // const pdf = new jsPDF();
 
     if (selectedCorte) {
-      pdf.text(`Detalles del Corte`, 10, 10);
-      pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
-      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(
-        `Turno: ${
-          selectedCorte.workShift === "morning"
-            ? "Matutino"
-            : selectedCorte.workShift === "evening"
-            ? "Vespertino"
-            : "Nocturno"
-        }`,
-        10,
-        40
-      );
+      // pdf.text(`Detalles del Corte`, 10, 10);
+      // pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
+      // pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      // pdf.text(
+      //   `Turno: ${
+      //     selectedCorte.workShift === "morning"
+      //       ? "Matutino"
+      //       : selectedCorte.workShift === "evening"
+      //       ? "Vespertino"
+      //       : "Nocturno"
+      //   }`,
+      //   10,
+      //   40
+      // );
 
-      selectedCorte.initialCash
-        ? pdf.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60)
-        : pdf.text("Dinero en Fondo: $0", 10, 60);
-        selectedCorte.ordersPayed
-        ? pdf.text(`Total Servicios Pagados: ${selectedCorte.ordersPayed}`, 10, 70)
-        :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
+      // selectedCorte.initialCash
+      //   ? pdf.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60)
+      //   : pdf.text("Dinero en Fondo: $0", 10, 60);
+      //   selectedCorte.ordersPayed
+      //   ? pdf.text(`Total Servicios Pagados: ${selectedCorte.ordersPayed}`, 10, 70)
+      //   :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
 
-      // Separación
-      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
-      selectedCorte.totalAutoservicio
-        ? pdf.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 100)
-        : pdf.text("Autoservicio: $0", 10, 100);
-        selectedCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 110)
-        : pdf.text("Lavado por Encargo: $0", 10, 110);
-        selectedCorte.totalPlanchado
-        ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 120)
-        : pdf.text("Planchado: $0", 10, 120);
+      // // Separación
+      // pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
+      // selectedCorte.totalAutoservicio
+      //   ? pdf.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 100)
+      //   : pdf.text("Autoservicio: $0", 10, 100);
+      //   selectedCorte.totalEncargo
+      //   ? pdf.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 110)
+      //   : pdf.text("Lavado por Encargo: $0", 10, 110);
+      //   selectedCorte.totalPlanchado
+      //   ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 120)
+      //   : pdf.text("Planchado: $0", 10, 120);
 
-        selectedCorte.totalTintoreria
-        ? pdf.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 130)
-        : pdf.text("Tintorería: $0", 10, 130);
+      //   selectedCorte.totalTintoreria
+      //   ? pdf.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 130)
+      //   : pdf.text("Tintorería: $0", 10, 130);
 
-        selectedCorte.totalOtrosEncargo
-        ? pdf.text(`Encargo Varios: $${selectedCorte.totalOtrosEncargo}`, 10, 140)
-        : pdf.text("Encargo Varios: $0", 10, 140);
+      //   selectedCorte.totalOtrosEncargo
+      //   ? pdf.text(`Encargo Varios: $${selectedCorte.totalOtrosEncargo}`, 10, 140)
+      //   : pdf.text("Encargo Varios: $0", 10, 140);
 
-        selectedCorte.totalIncome
-        ? pdf.text(
-            `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
-            10,
-            150
-          )
-        : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
-      // Separación
-      selectedCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 170)
-        : pdf.text("Ingreso en Efectivo: $0", 10, 170);
-        selectedCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 180)
-        : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
-        selectedCorte.totalCashWithdrawal
-        ? pdf.text(
-            `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
-            10,
-            190
-          )
-        : pdf.text("Retiros Totales: $0", 10, 190);
-        selectedCorte.total
-        ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 200)
-        : pdf.text("Final Total en Caja: $0", 10, 200);
+      //   selectedCorte.totalIncome
+      //   ? pdf.text(
+      //       `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
+      //       10,
+      //       150
+      //     )
+      //   : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
+      // // Separación
+      // selectedCorte.totalCash
+      //   ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 170)
+      //   : pdf.text("Ingreso en Efectivo: $0", 10, 170);
+      //   selectedCorte.totalCredit
+      //   ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 180)
+      //   : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
+      //   selectedCorte.totalCashWithdrawal
+      //   ? pdf.text(
+      //       `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
+      //       10,
+      //       190
+      //     )
+      //   : pdf.text("Retiros Totales: $0", 10, 190);
+      //   selectedCorte.total
+      //   ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 200)
+      //   : pdf.text("Final Total en Caja: $0", 10, 200);
 
-    
+      // if (
+      //   pdf.internal.getNumberOfPages() > 0 &&
+      //   pdf.internal.getCurrentPageInfo().pageNumber === 1
+      // ) {
+      //   // Si estamos en la página 1 y cerca del final, agregamos una nueva página
+      //   pdf.addPage();
+      //   pdf.text(`Detalles de Suministros:`, 10, 10);
+      //   pdf.text(`Total Pedidos Pagados: ${selectedCorte.ordersPayedSupply}`, 10, 30);
+      //   pdf.text(`Total Jabon $${selectedCorte.totalJabon}`, 10, 40);
+      //   pdf.text(`Total Suavitel $${selectedCorte.totalSuavitel}`, 10, 50);
+      //   pdf.text(`Total Pinol $${selectedCorte.totalPinol}`, 10, 60);
+      //   pdf.text(
+      //     `Total Desengrasante $${selectedCorte.totalDesengrasante}`,
+      //     10,
+      //     70
+      //   );
+      //   pdf.text(`Total Cloro $${selectedCorte.totalCloro}`, 10, 80);
+      //   pdf.text(`Total Sanitizante $${selectedCorte.totalSanitizante}`, 10, 90);
+      //   pdf.text(`Total Bolsa $${selectedCorte.totalBolsa}`, 10, 100);
+      //   pdf.text(`Total Reforzado $${selectedCorte.totalReforzado}`, 10, 110);
+      //   pdf.text(`Total Ganchos $${selectedCorte.totalGanchos}`, 10, 120);
+      //   pdf.text(`Total WC $${selectedCorte.totalWC}`, 10, 130);
+      //   pdf.text(`Total Otros $${selectedCorte.totalOtros}`, 10, 140);
+      //   pdf.text(`Total Tarjeta $${selectedCorte.totalCreditSupply}`, 10, 160);
+      //   pdf.text(`Total Efectivo $${selectedCorte.totalCashSupply}`, 10, 170);
+      //   pdf.text(`Total Ingresos $${selectedCorte.totalIncomeSupply}`, 10, 180);
 
-     
-      if (
-        pdf.internal.getNumberOfPages() > 0 &&
-        pdf.internal.getCurrentPageInfo().pageNumber === 1
-      ) {
-        // Si estamos en la página 1 y cerca del final, agregamos una nueva página
-        pdf.addPage();
-        pdf.text(`Detalles de Suministros:`, 10, 10);
-        pdf.text(`Total Pedidos Pagados: ${selectedCorte.ordersPayedSupply}`, 10, 30);
-        pdf.text(`Total Jabon $${selectedCorte.totalJabon}`, 10, 40);
-        pdf.text(`Total Suavitel $${selectedCorte.totalSuavitel}`, 10, 50);
-        pdf.text(`Total Pinol $${selectedCorte.totalPinol}`, 10, 60);
-        pdf.text(
-          `Total Desengrasante $${selectedCorte.totalDesengrasante}`,
-          10,
-          70
-        );
-        pdf.text(`Total Cloro $${selectedCorte.totalCloro}`, 10, 80);
-        pdf.text(`Total Sanitizante $${selectedCorte.totalSanitizante}`, 10, 90);
-        pdf.text(`Total Bolsa $${selectedCorte.totalBolsa}`, 10, 100);
-        pdf.text(`Total Reforzado $${selectedCorte.totalReforzado}`, 10, 110);
-        pdf.text(`Total Ganchos $${selectedCorte.totalGanchos}`, 10, 120);
-        pdf.text(`Total WC $${selectedCorte.totalWC}`, 10, 130);
-        pdf.text(`Total Otros $${selectedCorte.totalOtros}`, 10, 140);
-        pdf.text(`Total Tarjeta $${selectedCorte.totalCreditSupply}`, 10, 160);
-        pdf.text(`Total Efectivo $${selectedCorte.totalCashSupply}`, 10, 170);
-        pdf.text(`Total Ingresos $${selectedCorte.totalIncomeSupply}`, 10, 180);
+      // }
 
+      // pdf.save("detalle_corte.pdf");
+      
+      const cashCut = {
+        cashCutId: selectedCorte.id_cashCut,
+        workShift: selectedCorte.workShift,
+        initialCash: selectedCorte.initialCash,
+        totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
+        total: selectedCorte.total
       }
 
-      pdf.save("detalle_corte.pdf");
+      const services = {
+        numberOfItems: selectedCorte.ordersPayed,
+        selfService: selectedCorte.totalAutoservicio,
+        laundry: selectedCorte.totalEncargo,
+        iron: selectedCorte.totalPlanchado,
+        dryCleaning: selectedCorte.totalTintoreria,
+        others: selectedCorte.totalOtrosEncargo,
+        totalIncome: selectedCorte.totalIncome,
+        totalCash: selectedCorte.totalCash,
+        totalCredit: selectedCorte.totalCredit,
+      }
+
+      const products = {
+        numberOfItems: selectedCorte.ordersPayedSupply,
+        soap: selectedCorte.totalJabon,
+        suavitel: selectedCorte.totalSuavitel,
+        pinol: selectedCorte.totalDesengrasante,
+        chlorine: selectedCorte.totalCloro,
+        sanitizer: selectedCorte.totalSanitizante,
+        bag: selectedCorte.totalBolsa,
+        reinforced: selectedCorte.totalReforzado,
+        hook: selectedCorte.totalGanchos,
+        wc: selectedCorte.totalWC,
+        others: selectedCorte.totalOtros,
+        totalIncome: selectedCorte.totalIncomeSupply,
+        totalCash: selectedCorte.totalCashSupply,
+        totalCredit: selectedCorte.totalCreditSupply
+      }
+
+      await api.post('/generateCashCutTicket', {
+        cashCut: cashCut,
+        services: services,
+        products: products
+      })
+      
     }
   };
 

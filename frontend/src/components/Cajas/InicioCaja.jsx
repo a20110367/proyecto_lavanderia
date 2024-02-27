@@ -93,11 +93,13 @@ function InicioCaja() {
   const handleAbrirFormulario = async () => {
     try {
       const res = await api.get("/cashCutStatus");
-      if (res.data.cashCutStatus === "closed") {
+      const supplyRes = await api.get('/getSupplyCashCutStatus')
+      if (res.data.cashCutStatus === "closed" && supplyRes.data.cashCutStatus === 'closed') {
         setVisible(true);
-      } else if (res.data.cashCutStatus === "open") {
+      } else if (res.data.cashCutStatus === "open" && supplyRes.data.cashCutStatus === 'open') {
         localStorage.removeItem("lastCashCut");
         localStorage.setItem("cashCutId", res.data.id_cashCut);
+        localStorage.setItem("id_supplyCashCut", supplyRes.data.id_supplyCashCut)
         setCajaIniciada(true);
         setVisible(false);
       } else {

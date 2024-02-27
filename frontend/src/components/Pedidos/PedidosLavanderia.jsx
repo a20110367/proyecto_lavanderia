@@ -429,7 +429,7 @@ function PedidosLavanderia() {
         <table className="w-full text-sm text-left text-gray-500">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200">
             <tr>
-              <th>No. Folio</th>
+              <th>No. Pedido</th>
               <th>Recibió</th>
               <th>Cliente</th>
               <th>Detalles</th>
@@ -519,7 +519,7 @@ function PedidosLavanderia() {
                     {pedido.serviceStatus === "inProgressWash" && (
                       <button
                         onClick={() => handleStartDryerProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
+                        className="btn-dry ml-2 mt-1"
                       >
                         Secado
                       </button>
@@ -528,7 +528,7 @@ function PedidosLavanderia() {
                     {pedido.serviceStatus === "inProgressDry" && (
                       <button
                         onClick={() => handleFinishProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
+                        className="btn-finish ml-2 mt-1"
                       >
                         Terminar
                       </button>

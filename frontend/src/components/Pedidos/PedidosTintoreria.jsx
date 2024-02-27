@@ -327,7 +327,7 @@ function PedidosTintoreria() {
                     {pedido.orderStatus === "inProgress" && (
                       <button
                         onClick={() => handleFinishProcess(pedido)}
-                        className="btn-primary ml-2 mt-1"
+                        className="btn-finish ml-2 mt-1"
                       >
                         Terminar
                       </button>

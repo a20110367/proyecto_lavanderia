@@ -147,7 +147,7 @@ export const generateTicket = async (req, res) => {
         console.log(execute)
         console.log("Print done!");
 
-        if(order.serviceType === 'encargo'){
+        if(order.serviceType != 'productos' || order.serviceType != 'autoservicio'){
             generateTicket(order)
         }
 

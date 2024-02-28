@@ -27,15 +27,16 @@ export const generateTicket = async (req, res) => {
     let payStatus = ''
     let payForm = ''
 
-    if (order.payMethod === 'cash') {
-        payMethod = 'EFECTIVO'
-    } else {
-        payMethod = 'TARJETA'
-    }
     if (order.payStatus === 'paid') {
         payStatus = 'PAGADO'
+        if (order.payMethod === 'cash') {
+            payMethod = 'EFECTIVO'
+        } else {
+            payMethod = 'TARJETA'
+        }
     } else {
         payStatus = 'NO PAGADO'
+        payMethod = '---------'
     }
     if (order.payForm === 'advance') {
         payForm = 'ANTICIPADO'
@@ -68,7 +69,7 @@ export const generateTicket = async (req, res) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + order.payForm === 'advance' ? payMethod : '----', align: "RIGHT" }
+            { text: "FORMA PAGO: " + payMethod , align: "RIGHT" }
         ]);
 
         printer.drawLine();

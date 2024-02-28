@@ -69,7 +69,7 @@ export const generateTicket = async (req, res) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod , align: "RIGHT" }
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
         ]);
 
         printer.drawLine();
@@ -257,7 +257,7 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod , align: "RIGHT" }
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
         ]);
 
         printer.drawLine();
@@ -281,7 +281,7 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.alignCenter()
 
         printer.drawLine();
-    
+
         printer.bold(true);                             // Append text with new line
         printer.println('Total Pagado: $' + order.subtotal)
         printer.bold(false);
@@ -406,6 +406,17 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
+
+            printer.newLine()
+            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.setTextNormal()
+
+            printer.drawLine()
+
         }
 
         if (products) {
@@ -439,17 +450,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
         }
 
-        if (cashCut) {
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.total}`)
-            printer.setTextNormal()
-
-
-            printer.cut();
-        }
+        printer.cut();
 
         let execute = await printer.execute()
 
@@ -463,12 +464,12 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
 export const reprintTicket = async (req, res) => {
     try {
-        if(lastOrder){
+        if (lastOrder) {
             printTicketFromBackend(lastOrder)
             res.status(200).json('Print done!')
-        }else{
-            res.status(404).json(false)    
-        } 
+        } else {
+            res.status(404).json(false)
+        }
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message })
@@ -528,6 +529,17 @@ export const cashCutTicket = async (req, res) => {
 
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
+
+            printer.newLine()
+            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.setTextNormal()
+
+            printer.drawLine()
+
         }
 
         if (products) {
@@ -561,17 +573,7 @@ export const cashCutTicket = async (req, res) => {
 
         }
 
-        if (cashCut) {
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.total}`)
-            printer.setTextNormal()
-
-
-            printer.cut();
-        }
+        printer.cut();
 
         let execute = await printer.execute()
 

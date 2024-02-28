@@ -170,18 +170,12 @@ function EntregaLavanderia() {
       //   cart: cart,
       // };
       // orderTicket(order);
-      let payMethod
-      if (cobroInfo.metodoPago === 'cash') {
-        payMethod = 'EFECTIVO'
-      } else {
-        payMethod = 'TARJETA'
-      }
 
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
-        payMethod: payMethod,
+        payMethod: cobroInfo.metodoPago,
         subtotal: pedido.totalPrice,
         casher: pedido.user.name,
         client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,

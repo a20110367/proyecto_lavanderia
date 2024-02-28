@@ -358,6 +358,7 @@ const formatTime = (dateStr) => {
 
 const formatTicketTime = (dateStr) => {
     const date = moment(dateStr).format('hh:mm A')
+    return date
 }
 
 export const generatePartialCashCutTicket = async (req, res) => {

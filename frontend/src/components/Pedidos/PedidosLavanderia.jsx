@@ -405,24 +405,7 @@ function PedidosLavanderia() {
           >
             En Proceso de Secado
           </option>
-          <option
-            value="finished"
-            className="text-blue-600 font-semibold text-base"
-          >
-            Finalizados
-          </option>
-          <option
-            value="delivered"
-            className="text-green-600 font-semibold text-base"
-          >
-            Entregados
-          </option>
-          <option
-            value="stored"
-            className="text-fuchsia-600 font-semibold text-base"
-          >
-            Almacenados
-          </option>
+         
         </select>
       </div>
       <div className="overflow-x-auto">

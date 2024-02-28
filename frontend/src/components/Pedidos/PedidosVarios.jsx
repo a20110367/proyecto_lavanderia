@@ -213,27 +213,9 @@ function PedidosVarios() {
           </option>
           <option
             value="inProgress"
-            className="text-Cerulean font-semibold text-base"
+            className="text-yellow-600 font-semibold text-base"
           >
             En Proceso
-          </option>
-          <option
-            value="finished"
-            className="text-blue-600 font-semibold text-base"
-          >
-            Finalizados
-          </option>
-          <option
-            value="delivered"
-            className="text-green-600 font-semibold text-base"
-          >
-            Entregados
-          </option>
-          <option
-            value="stored"
-            className="text-fuchsia-600 font-semibold text-base"
-          >
-            Almacenados
           </option>
         </select>
       </div>

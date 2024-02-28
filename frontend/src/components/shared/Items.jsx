@@ -87,7 +87,7 @@ const items1 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("General", "/pedidosGeneral"),
+    getItem("Pedidos Finalizados", "/pedidosGeneral"),
 
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
@@ -102,7 +102,7 @@ const items1 = [
   getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
     getItem("Inicio de caja", "/inicioCaja"),
     getItem("Corte de caja", "/corteCaja"),
-    getItem("Pedidos", "/cajaPedidos"),
+    getItem("Pedidos Pagados", "/cajaPedidos"),
     getItem(
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>
@@ -198,7 +198,7 @@ const items2 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("General", "/pedidosGeneral"),
+    getItem("Peidos Finalizados", "/pedidosGeneral"),
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
   getItem(
@@ -216,7 +216,7 @@ const items2 = [
   getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
     getItem("Iniciar caja", "/inicioCaja"),
     getItem("Corte de caja", "/corteCaja"),
-    getItem("Pedidos", "/cajaPedidos"),
+    getItem("Pedidos Pagados", "/cajaPedidos"),
     getItem(
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>

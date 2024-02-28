@@ -101,18 +101,7 @@ function CajaPedidos() {
           <option className="text-base font-semibold" value="">
             Todos
           </option>
-          <option
-            value="pending"
-            className="text-gray-600 font-semibold text-base"
-          >
-            Pendientes
-          </option>
-          <option
-            value="inProgress"
-            className="text-yellow-600 font-semibold text-base"
-          >
-            En Proceso
-          </option>
+          
           <option
             value="finished"
             className="text-blue-600 font-semibold text-base"

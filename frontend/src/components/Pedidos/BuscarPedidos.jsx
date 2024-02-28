@@ -556,7 +556,7 @@ const BuscarPedidos = () => {
       {/* Modal para ver detalles del pedido */}
       <Modal
         title={`Detalles del Pedido No. ${selectedPedido?.id_order}`}
-        visible={visible}
+        open={visible}
         onCancel={handleClose}
         footer={[
           <Button

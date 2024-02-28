@@ -606,41 +606,41 @@ function CorteCaja() {
       
       const cashCut = {
         casher: cookies.username,
-        cashCutId: nuevoCorte.id_cashCut,
-        workShift: nuevoCorte.workShift,
-        initialCash: nuevoCorte.initialCash,
-        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total
+        cashCutId: selectedCorte.id_cashCut,
+        workShift: selectedCorte.workShift,
+        initialCash: selectedCorte.initialCash,
+        totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
+        total: selectedCorte.total
       }
 
       const services = {
-        numberOfItems: nuevoCorte.ordersPayed,
-        selfService: nuevoCorte.totalAutoservicio,
-        laundry: nuevoCorte.totalEncargo,
-        iron: nuevoCorte.totalPlanchado,
-        dryCleaning: nuevoCorte.totalTintoreria,
-        others: nuevoCorte.totalOtrosEncargo,
-        totalIncome: nuevoCorte.totalIncome,
-        totalCash: nuevoCorte.totalCash,
-        totalCredit: nuevoCorte.totalCredit,
+        numberOfItems: selectedCorte.ordersPayed,
+        selfService: selectedCorte.totalAutoservicio,
+        laundry: selectedCorte.totalEncargo,
+        iron: selectedCorte.totalPlanchado,
+        dryCleaning: selectedCorte.totalTintoreria,
+        others: selectedCorte.totalOtrosEncargo,
+        totalIncome: selectedCorte.totalIncome,
+        totalCash: selectedCorte.totalCash,
+        totalCredit: selectedCorte.totalCredit,
       }
 
       const products = {
-        numberOfItems: corteSupply.ordersPayedSupply,
-        soap: corteSupply.totalJabon,
-        suavitel: corteSupply.totalSuavitel,
-        pinol: corteSupply.totalPinol,
-        degreaser: corteSupply.totalDesengrasante,
-        chlorine: corteSupply.totalCloro,
-        sanitizer: corteSupply.totalSanitizante,
-        bag: corteSupply.totalBolsa,
-        reinforced: corteSupply.totalReforzado,
-        hook: corteSupply.totalGanchos,
-        wc: corteSupply.totalWC,
-        others: corteSupply.totalOtros,
-        totalIncome: corteSupply.totalIncomeSupply,
-        totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply
+        numberOfItems: selectedCorte.ordersPayedSupply,
+        soap: selectedCorte.totalJabon,
+        suavitel: selectedCorte.totalSuavitel,
+        pinol: selectedCorte.totalPinol,
+        degreaser: selectedCorte.totalDesengrasante,
+        chlorine: selectedCorte.totalCloro,
+        sanitizer: selectedCorte.totalSanitizante,
+        bag: selectedCorte.totalBolsa,
+        reinforced: selectedCorte.totalReforzado,
+        hook: selectedCorte.totalGanchos,
+        wc: selectedCorte.totalWC,
+        others: selectedCorte.totalOtros,
+        totalIncome: selectedCorte.totalIncomeSupply,
+        totalCash: selectedCorte.totalCashSupply,
+        totalCredit: selectedCorte.totalCreditSupply
       }
 
       await api.post('/generateCashCutTicket', {

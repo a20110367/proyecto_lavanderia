@@ -114,7 +114,9 @@ function CorteCaja() {
         workShift: nuevoCorte.workShift,
         initialCash: nuevoCorte.initialCash,
         totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total
+        total: nuevoCorte.total,
+        cashCutD: nuevoCorte.cashCutD,
+        cashCutT: nuevoCorte.cashCutT
       }
 
       const services = {
@@ -314,7 +316,6 @@ function CorteCaja() {
 
     try {
       const now = new Date();
-      const horaActual = now.getHours();
 
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
@@ -459,7 +460,9 @@ function CorteCaja() {
         workShift: nuevoCorte.workShift,
         initialCash: nuevoCorte.initialCash,
         totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total
+        total: nuevoCorte.total,
+        cashCutD: nuevoCorte.cashCutD,
+        cashCutT: nuevoCorte.cashCutT
       }
 
       const services = {
@@ -610,7 +613,9 @@ function CorteCaja() {
         workShift: selectedCorte.workShift,
         initialCash: selectedCorte.initialCash,
         totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
-        total: selectedCorte.total
+        total: selectedCorte.total,
+        cashCutD: selectedCorte.cashCutD,
+        cashCutT: selectedCorte.cashCutT
       }
 
       const services = {

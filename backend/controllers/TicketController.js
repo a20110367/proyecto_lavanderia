@@ -378,8 +378,8 @@ export const generatePartialCashCutTicket = async (req, res) => {
         if (cashCut) {
             printer.println(`Cajero: ${cashCut.casher}`)
             printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
-            printer.println(`Fecha: ${moment().format('l')}`)
-            printer.println(`Hora: ${moment().format('LT')}`)
+            printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
+            printer.println(`Hora: ${formatTime(cashCut.cashCutT)}`)
 
             printer.drawLine()
         }
@@ -503,8 +503,8 @@ export const cashCutTicket = async (req, res) => {
         if (cashCut) {
             printer.println(`Cajero: ${cashCut.casher}`)
             printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
-            printer.println(`Fecha: ${moment().format('l')}`)
-            printer.println(`Hora: ${moment().format('LT')}`)
+            printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
+            printer.println(`Hora: ${formatTime(cashCut.cashCutT)}`)
 
             printer.drawLine()
         }

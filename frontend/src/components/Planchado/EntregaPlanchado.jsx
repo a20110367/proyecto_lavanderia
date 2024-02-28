@@ -147,8 +147,8 @@ function EntregaPlanchado() {
       const cart = [];
       pedido.ServiceOrderDetail.forEach(service => {
         cart.push({
-          description: service.LaundryService.description
-            ? service.LaundryService.description
+          description: service.IronService.description
+            ? service.IronService.description
             : "ERROR",          
           totalPrice: service.subtotal,
           quantity: service.units,

@@ -109,6 +109,7 @@ function CorteCaja() {
       };
 
       const cashCut = {
+        casher: cookies.username,
         cashCutId: nuevoCorte.id_cashCut,
         workShift: nuevoCorte.workShift,
         initialCash: nuevoCorte.initialCash,

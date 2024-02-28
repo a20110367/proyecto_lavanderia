@@ -206,9 +206,9 @@ export const generateTicket = async (req, res) => {
     }
 }
 
-const printTicketFromBackend = async (order) => {
+const printTicketFromBackend = async (orderParameter) => {
 
-    const order = order
+    const order = orderParameter
 
     let payMethod = ''
     let payStatus = ''

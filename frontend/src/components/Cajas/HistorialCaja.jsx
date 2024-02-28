@@ -68,60 +68,61 @@ function HistorialCaja() {
       ? "Vespertino"
       : "Nocturno"}`, 10, 40);
       doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
-      doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
+     
 
       // Separación
-      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
+      doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
 
       selectedCorte.totalAutoservicio
-        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
-        : doc.text("Autoservicio: $0", 10, 90);
+        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 80)
+        : doc.text("Autoservicio: $0", 10, 80);
 
       selectedCorte.totalEncargo
         ? doc.text(
             `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
             10,
-            100
+            90
           )
-        : doc.text("Lavado por Encargo: $0", 10, 100);
+        : doc.text("Lavado por Encargo: $0", 10, 90);
 
       selectedCorte.totalPlanchado
-        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
-        : doc.text("Planchado: $0", 10, 110);
+        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 100)
+        : doc.text("Planchado: $0", 10, 100);
 
       selectedCorte.totalTintoreria
-        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 120)
-        : doc.text("Tintorería: $0", 10, 120);
+        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 110)
+        : doc.text("Tintorería: $0", 10, 110);
 
       selectedCorte.totalOtrosEncargo
         ? doc.text(
             `Encargo Varios: $${selectedCorte.totalOtrosEncargo}`,
             10,
-            130
+            120
           )
-        : doc.text("Encargo Varios: $0", 10, 130);
+        : doc.text("Encargo Varios: $0", 10, 120);
 
       doc.text(
         `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
         10,
-        140
+        130
       );
       selectedCorte.totalCash
-        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 160)
-        : doc.text("Ingreso en Efectivo: $0", 10, 160);
+        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 150)
+        : doc.text("Ingreso en Efectivo: $0", 10, 150);
 
       // Separación
       selectedCorte.totalCredit
-        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 170)
-        : doc.text("Ingreso en Tarjeta: $0", 10, 170);
+        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 160)
+        : doc.text("Ingreso en Tarjeta: $0", 10, 160);
 
       selectedCorte.totalCashWithdrawal
         ? doc.text(
             `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
             10,
-            180
+            170
           )
-        : doc.text("Retiros Totales: $0", 10, 180);
+        : doc.text("Retiros Totales: $0", 10, 170);
+        doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 180);
       doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
 
       doc.save("detalle_corte_servicios.pdf");
@@ -304,7 +305,7 @@ function HistorialCaja() {
           open={modalVisible}
           onOk={() => setModalVisible(false)}
           onCancel={() => setModalVisible(false)}
-          width={600}
+          width={700}
           footer={[
             <Button
               key="print"
@@ -346,10 +347,7 @@ function HistorialCaja() {
                     <span className="font-bold">Fecha:</span>{" "}
                     {formatDate(selectedCorte.cashCutD)}
                   </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Dinero en Fondo:</span> $
-                    {selectedCorte.initialCash ? selectedCorte.initialCash : 0}
-                  </p>
+                  
                 </div>
                 <div className="w-1/2">
                   <p className="text-lg">
@@ -365,6 +363,10 @@ function HistorialCaja() {
                     {selectedCorte.totalCashWithdrawal
                       ? selectedCorte.totalCashWithdrawal
                       : 0}
+                  </p>
+                  <p className="text-lg">
+                    <span className="font-bold">Dinero en Fondo:</span> $
+                    {selectedCorte.initialCash ? selectedCorte.initialCash : 0}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Final Total en Caja:</span> $

@@ -118,7 +118,7 @@ export const generateTicket = async (req, res) => {
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
 
-        if (serviceType != 'productos') {
+        if (order.serviceType != 'productos') {
             printer.bold(true);
             printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
             printer.bold(false);

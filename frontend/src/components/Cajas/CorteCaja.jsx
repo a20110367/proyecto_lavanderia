@@ -333,114 +333,137 @@ function CorteCaja() {
         ...corteSupply,
       };
 
-      const pdf = new jsPDF();
-      pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
-      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      pdf.text(
-        `Turno: ${
-          nuevoCorte.workShift === "morning"
-            ? "Matutino"
-            : nuevoCorte.workShift === "evening"
-            ? "Vespertino"
-            : "Nocturno"
-        }`,
-        10,
-        40
-      );
+      // const pdf = new jsPDF();
+      // pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
+      // pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
+      // pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      // pdf.text(
+      //   `Turno: ${
+      //     nuevoCorte.workShift === "morning"
+      //       ? "Matutino"
+      //       : nuevoCorte.workShift === "evening"
+      //       ? "Vespertino"
+      //       : "Nocturno"
+      //   }`,
+      //   10,
+      //   40
+      // );
 
-      nuevoCorte.initialCash
-        ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 60)
-        : pdf.text("Dinero en Fondo: $0", 10, 60);
-        nuevoCorte.ordersPayed
-        ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 70)
-        :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
+      // nuevoCorte.initialCash
+      //   ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 60)
+      //   : pdf.text("Dinero en Fondo: $0", 10, 60);
+      //   nuevoCorte.ordersPayed
+      //   ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 70)
+      //   :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
 
-      // Separación
-      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
-      nuevoCorte.totalAutoservicio
-        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 100)
-        : pdf.text("Autoservicio: $0", 10, 100);
-      nuevoCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 110)
-        : pdf.text("Lavado por Encargo: $0", 10, 110);
-      nuevoCorte.totalPlanchado
-        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 120)
-        : pdf.text("Planchado: $0", 10, 120);
+      // // Separación
+      // pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
+      // nuevoCorte.totalAutoservicio
+      //   ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 100)
+      //   : pdf.text("Autoservicio: $0", 10, 100);
+      // nuevoCorte.totalEncargo
+      //   ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 110)
+      //   : pdf.text("Lavado por Encargo: $0", 10, 110);
+      // nuevoCorte.totalPlanchado
+      //   ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 120)
+      //   : pdf.text("Planchado: $0", 10, 120);
 
-      nuevoCorte.totalTintoreria
-        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 130)
-        : pdf.text("Tintorería: $0", 10, 130);
+      // nuevoCorte.totalTintoreria
+      //   ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 130)
+      //   : pdf.text("Tintorería: $0", 10, 130);
 
-      nuevoCorte.totalOtrosEncargo
-        ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 140)
-        : pdf.text("Encargo Varios: $0", 10, 140);
+      // nuevoCorte.totalOtrosEncargo
+      //   ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 140)
+      //   : pdf.text("Encargo Varios: $0", 10, 140);
 
-      nuevoCorte.totalIncome
-        ? pdf.text(
-            `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-            10,
-            150
-          )
-        : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
-      // Separación
-      nuevoCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 170)
-        : pdf.text("Ingreso en Efectivo: $0", 10, 170);
-      nuevoCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 180)
-        : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
-      nuevoCorte.totalCashWithdrawal
-        ? pdf.text(
-            `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
-            10,
-            190
-          )
-        : pdf.text("Retiros Totales: $0", 10, 190);
-      nuevoCorte.total
-        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 200)
-        : pdf.text("Final Total en Caja: $0", 10, 200);
+      // nuevoCorte.totalIncome
+      //   ? pdf.text(
+      //       `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
+      //       10,
+      //       150
+      //     )
+      //   : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
+      // // Separación
+      // nuevoCorte.totalCash
+      //   ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 170)
+      //   : pdf.text("Ingreso en Efectivo: $0", 10, 170);
+      // nuevoCorte.totalCredit
+      //   ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 180)
+      //   : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
+      // nuevoCorte.totalCashWithdrawal
+      //   ? pdf.text(
+      //       `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
+      //       10,
+      //       190
+      //     )
+      //   : pdf.text("Retiros Totales: $0", 10, 190);
+      // nuevoCorte.total
+      //   ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 200)
+      //   : pdf.text("Final Total en Caja: $0", 10, 200);
 
-      if (
-        pdf.internal.getNumberOfPages() > 0 &&
-        pdf.internal.getCurrentPageInfo().pageNumber === 1
-      ) {
-        // Si estamos en la página 1 y cerca del final, agregamos una nueva página
-        pdf.addPage();
-        pdf.text(`Detalles de Suministros:`, 10, 10);
-        pdf.text(`Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`, 10, 30);
-        pdf.text(`Total Jabon $${corteSupply.totalJabon}`, 10, 40);
-        pdf.text(`Total Suavitel $${corteSupply.totalSuavitel}`, 10, 50);
-        pdf.text(`Total Pinol $${corteSupply.totalPinol}`, 10, 60);
-        pdf.text(
-          `Total Desengrasante $${corteSupply.totalDesengrasante}`,
-          10,
-          70
-        );
-        pdf.text(`Total Cloro $${nuevoCorte.totalCloro}`, 10, 80);
-        pdf.text(`Total Sanitizante $${corteSupply.totalSanitizante}`, 10, 90);
-        pdf.text(`Total Bolsa $${corteSupply.totalBolsa}`, 10, 100);
-        pdf.text(`Total Reforzado $${corteSupply.totalReforzado}`, 10, 110);
-        pdf.text(`Total Ganchos $${corteSupply.totalGanchos}`, 10, 120);
-        pdf.text(`Total WC $${corteSupply.totalWC}`, 10, 130);
-        pdf.text(`Total Otros $${corteSupply.totalOtros}`, 10, 140);
-        pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
-        pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
-        pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
+      // if (
+      //   pdf.internal.getNumberOfPages() > 0 &&
+      //   pdf.internal.getCurrentPageInfo().pageNumber === 1
+      // ) {
+      //   // Si estamos en la página 1 y cerca del final, agregamos una nueva página
+      //   pdf.addPage();
+      //   pdf.text(`Detalles de Suministros:`, 10, 10);
+      //   pdf.text(`Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`, 10, 30);
+      //   pdf.text(`Total Jabon $${corteSupply.totalJabon}`, 10, 40);
+      //   pdf.text(`Total Suavitel $${corteSupply.totalSuavitel}`, 10, 50);
+      //   pdf.text(`Total Pinol $${corteSupply.totalPinol}`, 10, 60);
+      //   pdf.text(
+      //     `Total Desengrasante $${corteSupply.totalDesengrasante}`,
+      //     10,
+      //     70
+      //   );
+      //   pdf.text(`Total Cloro $${nuevoCorte.totalCloro}`, 10, 80);
+      //   pdf.text(`Total Sanitizante $${corteSupply.totalSanitizante}`, 10, 90);
+      //   pdf.text(`Total Bolsa $${corteSupply.totalBolsa}`, 10, 100);
+      //   pdf.text(`Total Reforzado $${corteSupply.totalReforzado}`, 10, 110);
+      //   pdf.text(`Total Ganchos $${corteSupply.totalGanchos}`, 10, 120);
+      //   pdf.text(`Total WC $${corteSupply.totalWC}`, 10, 130);
+      //   pdf.text(`Total Otros $${corteSupply.totalOtros}`, 10, 140);
+      //   pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
+      //   pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
+      //   pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
         
-      }
+      // }
 
-      pdf.save(`corte_de_caja_Parcial_${cookies.username}.pdf`);
+      // pdf.save(`corte_de_caja_Parcial_${cookies.username}.pdf`);
 
       setCortes([nuevoCorte]);
       setPartialCorteDialogVisible(false);
 
-      const partialCashCut = {
-        cashCutId: nuevoCorte.id_cashCut,
+      // const partialCashCut = {
+      //   cashCutId: nuevoCorte.id_cashCut,
+      //   casher: cookies.username,
+      //   workShift: nuevoCorte.workShift,
+      //   date: moment().format("DD/MM/YYYY"),
+      //   initialCash: initialCash ? initialCash : 0,
+      //   selfService: nuevoCorte.totalAutoservicio,
+      //   laundry: nuevoCorte.totalEncargo,
+      //   iron: nuevoCorte.totalPlanchado,
+      //   dryCleaning: nuevoCorte.totalTintoreria,
+      //   others: nuevoCorte.totalOtrosEncargo,
+      //   totalIncome: nuevoCorte.totalIncome,
+      //   totalCash: nuevoCorte.totalCash,
+      //   totalCredit: nuevoCorte.totalCredit,
+      //   totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
+      //   total: nuevoCorte.total,
+      // };
+
+      const cashCut = {
         casher: cookies.username,
+        cashCutId: nuevoCorte.id_cashCut,
         workShift: nuevoCorte.workShift,
-        date: moment().format("DD/MM/YYYY"),
-        initialCash: initialCash ? initialCash : 0,
+        initialCash: nuevoCorte.initialCash,
+        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
+        total: nuevoCorte.total
+      }
+
+      const services = {
+        numberOfItems: nuevoCorte.ordersPayed,
         selfService: nuevoCorte.totalAutoservicio,
         laundry: nuevoCorte.totalEncargo,
         iron: nuevoCorte.totalPlanchado,
@@ -449,12 +472,30 @@ function CorteCaja() {
         totalIncome: nuevoCorte.totalIncome,
         totalCash: nuevoCorte.totalCash,
         totalCredit: nuevoCorte.totalCredit,
-        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total,
-      };
+      }
+
+      const products = {
+        numberOfItems: corteSupply.ordersPayedSupply,
+        soap: corteSupply.totalJabon,
+        suavitel: corteSupply.totalSuavitel,
+        pinol: corteSupply.totalPinol,
+        degreaser: corteSupply.totalDesengrasante,
+        chlorine: corteSupply.totalCloro,
+        sanitizer: corteSupply.totalSanitizante,
+        bag: corteSupply.totalBolsa,
+        reinforced: corteSupply.totalReforzado,
+        hook: corteSupply.totalGanchos,
+        wc: corteSupply.totalWC,
+        others: corteSupply.totalOtros,
+        totalIncome: corteSupply.totalIncomeSupply,
+        totalCash: corteSupply.totalCashSupply,
+        totalCredit: corteSupply.totalCreditSupply
+      }
 
       await api.post("/generatePartialCashCutTicket", {
-        cashCut: partialCashCut,
+        cashCut: cashCut,
+        services: services,
+        products: products
       });
     } catch (err) {
       console.error(err);
@@ -564,40 +605,42 @@ function CorteCaja() {
       // pdf.save("detalle_corte.pdf");
       
       const cashCut = {
-        cashCutId: selectedCorte.id_cashCut,
-        workShift: selectedCorte.workShift,
-        initialCash: selectedCorte.initialCash,
-        totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
-        total: selectedCorte.total
+        casher: cookies.username,
+        cashCutId: nuevoCorte.id_cashCut,
+        workShift: nuevoCorte.workShift,
+        initialCash: nuevoCorte.initialCash,
+        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
+        total: nuevoCorte.total
       }
 
       const services = {
-        numberOfItems: selectedCorte.ordersPayed,
-        selfService: selectedCorte.totalAutoservicio,
-        laundry: selectedCorte.totalEncargo,
-        iron: selectedCorte.totalPlanchado,
-        dryCleaning: selectedCorte.totalTintoreria,
-        others: selectedCorte.totalOtrosEncargo,
-        totalIncome: selectedCorte.totalIncome,
-        totalCash: selectedCorte.totalCash,
-        totalCredit: selectedCorte.totalCredit,
+        numberOfItems: nuevoCorte.ordersPayed,
+        selfService: nuevoCorte.totalAutoservicio,
+        laundry: nuevoCorte.totalEncargo,
+        iron: nuevoCorte.totalPlanchado,
+        dryCleaning: nuevoCorte.totalTintoreria,
+        others: nuevoCorte.totalOtrosEncargo,
+        totalIncome: nuevoCorte.totalIncome,
+        totalCash: nuevoCorte.totalCash,
+        totalCredit: nuevoCorte.totalCredit,
       }
 
       const products = {
-        numberOfItems: selectedCorte.ordersPayedSupply,
-        soap: selectedCorte.totalJabon,
-        suavitel: selectedCorte.totalSuavitel,
-        pinol: selectedCorte.totalDesengrasante,
-        chlorine: selectedCorte.totalCloro,
-        sanitizer: selectedCorte.totalSanitizante,
-        bag: selectedCorte.totalBolsa,
-        reinforced: selectedCorte.totalReforzado,
-        hook: selectedCorte.totalGanchos,
-        wc: selectedCorte.totalWC,
-        others: selectedCorte.totalOtros,
-        totalIncome: selectedCorte.totalIncomeSupply,
-        totalCash: selectedCorte.totalCashSupply,
-        totalCredit: selectedCorte.totalCreditSupply
+        numberOfItems: corteSupply.ordersPayedSupply,
+        soap: corteSupply.totalJabon,
+        suavitel: corteSupply.totalSuavitel,
+        pinol: corteSupply.totalPinol,
+        degreaser: corteSupply.totalDesengrasante,
+        chlorine: corteSupply.totalCloro,
+        sanitizer: corteSupply.totalSanitizante,
+        bag: corteSupply.totalBolsa,
+        reinforced: corteSupply.totalReforzado,
+        hook: corteSupply.totalGanchos,
+        wc: corteSupply.totalWC,
+        others: corteSupply.totalOtros,
+        totalIncome: corteSupply.totalIncomeSupply,
+        totalCash: corteSupply.totalCashSupply,
+        totalCredit: corteSupply.totalCreditSupply
       }
 
       await api.post('/generateCashCutTicket', {

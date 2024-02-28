@@ -359,7 +359,7 @@ const formatTime = (dateStr) => {
 export const generatePartialCashCutTicket = async (req, res) => {
     try {
 
-        const { cashCut } = req.body
+        const { cashCut, services, products } = req.body
 
         printer.clear();
 
@@ -373,48 +373,88 @@ export const generatePartialCashCutTicket = async (req, res) => {
         printer.setTextQuadArea()
         printer.println('CORTE DE CAJA PARCIAL')
 
-        printer.setTextDoubleHeight();
-        printer.println(`Folio No.: ${cashCut.cashCutId}`)
-
-        printer.setTextNormal()
         printer.drawLine();
 
-        printer.println(`Cajero: ${cashCut.casher}`)
-        printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
-        printer.println(`Fecha: ${cashCut.date}`)
-        printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+        if (cashCut) {
+            printer.println(`Cajero: ${cashCut.casher}`)
+            printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
+            printer.println(`Fecha: ${moment().format('l')}`)
+            printer.println(`Hora: ${moment().format('LT')}`)
 
-        printer.drawLine()
+            printer.drawLine()
+        }
 
-        printer.setTextDoubleHeight();
-        printer.println("Detalles de Ingresos por Servicio")
-        printer.newLine()
+        if (services) {
+            printer.setTextDoubleHeight();
+            printer.println("Detalles de Ingresos por Servicio")
+            printer.newLine()
 
-        printer.setTextNormal()
-        printer.println(`Total Autoservicio: ${cashCut.selfService}`)
-        printer.println(`Total Lavado por Encargo: ${cashCut.laundry}`)
-        printer.println(`Total Planchado: ${cashCut.iron}`)
-        printer.println(`Total Tintoreria: ${cashCut.dryCleaning}`)
-        printer.println(`Total Encargo Varios: ${cashCut.others}`)
-        printer.setTextDoubleHeight();
-        printer.newLine()
-        printer.println(`Total (Suma de los Servicios): ${cashCut.totalIncome}`)
-        printer.setTextNormal()
+            printer.setTextNormal()
+            printer.println(`Número de Servicios Pagados: ${services.numberOfItems}`)
+            printer.println(`Total Autoservicio: ${services.selfService}`)
+            printer.println(`Total Lavado por Encargo: ${services.laundry}`)
+            printer.println(`Total Planchado: ${services.iron}`)
+            printer.println(`Total Tintoreria: ${services.dryCleaning}`)
+            printer.println(`Total Encargo Varios: ${services.others}`)
 
-        printer.newLine()
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de los Servicios): ${services.totalIncome}`)
+            printer.setTextNormal()
 
-        printer.println(`Ingreso en Efectivo: ${cashCut.totalCash}`)
-        printer.println(`Ingreso en Tarjeta: ${cashCut.totalCredit}`)
-        printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-        printer.setTextDoubleHeight();
-        printer.newLine()
-        printer.println(`Final Total en Caja: ${cashCut.total}`)
-        printer.setTextNormal()
+            printer.newLine()
 
-        printer.cut();
+            printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
+            printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
+        }
+
+        if (products) {
+            printer.setTextDoubleHeight();
+            printer.println("Detalles de Ingresos por Productos")
+            printer.newLine()
+
+            printer.setTextNormal()
+            printer.println(`Número de Ventas de Productos Pagados: ${products.numberOfItems}`)
+            printer.println(`Total Jabon: ${products.soap}`)
+            printer.println(`Total Suavitel: ${products.suavitel}`)
+            printer.println(`Total Pinol: ${products.pinol}`)
+            printer.println(`Total Desengrasante: ${products.degreaser}`)
+            printer.println(`Total Cloro: ${products.chlorine}`)
+            printer.println(`Total Sanitizante: ${products.sanitizer}`)
+            printer.println(`Total Bolsa: ${products.bag}`)
+            printer.println(`Total Reforzado: ${products.reinforced}`)
+            printer.println(`Total Ganchos: ${products.hook}`)
+            printer.println(`Total WC: ${products.wc}`)
+            printer.println(`Total Otros: ${products.others}`)
+
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de la Venta de Productos): ${products.totalIncome}`)
+            printer.setTextNormal()
+
+            printer.newLine()
+
+            printer.println(`Ingreso en Efectivo: ${products.totalCash}`)
+            printer.println(`Ingreso en Tarjeta: ${products.totalCredit}`)
+
+        }
+
+        if (cashCut) {
+            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.setTextNormal()
+
+
+            printer.cut();
+        }
+
         let execute = await printer.execute()
 
         res.status(200).json("Print done!");
+
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message });

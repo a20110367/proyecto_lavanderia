@@ -356,6 +356,10 @@ const formatTime = (dateStr) => {
     return date
 }
 
+const formatTicketTime = (dateStr) => {
+    const date = moment(dateStr).format('hh:mm A')
+}
+
 export const generatePartialCashCutTicket = async (req, res) => {
     try {
 
@@ -379,7 +383,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Cajero: ${cashCut.casher}`)
             printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
             printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
-            printer.println(`Hora: ${formatTime(cashCut.cashCutT)}`)
+            printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
 
             printer.drawLine()
         }
@@ -504,7 +508,7 @@ export const cashCutTicket = async (req, res) => {
             printer.println(`Cajero: ${cashCut.casher}`)
             printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
             printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
-            printer.println(`Hora: ${formatTime(cashCut.cashCutT)}`)
+            printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
 
             printer.drawLine()
         }

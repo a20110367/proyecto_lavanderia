@@ -145,8 +145,8 @@ function EntregaVarios() {
       const cart = [];
       pedido.ServiceOrderDetail.forEach(service => {
         cart.push({
-          description: service.LaundryService.description
-            ? service.LaundryService.description
+          description: service.OtherService.description
+            ? service.OtherService.description
             : "ERROR",          
           totalPrice: service.subtotal,
           quantity: service.units,

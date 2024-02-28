@@ -372,7 +372,7 @@ function HistorialCajaProductos() {
               onClick={handleModalPrint}
               className="btn-print text-white"
             >
-              Imprimir
+              Guardar PDF
             </Button>,
             <Button
               key="close"

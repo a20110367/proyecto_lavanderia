@@ -147,9 +147,9 @@ export const generateTicket = async (req, res) => {
         console.log(execute)
         console.log("Print done!");
 
-        if (order.serviceType != 'productos' || order.serviceType != 'autoservicio') {
-            generateTicket(order)
-        }
+        // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
+        //     generateTicket()
+        // }
 
         // printer.bold(true);                                         // Set text bold
         // printer.invert(true);                                       // Background/text color inversion
@@ -200,10 +200,10 @@ export const generateTicket = async (req, res) => {
         //     printer.print("SACAME LA VERGA LUPE " + process.env.INTERFACE);
         // }                                       // Cuts the paper (if printer only supports one mode use this)
         res.status(200).json("Print done!");
-    } catch (err) {
-        console.error("Print failed:", err);
-        res.status(400).json({ msg: err.message });
-    }
+} catch (err) {
+    console.error("Print failed:", err);
+    res.status(400).json({ msg: err.message });
+}
 }
 
 const n2word = (number) => {
@@ -388,7 +388,7 @@ export const cashCutTicket = async (req, res) => {
 
             printer.cut();
         }
-        
+
         if (cashCut) {
             printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
             printer.setTextDoubleHeight();

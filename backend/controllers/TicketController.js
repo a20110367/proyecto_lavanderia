@@ -357,7 +357,7 @@ const formatTime = (dateStr) => {
 }
 
 const formatTicketTime = (dateStr) => {
-    const date = moment(dateStr).format('hh:mm')
+    const date = moment(dateStr).format('LT')
     return date
 }
 

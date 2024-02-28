@@ -187,6 +187,8 @@ function RecepcionProductos() {
       )}
 
       <div className="fcol-container">
+      <div className="flex justify-between items-center">
+          <div>
         <button
           className="btn-big-light"
           onClick={() => launchModal("/addClient?source=productos")}
@@ -195,6 +197,20 @@ function RecepcionProductos() {
         </button>
         <div className="text-IndigoDye font-semibold mt-2">
           ¿El cliente no está registrado? ¡Regístralo!
+        </div>
+        </div>
+          <div className="text-center ml-96">
+            <Link
+              to={`/puntoVentaProductos?clientId=${1}&clientName=Publico en General&serviceType=Productos&geturl=/supplies`}
+            >
+              <button className="btn-big-light">
+                <div className="subtitle m-1">Público en General</div>
+              </button>
+            </Link>
+            <div className="text-IndigoDye font-semibold mt-2">
+              Generar servicio para clientes sin cuenta
+            </div>
+          </div>
         </div>
       </div>
     </div>

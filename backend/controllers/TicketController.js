@@ -499,7 +499,6 @@ export const cashCutTicket = async (req, res) => {
         printer.setTextQuadArea()
         printer.println('CORTE DE CAJA TURNO')
 
-        printer.setTextDoubleHeight();
         printer.println(`Folio No.: ${cashCut.cashCutId}`)
 
         printer.drawLine();

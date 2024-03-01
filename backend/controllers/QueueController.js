@@ -205,11 +205,20 @@ export const finishLaundryQueue = async (req, res) => {
                     {
                         OR: [
                             {
-                                serviceStatus: "inProgress"
+                                serviceStatus: "inProgressDry"
                             },
                             {
+                                serviceStatus: "inProgressWash"
+                            },
+                            {
+                                serviceStatus: "inProgress"
+                            },
+
+                            {
                                 serviceStatus: "pending"
-                            }
+                            },
+
+
                         ]
                     },
                 ],

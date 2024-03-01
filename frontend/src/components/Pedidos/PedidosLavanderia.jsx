@@ -253,13 +253,13 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          await api.patch(
-            `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
-            {
-              fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
-              fk_idStaffMember: cookies.token,
-            }
-          );
+          // await api.patch(
+          //   `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
+          //   {
+          //     fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
+          //     fk_idStaffMember: cookies.token,
+          //   }
+          // );
         }
       }
 
@@ -310,13 +310,15 @@ function PedidosLavanderia() {
           setAvailableMachines(updatedDryers);
 
           // También actualizar la base de datos
-          const res = await api.patch(
+          await api.patch(
             `/finishLaundryQueue/${pedido.id_laundryEvent}`,
             {
               fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
               fk_idStaffMember: cookies.token,
             }
           );
+
+          const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
 
           // Actualizar el estado del pedido a "finish"
           const updatedPedido = { ...pedido, serviceStatus: "finished" };
@@ -329,7 +331,9 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          if (res.data.orderStatus === "finished") {
+          console.log(resOrder.data)
+
+          if (resOrder.data.orderStatus === "finished") {
             showNotification(
               "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
             );

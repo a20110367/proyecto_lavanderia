@@ -310,7 +310,7 @@ function PedidosLavanderia() {
           setAvailableMachines(updatedDryers);
 
           // También actualizar la base de datos
-          await api.patch(
+          const res = await api.patch(
             `/finishLaundryQueue/${pedido.id_laundryEvent}`,
             {
               fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
@@ -318,7 +318,7 @@ function PedidosLavanderia() {
             }
           );
 
-          const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
+          // const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
 
           // Actualizar el estado del pedido a "finish"
           const updatedPedido = { ...pedido, serviceStatus: "finished" };
@@ -331,9 +331,7 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          console.log(resOrder.data)
-
-          if (resOrder.data.orderStatus === "finished") {
+          if (res.data.orderStatus === "finished") {
             showNotification(
               "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
             );

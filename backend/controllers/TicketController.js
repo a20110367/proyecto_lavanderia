@@ -502,7 +502,6 @@ export const cashCutTicket = async (req, res) => {
         printer.setTextDoubleHeight();
         printer.println(`Folio No.: ${cashCut.cashCutId}`)
 
-        printer.setTextNormal()
         printer.drawLine();
 
         if (cashCut) {

@@ -253,13 +253,13 @@ function PedidosLavanderia() {
             freeForUse: true,
           });
 
-          await api.patch(
-            `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
-            {
-              fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
-              fk_idStaffMember: cookies.token,
-            }
-          );
+          // await api.patch(
+          //   `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
+          //   {
+          //     fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
+          //     fk_idStaffMember: cookies.token,
+          //   }
+          // );
         }
       }
 

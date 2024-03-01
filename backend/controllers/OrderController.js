@@ -168,6 +168,26 @@ export const getOrdersById = async (req, res) => {
     }
 }
 
+export const getOrdersStatusById = async (req, res) => {
+    try {
+        const response = await prisma.serviceOrder.findFirst({
+            where: {
+                id_order: Number(req.params.id)
+            },
+            
+            select:{
+                orderStatus:true
+            },
+            
+
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
 export const getOrdersByClientName = async (req, res) => {
 
     try {

@@ -594,7 +594,7 @@ export const cashCutTicket = async (req, res) => {
 
 export const cashWithdrawalTicket = async (req, res) => {
     try {
-        const {cashWithdrawal} = req.body
+        const { cashWithdrawal } = req.body
 
         printer.clear();
 
@@ -605,19 +605,29 @@ export const cashWithdrawalTicket = async (req, res) => {
 
         printer.newLine()
 
-        printer.setTextQuadArea()
-        printer.println('RETIRO DE CAJA')
-
-        printer.println(`Folio No.: ${cashWithdrawal.id_cashWithdrawal}`)
-
-        printer.drawLine();
-
         if (cashWithdrawal) {
+            printer.setTextQuadArea()
+
+            if (cashWithdrawal.cashWithdrawalType === 'withdrawal') {
+                printer.println('RETIRO DE CAJA')
+            }
+
+            if (cashWithdrawal.cashWithdrawalType === 'refound') {
+                printer.println('REEMBOLSO DE CAJA')
+            }
+
+            printer.println(`Folio No.: ${cashWithdrawal.id_cashWithdrawal}`)
+
+            printer.drawLine();
+
             printer.println(`Folio de Caja No: ${cashWithdrawal.fk_cashCut}`)
             printer.println(`Cajero: ${cashWithdrawal.casher}`)
             printer.println(`Fecha: ${formatDate(cashWithdrawal.date)}`)
             printer.println(`Hora: ${formatTicketTime(cashWithdrawal.date)}`)
-            printer.println(`Monto: $ ${cashWithdrawal.amount}`)
+            if (cashWithdrawal.cashWithdrawalType === 'refound') {
+                printer.println(`No. de Pedido: ${cashWithdrawal.serviceOrder}`)
+            }
+            printer.println(`Monto: $ ${cashWithdrawal.amount} MXN`)
             printer.println(`Motivo: ${cashWithdrawal.cause}`)
 
             printer.drawLine()
@@ -633,8 +643,7 @@ export const cashWithdrawalTicket = async (req, res) => {
             printer.newLine()
             printer.newLine()
             printer.newLine()
-            printer.println('_______________________________')
-            printer.drawLine()
+            printer.println('_________________________________')
         }
 
         printer.cut();

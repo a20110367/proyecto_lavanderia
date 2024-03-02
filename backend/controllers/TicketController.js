@@ -594,7 +594,7 @@ export const cashCutTicket = async (req, res) => {
 
 export const cashWithdrawalTicket = async (req, res) => {
     try {
-        const cashWithdrawal = req.body
+        const {cashWithdrawal} = req.body
 
         printer.clear();
 

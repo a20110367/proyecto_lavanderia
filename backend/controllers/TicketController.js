@@ -590,3 +590,70 @@ export const cashCutTicket = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+
+export const cashWithdrawalTicket = async (req, res) => {
+    try {
+        const { cashWithdrawal } = req.body
+
+        printer.clear();
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        if (cashWithdrawal) {
+            printer.setTextQuadArea()
+
+            if (cashWithdrawal.cashWithdrawalType === 'withdrawal') {
+                printer.println('RETIRO DE CAJA')
+            }
+
+            if (cashWithdrawal.cashWithdrawalType === 'refound') {
+                printer.println('REEMBOLSO DE CAJA')
+            }
+
+            printer.println(`Folio No.: ${cashWithdrawal.id_cashWithdrawal}`)
+
+            printer.drawLine();
+
+            printer.println(`Folio de Caja No: ${cashWithdrawal.fk_cashCut}`)
+            printer.println(`Cajero: ${cashWithdrawal.casher}`)
+            printer.println(`Fecha: ${formatDate(cashWithdrawal.date)}`)
+            printer.println(`Hora: ${formatTicketTime(cashWithdrawal.date)}`)
+            if (cashWithdrawal.cashWithdrawalType === 'refound') {
+                printer.println(`No. de Pedido: ${cashWithdrawal.serviceOrder}`)
+            }
+            printer.println(`Monto: $ ${cashWithdrawal.amount} MXN`)
+            printer.println(`Motivo: ${cashWithdrawal.cause}`)
+
+            printer.drawLine()
+
+            printer.newLine()
+
+            printer.alignCenter()
+            printer.setTextNormal()
+            printer.println('Recibio')
+            printer.println('( Nombre y Firma)')
+
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.println('_________________________________')
+        }
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}

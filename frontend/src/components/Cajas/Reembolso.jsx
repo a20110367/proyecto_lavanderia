@@ -126,7 +126,7 @@ function Reembolso() {
       if (isValid) {
         const date = moment().format();
 
-        await api.post("/cashWithdrawals", {
+        const res = await api.post("/cashWithdrawals", {
           cashWithdrawalType: "refound",
           fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
           fk_user: cookies.token,
@@ -138,8 +138,23 @@ function Reembolso() {
 
         await api.patch(`/cancelOrder/${numeroPedido}`);
 
+        const cashWithdrawal = {
+          cashWithdrawalType: "refound",
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          serviceOrder: parseInt(numeroPedido),
+          casher: cookies.username,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        }
+
+        await api.post('/generateCashWithdrawalTicket', {
+          cashWithdrawal: cashWithdrawal,
+        })
+
         const nuevoReembolso = {
-          id_cashWithdrawal: reembolsos[reembolsos.length - 1].id_cashWithdrawal + 1,
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
           cashWithdrawalType: "refound",
           serviceOrder: parseInt(numeroPedido),
           amount: parseInt(monto),

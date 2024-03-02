@@ -81,7 +81,7 @@ function Retiro() {
     setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
 
-  const handleConfirmRetiro = () => {
+  const handleConfirmRetiro = async () => {
     let isValid = true;
 
     if (!monto) {
@@ -108,7 +108,7 @@ function Retiro() {
     if (isValid) {
       const date = moment().format();
 
-      api.post("/cashWithdrawals", {
+      const res = await api.post("/cashWithdrawals", {
         cashWithdrawalType: "withdrawal",
         fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
         fk_user: cookies.token,
@@ -118,8 +118,24 @@ function Retiro() {
       });
       setVisible(false);
 
+      console.log(res)
+
+      const cashWithdrawal = {
+        cashWithdrawalType: "withdrawal",
+        id_cashWithdrawal: res.data.id_cashWithdrawal,
+        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        casher: cookies.token,
+        amount: parseInt(monto),
+        cause: motivo,
+        date: date,
+      }
+
+      await api.post('/generateCashWithdrawalTicket', {
+        cashWithdrawal: cashWithdrawal,
+      })
+
       const nuevoRetiro = {
-        id_cashWithdrawal: retiros.length + 1,
+        id_cashWithdrawal: res.data.id_cashWithdrawal,
         amount: parseInt(monto),
         cause: motivo,
         date: date,

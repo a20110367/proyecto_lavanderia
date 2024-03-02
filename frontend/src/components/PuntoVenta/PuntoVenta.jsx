@@ -339,7 +339,7 @@ export default function PuntoVenta() {
           Swal.fire({
             icon: "error",
             title: "Se ha superado el No. de Piezas diarias",
-            text: "Como las piezas superar el limite, el pedido se entregara un dia posterior",
+            text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
             confirmButtonColor: "#034078",
           });
           setIsModalVisible(false);

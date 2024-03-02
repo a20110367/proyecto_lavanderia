@@ -590,3 +590,47 @@ export const cashCutTicket = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+
+export const cashWithdrawalTicket = async (req, res) => {
+    try {
+        const cashWithdrawal = req.body
+
+        printer.clear();
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        printer.setTextQuadArea()
+        printer.println('RETIRO DE CAJA')
+
+        printer.println(`Folio No.: ${cashWithdrawal.id_cashWithdrawal}`)
+
+        printer.drawLine();
+
+        if (cashWithdrawal) {
+            printer.println(`Folio de Caja No: ${cashWithdrawal.fk_cashCut}`)
+            printer.println(`Cajero: ${cashWithdrawal.casher}`)
+            printer.println(`Fecha: ${formatDate(cashWithdrawal.date)}`)
+            printer.println(`Hora: ${formatTicketTime(cashWithdrawal.date)}`)
+            printer.println(`Monto: ${cashWithdrawal.amount}`)
+            printer.println(`Motivo: ${cashWithdrawal.cause}`)
+
+            printer.drawLine()
+        }
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}

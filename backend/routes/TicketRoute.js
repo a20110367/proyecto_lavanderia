@@ -3,6 +3,7 @@ import {
     generateTicket,
     generatePartialCashCutTicket,
     cashCutTicket,
+    cashWithdrawalTicket,
 } from "../controllers/TicketController.js";
 
 const router = express.Router();
@@ -10,5 +11,6 @@ const router = express.Router();
 router.post('/generateTicket', generateTicket);
 router.post('/generatePartialCashCutTicket', generatePartialCashCutTicket);
 router.post('/generateCashCutTicket', cashCutTicket);
+router.post('/generateCashWithdrawalTicket', cashWithdrawalTicket)
 
 export default router;

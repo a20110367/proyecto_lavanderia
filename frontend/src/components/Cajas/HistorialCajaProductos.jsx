@@ -8,6 +8,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 function HistorialCajaProductos() {
   const [Cortes, setCortes] = useState([]);
@@ -61,7 +62,9 @@ function HistorialCajaProductos() {
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
       pdf.text(`ID: ${selectedCorte.id_supplyCashCut}`, 10, 20);
-      pdf.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
+      pdf.text(`FECHA: ${formatDate(selectedCorte.cashCutD)}`, 10, 30);
+      pdf.text(`HORA: ${moment(selectedCorte.cashCutT).format('HH:mm')}`, 10, 40);
+      pdf.text(`Usuario: ${selectedCorte.user.name}`, 10, 50);
       pdf.text(
         `Turno: ${
           selectedCorte.workShift === "morning"
@@ -71,37 +74,37 @@ function HistorialCajaProductos() {
             : "Nocturno"
         }`,
         10,
-        40
+        60
       );
-      pdf.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
+
     
       pdf.text(
         `Ordenes Pagadas: ${
           selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
         }`,
         10,
-        70
+        80
       );
       pdf.text(
         `Total Jabon: ${
           selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
         }`,
         10,
-        90
+        100
       );
       pdf.text(
         `Total Suavitel: ${
           selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
         }`,
         10,
-        100
+        110
       );
       pdf.text(
         `Total Pinol: ${
           selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
         }`,
         10,
-        110
+        120
       );
       pdf.text(
         `Total Desengrasante: ${
@@ -110,14 +113,14 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        120
+        130
       );
       pdf.text(
         `Total Cloro: ${
           selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
         }`,
         10,
-        130
+        140
       );
       pdf.text(
         `Total Sanitizante: ${
@@ -126,14 +129,14 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        140
+        150
       );
       pdf.text(
         `Total Bolsa: ${
           selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
         }`,
         10,
-        150
+        160
       );
       pdf.text(
         `Total Reforzado: ${
@@ -142,49 +145,49 @@ function HistorialCajaProductos() {
             : "$0"
         }`,
         10,
-        160
+        170
       );
       pdf.text(
         `Total Ganchos: ${
           selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
         }`,
         10,
-        170
+        180
       );
       pdf.text(
         `Total WC: ${
           selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
         }`,
         10,
-        180
+        190
       );
       pdf.text(
         `Total Otros: ${
           selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
         }`,
         10,
-        190
+        200
       );
       pdf.text(
         `Total Tarjeta: ${
           selectedCorte.totalCredit ? `$${selectedCorte.totalCredit}` : "$0"
         }`,
         10,
-        210
+        220
       );
       pdf.text(
         `Total Efectivo: ${
           selectedCorte.totalCash ? `$${selectedCorte.totalCash}` : "$0"
         }`,
         10,
-        220
+        230
       );
       pdf.text(
         `Total Ingresos: ${
           selectedCorte.totalIncome ? `$${selectedCorte.totalIncome}` : "$0"
         }`,
         10,
-        230
+        240
       );
 
       pdf.save("detalle_corte_productos.pdf");
@@ -407,6 +410,10 @@ function HistorialCajaProductos() {
                   <span className="font-bold">Fecha:</span>{" "}
                   {formatDate(selectedCorte.cashCutD)}
                 </p>
+                <p className="text-lg">
+                    <span className="font-bold">Hora:</span>{" "}
+                    {moment(selectedCorte.cashCutT).format('HH:mm')}
+                  </p>
                 
                 <p className="text-lg">
                   <span className="font-bold">Ordenes Pagadas: </span>

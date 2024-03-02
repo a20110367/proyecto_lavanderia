@@ -349,8 +349,9 @@ function ReportesProductos() {
 
         const out = doc.output("datauristring");
         await api.post("/sendReport", {
-          startDate: moment(dateRange[0]).format("DD-MM-YYYY"),
-          endDate: moment(dateRange[1]).format("DD-MM-YYYY"),
+          startDate:formatDate(dateRange[0].toDate()),
+          endDate: formatDate(dateRange[1].toDate())
+          ,
           pdf: out.split("base64,")[1],
         });
       }

@@ -8,6 +8,7 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
 import Swal from "sweetalert2";
+import moment from "moment";
 
 function HistorialCaja() {
   const [Cortes, setCortes] = useState([]);
@@ -59,78 +60,89 @@ function HistorialCaja() {
     const doc = new jsPDF();
 
     if (selectedCorte) {
-      doc.text(`Detalles del Corte`, 10, 10);
+      doc.text(`CORTE DE CAJA TURNO`, 10, 10);
       doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
-      doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
-      doc.text(`Turno: ${ selectedCorte.workShift === "morning"
-      ? "Matutino"
-      : selectedCorte.workShift === "evening"
-      ? "Vespertino"
-      : "Nocturno"}`, 10, 40);
-      doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
-     
+      doc.text(`FECHA: ${formatDate(selectedCorte.cashCutD)}`, 10, 30);
+      doc.text(
+        `HORA: ${moment(selectedCorte.cashCutT).format("HH:mm")}`,
+        10,
+        40
+      );
+
+      doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 50);
+      doc.text(
+        `Turno: ${
+          selectedCorte.workShift === "morning"
+            ? "Matutino"
+            : selectedCorte.workShift === "evening"
+            ? "Vespertino"
+            : "Nocturno"
+        }`,
+        10,
+        60
+      );
 
       // Separación
-      doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
+      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
 
       selectedCorte.totalAutoservicio
-        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 80)
-        : doc.text("Autoservicio: $0", 10, 80);
+        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
+        : doc.text("Autoservicio: $0", 10, 90);
 
       selectedCorte.totalEncargo
         ? doc.text(
             `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
             10,
-            90
+            100
           )
-        : doc.text("Lavado por Encargo: $0", 10, 90);
+        : doc.text("Lavado por Encargo: $0", 10, 100);
 
       selectedCorte.totalPlanchado
-        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 100)
-        : doc.text("Planchado: $0", 10, 100);
+        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
+        : doc.text("Planchado: $0", 10, 110);
 
       selectedCorte.totalTintoreria
-        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 110)
-        : doc.text("Tintorería: $0", 10, 110);
+        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 120)
+        : doc.text("Tintorería: $0", 10, 120);
 
       selectedCorte.totalOtrosEncargo
         ? doc.text(
             `Encargo Varios: $${selectedCorte.totalOtrosEncargo}`,
             10,
-            120
+            130
           )
-        : doc.text("Encargo Varios: $0", 10, 120);
+        : doc.text("Encargo Varios: $0", 10, 130);
 
       doc.text(
         `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
         10,
-        130
+        140
       );
       selectedCorte.totalCash
-        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 150)
-        : doc.text("Ingreso en Efectivo: $0", 10, 150);
+        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 160)
+        : doc.text("Ingreso en Efectivo: $0", 10, 160);
 
       // Separación
       selectedCorte.totalCredit
-        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 160)
-        : doc.text("Ingreso en Tarjeta: $0", 10, 160);
+        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 170)
+        : doc.text("Ingreso en Tarjeta: $0", 10, 170);
 
       selectedCorte.totalCashWithdrawal
         ? doc.text(
             `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
             10,
-            170
+            180
           )
-        : doc.text("Retiros Totales: $0", 10, 170);
-        doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 180);
-      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
+        : doc.text("Retiros Totales: $0", 10, 180);
+      doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 190);
+      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 200);
 
       doc.save("detalle_corte_servicios.pdf");
     }
   };
 
   const handleFiltroPorFecha = () => {
-    if (!dateRange || dateRange.length !== 2)  {
+    if (!dateRange || dateRange.length !== 2) {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -195,7 +207,9 @@ function HistorialCaja() {
       <div>
         <div className="mb-3">
           <div className="title-container">
-            <strong className="title-strong">Historial de Cortes <br /> de Servicios</strong>
+            <strong className="title-strong">
+              Historial de Cortes <br /> de Servicios
+            </strong>
           </div>
         </div>
         <div className="flex items-center mb-4">
@@ -279,12 +293,18 @@ function HistorialCaja() {
                         : 0}
                     </td>
                     <td className="">${corte.total ? corte.total : 0}</td>
-                    <td className="">{corte.user.name} {corte.user.firsLN} {corte.user.secondLN}</td>
-                    <td className=""> {corte.workShift === "morning"
+                    <td className="">
+                      {corte.user.name} {corte.user.firsLN}{" "}
+                      {corte.user.secondLN}
+                    </td>
+                    <td className="">
+                      {" "}
+                      {corte.workShift === "morning"
                         ? "Matutino"
                         : corte.workShift === "evening"
                         ? "Vespertino"
-                        : "Nocturno"}</td>
+                        : "Nocturno"}
+                    </td>
                     <td className="min-w-[60px]">
                       <button
                         className="btn-primary mt-1 mb-1"
@@ -338,16 +358,19 @@ function HistorialCaja() {
                   <p className="text-lg">
                     <span className="font-bold">Turno:</span>{" "}
                     {selectedCorte.workShift === "morning"
-                        ? "Matutino"
-                        : selectedCorte.workShift === "evening"
-                        ? "Vespertino"
-                        : "Nocturno"}
+                      ? "Matutino"
+                      : selectedCorte.workShift === "evening"
+                      ? "Vespertino"
+                      : "Nocturno"}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}
                     {formatDate(selectedCorte.cashCutD)}
                   </p>
-                  
+                  <p className="text-lg">
+                    <span className="font-bold">Hora:</span>{" "}
+                    {moment(selectedCorte.cashCutT).format("HH:mm")}
+                  </p>
                 </div>
                 <div className="w-1/2">
                   <p className="text-lg">

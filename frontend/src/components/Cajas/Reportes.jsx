@@ -67,11 +67,12 @@ function Reportes() {
       doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
       doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
       doc.text(
-        `Turno: ${ selectedCorte.workShift === "morning"
-        ? "Matutino"
-        : selectedCorte.workShift === "evening"
-        ? "Vespertino"
-        : "Nocturno"
+        `Turno: ${
+          selectedCorte.workShift === "morning"
+            ? "Matutino"
+            : selectedCorte.workShift === "evening"
+            ? "Vespertino"
+            : "Nocturno"
         }`,
         10,
         40
@@ -138,7 +139,7 @@ function Reportes() {
   };
 
   const handleFiltroPorFecha = () => {
-    if (!dateRange || dateRange.length !== 2)  {
+    if (!dateRange || dateRange.length !== 2) {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -148,13 +149,11 @@ function Reportes() {
       return;
     }
     if (dateRange.length === 2) {
-
       const [startDate, endDate] = dateRange.map((date) => date.toDate());
 
       const filteredCortes = Cortes.filter((corte) => {
         return moment(corte.cashCutD).isBetween(startDate, endDate, null, "[]");
       });
-
 
       const startDateStr = startDate.toISOString().split("T")[0];
       const endDateStr = endDate.toISOString().split("T")[0];
@@ -206,72 +205,89 @@ function Reportes() {
   };
 
   const handleGenerarPDF = async () => {
-    try{
-    if (filteredCortes.length > 0 && dateRange.length === 2) {
-      const doc = new jsPDF();
+    try {
+      if (filteredCortes.length > 0 && dateRange.length === 2) {
+        const doc = new jsPDF();
 
-      const report = {
-        sumAutoservicio: 0,
-        sumEncargo: 0,
-        sumPlanchado: 0,
-        sumTintoreria: 0,
-        sumOtrosEncargo: 0,
-        sumTotalIncome: 0,
-        sumTotalCash: 0,
-        sumTotalCredit: 0,
-        sumTotalCashWithdrawal: 0,
-        sumTotal: 0,
-      };
+        const report = {
+          sumAutoservicio: 0,
+          sumEncargo: 0,
+          sumPlanchado: 0,
+          sumTintoreria: 0,
+          sumOtrosEncargo: 0,
+          sumTotalIncome: 0,
+          sumTotalCash: 0,
+          sumTotalCredit: 0,
+          sumTotalCashWithdrawal: 0,
+          sumTotal: 0,
+        };
 
-      filteredCortes.map((corte) => {
-        report.sumAutoservicio += corte.totalAutoservicio || 0;
-        report.sumEncargo += corte.totalEncargo || 0;
-        report.sumPlanchado += corte.totalPlanchado || 0;
-        report.sumTintoreria += corte.totalTintoreria || 0;
-        report.sumOtrosEncargo += corte.totalOtrosEncargo || 0;
-        report.sumTotalIncome += corte.totalIncome || 0;
-        report.sumTotalCash += corte.totalCash || 0;
-        report.sumTotalCredit += corte.totalCredit || 0;
-        report.sumTotalCashWithdrawal += corte.totalCashWithdrawal || 0;
-        report.sumTotal += corte.total || 0;
-      });
+        filteredCortes.map((corte) => {
+          report.sumAutoservicio += corte.totalAutoservicio || 0;
+          report.sumEncargo += corte.totalEncargo || 0;
+          report.sumPlanchado += corte.totalPlanchado || 0;
+          report.sumTintoreria += corte.totalTintoreria || 0;
+          report.sumOtrosEncargo += corte.totalOtrosEncargo || 0;
+          report.sumTotalIncome += corte.totalIncome || 0;
+          report.sumTotalCash += corte.totalCash || 0;
+          report.sumTotalCredit += corte.totalCredit || 0;
+          report.sumTotalCashWithdrawal += corte.totalCashWithdrawal || 0;
+          report.sumTotal += corte.total || 0;
+        });
 
-      doc.text(`Total de Caja de las Fechas Seleccionadas`, 10, 10);
+        doc.text(`Total de Caja de las Fechas Seleccionadas`, 10, 10);
 
-      // Obtener las fechas seleccionadas en formato legible
-      const startDate = formatDate(dateRange[0].toDate());
-      const endDate = formatDate(dateRange[1].toDate());
+        // Obtener las fechas seleccionadas en formato legible
+        const startDate = formatDate(dateRange[0].toDate());
+        const endDate = formatDate(dateRange[1].toDate());
 
-      doc.text(`Fechas seleccionadas: ${startDate} - ${endDate}`, 10, 20);
+        doc.text(`Fechas seleccionadas: ${startDate} - ${endDate}`, 10, 20);
 
+        doc.text(
+          `Total de Ingresos en Efectivo: $${report.sumTotalCash}`,
+          10,
+          40
+        );
+        doc.text(
+          `Total de Ingresos en Tarjeta: $${report.sumTotalCredit}`,
+          10,
+          50
+        );
+        // Mostrar detalles de ingresos por servicio
+        doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
+        doc.text(`Autoservicio: $${report.sumAutoservicio}`, 10, 80);
+        doc.text(`Lavado por Encargo: $${report.sumEncargo}`, 10, 90);
+        doc.text(`Planchado: $${report.sumPlanchado}`, 10, 100);
+        doc.text(`Tintorería: $${report.sumTintoreria}`, 10, 110);
+        doc.text(`Encargo Varios: $${report.sumOtrosEncargo}`, 10, 120);
+        doc.text(
+          `Total (Suma de los Servicios): $${report.sumTotalIncome}`,
+          10,
+          130
+        );
+        // Mostrar retiros y total de ingresos del intervalo de fechas
+        doc.text(`Retiros Totales: $${report.sumTotalCashWithdrawal}`, 10, 150);
+        doc.text(
+          `Total de Ingresos de  ${startDate} - ${endDate}: $${report.sumTotal}`,
+          10,
+          170
+        );
 
-      doc.text(`Total de Ingresos en Efectivo: $${report.sumTotalCash}`, 10, 40);
-      doc.text(`Total de Ingresos en Tarjeta: $${report.sumTotalCredit}`, 10, 50);
-      // Mostrar detalles de ingresos por servicio
-      doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
-      doc.text(`Autoservicio: $${report.sumAutoservicio}`, 10, 80);
-      doc.text(`Lavado por Encargo: $${report.sumEncargo}`, 10, 90);
-      doc.text(`Planchado: $${report.sumPlanchado}`, 10, 100);
-      doc.text(`Tintorería: $${report.sumTintoreria}`, 10, 110);
-      doc.text(`Encargo Varios: $${report.sumOtrosEncargo}`, 10, 120);
-      doc.text(`Total (Suma de los Servicios): $${report.sumTotalIncome}`, 10, 130);
-      // Mostrar retiros y total de ingresos del intervalo de fechas
-      doc.text(`Retiros Totales: $${report.sumTotalCashWithdrawal}`, 10, 150);
-      doc.text(`Total de Ingresos de  ${startDate} - ${endDate}: $${report.sumTotal}`, 10, 170);
+        const formattedStartDate = startDate.split("/").join("-");
+        const formattedEndDate = endDate.split("/").join("-");
+        doc.save(
+          `Reporte de servicios ${formattedStartDate} - ${formattedEndDate}.pdf`
+        );
 
-      const formattedStartDate = startDate.split("/").join("-");
-      const formattedEndDate = endDate.split("/").join("-");
-      doc.save(`Reporte de servicios ${formattedStartDate} - ${formattedEndDate}.pdf`);
-
-      const out = doc.output('datauristring');
-      await api.post('/sendReport', {
-        startDate: moment(dateRange[0]).format('DD-MM-YYYY'),
-        endDate: moment(dateRange[1]).format('DD-MM-YYYY'),
-        pdf: out.split('base64,')[1],
-      })
+        const out = doc.output("datauristring");
+        await api.post("/sendReport", {
+          startDate: formatDate(dateRange[0].toDate()),
+          endDate: formatDate(dateRange[1].toDate()),
+          pdf: out.split("base64,")[1],
+        });
       }
-    }catch(err){
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -373,7 +389,10 @@ function Reportes() {
                         : 0}
                     </td>
                     <td className="">${corte.total ? corte.total : 0}</td>
-                    <td className="">{corte.user.name} {corte.user.firstLN} {corte.user.secondLN}</td>
+                    <td className="">
+                      {corte.user.name} {corte.user.firstLN}{" "}
+                      {corte.user.secondLN}
+                    </td>
                     <td className="">
                       {corte.workShift === "morning"
                         ? "Matutino"
@@ -435,10 +454,10 @@ function Reportes() {
                   <p className="text-lg">
                     <span className="font-bold">Turno:</span>{" "}
                     {selectedCorte.workShift === "morning"
-                        ? "Matutino"
-                        : selectedCorte.workShift === "evening"
-                        ? "Vespertino"
-                        : "Nocturno"}
+                      ? "Matutino"
+                      : selectedCorte.workShift === "evening"
+                      ? "Vespertino"
+                      : "Nocturno"}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Fecha:</span>{" "}

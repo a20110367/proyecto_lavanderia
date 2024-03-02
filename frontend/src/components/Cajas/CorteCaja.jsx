@@ -100,12 +100,11 @@ function CorteCaja() {
       const corte = response.data;
       const corteSupply = supplyResponse.data;
 
-      
       const nuevoCorte = {
         ...corte,
         id_cashCut: parseInt(localStorage.getItem("cashCutId")),
         id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
-        ...corteSupply
+        ...corteSupply,
       };
 
       const cashCut = {
@@ -116,8 +115,8 @@ function CorteCaja() {
         totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
         total: nuevoCorte.total,
         cashCutD: nuevoCorte.cashCutD,
-        cashCutT: nuevoCorte.cashCutT
-      }
+        cashCutT: nuevoCorte.cashCutT,
+      };
 
       const services = {
         numberOfItems: nuevoCorte.ordersPayed,
@@ -129,7 +128,7 @@ function CorteCaja() {
         totalIncome: nuevoCorte.totalIncome,
         totalCash: nuevoCorte.totalCash,
         totalCredit: nuevoCorte.totalCredit,
-      }
+      };
 
       const products = {
         numberOfItems: corteSupply.ordersPayedSupply,
@@ -146,13 +145,15 @@ function CorteCaja() {
         others: corteSupply.totalOtros,
         totalIncome: corteSupply.totalIncomeSupply,
         totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply
-      }
-      
+        totalCredit: corteSupply.totalCreditSupply,
+      };
+
       const pdf = new jsPDF();
       pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
       pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
-      pdf.text(`Usuario: ${cookies.username}`, 10, 30);
+      pdf.text(`FECHA: ${formatDate(nuevoCorte.cashCutD)}`, 10, 30);
+      pdf.text(`HORA: ${formatDate(nuevoCorte.cashCutT)}`, 10, 40);
+      pdf.text(`Usuario: ${cookies.username}`, 10, 50);
       pdf.text(
         `Turno: ${
           nuevoCorte.workShift === "morning"
@@ -162,63 +163,61 @@ function CorteCaja() {
             : "Nocturno"
         }`,
         10,
-        40
+        60
       );
 
       nuevoCorte.initialCash
-        ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 60)
-        : pdf.text("Dinero en Fondo: $0", 10, 60);
-        
-        nuevoCorte.ordersPayed
-        ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 70)
-        :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
+        ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 80)
+        : pdf.text("Dinero en Fondo: $0", 10, 80);
+
+      nuevoCorte.ordersPayed
+        ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 90)
+        : pdf.text(`Total Servicios Pagados: 0`, 10, 90);
 
       // Separación
-      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
+      pdf.text(`Detalles de Ingresos por Servicio:`, 10, 110);
       nuevoCorte.totalAutoservicio
-        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 100)
-        : pdf.text("Autoservicio: $0", 10, 100);
+        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 120)
+        : pdf.text("Autoservicio: $0", 10, 120);
       nuevoCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 110)
-        : pdf.text("Lavado por Encargo: $0", 10, 110);
+        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 130)
+        : pdf.text("Lavado por Encargo: $0", 10, 130);
       nuevoCorte.totalPlanchado
-        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 120)
-        : pdf.text("Planchado: $0", 10, 120);
+        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 140)
+        : pdf.text("Planchado: $0", 10, 140);
 
       nuevoCorte.totalTintoreria
-        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 130)
-        : pdf.text("Tintorería: $0", 10, 130);
+        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 150)
+        : pdf.text("Tintorería: $0", 10, 150);
 
       nuevoCorte.totalOtrosEncargo
-        ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 140)
-        : pdf.text("Encargo Varios: $0", 10, 140);
+        ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 160)
+        : pdf.text("Encargo Varios: $0", 10, 160);
 
       nuevoCorte.totalIncome
         ? pdf.text(
             `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
             10,
-            150
+            170
           )
-        : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
+        : pdf.text("Total (Suma de los Servicios): $0", 10, 170);
       // Separación
       nuevoCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 170)
-        : pdf.text("Ingreso en Efectivo: $0", 10, 170);
+        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 190)
+        : pdf.text("Ingreso en Efectivo: $0", 10, 190);
       nuevoCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 180)
-        : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
+        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 200)
+        : pdf.text("Ingreso en Tarjeta: $0", 10, 200);
       nuevoCorte.totalCashWithdrawal
         ? pdf.text(
             `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
             10,
-            190
+            220
           )
-        : pdf.text("Retiros Totales: $0", 10, 190);
+        : pdf.text("Retiros Totales: $0", 10, 210);
       nuevoCorte.total
-        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 200)
-        : pdf.text("Final Total en Caja: $0", 10, 200);
-
-    
+        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 220)
+        : pdf.text("Final Total en Caja: $0", 10, 220);
 
       if (
         pdf.internal.getNumberOfPages() > 0 &&
@@ -227,7 +226,11 @@ function CorteCaja() {
         // Si estamos en la página 1 y cerca del final, agregamos una nueva página
         pdf.addPage();
         pdf.text(`Detalles de Suministros:`, 10, 10);
-        pdf.text(`Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`, 10, 30);
+        pdf.text(
+          `Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`,
+          10,
+          30
+        );
         pdf.text(`Total Jabon $${corteSupply.totalJabon}`, 10, 40);
         pdf.text(`Total Suavitel $${corteSupply.totalSuavitel}`, 10, 50);
         pdf.text(`Total Pinol $${corteSupply.totalPinol}`, 10, 60);
@@ -246,16 +249,15 @@ function CorteCaja() {
         pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
         pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
         pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
-      
       }
 
       // pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-      await api.post('/generateCashCutTicket', {
+      await api.post("/generateCashCutTicket", {
         cashCut: cashCut,
         services: services,
-        products: products
-      })
+        products: products,
+      });
 
       setLastCashCut(nuevoCorte);
       setCortes([nuevoCorte]);
@@ -283,7 +285,6 @@ function CorteCaja() {
     setSelectedCorte(corte);
     setModalVisible(true);
     console.log(corte);
-    
   };
 
   const handlePartialCorteCaja = () => {
@@ -428,7 +429,7 @@ function CorteCaja() {
       //   pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
       //   pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
       //   pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
-        
+
       // }
 
       // pdf.save(`corte_de_caja_Parcial_${cookies.username}.pdf`);
@@ -462,8 +463,8 @@ function CorteCaja() {
         totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
         total: nuevoCorte.total,
         cashCutD: nuevoCorte.cashCutD,
-        cashCutT: nuevoCorte.cashCutT
-      }
+        cashCutT: nuevoCorte.cashCutT,
+      };
 
       const services = {
         numberOfItems: nuevoCorte.ordersPayed,
@@ -475,7 +476,7 @@ function CorteCaja() {
         totalIncome: nuevoCorte.totalIncome,
         totalCash: nuevoCorte.totalCash,
         totalCredit: nuevoCorte.totalCredit,
-      }
+      };
 
       const products = {
         numberOfItems: corteSupply.ordersPayedSupply,
@@ -492,13 +493,13 @@ function CorteCaja() {
         others: corteSupply.totalOtros,
         totalIncome: corteSupply.totalIncomeSupply,
         totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply
-      }
+        totalCredit: corteSupply.totalCreditSupply,
+      };
 
       await api.post("/generatePartialCashCutTicket", {
         cashCut: cashCut,
         services: services,
-        products: products
+        products: products,
       });
     } catch (err) {
       console.error(err);
@@ -606,7 +607,7 @@ function CorteCaja() {
       // }
 
       // pdf.save("detalle_corte.pdf");
-      
+
       const cashCut = {
         casher: cookies.username,
         cashCutId: selectedCorte.id_cashCut,
@@ -615,8 +616,8 @@ function CorteCaja() {
         totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
         total: selectedCorte.total,
         cashCutD: selectedCorte.cashCutD,
-        cashCutT: selectedCorte.cashCutT
-      }
+        cashCutT: selectedCorte.cashCutT,
+      };
 
       const services = {
         numberOfItems: selectedCorte.ordersPayed,
@@ -628,7 +629,7 @@ function CorteCaja() {
         totalIncome: selectedCorte.totalIncome,
         totalCash: selectedCorte.totalCash,
         totalCredit: selectedCorte.totalCredit,
-      }
+      };
 
       const products = {
         numberOfItems: selectedCorte.ordersPayedSupply,
@@ -645,15 +646,14 @@ function CorteCaja() {
         others: selectedCorte.totalOtros,
         totalIncome: selectedCorte.totalIncomeSupply,
         totalCash: selectedCorte.totalCashSupply,
-        totalCredit: selectedCorte.totalCreditSupply
-      }
+        totalCredit: selectedCorte.totalCreditSupply,
+      };
 
-      await api.post('/generateCashCutTicket', {
+      await api.post("/generateCashCutTicket", {
         cashCut: cashCut,
         services: services,
-        products: products
-      })
-      
+        products: products,
+      });
     }
   };
 
@@ -846,7 +846,11 @@ function CorteCaja() {
                 <span className="font-bold">Fecha:</span>{" "}
                 {formatDate(selectedCorte.cashCutD)}
               </p>
-             
+              <p className="text-lg">
+                <span className="font-bold">Hora:</span>{" "}
+                {formatDate(selectedCorte.cashCutD)}
+              </p>
+
               <br />
               <p className="text-lg">
                 <span className="font-bold">
@@ -976,7 +980,7 @@ function CorteCaja() {
                 {selectedCorte.totalOtros ? selectedCorte.totalOtros : 0}
               </p>
               <br />
-              
+
               <p className="text-lg">
                 <span className="font-bold">
                   Ingresos totales de productos:
@@ -990,21 +994,27 @@ function CorteCaja() {
                 <span className="font-bold">
                   Ingreso de productos con Efectivo:
                 </span>{" "}
-                ${selectedCorte.totalCashSupply ? selectedCorte.totalCashSupply : 0}
+                $
+                {selectedCorte.totalCashSupply
+                  ? selectedCorte.totalCashSupply
+                  : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">
                   Ingreso de productos con Tarjeta:
                 </span>{" "}
-                ${selectedCorte.totalCreditSupply ? selectedCorte.totalCreditSupply : 0}
+                $
+                {selectedCorte.totalCreditSupply
+                  ? selectedCorte.totalCreditSupply
+                  : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Ingreso total de productos:</span> $
-                {selectedCorte.totalIncomeSupply ? selectedCorte.totalIncomeSupply : 0}
+                {selectedCorte.totalIncomeSupply
+                  ? selectedCorte.totalIncomeSupply
+                  : 0}
               </p>
-
             </div>
-           
           </div>
         )}
       </Modal>

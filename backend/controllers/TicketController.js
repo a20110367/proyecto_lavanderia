@@ -623,11 +623,18 @@ export const cashWithdrawalTicket = async (req, res) => {
             printer.drawLine()
 
             printer.newLine()
-            printer.newLine()
 
             printer.alignCenter()
             printer.setTextNormal()
-            printer.println('Recibio, Nombre, Firma y Fecha')
+            printer.println('Recibio')
+            printer.println('( Nombre y Firma)')
+
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.println('_______________________________')
+            printer.drawLine()
         }
 
         printer.cut();

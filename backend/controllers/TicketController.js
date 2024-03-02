@@ -617,7 +617,7 @@ export const cashWithdrawalTicket = async (req, res) => {
             printer.println(`Cajero: ${cashWithdrawal.casher}`)
             printer.println(`Fecha: ${formatDate(cashWithdrawal.date)}`)
             printer.println(`Hora: ${formatTicketTime(cashWithdrawal.date)}`)
-            printer.println(`Monto: ${cashWithdrawal.amount}`)
+            printer.println(`Monto: $ ${cashWithdrawal.amount}`)
             printer.println(`Motivo: ${cashWithdrawal.cause}`)
 
             printer.drawLine()

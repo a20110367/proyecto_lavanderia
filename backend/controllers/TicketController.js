@@ -207,6 +207,25 @@ export const generateTicket = async (req, res) => {
     }
 }
 
+const printOrderDetailTicket = async (orderDetail) => {
+    try {
+        printer.clear();
+
+        orderDetail.forEach(detail => {
+
+
+        })
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        printer('Order Detail Print done!')
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 const printTicketFromBackend = async (orderParameter) => {
 
     const order = orderParameter
@@ -620,7 +639,7 @@ export const cashWithdrawalTicket = async (req, res) => {
 
             printer.drawLine();
 
-            printer.println(`Folio de Caja No: ${cashWithdrawal.fk_cashCut}`)
+            printer.println(`Corte de Caja No: ${cashWithdrawal.fk_cashCut}`)
             printer.println(`Cajero: ${cashWithdrawal.casher}`)
             printer.println(`Fecha: ${formatDate(cashWithdrawal.date)}`)
             printer.println(`Hora: ${formatTicketTime(cashWithdrawal.date)}`)
@@ -637,6 +656,69 @@ export const cashWithdrawalTicket = async (req, res) => {
             printer.alignCenter()
             printer.setTextNormal()
             printer.println('Recibio')
+            printer.println('( Nombre y Firma)')
+
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.newLine()
+            printer.println('_________________________________')
+        }
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
+export const pettyCashTicket = async (req, res) => {
+    try {
+        const { pettyCash } = req.body
+
+        printer.clear();
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        if (pettyCash) {
+            printer.setTextQuadArea()
+
+            if (pettyCash.pettyCashType === 'withdrawal') {
+                printer.println('RETIRO EN CAJA CHICA')
+            }
+
+            if (pettyCash.pettyCashType === 'deposit') {
+                printer.println('ABONO EN CAJA CHICA')
+            }
+
+            printer.println(`Folio No.: ${pettyCash.id_movement}`)
+
+            printer.drawLine();
+
+            printer.println(`Cajero: ${pettyCash.casher}`)
+            printer.println(`Fecha: ${formatDate(pettyCash.movementDate)}`)
+            printer.println(`Hora: ${formatTicketTime(pettyCash.movementDate)}`)
+            printer.println(`Monto: $ ${pettyCash.amount} MXN`)
+            printer.println(`Motivo: ${pettyCash.cause}`)
+            printer.println(`TOTAL EN CAJA: $ ${pettyCash.balance} MXN`)
+
+            printer.drawLine()
+
+            printer.newLine()
+
+            printer.alignCenter()
+            printer.setTextNormal()
+            printer.println('Realizo')
             printer.println('( Nombre y Firma)')
 
             printer.newLine()

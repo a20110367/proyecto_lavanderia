@@ -136,6 +136,20 @@ function CajaChica() {
         });
         setVisibleAbono(false);
 
+        const pettyCash = {
+          id_movement: res.data.id_movement,
+          balance: res.data.balance,
+          pettyCashType: 'deposit',
+          amount: monto,
+          casher: cookies.username,
+          cause: motivo,
+          movementDate: date
+        }
+
+        await api.post('/generatePettyCashTicket', {
+          pettyCash: pettyCash,
+        })
+
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
           pettyCashType: "deposit",
@@ -238,6 +252,20 @@ function CajaChica() {
           movementDate: date,
         });
         setVisible(false);
+
+        const pettyCash = {
+          id_movement: res.data.id_movement,
+          balance: res.data.balance,
+          pettyCashType: 'withdrawal',
+          amount: monto,
+          casher: cookies.username,
+          cause: motivo,
+          movementDate: date
+        }
+
+        await api.post('/generatePettyCashTicket', {
+          pettyCash: pettyCash,
+        })
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,

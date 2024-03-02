@@ -621,9 +621,12 @@ export const cashWithdrawalTicket = async (req, res) => {
             printer.println(`Motivo: ${cashWithdrawal.cause}`)
 
             printer.drawLine()
-            printer.drawLine()
+
+            printer.newLine()
+            printer.newLine()
 
             printer.alignCenter()
+            printer.setTextNormal()
             printer.println('Recibio, Nombre, Firma y Fecha')
         }
 

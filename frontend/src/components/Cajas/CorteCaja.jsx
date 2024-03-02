@@ -847,9 +847,9 @@ function CorteCaja() {
                 {formatDate(selectedCorte.cashCutD)}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Hora:</span>{" "}
-                {formatDate(selectedCorte.cashCutD)}
-              </p>
+                    <span className="font-bold">Hora:</span>{" "}
+                    {moment(selectedCorte.cashCutT).format("HH:mm")}
+                  </p>
 
               <br />
               <p className="text-lg">

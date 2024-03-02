@@ -124,7 +124,7 @@ function Retiro() {
         cashWithdrawalType: "withdrawal",
         id_cashWithdrawal: res.data.id_cashWithdrawal,
         fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        casher: cookies.token,
+        casher: cookies.username,
         amount: parseInt(monto),
         cause: motivo,
         date: date,

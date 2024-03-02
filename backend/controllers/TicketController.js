@@ -149,7 +149,8 @@ export const generateTicket = async (req, res) => {
         console.log("Print done!");
 
         if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
-            printTicketFromBackend(order)
+            printOrderDetailTicket(order)
+            // printTicketFromBackend(order)
         }
 
         // printer.bold(true);                                         // Set text bold
@@ -207,13 +208,27 @@ export const generateTicket = async (req, res) => {
     }
 }
 
-const printOrderDetailTicket = async (orderDetail) => {
+const printOrderDetailTicket = async (order) => {
     try {
         printer.clear();
 
-        orderDetail.forEach(detail => {
+        order.cart.forEach(async (detail) => {
+            for (let i = 0; i < detail.quantity; i++) {
+                printer.clear()
+                await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+                printer.drawLine()
+                printer.setTextQuadArea()
+                printer.println(`No. de Orden: ${order.id_order}`)
+                printer.println(`Cliente: ${order.client}`)
+                printer.println(`Descripcion: ${detail.description}`)
+                printer.println(`Cantidad: ${detail.quantity}`)
+                printer.println(`Observaciones ${order.notes}`)
 
+                printer.cut();
 
+                let execute = await printer.execute()
+                console.log('Order Detail Printed!')
+            }
         })
 
         printer.cut();

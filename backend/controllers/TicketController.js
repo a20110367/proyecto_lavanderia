@@ -220,11 +220,12 @@ const printOrderDetailTicket = async (order) => {
             for (let i = 0; i < detail.quantity; i++) {
                 //await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
                 printer.drawLine()
-                printer.setTextQuadArea()
+                printer.setTextSize(2, 2);
                 printer.bold(true)
                 printer.println(`No. de Orden: ${order.id_order}`)
                 printer.bold(false)
                 printer.newLine()
+                printer.setTextQuadArea()
                 printer.println('Cliente:')
                 printer.println(`${order.client}`)
                 printer.newLine()

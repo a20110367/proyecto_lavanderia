@@ -212,7 +212,7 @@ const printOrderDetailTicket = async (order) => {
     try {
         printer.clear();
         
-        order.cart.forEach(async (detail) => {
+        order.cart.forEach(async (detail, index) => {
 
             console.log("AQUI EMPIEZA")
 
@@ -230,6 +230,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`${detail.description}`)
                 printer.newLine()
                 printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
+                printer.newLine()
+                printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()
                 printer.println(`Observaciones ${order.notes}`)
 

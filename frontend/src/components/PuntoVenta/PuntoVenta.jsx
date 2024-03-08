@@ -291,8 +291,6 @@ export default function PuntoVenta() {
       })
     );
 
-    console.log(cart)
-
     const subTotal = calculateSubtotal();
 
     const totalWithDiscount =
@@ -368,6 +366,7 @@ export default function PuntoVenta() {
         payMethod: payMethod,
         subtotal: totalWithDiscount,
         casher: cookies.username,
+        numberOfItems: noOfItems,
         client: res.data.serviceOrder.client.name + ' ' + res.data.serviceOrder.client.firstLN + ' ' + res.data.serviceOrder.client.secondLN,
         receptionDate: purchaseDate.toISOString(),
         receptionTime: purchaseDate.toISOString(),

@@ -222,10 +222,13 @@ const printOrderDetailTicket = async (order) => {
                 printer.drawLine()
                 printer.setTextQuadArea()
                 printer.println(`No. de Orden: ${order.id_order}`)
-                printer.println(`Cliente: ${order.client}`)
-                printer.println(`Descripcion: ${detail.description}`)
+                
+                printer.println('Descripcion:')
+                printer.println(`${detail.description}`)
                 printer.println(`Cantidad: ${detail.quantity}`)
                 printer.println(`Observaciones ${order.notes}`)
+                printer.println('Cliente:')
+                printer.println(`${order.client}`)
 
                 printer.cut();
 

@@ -225,7 +225,7 @@ const printOrderDetailTicket = async (order) => {
                 
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
-                printer.println(`Cantidad: ${detail.quantity}`)
+                printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
                 printer.println(`Observaciones ${order.notes}`)
                 printer.println('Cliente:')
                 printer.println(`${order.client}`)

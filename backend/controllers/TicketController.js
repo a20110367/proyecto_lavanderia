@@ -213,8 +213,12 @@ const printOrderDetailTicket = async (order) => {
         printer.clear();
         
         order.cart.forEach(async (detail) => {
+
+            console.log("AQUI EMPIEZA")
+
+            console.log(detail)
             for (let i = 0; i < detail.quantity; i++) {
-                await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+                //await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
                 printer.drawLine()
                 printer.setTextQuadArea()
                 printer.println(`No. de Orden: ${order.id_order}`)
@@ -227,6 +231,8 @@ const printOrderDetailTicket = async (order) => {
 
                 console.log('Order Detail Printed!')
             }
+
+            console.log("AQUI ACABA!!!!!!!!!!!!!!!!!!!!!!")
         })
 
         let execute = await printer.execute()

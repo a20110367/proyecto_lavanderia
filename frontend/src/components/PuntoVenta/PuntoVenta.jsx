@@ -281,15 +281,17 @@ export default function PuntoVenta() {
     const arrayService = [];
 
     let noOfItems = 0;
-    cart.map((detail) => (noOfItems = noOfItems + detail.quantity));
+    cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
-    cart.map((detail) =>
+    cart.forEach((detail) =>
       arrayService.push({
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_Service: detail.id_service,
       })
     );
+
+    console.log(cart)
 
     const subTotal = calculateSubtotal();
 

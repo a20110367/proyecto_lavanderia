@@ -238,7 +238,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()
-                printer.println(`Observaciones ${order.notes}`)
+                printer.println(`Observaciones:`)
+                printer.println(`${order.notes}`)
 
                 printer.cut();
 

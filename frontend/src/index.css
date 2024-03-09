@@ -467,4 +467,8 @@ thead th {
   .login-container {
     @apply w-screen h-screen grid-cols-2 grid place-items-center
   }
+  .custom-card {
+    width: 420px; /* Tamaño personalizado */
+    height: 400px; /* Tamaño personalizado */
+}
 }

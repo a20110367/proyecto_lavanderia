@@ -574,7 +574,7 @@ export default function PuntoVenta() {
                       <h3 className="text-xl font-semibold">
                         {service.description}
                       </h3>
-                      <h5 className="text-gray-600">${service.price}</h5>
+                      <h5 className="text-gray-600 text-lg lg:text-xl">${service.price}</h5>
                       <button
                         className={`${isAddButtonDisabled
                             ? "bg-gray-400"
@@ -591,16 +591,16 @@ export default function PuntoVenta() {
             </div>
           </div>
 
-          <div className="col-md-3 ml-10">
+          <div className="col-md-3 ml-12">
             {categoryId === 3 || categoryId === 4 ? ( //|| categoryId === 4 Solo para ver si jala
-              <p className="text-3xl font-semibold text-center">
+              <p className="text-3xl font-semibold text-center ml-16">
                 Piezas del Pedido:{" "}
                 <span className="text-orange-600">{pieces}</span>
               </p>
             ) : (
               ""
             )}
-            <div className="card card-body mt-2">
+            <div className="card card-body mt-2 custom-card">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}
                 <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
@@ -609,7 +609,7 @@ export default function PuntoVenta() {
                 {cart.map((service) => (
                   <li
                     key={service.id_service}
-                    className="py-2 flex items-center justify-between"
+                    className="py-2 flex items-center justify-between text-lg"
                   >
                     <div className="flex items-center">
                       <img
@@ -702,12 +702,12 @@ export default function PuntoVenta() {
               )} */}
 
               <div className="flex mt-4 justify-between">
-                <div>
+                <div className="text-lg">
                   <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
                   {/*+ calculateProductTotal()*/}
                 </div>
                 {categoryId === 3 ? (
-                  <div className="flex items-center">
+                  <div className="flex items-center ml-2 text-lg">
                     <BsFillLightningFill
                       className="text-yellow-500 mr-1"
                       fontSize={19}
@@ -929,7 +929,7 @@ export default function PuntoVenta() {
               className="mt-2 flex text-center text-decoration-none"
             ></Link>
             {categoryId === 3 ? (
-              <p className="text-2xl font-semibold text-center">
+              <p className="text-2xl font-semibold text-center ml-16">
                 No. Maximo de Piezas:{" "}
                 <span className="text-RedPantone">
                   {pieces + parseInt(numberOfPieces)} / 130

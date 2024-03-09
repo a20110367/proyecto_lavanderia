@@ -78,6 +78,7 @@ export const generateTicket = async (req, res) => {
         printer.tableCustom([
             { text: "Cant.", align: "LEFT" },
             { text: "Descripción", align: "CENTER", bold: true },
+            { text: "P. U.", align: 'CENTER'},
             { text: "Precio", align: "RIGHT" }
         ]);
 
@@ -87,6 +88,7 @@ export const generateTicket = async (req, res) => {
             printer.tableCustom([
                 { text: detail.quantity + '     X', align: "LEFT", bold: true },
                 { text: detail.description, align: "CENTER" },
+                { text: '$' + detail.price, align: 'CENTER'},
                 { text: '$' + detail.totalPrice, align: "RIGHT" }
             ]);
         }).join('')
@@ -317,6 +319,7 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.tableCustom([
             { text: "Cant.", align: "LEFT" },
             { text: "Descripción", align: "CENTER", bold: true },
+            { text: "P. U.", align: 'CENTER'},
             { text: "Precio", align: "RIGHT" }
         ]);
 
@@ -326,6 +329,7 @@ const printTicketFromBackend = async (orderParameter) => {
             printer.tableCustom([
                 { text: detail.quantity + '     X', align: "LEFT", bold: true },
                 { text: detail.description, align: "CENTER" },
+                { text: '$' + detail.price, align: 'CENTER'},
                 { text: '$' + detail.totalPrice, align: "RIGHT" }
             ]);
         }).join('')

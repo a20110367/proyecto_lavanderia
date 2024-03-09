@@ -591,16 +591,16 @@ export default function PuntoVenta() {
             </div>
           </div>
 
-          <div className="col-md-3 ml-12">
+          <div className="col-md-4">
             {categoryId === 3 || categoryId === 4 ? ( //|| categoryId === 4 Solo para ver si jala
-              <p className="text-3xl font-semibold text-center ml-16">
-                Piezas del Pedido:{" "}
-                <span className="text-orange-600">{pieces}</span>
-              </p>
+             <p className="text-3xl font-semibold text-center ">
+             Piezas del Pedido:{" "}
+             <span className="text-orange-600 inline-block">{pieces}</span>
+           </p>
             ) : (
               ""
             )}
-            <div className="card card-body mt-2 custom-card">
+            <div className="card card-body mt-2">
               <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                 <p className="font-bold">Cliente seleccionado:</p>{" "}
                 <p className="text-xl font-bold text-IndigoDye">{clientName}</p>
@@ -701,8 +701,8 @@ export default function PuntoVenta() {
                 </div>
               )} */}
 
-              <div className="flex mt-4 justify-between">
-                <div className="text-lg">
+              <div className="flex mt-4 justify-between text-lg">
+                <div>
                   <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
                   {/*+ calculateProductTotal()*/}
                 </div>
@@ -715,7 +715,7 @@ export default function PuntoVenta() {
                     <strong>Servicio Express</strong>
                     <input
                       type="checkbox"
-                      className="ml-2"
+                      className="ml-2 mt-1 h-4 w-4"
                       checked={isExpress}
                       onChange={handleOnChange}
                     />
@@ -929,7 +929,7 @@ export default function PuntoVenta() {
               className="mt-2 flex text-center text-decoration-none"
             ></Link>
             {categoryId === 3 ? (
-              <p className="text-2xl font-semibold text-center ml-16">
+              <p className="text-2xl font-semibold text-center ">
                 No. Maximo de Piezas:{" "}
                 <span className="text-RedPantone">
                   {pieces + parseInt(numberOfPieces)} / 130

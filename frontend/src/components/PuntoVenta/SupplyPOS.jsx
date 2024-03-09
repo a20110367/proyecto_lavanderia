@@ -304,7 +304,7 @@ export default function PuntoVenta() {
                                             <h3 className="text-xl font-semibold">
                                                 {service.description}
                                             </h3>
-                                            <h5 className="text-gray-600">${service.price}</h5>
+                                            <h5 className="text-gray-600 text-lg lg:text-xl">${service.price}</h5>
                                             <button
                                                 className={`${isAddButtonDisabled
                                                     ? "bg-gray-400"
@@ -321,7 +321,7 @@ export default function PuntoVenta() {
                         </div>
                     </div>
 
-                    <div className="col-md-3 ml-10">
+                    <div className="col-md-4">
                         <div className="card card-body mt-2">
                             <h3 className="text-center border-b-2 text-lg border-gray-500 pb-2">
                                 <p className="font-bold">Cliente seleccionado:</p>{" "}
@@ -333,7 +333,7 @@ export default function PuntoVenta() {
                                         key={service.id_supply}
                                         className="py-2 flex items-center justify-between"
                                     >
-                                        <div className="flex items-center">
+                                        <div className="flex items-center text-lg">
                                             <img
                                                 src={img[3]}
                                                 alt={`Imagen de ${service.description}`}
@@ -351,9 +351,9 @@ export default function PuntoVenta() {
                                     </li>
                                 ))}
                             </ul>
-                            <div className="flex mt-4 justify-between">
+                            <div className="flex mt-4 justify-between text-lg">
                                 <div>
-                                    <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
+                                    <strong >Subtotal:</strong> ${calculateSubtotal()}{" "}
                                     {/*+ calculateProductTotal()*/}
                                 </div>
                             </div>

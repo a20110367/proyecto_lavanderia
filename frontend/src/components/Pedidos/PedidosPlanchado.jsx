@@ -306,7 +306,9 @@ function PedidosPlanchado() {
               .filter(
                 (pedido) =>
                   pedido.orderStatus !== "finished" &&
-                  pedido.orderStatus !== "delivered"
+                  pedido.orderStatus !== "delivered" &&
+                  pedido.orderStatus !== "cancelled"
+
               ) // Filtrar pedidos que no tienen estado "finished"
               .slice(startIndex, endIndex)
               .map((pedido) => (
@@ -359,7 +361,7 @@ function PedidosPlanchado() {
                       <span className="text-green-600 pl-1">
                         <CheckCircleOutlined /> Finalizado Entregado
                       </span>
-                    ) : pedido.serviceStatus === "canceled" ? (
+                    ) : pedido.serviceStatus === "cancelled" ? (
                       <span className="text-red-600 pl-1">
                         <StopOutlined /> Cancelado
                       </span>
@@ -389,6 +391,7 @@ function PedidosPlanchado() {
                     )}
                   </td>
                 </tr>
+                
               ))}
           </tbody>
         </table>

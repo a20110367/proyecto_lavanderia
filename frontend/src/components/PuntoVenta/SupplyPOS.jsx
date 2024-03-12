@@ -23,6 +23,8 @@ import sanitizanteImg from "../images/sanitizante.jpg";
 import bolsaImg from "../images/bolsa.jpg";
 import ganchosImg from "../images/ganchos.jpg";
 import otrosImg from "../images/otros.jpeg";
+import reforzadoImg from "../images/reforzado.jpg";
+import wcImg from "../images/wc.jpg";
 
 export default function PuntoVenta() {
   const { cookies } = useAuth();
@@ -49,6 +51,8 @@ export default function PuntoVenta() {
     sanitizante: sanitizanteImg,
     bolsa: bolsaImg,
     ganchos: ganchosImg,
+    reforzado: reforzadoImg,
+    wc: wcImg,
   };
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);

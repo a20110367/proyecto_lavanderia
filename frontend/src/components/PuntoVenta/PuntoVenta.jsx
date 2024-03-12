@@ -16,6 +16,12 @@ import { FaBoltLightning } from "react-icons/fa6";
 import { BsFillLightningFill } from "react-icons/bs";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 const { Option } = Select;
+import encargoImg from "../images/encargo.jpg";
+import autoservicioImg from "../images/autoservicio.jpg"; 
+import planchadoImg from "../images/planchado.jpg"; 
+import tintoreriaImg from "../images/tintoreria.jpg";
+import variosImg from "../images/varios.jpg";
+
 
 export default function PuntoVenta() {
   const { cookies } = useAuth();
@@ -31,6 +37,14 @@ export default function PuntoVenta() {
     "https://www.ocu.org/-/media/ocu/images/home/electrodomesticos/secadora/secadora-eficiencia-tiempo-programa.jpg?rev=ceb8727f-ccca-46dc-a0d1-f4d3e83d8031&hash=D0C547A95C98B9C4704FA36A6B136090",
     "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg",
   ]);
+  const categoryImages = {
+    encargo: encargoImg,
+    autoservicio: autoservicioImg,
+    planchado: planchadoImg,
+    tintoreria: tintoreriaImg,
+    varios: variosImg
+  };
+  
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const clientId = queryParams.get("clientId");
@@ -566,7 +580,7 @@ export default function PuntoVenta() {
                     className="bg-white rounded-lg shadow-lg"
                   >
                     <img
-                      src={img[0]}
+                       src={categoryImages[service.Category.categoryDescription.toLowerCase()]}
                       alt={`Imagen de ${service.description}`}
                       className="img-pos"
                     />

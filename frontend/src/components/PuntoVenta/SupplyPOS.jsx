@@ -14,6 +14,16 @@ import api from "../../api/api";
 import { BsFillLightningFill } from "react-icons/bs";
 const { Option } = Select;
 
+import jabonImg from "../images/jabon.jpg";
+import suavitelImg from "../images/suavitel (1).jpg"; 
+import desengrasanteImg from "../images/desengrasante.jpg"; 
+import pinolImg from "../images/pinol.jpg";
+import cloroImg from "../images/cloro.jpg";
+import sanitizanteImg from "../images/sanitizante.jpg";
+import bolsaImg from "../images/bolsa.jpg";
+import ganchosImg from "../images/ganchos.jpg";
+import otrosImg from "../images/otros.jpeg";
+
 export default function PuntoVenta() {
     const { cookies } = useAuth();
 
@@ -29,6 +39,17 @@ export default function PuntoVenta() {
         "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg",
         'https://maxicleanperu.com/wp-content/uploads/2021/06/noticia-1.png',
     ]);
+    const categoryImages = {
+        jabon: jabonImg,
+        suavitel: suavitelImg,
+        desengrasante: desengrasanteImg,
+        otros:otrosImg,
+        pinol: pinolImg,
+        cloro: cloroImg,
+        sanitizante: sanitizanteImg,
+        bolsa: bolsaImg,
+        ganchos: ganchosImg
+    };
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const clientId = queryParams.get("clientId");
@@ -284,40 +305,42 @@ export default function PuntoVenta() {
                 <div className="row">
                     <div className="col-md-8">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                            {filteredServices
-                                .filter((service) =>
-                                    service.description
-                                        .toLowerCase()
-                                        .includes(filtro.toLowerCase())
-                                )
-                                .map((service) => (
-                                    <div
-                                        key={service.id_supply}
-                                        className="bg-white rounded-lg shadow-lg"
-                                    >
-                                        <img
-                                            src={img[3]}
-                                            alt={`Imagen de ${service.description}`}
-                                            className="img-pos"
-                                        />
-                                        <div className="p-3">
-                                            <h3 className="text-xl font-semibold">
-                                                {service.description}
-                                            </h3>
-                                            <h5 className="text-gray-600 text-lg lg:text-xl">${service.price}</h5>
-                                            <button
-                                                className={`${isAddButtonDisabled
-                                                    ? "bg-gray-400"
-                                                    : "bg-blue-500 hover:bg-blue-700"
-                                                    } text-white font-bold py-2 px-4 rounded mt-2`}
-                                                onClick={() => addToCart(service.id_supply, service)}
-                                                disabled={isAddButtonDisabled}
-                                            >
-                                                Agregar
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
+                        {filteredServices
+    .filter((service) =>
+        service.description
+            .toLowerCase()
+            .includes(filtro.toLowerCase())
+    )
+    .map((service) => (
+        <div
+            key={service.id_supply}
+            className="bg-white rounded-lg shadow-lg"
+        >
+            <img
+                src={categoryImages[service.category]}
+                alt={`Imagen de ${service.description}`}
+                className="img-pos "
+                
+                
+            />
+            <div className="p-3">
+                <h3 className="text-xl font-semibold">
+                    {service.description}
+                </h3>
+                <h5 className="text-gray-600 text-lg lg:text-xl">${service.price}</h5>
+                <button
+                    className={`${isAddButtonDisabled
+                        ? "bg-gray-400"
+                        : "bg-blue-500 hover:bg-blue-700"
+                        } text-white font-bold py-2 px-4 rounded mt-2`}
+                    onClick={() => addToCart(service.id_supply, service)}
+                    disabled={isAddButtonDisabled}
+                >
+                    Agregar
+                </button>
+            </div>
+        </div>
+    ))}
                         </div>
                     </div>
 
@@ -335,7 +358,7 @@ export default function PuntoVenta() {
                                     >
                                         <div className="flex items-center text-lg">
                                             <img
-                                                src={img[3]}
+                                                src={categoryImages[service.category]}
                                                 alt={`Imagen de ${service.description}`}
                                                 className="h-16 w-16 object-cover rounded-lg mr-2"
                                             />

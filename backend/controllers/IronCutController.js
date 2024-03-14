@@ -2,20 +2,20 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getIronControl = async (req, res) => {
+export const getIronCut = async (req, res) => {
     try {
-        const response = await prisma.ironControl.findMany();
+        const response = await prisma.ironCut.findMany();
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });
     }
 }
 
-export const getIronControlById = async (req, res) => {
+export const getIronCutById = async (req, res) => {
     try {
-        const response = await prisma.ironControl.findUnique({
+        const response = await prisma.ironCut.findUnique({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             }
         });
         res.status(200).json(response);
@@ -24,11 +24,11 @@ export const getIronControlById = async (req, res) => {
     }
 }
 
-export const getLastIronControl = async (req, res) => {
+export const getLastIronCut = async (req, res) => {
     try {
-        const response = await prisma.ironControl.findMany({
+        const response = await prisma.ironCut.findMany({
             orderBy: {
-                id_ironControl: 'desc',
+                id_ironCut: 'desc',
             },
             take: 1,
         });
@@ -37,31 +37,31 @@ export const getLastIronControl = async (req, res) => {
         res.status(404).json({ msg: e.message });
     }
 }
-//Crea un nuevo registro de control de planchado para un nuevo dia
-export const createIronControl = async (req, res) => {
+//Crea un nuevo registro de Cut de planchado para un nuevo dia
+export const createIronCut = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.create({
+        const ironCut = await prisma.ironCut.create({
             data: req.body
 
         });
-        res.status(201).json(ironControl);
+        res.status(201).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
 }
 //Update standard, es parte deñ CRUD basico
-export const updateIronControl = async (req, res) => {
+export const updateIronCut = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.update({
+        const ironCut = await prisma.ironCut.update({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             },
             data: req.body
 
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -71,20 +71,20 @@ export const updateIronControl = async (req, res) => {
 export const updateDiaryIron = async (req, res) => {
 
     try {
-        const ironControlBefore = await prisma.ironControl.findMany({
+        const ironCutBefore = await prisma.ironCut.findMany({
             orderBy: {
-                id_ironControl: 'desc',
+                id_ironCut: 'desc',
             },
             skip: 1,
             take: 1,
         });
 
-        const piecesToday = ironControlBefore[0].piecesTomorrow + ironControlBefore[0].piecesLeft;
+        const piecesToday = ironCutBefore[0].piecesTomorrow + ironCutBefore[0].piecesLeft;
 
-        const ironControlCurrent = await prisma.ironControl.update({
+        const ironCutCurrent = await prisma.ironCut.update({
 
             where: {
-                id_ironControl: Number(req.params.id),
+                id_ironCut: Number(req.params.id),
             },
 
             data: {
@@ -94,7 +94,7 @@ export const updateDiaryIron = async (req, res) => {
 
         });
 
-        res.status(200).json(ironControlCurrent);
+        res.status(200).json(ironCutCurrent);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -103,9 +103,9 @@ export const updateDiaryIron = async (req, res) => {
 export const updateCashCutIron = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.update({
+        const ironCut = await prisma.ironCut.update({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             },
             data: {
                 piecesCashcut: {
@@ -117,7 +117,7 @@ export const updateCashCutIron = async (req, res) => {
             }
 
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -126,9 +126,9 @@ export const updateCashCutIron = async (req, res) => {
 export const updateTodayIron = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.update({
+        const ironCut = await prisma.ironCut.update({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             },
             data: {
                 piecesToday: {
@@ -140,7 +140,7 @@ export const updateTodayIron = async (req, res) => {
             }
 
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -150,9 +150,9 @@ export const updateTodayIron = async (req, res) => {
 export const updateTomorrowIron = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.update({
+        const ironCut = await prisma.ironCut.update({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             },
             data: {
                 piecesTomorrow: {
@@ -161,7 +161,7 @@ export const updateTomorrowIron = async (req, res) => {
             }
 
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -171,9 +171,9 @@ export const updateTomorrowIron = async (req, res) => {
 export const updateCleanCashCutIron = async (req, res) => {
 
     try {
-        const ironControl = await prisma.ironControl.update({
+        const ironCut = await prisma.ironCut.update({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             },
             data: {
                 piecesCashcut: {
@@ -181,7 +181,7 @@ export const updateCleanCashCutIron = async (req, res) => {
                 },
             }
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -189,14 +189,14 @@ export const updateCleanCashCutIron = async (req, res) => {
 
 
 
-export const deleteIronControl = async (req, res) => {
+export const deleteIronCut = async (req, res) => {
     try {
-        const ironControl = await prisma.ironControl.delete({
+        const ironCut = await prisma.ironCut.delete({
             where: {
-                id_ironControl: Number(req.params.id)
+                id_ironCut: Number(req.params.id)
             }
         });
-        res.status(200).json(ironControl);
+        res.status(200).json(ironCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

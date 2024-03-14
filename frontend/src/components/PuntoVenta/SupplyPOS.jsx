@@ -22,7 +22,7 @@ import cloroImg from "../images/cloro.jpg";
 import sanitizanteImg from "../images/sanitizante.jpg";
 import bolsaImg from "../images/bolsa.jpg";
 import ganchosImg from "../images/ganchos.jpg";
-import otrosImg from "../images/otros.jpeg";
+import otrosImg from "../images/otros.jpg";
 import reforzadoImg from "../images/reforzado.jpg";
 import wcImg from "../images/wc.jpg";
 

@@ -20,7 +20,7 @@ import encargoImg from "../images/encargo.jpg";
 import autoservicioImg from "../images/autoservicio.jpg";
 import planchadoImg from "../images/planchado.jpg";
 import tintoreriaImg from "../images/tintoreria.jpg";
-import variosImg from "../images/varios.jpg";
+import variosImg from "../images/varios.jpeg";
 
 export default function PuntoVenta() {
   const { cookies } = useAuth();

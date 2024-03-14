@@ -85,6 +85,24 @@ model IronControl {
   piecesToday    Int @default(0)
   piecesLeft     Int @default(0)
   piecesTomorrow Int @default(0)
+  piecesExpress Int @default(0)
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IronCut {
+  id_ironCut  Int       @id @default(autoincrement())
+  startingDay DateTime? @db.Date
+  endDay      DateTime? @db.Date
+  station1R   Int       @default(0)
+  station1E   Int       @default(0)
+  station2R   Int       @default(0)
+  station2E   Int       @default(0)
+  station3R   Int       @default(0)
+  station3E   Int       @default(0)
+  station4R   Int       @default(0)
+  station4E   Int       @default(0)
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -291,6 +309,7 @@ model IronQueue {
   fk_idStaffMember  Int?
   fk_idIronStation  Int?
   token_id          Int?
+  accounted         Boolean       @default(false)
   serviceStatus     ServiceStatus @default(pending)
 
   ironStation  IronStation? @relation(fields: [fk_idIronStation], references: [id_ironStation], onDelete: Cascade, onUpdate: Cascade)

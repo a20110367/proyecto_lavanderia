@@ -46,6 +46,8 @@ export const createCashCut = async (req, res) => {
 
         });
         var cashCut;
+        console.log("ULTIMO CORTE DE PRODUCTOS")
+        console.log(lastSupplyCashCut._max.id_supplyCashCut)
         if (lastSupplyCashCut._max.id_supplyCashCut == null) {
             cashCut = await prisma.supplyCashCut.create({
                 data: req.body

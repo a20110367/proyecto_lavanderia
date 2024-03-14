@@ -12,6 +12,7 @@ import api from "../../api/api";
 function CorteCaja() {
   const [Cortes, setCortes] = useState([]);
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogVisiblePlancha, setDialogVisiblePlancha] = useState(false);
   const [fechaHora, setFechaHora] = useState("");
   const [workShift, setWorkShift] = useState(
     moment().hours() < 12 ? "morning" : "evening"
@@ -62,6 +63,14 @@ function CorteCaja() {
       message.info("Ya hay un corte de caja activo.");
     } else {
       setDialogVisible(true);
+    }
+  };
+
+  const handleCortePiezas = () => {
+    if (corteActivo) {
+      message.info("Ya hay un corte de caja activo.");
+    } else {
+      setDialogVisiblePlancha(true);
     }
   };
 
@@ -665,19 +674,34 @@ function CorteCaja() {
         <span className="title-strong text-4xl">{cookies.username}</span>
       </h1>
       <p className="text-2xl">{fechaHora}</p>
-      <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
-      <button
-        onClick={handleCorteCaja}
-        className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
-      >
-        Corte de Caja Turno
-      </button>
-      <button
-        onClick={handlePartialCorteCaja}
-        className="mt-4 bg-NonPhotoblue font-bold hover:text-white p-3 rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
-      >
-        Corte de Caja Parcial
-      </button>
+      <div className="flex justify-between">
+        <div className="w-1/2">
+          <p className="text-xl mt-4">¿Desea realizar un corte de caja?</p>
+          <button
+            onClick={handleCorteCaja}
+            className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
+          >
+            Corte de Caja Turno
+          </button>
+          <button
+            onClick={handlePartialCorteCaja}
+            className="mt-4 bg-NonPhotoblue font-bold hover:text-white p-3 rounded-md shadow-lg hover:bg-Cerulean hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
+          >
+            Corte de Caja Parcial
+          </button>
+        </div>
+        <div className="w-1/2">
+          <p className="text-xl mt-4">
+            ¿Desea realizar un corte de piezas de planchado?
+          </p>
+          <button
+            onClick={handleCortePiezas}
+            className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
+          >
+            Corte de Planchado
+          </button>
+        </div>
+      </div>
       {mostrarTabla && (
         <div className="mt-4" style={{ overflowX: "auto" }}>
           <table className="w-full text-sm text-left text-gray-500">
@@ -801,6 +825,31 @@ function CorteCaja() {
         <p>¿Estás seguro de realizar un corte de caja parcial?</p>
       </Modal>
       <Modal
+        title="Confirmar Corte de Piezas de Planchado"
+        open={dialogVisiblePlancha}
+        // onOk={handleConfirmCortePiezas}
+        onCancel={() => setDialogVisiblePlancha(false)}
+        width={400}
+        footer={[
+          <Button
+            key="confirmar"
+            // onClick={handleConfirmCortePiezas}
+            className="btn-print text-white"
+          >
+            Confirmar
+          </Button>,
+          <Button
+            key="cancelar"
+            onClick={() => setDialogVisiblePlancha(false)}
+            className="btn-cancel-modal text-white"
+          >
+            Cancelar
+          </Button>,
+        ]}
+      >
+        <p>¿Estás seguro de realizar un corte de piezas de planchado?</p>
+      </Modal>
+      <Modal
         title="Detalles del Corte"
         open={modalVisible}
         onOk={() => setModalVisible(false)}
@@ -847,9 +896,9 @@ function CorteCaja() {
                 {formatDate(selectedCorte.cashCutD)}
               </p>
               <p className="text-lg">
-                    <span className="font-bold">Hora:</span>{" "}
-                    {moment(selectedCorte.cashCutT).format("HH:mm")}
-                  </p>
+                <span className="font-bold">Hora:</span>{" "}
+                {moment(selectedCorte.cashCutT).format("HH:mm")}
+              </p>
 
               <br />
               <p className="text-lg">

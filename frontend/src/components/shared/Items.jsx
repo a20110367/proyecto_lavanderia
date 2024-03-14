@@ -106,7 +106,7 @@ const items1 = [
     getItem(
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>
-        <span style={{ lineHeight: 1 }}>Servicioss</span>
+        <span style={{ lineHeight: 1 }}>Servicios</span>
       </div>,
       "/historialCaja"
     ),
@@ -116,6 +116,13 @@ const items1 = [
         <span style={{ lineHeight: 1 }}>Productos</span>
       </div>,
       "/historialCajaProductos"
+    ),
+    getItem(
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Planchado</span>
+      </div>,
+      "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
@@ -220,7 +227,7 @@ const items2 = [
     getItem(
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ lineHeight: 1 }}>Historial de cortes</span>
-        <span style={{ lineHeight: 1 }}>Servicioss</span>
+        <span style={{ lineHeight: 1 }}>Servicios</span>
       </div>,
       "/historialCaja"
     ),
@@ -230,6 +237,13 @@ const items2 = [
         <span style={{ lineHeight: 1 }}>Productos</span>
       </div>,
       "/historialCajaProductos"
+    ),
+    getItem(
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <span style={{ lineHeight: 1 }}>Historial de cortes</span>
+        <span style={{ lineHeight: 1 }}>Planchado</span>
+      </div>,
+      "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),

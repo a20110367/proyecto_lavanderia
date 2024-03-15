@@ -9,6 +9,7 @@ import useSWR, { useSWRConfig } from "swr";
 import api from "../../api/api";
 import Swal from "sweetalert2";
 import moment from "moment";
+import { BsFillLightningFill } from "react-icons/bs";
 
 function HistorialCajaPlanchado() {
   const [Cortes, setCortes] = useState([]);
@@ -61,13 +62,13 @@ function HistorialCajaPlanchado() {
 
     if (selectedCorte) {
       pdf.text(`Detalles del Corte`, 10, 10);
-      pdf.text(`ID: ${selectedCorte.id_supplyCashCut}`, 10, 20);
-      pdf.text(`FECHA: ${formatDate(selectedCorte.cashCutD)}`, 10, 30);
+      pdf.text(`ID: ${selectedCorte.id_ironCut}`, 10, 20);
       pdf.text(
-        `HORA: ${moment(selectedCorte.cashCutT).format("HH:mm")}`,
+        `FECHA DE INICIO: ${formatDate(selectedCorte.startingDay)}`,
         10,
-        40
+        30
       );
+      pdf.text(`FECHA DE CIERRE: ${formatDate(selectedCorte.endDay)}`, 10, 40);
       pdf.text(`Usuario: ${selectedCorte.user.name}`, 10, 50);
       pdf.text(
         `Turno: ${
@@ -81,119 +82,65 @@ function HistorialCajaPlanchado() {
         60
       );
 
+      pdf.text(`SERVICIOS POR ESTACION:`, 10, 80);
       pdf.text(
-        `Ordenes Pagadas: ${
-          selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
-        }`,
-        10,
-        80
-      );
-      pdf.text(
-        `Total Jabon: ${
-          selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
+        `Estacion 1 Regular: ${
+          selectedCorte.station1R ? `${selectedCorte.station1R}` : "0"
         }`,
         10,
         100
       );
       pdf.text(
-        `Total Suavitel: ${
-          selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
+        `Estacion 1 Express: ${
+          selectedCorte.totalSuavitel ? `${selectedCorte.totalSuavitel}` : "0"
         }`,
         10,
         110
       );
       pdf.text(
-        `Total Pinol: ${
-          selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
+        `Estacion 2 Regular: ${
+          selectedCorte.station2R ? `${selectedCorte.station2R}` : "0"
         }`,
         10,
         120
       );
       pdf.text(
-        `Total Desengrasante: ${
-          selectedCorte.totalDesengrasante
-            ? `$${selectedCorte.totalDesengrasante}`
-            : "$0"
+        `Estacion 2 Express: ${
+          selectedCorte.station2E ? `${selectedCorte.station2E}` : "0"
         }`,
         10,
         130
       );
       pdf.text(
-        `Total Cloro: ${
-          selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
+        `Estacion 3 Regular: ${
+          selectedCorte.station3R ? `${selectedCorte.station3R}` : "0"
         }`,
         10,
         140
       );
       pdf.text(
-        `Total Sanitizante: ${
-          selectedCorte.totalSanitizante
-            ? `$${selectedCorte.totalSanitizante}`
-            : "$0"
+        `Estacion 3 Express: ${
+          selectedCorte.station3E ? `${selectedCorte.station3E}` : "0"
         }`,
         10,
         150
       );
       pdf.text(
-        `Total Bolsa: ${
-          selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
+        `Estacion 4 Regular: ${
+          selectedCorte.station4R ? `${selectedCorte.station4R}` : "0"
         }`,
         10,
         160
       );
       pdf.text(
-        `Total Reforzado: ${
-          selectedCorte.totalReforzado
-            ? `$${selectedCorte.totalReforzado}`
-            : "$0"
+        `Estacion 4 Express: ${
+          selectedCorte.station4E ? `${selectedCorte.station4E}` : "0"
         }`,
         10,
         170
       );
-      pdf.text(
-        `Total Ganchos: ${
-          selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
-        }`,
-        10,
-        180
-      );
-      pdf.text(
-        `Total WC: ${
-          selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
-        }`,
-        10,
-        190
-      );
-      pdf.text(
-        `Total Otros: ${
-          selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
-        }`,
-        10,
-        200
-      );
-      pdf.text(
-        `Total Tarjeta: ${
-          selectedCorte.totalCredit ? `$${selectedCorte.totalCredit}` : "$0"
-        }`,
-        10,
-        220
-      );
-      pdf.text(
-        `Total Efectivo: ${
-          selectedCorte.totalCash ? `$${selectedCorte.totalCash}` : "$0"
-        }`,
-        10,
-        230
-      );
-      pdf.text(
-        `Total Ingresos: ${
-          selectedCorte.totalIncome ? `$${selectedCorte.totalIncome}` : "$0"
-        }`,
-        10,
-        240
-      );
 
-      pdf.save("detalle_corte_productos.pdf");
+      pdf.save("detalle_corte_piezas.pdf");
     }
   };
 
@@ -214,21 +161,21 @@ function HistorialCajaPlanchado() {
       const endDateStr = endDate.toISOString().split("T")[0];
 
       const filtered = Cortes.filter((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
+        const corteDateStr = new Date(corte.startingDay)
           .toISOString()
           .split("T")[0];
         return corteDateStr >= startDateStr && corteDateStr <= endDateStr;
       });
 
       const startCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
+        const corteDateStr = new Date(corte.startingDay)
           .toISOString()
           .split("T")[0];
         return corteDateStr === startDateStr;
       });
 
       const endCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
+        const corteDateStr = new Date(corte.startingDay)
           .toISOString()
           .split("T")[0];
         return corteDateStr === endDateStr;
@@ -310,14 +257,22 @@ function HistorialCajaPlanchado() {
                 <th>
                   ESTACION 1 <br />
                   EXPRESS
+                  <BsFillLightningFill
+                    className="text-yellow-300 inline-block ml-1.5"
+                    size={15}
+                  />
                 </th>
                 <th>
                   ESTACION 2 <br />
                   REGULAR
                 </th>
-                <th>
+                <th class="text-center">
                   ESTACION 2 <br />
                   EXPRESS
+                  <BsFillLightningFill
+                    className="text-yellow-300 inline-block ml-1.5"
+                    size={15}
+                  />
                 </th>
                 <th>USUARIO</th>
                 <th>TURNO</th>
@@ -342,16 +297,16 @@ function HistorialCajaPlanchado() {
                     <td className="">{formatDate(corte.endDay)}</td>
 
                     <td className="">
-                      ${corte.station1R ? corte.station1R : 0}
+                      {corte.station1R ? corte.station1R : 0}pz
                     </td>
                     <td className="">
-                      ${corte.station1E ? corte.station1E : 0}
+                      {corte.station1E ? corte.station1E : 0}pz
                     </td>
                     <td className="">
-                      {corte.station2R ? corte.station2R : 0}
+                      {corte.station2R ? corte.station2R : 0}pz
                     </td>
                     <td className="">
-                      {corte.station2E ? corte.station2E : 0}
+                      {corte.station2E ? corte.station2E : 0}pz
                     </td>
 
                     <td className="">
@@ -412,10 +367,11 @@ function HistorialCajaPlanchado() {
                   <span className="font-bold">ID:</span>{" "}
                   {selectedCorte.id_ironCut}
                 </p>
-                <p className="text-lg text-white">
+                <p className="text-lg">
                   <span className="font-bold">Usuario:</span>{" "}
                   {selectedCorte.user.name}
                 </p>
+
                 <p className="text-lg">
                   <span className="font-bold">Turno:</span>{" "}
                   {selectedCorte.workShift === "morning"
@@ -432,91 +388,59 @@ function HistorialCajaPlanchado() {
                   <span className="font-bold">Fecha de cierre:</span>{" "}
                   {formatDate(selectedCorte.startingDay)}
                 </p>
-                {/* <p className="text-lg">
-                  <span className="font-bold">Hora:</span>{" "}
-                  {moment(selectedCorte.cashCutT).format("HH:mm")}
-                </p>
-
-                <p className="text-lg">
-                  <span className="font-bold">Ordenes Pagadas: </span>
-                  {selectedCorte.ordersPayed}
-                </p> */}
                 <br />
               </div>
               {/* Tercera Columna */}
               <div className="w-1/3">
                 <p className="text-lg">
-                  <span className="font-bold">Prendas lavas por plancha:</span>
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 1 Regular:</span> $
-                  {selectedCorte.station1R ? selectedCorte.station1R : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 1 Express:</span> $
-                  {selectedCorte.station1E ? selectedCorte.station1E : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 2 Regular:</span> $
-                  {selectedCorte.station2R ? selectedCorte.station2R : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 2 Express:</span> $
-                  {selectedCorte.station2E ? selectedCorte.station2E : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 3 Regular:</span> $
-                  {selectedCorte.station3R ? selectedCorte.station3R : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 3 Express:</span> $
-                  {selectedCorte.station3E ? selectedCorte.station3E : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 4 Regular:</span> $
-                  {selectedCorte.station4R ? selectedCorte.station4R : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Estacion 4 Express:</span> $
-                  {selectedCorte.station4E ? selectedCorte.station4E : 0}
-                </p>
-                {/* <p className="text-lg">
-                  <span className="font-bold">Ganchos:</span> $
-                  {selectedCorte.totalGanchos ? selectedCorte.totalGanchos : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">WC:</span> $
-                  {selectedCorte.totalWC ? selectedCorte.totalWC : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Otros:</span> $
-                  {selectedCorte.totalOtros ? selectedCorte.totalOtros : 0}
-                </p> */}
-              </div>
-              {/* Segunda Columna */}
-              {/* <div className="w-1/2">
-                <p className="text-lg">
                   <span className="font-bold">
-                    Ingresos totales de productos:
+                    Prendas Regulares por Plancha:
                   </span>
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">
-                    Ingreso de productos con Efectivo:
-                  </span>{" "}
-                  ${selectedCorte.totalCash ? selectedCorte.totalCash : 0}
+                  <span className="font-bold">Estacion 1 Regular: </span>
+                  {selectedCorte.station1R ? selectedCorte.station1R : 0}
                 </p>
+
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 2 Regular: </span>
+                  {selectedCorte.station2R ? selectedCorte.station2R : 0}
+                </p>
+
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 3 Regular: </span>
+                  {selectedCorte.station3R ? selectedCorte.station3R : 0}
+                </p>
+
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 4 Regular: </span>
+                  {selectedCorte.station4R ? selectedCorte.station4R : 0}
+                </p>
+              </div>
+              {/* Segunda Columna */}
+              <div className="w-1/3">
                 <p className="text-lg">
                   <span className="font-bold">
-                    Ingreso de productos con Tarjeta:
-                  </span>{" "}
-                  ${selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
+                    Prendas Express por Plancha:
+                  </span>
                 </p>
                 <p className="text-lg">
-                  <span className="font-bold">Ingreso total de productos:</span>{" "}
-                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+                  <span className="font-bold">Estacion 1 Express: </span>
+                  {selectedCorte.station1E ? selectedCorte.station1E : 0}
                 </p>
-              </div> */}
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 2 Express: </span>
+                  {selectedCorte.station2E ? selectedCorte.station2E : 0}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 3 Express: </span>
+                  {selectedCorte.station3E ? selectedCorte.station3E : 0}
+                </p>
+                <p className="text-lg">
+                  <span className="font-bold">Estacion 4 Express: </span>
+                  {selectedCorte.station4E ? selectedCorte.station4E : 0}
+                </p>
+              </div>
             </div>
           )}
         </Modal>

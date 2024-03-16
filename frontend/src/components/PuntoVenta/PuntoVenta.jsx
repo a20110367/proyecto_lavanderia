@@ -316,7 +316,7 @@ export default function PuntoVenta() {
       drycleanPieces = pieces;
     }
 
-    date = (ironDate ? deliveryDate.add('days', 5).toISOString() : deliveryDate)
+    date = (ironDate ? deliveryDate.add(1,'days').toISOString() : deliveryDate)
 
     try {
       // GEN ORDER
@@ -438,7 +438,7 @@ export default function PuntoVenta() {
             showCancelButton: true,
             confirmButtonColor: "#034078",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Si, genera el pedido para mañana!"
+            confirmButtonText: "Si, generar el pedido!"
           }).then(async (result) => {
             if (result.isConfirmed) {
               Swal.fire({

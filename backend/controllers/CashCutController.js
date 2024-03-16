@@ -14,6 +14,7 @@ export const getCashCuts = async (req, res) => {
                     },
                 },
             },
+            take:730,
         });
         res.status(200).json(response);
     } catch (e) {

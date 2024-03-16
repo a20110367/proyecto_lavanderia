@@ -28,6 +28,7 @@ import MessageRoute from './routes/MessageRoute.js'
 import IronControlRoute from './routes/IronControlRoute.js'
 import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
 import OtherService from './routes/ServiceOtherServiceRoute.js'
+import IronCutRoute from './routes/IronCutRoute.js';
 
 import SupplyRoute  from "./routes/SupplyRoute.js";
 import SupplyCashCutRoute  from "./routes/SupplyCashCutRoute.js";
@@ -75,6 +76,7 @@ app.use(SupplyOrderDetailRoute)
 app.use(SupplyPaymentRoute)
 app.use(SupplyCashCutRoute)
 app.use(SupplyOrderRoute)
+app.use(IronCutRoute)
 
 
 app.listen(process.env.APP_PORT, (req, res) => {

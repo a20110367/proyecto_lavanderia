@@ -12,8 +12,6 @@ import {
     updateCleanCashCutIron,
     deleteIronControl
 
-
-
 } from "../controllers/IronControlController.js";
 
 const router = express.Router();

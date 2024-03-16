@@ -1008,10 +1008,15 @@ PATCH  http://localhost:5000/closeSupplyCashCut/7
 ###
 POST http://localhost:5000/supplyCashCuts
 Content-Type: application/json
-
 {
    "fk_user":3,
    "cashCutD":"2024-02-17T23:13:47.753Z",
    "cashCutT":"2024-02-17T23:13:47.753Z",
    "workShift":"evening"
   }
+
+###
+
+GET   http://localhost:5000/calculateIronCut
+
+###

@@ -2,9 +2,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getIronCut = async (req, res) => {
+export const getIronCuts = async (req, res) => {
     try {
-        const response = await prisma.ironCut.findMany();
+        const response = await prisma.ironCut.findMany({
+
+            take: 730,
+        });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });
@@ -67,6 +70,383 @@ export const updateIronCut = async (req, res) => {
     }
 }
 
+export const calculateIronCut = async (req, res) => {
+
+    try {
+        const ironCutE1R = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true,
+
+            },
+
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 1,
+                            }
+                        },
+                    },
+
+                    {
+                        express: false,
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const ironCutE1E = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true,
+            },
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 1,
+                            }
+                        },
+                    },
+
+                    {
+                        express: true,
+                    },
+
+                ],
+
+            },
+
+        });
+
+
+        const ironCutE2R = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 2,
+                            }
+                        },
+                    },
+
+                    {
+                        express: false,
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const ironCutE2E = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 2,
+                            }
+                        },
+                    },
+
+                    {
+                        express: true,
+
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const ironCutE3R = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 3,
+                            }
+                        },
+                    },
+
+                    {
+                        express: false,
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const ironCutE3E = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 3,
+                            }
+                        },
+                    },
+
+                    {
+                        express: true,
+                    },
+
+                ],
+
+            },
+
+        });
+
+
+        const ironCutE4R = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            }
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 4,
+                            }
+                        },
+                    },
+
+                    {
+                        express: false,
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const ironCutE4E = await prisma.serviceOrder.aggregate({
+            _sum: {
+                ironPieces: true
+
+            },
+
+            where: {
+                AND: [
+                    {
+                        IronQueue: {
+                            some: {
+                                accounted: false,
+                            },
+
+                        },
+
+                    },
+                    {
+                        IronQueue: {
+                            some: {
+                                fk_idIronStation: 4,
+                            },
+
+                        },
+                    },
+
+                    {
+                        express: true,
+                    },
+
+                ],
+
+            },
+
+        });
+
+        const startDate = await prisma.serviceOrder.findFirst({
+            where: {
+                IronQueue: {
+                    some: {
+                        accounted: false,
+                    },
+
+                },
+            },
+
+            select: {
+                created: true,
+            },
+
+        });
+
+        const today = new Date().toJSON();
+
+        const ordersUpdate = await prisma.ironQueue.updateMany({
+            where: {
+                accounted: false,
+
+            },
+
+            data: {
+                accounted: true,
+            },
+
+        });
+
+        if (ironCutE1R._sum.ironPieces === null)
+            ironCutE1R._sum.ironPieces = 0
+
+        if (ironCutE1E._sum.ironPieces === null)
+            ironCutE1E._sum = 0
+
+        if (ironCutE2R._sum.ironPieces === null)
+            ironCutE2R._sum.ironPieces = 0
+
+        if (ironCutE2E._sum.ironPieces === null)
+            ironCutE2E._sum.ironPieces = 0
+
+        if (ironCutE3R._sum.ironPieces === null)
+            ironCutE3R._sum.ironPieces = 0
+
+        if (ironCutE3E._sum.ironPieces === null)
+            ironCutE3E._sum.ironPieces = 0
+
+        if (ironCutE4R._sum.ironPieces === null)
+            ironCutE4R._sum.ironPieces = 0
+
+        if (ironCutE4E._sum.ironPieces === null)
+            ironCutE4E._sum.ironPieces = 0
+
+
+        const response =
+        {
+            "station1R": ironCutE1R._sum.ironPieces,
+            "station1E": ironCutE1E._sum.ironPieces,
+            "station2R": ironCutE2R._sum.ironPieces,
+            "station2E": ironCutE2E._sum.ironPieces,
+            "station3R": ironCutE3R._sum.ironPieces,
+            "station3E": ironCutE3E._sum.ironPieces,
+            "station4R": ironCutE4R._sum.ironPieces,
+            "station4E": ironCutE4E._sum.ironPieces,
+            "startingDay": startDate.created,
+            "endDay": today
+
+
+        }
+
+        const ironCutCreate = await prisma.ironCut.create({
+            data: {
+
+                "station1R": ironCutE1R._sum.ironPieces,
+                "station1E": ironCutE1E._sum.ironPieces,
+                "station2R": ironCutE2R._sum.ironPieces,
+                "station2E": ironCutE2E._sum.ironPieces,
+                "station3R": ironCutE3R._sum.ironPieces,
+                "station3E": ironCutE3E._sum.ironPieces,
+                "station4R": ironCutE4R._sum.ironPieces,
+                "station4E": ironCutE4E._sum.ironPieces,
+                "startingDay": startDate.created,
+                "endDay": today
+
+            },
+
+        });
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
 //Actualiza los contadores al inicio de un dia de trabajo
 export const updateDiaryIron = async (req, res) => {
 
@@ -93,6 +473,8 @@ export const updateDiaryIron = async (req, res) => {
             }
 
         });
+
+
 
         res.status(200).json(ironCutCurrent);
     } catch (e) {
@@ -122,70 +504,7 @@ export const updateCashCutIron = async (req, res) => {
         res.status(400).json({ msg: e.message });
     }
 }
-// Actualiza las piezas del dia, siempre y cuando este admita mas piezas a planchar y no revasemos el limite
-export const updateTodayIron = async (req, res) => {
 
-    try {
-        const ironCut = await prisma.ironCut.update({
-            where: {
-                id_ironCut: Number(req.params.id)
-            },
-            data: {
-                piecesToday: {
-                    increment: req.body.pieces
-                },
-                piecesLeft: {
-                    increment: req.body.pieces
-                }
-            }
-
-        });
-        res.status(200).json(ironCut);
-    } catch (e) {
-        res.status(400).json({ msg: e.message });
-    }
-}
-
-//Actualiza las piezas de el dia siguiente si ya hemos revasado el limite
-export const updateTomorrowIron = async (req, res) => {
-
-    try {
-        const ironCut = await prisma.ironCut.update({
-            where: {
-                id_ironCut: Number(req.params.id)
-            },
-            data: {
-                piecesTomorrow: {
-                    increment: req.body.pieces
-                },
-            }
-
-        });
-        res.status(200).json(ironCut);
-    } catch (e) {
-        res.status(400).json({ msg: e.message });
-    }
-}
-
-//inicializa los valores del corte en caso de ser necesario
-export const updateCleanCashCutIron = async (req, res) => {
-
-    try {
-        const ironCut = await prisma.ironCut.update({
-            where: {
-                id_ironCut: Number(req.params.id)
-            },
-            data: {
-                piecesCashcut: {
-                    set: 0,
-                },
-            }
-        });
-        res.status(200).json(ironCut);
-    } catch (e) {
-        res.status(400).json({ msg: e.message });
-    }
-}
 
 
 

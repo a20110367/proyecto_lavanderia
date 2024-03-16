@@ -85,7 +85,7 @@ model IronControl {
   piecesToday    Int @default(0)
   piecesLeft     Int @default(0)
   piecesTomorrow Int @default(0)
-  piecesExpress Int @default(0)
+  piecesExpress  Int @default(0)
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt

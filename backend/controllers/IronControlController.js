@@ -4,7 +4,11 @@ const prisma = new PrismaClient();
 
 export const getIronControl = async (req, res) => {
     try {
-        const response = await prisma.ironControl.findMany();
+        const response = await prisma.ironControl.findMany({
+
+            take:730,
+
+        });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });

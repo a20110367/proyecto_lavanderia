@@ -801,10 +801,11 @@ export const ironCutTicket = async (req, res) => {
             printer.newLine();
 
             printer.println(`Cajero: ${ironCut.casher}`)
-            printer.println(`Fecha: ${formatDate(ironCut.startingDay)}`)
-            printer.println(`Hora: ${formatTicketTime(ironCut.startingDay)}`)
-
+            printer.println(`Fecha de Inicio: ${formatDate(ironCut.startingDay)}`)
+            printer.println(`Hora de Inicio: ${formatTicketTime(ironCut.startingDay)}`)
             printer.newLine();
+            printer.println(`Fecha de Termino: ${formatDate(ironCut.endDay)}`)
+            printer.println(`Hora de Termino: ${formatTicketTime(ironCut.endDay)}`)
 
             printer.println(`Estación Regular 1: ${ironCut.station1R} Piezas`)
             printer.println(`Estación Express 1: ${ironCut.station1E} Piezas`)

@@ -316,7 +316,7 @@ export default function PuntoVenta() {
       drycleanPieces = pieces;
     }
 
-    date = ( ironDate ? deliveryDate.add('days', 5).toISOString() : deliveryDate)
+    date = (ironDate ? deliveryDate.add('days', 5).toISOString() : deliveryDate)
 
     try {
       // GEN ORDER
@@ -386,6 +386,19 @@ export default function PuntoVenta() {
         order: order,
       });
 
+      localStorage.setItem("lastSelectedClient", clientName);
+      localStorage.setItem("returningFromPuntoVenta", "true");
+      localStorage.setItem(
+        "numberOfPieces",
+        pieces +
+        (localStorage.getItem("numberOfPieces")
+          ? parseInt(localStorage.getItem("numberOfPieces"))
+          : 0)
+      );
+
+      // Regresar a la página anterior
+      window.history.back();
+
     } catch (err) {
       console.error(err)
       if (!err?.response) {
@@ -441,25 +454,12 @@ export default function PuntoVenta() {
           });
           setIsModalVisible(false);
         }
-      }else{
+      } else {
         saveOrderAndGenerateTicket()
       }
     } catch (err) {
       console.log(err);
     }
-
-    localStorage.setItem("lastSelectedClient", clientName);
-    localStorage.setItem("returningFromPuntoVenta", "true");
-    localStorage.setItem(
-      "numberOfPieces",
-      pieces +
-      (localStorage.getItem("numberOfPieces")
-        ? parseInt(localStorage.getItem("numberOfPieces"))
-        : 0)
-    );
-
-    // Regresar a la página anterior
-    window.history.back();
   };
 
   const filteredServices = shouldShowAllServices

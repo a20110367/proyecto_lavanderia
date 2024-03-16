@@ -517,7 +517,6 @@ function CorteCaja() {
 
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
-
     if (selectedCorte) {
       // pdf.text(`Detalles del Corte`, 10, 10);
       // pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
@@ -665,6 +664,27 @@ function CorteCaja() {
       });
     }
   };
+
+  const handleConfirmCortePiezas = async () => {
+    try{
+      const res = await api.get('/calculateIronCut')
+      if(res){
+        await api.post('/generateIronCutTicket',{
+          ironCut: res.data
+        })
+      }else{
+        Swal.fire({
+          icon: "error",
+          title: "Ya se hizo el Corte de Planchado",
+          text: "Ya se hizo el Corte de Planchado o No hay piezas que contar.",
+          confirmButtonColor: "#034078",
+        });
+      }
+      setDialogVisiblePlancha(false);
+    }catch(err){
+      console.error(err)
+    }
+  }
 
   return (
     <div className="text-center mt-4">
@@ -827,13 +847,13 @@ function CorteCaja() {
       <Modal
         title="Confirmar Corte de Piezas de Planchado"
         open={dialogVisiblePlancha}
-        // onOk={handleConfirmCortePiezas}
+        onOk={handleConfirmCortePiezas}
         onCancel={() => setDialogVisiblePlancha(false)}
         width={400}
         footer={[
           <Button
             key="confirmar"
-            // onClick={handleConfirmCortePiezas}
+            onClick={handleConfirmCortePiezas}
             className="btn-print text-white"
           >
             Confirmar

@@ -278,7 +278,7 @@ function HistorialCajaPlanchado() {
                 .map((corte) => (
                   <tr
                     className="bg-white border-b"
-                    key={corte.id_supplyCashCut}
+                    key={corte.id_ironCut}
                   >
                     <td className="">{corte.id_ironCut}</td>
                     <td className="">{formatDate(corte.startingDay)}</td>

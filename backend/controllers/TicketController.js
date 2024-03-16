@@ -780,8 +780,8 @@ export const ironCutTicket = async (req, res) => {
     try {
         const { ironCut } = req.body
 
-        printIronCut(ironCut)
-        printIronCut(ironCut)
+        await printIronCut(ironCut)
+        await printIronCut(ironCut)
 
         res.status(200).json("Print done!");
 

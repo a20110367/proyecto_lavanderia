@@ -28,10 +28,10 @@ function HistorialCajaPlanchado() {
 
   const fetchCashCuts = async () => {
     try {
-      const response = await api.get("/supplyCashCuts");
+      const response = await api.get("/ironCuts");
       return response.data;
     } catch (error) {
-      console.error("Error fetching cash cuts:", error);
+      console.error("Error fetching cash cuts pieces  :", error);
       return [];
     }
   };
@@ -255,7 +255,7 @@ function HistorialCajaPlanchado() {
                   ESTACION 2 <br />
                   REGULAR
                 </th>
-                <th class="text-center">
+                <th className="text-center">
                   ESTACION 2 <br />
                   EXPRESS
                   <BsFillLightningFill

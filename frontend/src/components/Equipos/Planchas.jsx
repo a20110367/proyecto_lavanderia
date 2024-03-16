@@ -64,9 +64,9 @@ function Planchas() {
       </div>
       <div className="w-full pt-4">
          <div className="flex justify-between items-center w-full pt-4">
-          <button className="btn-primary" onClick={() => navigate("/addPlancha")}>
+          {/* <button className="btn-primary" onClick={() => navigate("/addPlancha")}>
             Añadir Nueva Plancha
-          </button>
+          </button> */}
         </div>
         <div className="shadow-container" style={{ overflowX: "auto" }}>
           <table>
@@ -126,16 +126,16 @@ function Planchas() {
                       >
                         <AiFillEdit />
                       </button>
-                      <button
+                      {/* <button
                         onClick={() =>
                           handleClickOpen(iron.description, iron.id_ironStation)
                         }
                         className="btn-cancel"
                       >
                         <BsFillTrashFill />
-                      </button>
+                      </button> */}
 
-                      <Dialog
+                      {/* <Dialog
                         open={open}
                         onClose={handleClose}
                         aria-labelledby="alert-dialog-title"
@@ -158,7 +158,7 @@ function Planchas() {
                             Eliminar
                           </Button>
                         </DialogActions>
-                      </Dialog>
+                      </Dialog> */}
                     </td>
                   </tr>
                 ))}

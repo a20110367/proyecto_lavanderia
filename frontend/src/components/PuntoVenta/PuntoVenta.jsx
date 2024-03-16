@@ -176,10 +176,10 @@ export default function PuntoVenta() {
         const updatedCart = cart.map((item) =>
           item.id_service === serviceId
             ? {
-                ...item,
-                quantity: item.quantity + 1,
-                totalPrice: item.price * (item.quantity + 1),
-              }
+              ...item,
+              quantity: item.quantity + 1,
+              totalPrice: item.price * (item.quantity + 1),
+            }
             : item
         );
         setCart(updatedCart);
@@ -229,15 +229,15 @@ export default function PuntoVenta() {
             categoryId === 3
               ? setPieces(pieces - item.pieces)
               : categoryId === 4
-              ? setPieces(pieces - item.pieces)
-              : "";
+                ? setPieces(pieces - item.pieces)
+                : "";
             return { ...item, quantity: item.quantity - 1 };
           } else {
             categoryId === 3
               ? setPieces(pieces - item.pieces)
               : categoryId === 4
-              ? setPieces(pieces - item.pieces)
-              : "";
+                ? setPieces(pieces - item.pieces)
+                : "";
             return null;
           }
         } else {
@@ -288,11 +288,8 @@ export default function PuntoVenta() {
     window.history.back();
   };
 
-  const handleSaveAndGenerateTicket = async () => {
-    setIsSaved(true);
-    setIsModalVisible(false);
+  const saveOrderAndGenerateTicket = async (ironDate) => {
     const arrayService = [];
-
     let noOfItems = 0;
     cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
@@ -311,6 +308,7 @@ export default function PuntoVenta() {
 
     let ironPieces = null;
     let drycleanPieces = null;
+    let date = null;
 
     if (categoryId === 3) {
       ironPieces = pieces;
@@ -318,7 +316,10 @@ export default function PuntoVenta() {
       drycleanPieces = pieces;
     }
 
+    date = ( ironDate ? deliveryDate.add('days', 5).toISOString() : deliveryDate)
+
     try {
+      // GEN ORDER
       const res = await api.post(postUrl, {
         serviceOrder: {
           totalPrice: totalWithDiscount,
@@ -329,8 +330,8 @@ export default function PuntoVenta() {
           fk_user: cookies.token,
           receptionDate: purchaseDate.toISOString(),
           receptionTime: purchaseDate.toISOString(),
-          scheduledDeliveryDate: deliveryDate.toISOString(),
-          scheduledDeliveryTime: deliveryDate.toISOString(),
+          scheduledDeliveryDate: date,
+          scheduledDeliveryTime: date,
           express: isExpress,
           ironPieces: ironPieces,
           drycleanPieces: drycleanPieces,
@@ -340,24 +341,8 @@ export default function PuntoVenta() {
         services: arrayService,
       });
       // orderTicket(order);
-      if (categoryId === 3) {
-        if (numberOfPieces + pieces < 130 || isExpress) {
-          await api.patch(`/todayIronControl/${lastIronControlId}`, {
-            pieces: pieces,
-          });
-        } else {
-          await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
-            pieces: pieces,
-          });
-          Swal.fire({
-            icon: "error",
-            title: "Se ha superado el No. de Piezas diarias",
-            text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
-            confirmButtonColor: "#034078",
-          });
-          setIsModalVisible(false);
-        }
-      }
+
+      // PAYMENT ADVANCE
       const idOrder = res.data.serviceOrder.id_order;
       console.log(idOrder);
       if (payForm === "advance") {
@@ -372,6 +357,7 @@ export default function PuntoVenta() {
           },
         });
       }
+
       const order = {
         id_order: res.data.serviceOrder.id_order,
         payForm: payForm,
@@ -399,8 +385,9 @@ export default function PuntoVenta() {
       await api.post("/generateTicket", {
         order: order,
       });
+
     } catch (err) {
-      console.log(err);
+      console.error(err)
       if (!err?.response) {
         setErrMsg("Sin respuesta del Servidor");
       } else if (err.response.status === 400) {
@@ -417,15 +404,58 @@ export default function PuntoVenta() {
         );
       }
     }
+  }
+
+  const handleSave = async () => {
+    setIsSaved(true);
+    setIsModalVisible(false);
+
+    try {
+      if (categoryId === 3) {
+        if (numberOfPieces + pieces < 130 || isExpress) {
+          saveOrderAndGenerateTicket()
+          await api.patch(`/todayIronControl/${lastIronControlId}`, {
+            pieces: pieces,
+          });
+        } else {
+          Swal.fire({
+            title: "Se ha superado el No. de Piezas diarias",
+            text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#034078",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, genera el pedido para mañana!"
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: "Pedido Generado!",
+                text: "Tu pedido ha sido generado con exito.",
+                icon: "success"
+              });
+              saveOrderAndGenerateTicket()
+              await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
+                pieces: pieces,
+              });
+            }
+          });
+          setIsModalVisible(false);
+        }
+      }else{
+        saveOrderAndGenerateTicket()
+      }
+    } catch (err) {
+      console.log(err);
+    }
 
     localStorage.setItem("lastSelectedClient", clientName);
     localStorage.setItem("returningFromPuntoVenta", "true");
     localStorage.setItem(
       "numberOfPieces",
       pieces +
-        (localStorage.getItem("numberOfPieces")
-          ? parseInt(localStorage.getItem("numberOfPieces"))
-          : 0)
+      (localStorage.getItem("numberOfPieces")
+        ? parseInt(localStorage.getItem("numberOfPieces"))
+        : 0)
     );
 
     // Regresar a la página anterior
@@ -435,50 +465,50 @@ export default function PuntoVenta() {
   const filteredServices = shouldShowAllServices
     ? data
     : data.filter((service) => {
-        // Aquí aplicamos las condiciones para filtrar los servicios
-        if (
-          serviceType === "encargo" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("planchado") &&
-          !service.description.toLowerCase().includes("tintoreria") &&
-          !service.description.toLowerCase().includes("varios")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "planchado" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "tintoreria" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("lavado") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "varios" &&
-          !service.description.toLowerCase().includes("autoservicio") &&
-          !service.description.toLowerCase().includes("encargo") &&
-          !service.description.toLowerCase().includes("tintoreria") &&
-          !service.description.toLowerCase().includes("planchado")
-        ) {
-          return true;
-        }
-        if (
-          serviceType === "autoservicio" &&
-          service.description.toLowerCase().includes("autoservicio")
-        ) {
-          return true;
-        }
-        return false;
-      });
+      // Aquí aplicamos las condiciones para filtrar los servicios
+      if (
+        serviceType === "encargo" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("planchado") &&
+        !service.description.toLowerCase().includes("tintoreria") &&
+        !service.description.toLowerCase().includes("varios")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "planchado" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "tintoreria" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("lavado") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "varios" &&
+        !service.description.toLowerCase().includes("autoservicio") &&
+        !service.description.toLowerCase().includes("encargo") &&
+        !service.description.toLowerCase().includes("tintoreria") &&
+        !service.description.toLowerCase().includes("planchado")
+      ) {
+        return true;
+      }
+      if (
+        serviceType === "autoservicio" &&
+        service.description.toLowerCase().includes("autoservicio")
+      ) {
+        return true;
+      }
+      return false;
+    });
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -546,14 +576,14 @@ export default function PuntoVenta() {
           {serviceType === "encargo"
             ? "Lista de Servicios de Lavandería"
             : serviceType === "autoservicio"
-            ? "Lista de Servicios de Autoservicio"
-            : serviceType === "planchado"
-            ? "Lista de Servicios de Planchado"
-            : serviceType === "tintoreria"
-            ? "Lista de Servicios de Tintorería"
-            : serviceType === "varios"
-            ? "Lista de Servicios Encargo Varios"
-            : "Lista de Servicios"}
+              ? "Lista de Servicios de Autoservicio"
+              : serviceType === "planchado"
+                ? "Lista de Servicios de Planchado"
+                : serviceType === "tintoreria"
+                  ? "Lista de Servicios de Tintorería"
+                  : serviceType === "varios"
+                    ? "Lista de Servicios Encargo Varios"
+                    : "Lista de Servicios"}
         </strong>
       </div>
       <div className="relative w-full">
@@ -586,7 +616,7 @@ export default function PuntoVenta() {
                     <img
                       src={
                         categoryImages[
-                          service.Category.categoryDescription.toLowerCase()
+                        service.Category.categoryDescription.toLowerCase()
                         ]
                       }
                       alt={`Imagen de ${service.description}`}
@@ -600,11 +630,10 @@ export default function PuntoVenta() {
                         ${service.price}
                       </h5>
                       <button
-                        className={`${
-                          isAddButtonDisabled
-                            ? "bg-gray-400"
-                            : "bg-blue-500 hover:bg-blue-700"
-                        } text-white font-bold py-2 px-4 rounded mt-2`}
+                        className={`${isAddButtonDisabled
+                          ? "bg-gray-400"
+                          : "bg-blue-500 hover:bg-blue-700"
+                          } text-white font-bold py-2 px-4 rounded mt-2`}
                         onClick={() => addToCart(service.id_service, service)}
                         disabled={isAddButtonDisabled}
                       >
@@ -640,7 +669,7 @@ export default function PuntoVenta() {
                       <img
                         src={
                           categoryImages[
-                            service.Category.categoryDescription.toLowerCase()
+                          service.Category.categoryDescription.toLowerCase()
                           ]
                         }
                         alt={`Imagen de ${service.description}`}
@@ -775,7 +804,7 @@ export default function PuntoVenta() {
                     <button
                       key="submit"
                       className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleSaveAndGenerateTicket}
+                      onClick={handleSave}
                       disabled={
                         serviceType === "autoservicio"
                           ? false
@@ -913,7 +942,7 @@ export default function PuntoVenta() {
                       }}
                       value={
                         serviceType === "autoservicio" ||
-                        serviceType === "tintoreria"
+                          serviceType === "tintoreria"
                           ? "advance"
                           : payForm
                       }
@@ -935,20 +964,20 @@ export default function PuntoVenta() {
                     </Select>
                     {(payForm === "advance" ||
                       serviceType === "autoservicio") && (
-                      <div>
-                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                          Método de Pago Anticipado:
-                        </p>
-                        <Select
-                          style={{ width: "100%", fontSize: "16px" }}
-                          onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
-                        >
-                          <Option value="credit">Tarjeta</Option>
-                          <Option value="cash">Efectivo</Option>
-                        </Select>
-                      </div>
-                    )}
+                        <div>
+                          <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                            Método de Pago Anticipado:
+                          </p>
+                          <Select
+                            style={{ width: "100%", fontSize: "16px" }}
+                            onChange={(value) => setPayMethod(value)}
+                            value={payMethod}
+                          >
+                            <Option value="credit">Tarjeta</Option>
+                            <Option value="cash">Efectivo</Option>
+                          </Select>
+                        </div>
+                      )}
                   </div>
                 </Modal>
               </div>

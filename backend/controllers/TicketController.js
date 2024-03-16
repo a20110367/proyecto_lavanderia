@@ -775,3 +775,58 @@ export const pettyCashTicket = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+export const ironCutTicket = async (req, res) => {
+    try {
+        const { ironCut } = req.body
+
+        printer.clear();
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        if (ironCut) {
+            printer.setTextQuadArea()
+
+            printer.println('CORTE DE PLANCHADO')
+
+            printer.drawLine();
+
+            printer.println(`Folio No.: ${ironCut.id_ironCut}`)
+
+            printer.newLine();
+
+            printer.println(`Cajero: ${ironCut.casher}`)
+            printer.println(`Fecha: ${formatDate(ironCut.startingDay)}`)
+            printer.println(`Hora: ${formatTicketTime(ironCut.startingDay)}`)
+
+            printer.newLine();
+
+            printer.println(`Estación Regular 1: ${ironCut.station1R} Piezas`)
+            printer.println(`Estación Express 1: ${ironCut.station1E} Piezas`)
+            printer.newLine()
+            printer.println(`Estación Regular 2: ${ironCut.station2R} Piezas`)
+            printer.println(`Estación Express 2: ${ironCut.station2E} Piezas`)
+            printer.newLine()
+            printer.println(`Estación Regular 3: ${ironCut.station3R} Piezas`)
+            printer.println(`Estación Express 3: ${ironCut.station3E} Piezas`)
+            printer.newLine()
+            printer.println(`Estación Regular 4: ${ironCut.station4R} Piezas`)
+            printer.println(`Estación Express 4: ${ironCut.station4E} Piezas`)
+        }
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}

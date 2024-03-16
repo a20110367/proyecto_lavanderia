@@ -820,6 +820,7 @@ const printIronCut = async (ironCut) => {
         printer.newLine();
         printer.println(`Fecha de Termino: ${formatDate(ironCut.endDay)}`)
         printer.println(`Hora de Termino: ${formatTicketTime(ironCut.endDay)}`)
+        printer.newLine()
 
         printer.println(`Estación Regular 1: ${ironCut.station1R} Piezas`)
         printer.println(`Estación Express 1: ${ironCut.station1E} Piezas`)

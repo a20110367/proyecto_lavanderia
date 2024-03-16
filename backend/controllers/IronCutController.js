@@ -407,41 +407,46 @@ export const calculateIronCut = async (req, res) => {
             ironCutE4E._sum.ironPieces = 0
 
 
-        const response =
-        {
-            "station1R": ironCutE1R._sum.ironPieces,
-            "station1E": ironCutE1E._sum.ironPieces,
-            "station2R": ironCutE2R._sum.ironPieces,
-            "station2E": ironCutE2E._sum.ironPieces,
-            "station3R": ironCutE3R._sum.ironPieces,
-            "station3E": ironCutE3E._sum.ironPieces,
-            "station4R": ironCutE4R._sum.ironPieces,
-            "station4E": ironCutE4E._sum.ironPieces,
-            "startingDay": startDate.created,
-            "endDay": today
+        // const response =
+        // {
+        //     "station1R": ironCutE1R._sum.ironPieces,
+        //     "station1E": ironCutE1E._sum.ironPieces,
+        //     "station2R": ironCutE2R._sum.ironPieces,
+        //     "station2E": ironCutE2E._sum.ironPieces,
+        //     "station3R": ironCutE3R._sum.ironPieces,
+        //     "station3E": ironCutE3E._sum.ironPieces,
+        //     "station4R": ironCutE4R._sum.ironPieces,
+        //     "station4E": ironCutE4E._sum.ironPieces,
+        //     "startingDay": startDate.created,
+        //     "endDay": today
 
 
+        // }
+        console.log(startDate)
+        if(startDate){
+            const ironCutCreate = await prisma.ironCut.create({
+                data: {
+    
+                    "station1R": ironCutE1R._sum.ironPieces,
+                    "station1E": ironCutE1E._sum.ironPieces,
+                    "station2R": ironCutE2R._sum.ironPieces,
+                    "station2E": ironCutE2E._sum.ironPieces,
+                    "station3R": ironCutE3R._sum.ironPieces,
+                    "station3E": ironCutE3E._sum.ironPieces,
+                    "station4R": ironCutE4R._sum.ironPieces,
+                    "station4E": ironCutE4E._sum.ironPieces,
+                    "startingDay": startDate.created,
+                    "endDay": today
+    
+                },
+    
+            });
+    
+            res.status(200).json(ironCutCreate);
+        }else{
+            res.status(200).json(false);
         }
-
-        const ironCutCreate = await prisma.ironCut.create({
-            data: {
-
-                "station1R": ironCutE1R._sum.ironPieces,
-                "station1E": ironCutE1E._sum.ironPieces,
-                "station2R": ironCutE2R._sum.ironPieces,
-                "station2E": ironCutE2E._sum.ironPieces,
-                "station3R": ironCutE3R._sum.ironPieces,
-                "station3E": ironCutE3E._sum.ironPieces,
-                "station4R": ironCutE4R._sum.ironPieces,
-                "station4E": ironCutE4E._sum.ironPieces,
-                "startingDay": startDate.created,
-                "endDay": today
-
-            },
-
-        });
-
-        res.status(200).json(response);
+        
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

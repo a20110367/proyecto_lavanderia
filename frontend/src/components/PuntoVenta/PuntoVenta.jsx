@@ -433,7 +433,7 @@ export default function PuntoVenta() {
                 text: "Tu pedido ha sido generado con exito.",
                 icon: "success"
               });
-              saveOrderAndGenerateTicket()
+              saveOrderAndGenerateTicket(true)
               await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
                 pieces: pieces,
               });

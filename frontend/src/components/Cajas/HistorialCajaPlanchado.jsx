@@ -12,6 +12,43 @@ import moment from "moment";
 import { BsFillLightningFill } from "react-icons/bs";
 
 function HistorialCajaPlanchado() {
+  const dummyData = [
+    {
+      id_ironCut: 1,
+      startingDay: new Date("2024-03-10"),
+      endDay: new Date("2024-03-11"),
+      station1R: 100,
+      station1E: 50,
+      station2R: 120,
+      station2E: 60,
+      user: { name: "Usuario 1", firsLN: "Apellido 1", secondLN: "Apellido 2" },
+      workShift: "morning",
+    },
+    {
+      id_ironCut: 2,
+      startingDay: new Date("2024-03-11"),
+      endDay: new Date("2024-03-12"),
+      station1R: 80,
+      station1E: 40,
+      station2R: 110,
+      station2E: 55,
+      user: { name: "Usuario 2", firsLN: "Apellido 1", secondLN: "Apellido 2" },
+      workShift: "evening",
+    },
+    {
+      id_ironCut: 3,
+      startingDay: new Date("2024-03-12"),
+      endDay: new Date("2024-03-13"),
+      station1R: 90,
+      station1E: 45,
+      station2R: 100,
+      station2E: 50,
+      user: { name: "Usuario 3", firsLN: "Apellido 1", secondLN: "Apellido 2" },
+      workShift: "night",
+    },
+    // Agrega más objetos de datos según sea necesario
+  ];
+
   const [Cortes, setCortes] = useState([]);
   const [filteredCortes, setFilteredCortes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -26,13 +63,14 @@ function HistorialCajaPlanchado() {
   };
 
   const fetchCashCuts = async () => {
-    try {
-      const response = await api.get("/supplyCashCuts");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching cash cuts:", error);
-      return [];
-    }
+    // try {
+    //   const response = await api.get("/supplyCashCuts");
+    //   return response.data;
+    // } catch (error) {
+    //   console.error("Error fetching cash cuts:", error);
+    //   return [];
+    // }
+    return dummyData;
   };
 
   useEffect(() => {
@@ -69,75 +107,63 @@ function HistorialCajaPlanchado() {
         30
       );
       pdf.text(`FECHA DE CIERRE: ${formatDate(selectedCorte.endDay)}`, 10, 40);
-      pdf.text(`Usuario: ${selectedCorte.user.name}`, 10, 50);
-      pdf.text(
-        `Turno: ${
-          selectedCorte.workShift === "morning"
-            ? "Matutino"
-            : selectedCorte.workShift === "evening"
-            ? "Vespertino"
-            : "Nocturno"
-        }`,
-        10,
-        60
-      );
 
-      pdf.text(`SERVICIOS POR ESTACION:`, 10, 80);
+      pdf.text(`SERVICIOS POR ESTACION:`, 10, 60);
       pdf.text(
         `Estacion 1 Regular: ${
           selectedCorte.station1R ? `${selectedCorte.station1R}` : "0"
         }`,
         10,
-        100
+        80
       );
       pdf.text(
         `Estacion 1 Express: ${
           selectedCorte.totalSuavitel ? `${selectedCorte.totalSuavitel}` : "0"
         }`,
         10,
-        110
+        90
       );
       pdf.text(
         `Estacion 2 Regular: ${
           selectedCorte.station2R ? `${selectedCorte.station2R}` : "0"
         }`,
         10,
-        120
+        100
       );
       pdf.text(
         `Estacion 2 Express: ${
           selectedCorte.station2E ? `${selectedCorte.station2E}` : "0"
         }`,
         10,
-        130
+        120
       );
       pdf.text(
         `Estacion 3 Regular: ${
           selectedCorte.station3R ? `${selectedCorte.station3R}` : "0"
         }`,
         10,
-        140
+        130
       );
       pdf.text(
         `Estacion 3 Express: ${
           selectedCorte.station3E ? `${selectedCorte.station3E}` : "0"
         }`,
         10,
-        150
+        140
       );
       pdf.text(
         `Estacion 4 Regular: ${
           selectedCorte.station4R ? `${selectedCorte.station4R}` : "0"
         }`,
         10,
-        160
+        150
       );
       pdf.text(
         `Estacion 4 Express: ${
           selectedCorte.station4E ? `${selectedCorte.station4E}` : "0"
         }`,
         10,
-        170
+        160
       );
 
       pdf.save("detalle_corte_piezas.pdf");
@@ -274,8 +300,7 @@ function HistorialCajaPlanchado() {
                     size={15}
                   />
                 </th>
-                <th>USUARIO</th>
-                <th>TURNO</th>
+
                 <th></th>
               </tr>
             </thead>
@@ -307,19 +332,6 @@ function HistorialCajaPlanchado() {
                     </td>
                     <td className="">
                       {corte.station2E ? corte.station2E : 0}pz
-                    </td>
-
-                    <td className="">
-                      {corte.user.name} {corte.user.firsLN}{" "}
-                      {corte.user.secondLN}
-                    </td>
-                    <td className="">
-                      {" "}
-                      {corte.workShift === "morning"
-                        ? "Matutino"
-                        : corte.workShift === "evening"
-                        ? "Vespertino"
-                        : "Nocturno"}
                     </td>
                     <td className="min-w-[60px]">
                       <button
@@ -367,19 +379,7 @@ function HistorialCajaPlanchado() {
                   <span className="font-bold">ID:</span>{" "}
                   {selectedCorte.id_ironCut}
                 </p>
-                <p className="text-lg">
-                  <span className="font-bold">Usuario:</span>{" "}
-                  {selectedCorte.user.name}
-                </p>
 
-                <p className="text-lg">
-                  <span className="font-bold">Turno:</span>{" "}
-                  {selectedCorte.workShift === "morning"
-                    ? "Matutino"
-                    : selectedCorte.workShift === "evening"
-                    ? "Vespertino"
-                    : ""}
-                </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha de inicio:</span>{" "}
                   {formatDate(selectedCorte.startingDay)}
@@ -421,7 +421,10 @@ function HistorialCajaPlanchado() {
               <div className="w-1/3">
                 <p className="text-lg">
                   <span className="font-bold">
-                    Prendas Express por Plancha:
+                    Prendas Express por Plancha: <BsFillLightningFill
+                    className="text-yellow-300 inline-block"
+                    size={20}
+                  />
                   </span>
                 </p>
                 <p className="text-lg">

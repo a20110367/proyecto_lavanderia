@@ -12,43 +12,7 @@ import moment from "moment";
 import { BsFillLightningFill } from "react-icons/bs";
 
 function HistorialCajaPlanchado() {
-  const dummyData = [
-    {
-      id_ironCut: 1,
-      startingDay: new Date("2024-03-10"),
-      endDay: new Date("2024-03-11"),
-      station1R: 100,
-      station1E: 50,
-      station2R: 120,
-      station2E: 60,
-      user: { name: "Usuario 1", firsLN: "Apellido 1", secondLN: "Apellido 2" },
-      workShift: "morning",
-    },
-    {
-      id_ironCut: 2,
-      startingDay: new Date("2024-03-11"),
-      endDay: new Date("2024-03-12"),
-      station1R: 80,
-      station1E: 40,
-      station2R: 110,
-      station2E: 55,
-      user: { name: "Usuario 2", firsLN: "Apellido 1", secondLN: "Apellido 2" },
-      workShift: "evening",
-    },
-    {
-      id_ironCut: 3,
-      startingDay: new Date("2024-03-12"),
-      endDay: new Date("2024-03-13"),
-      station1R: 90,
-      station1E: 45,
-      station2R: 100,
-      station2E: 50,
-      user: { name: "Usuario 3", firsLN: "Apellido 1", secondLN: "Apellido 2" },
-      workShift: "night",
-    },
-    // Agrega más objetos de datos según sea necesario
-  ];
-
+ 
   const [Cortes, setCortes] = useState([]);
   const [filteredCortes, setFilteredCortes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -63,14 +27,13 @@ function HistorialCajaPlanchado() {
   };
 
   const fetchCashCuts = async () => {
-    // try {
-    //   const response = await api.get("/supplyCashCuts");
-    //   return response.data;
-    // } catch (error) {
-    //   console.error("Error fetching cash cuts:", error);
-    //   return [];
-    // }
-    return dummyData;
+    try {
+      const response = await api.get("/supplyCashCuts");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching cash cuts:", error);
+      return [];
+    }
   };
 
   useEffect(() => {

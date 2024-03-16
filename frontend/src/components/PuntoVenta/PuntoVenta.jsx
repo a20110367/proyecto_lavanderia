@@ -380,6 +380,7 @@ export default function PuntoVenta() {
         serviceType: serviceType,
         notes: notes,
         cart: cart,
+        extraTickets: true,
       };
       // GENERAR EL TICKET
       await api.post("/generateTicket", {

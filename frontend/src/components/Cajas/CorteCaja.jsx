@@ -669,8 +669,9 @@ function CorteCaja() {
     try{
       const res = await api.get('/calculateIronCut')
       if(res){
+        const ironCut = { ...res.data, casher: cookies.username}
         await api.post('/generateIronCutTicket',{
-          ironCut: res.data
+          ironCut: ironCut
         })
       }else{
         Swal.fire({

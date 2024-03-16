@@ -151,7 +151,9 @@ export const generateTicket = async (req, res) => {
         console.log("Print done!");
 
         if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
-            printOrderDetailTicket(order)
+            if(order.extraTickets){
+                printOrderDetailTicket(order)
+            }
             printTicketFromBackend(order)
         }
 

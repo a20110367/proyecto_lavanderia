@@ -800,6 +800,8 @@ export const ironCutTicket = async (req, res) => {
 
             printer.newLine();
 
+            printer.setTextNormal()
+
             printer.println(`Cajero: ${ironCut.casher}`)
             printer.println(`Fecha de Inicio: ${formatDate(ironCut.startingDay)}`)
             printer.println(`Hora de Inicio: ${formatTicketTime(ironCut.startingDay)}`)

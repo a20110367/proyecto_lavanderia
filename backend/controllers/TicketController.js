@@ -123,7 +123,7 @@ export const generateTicket = async (req, res) => {
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
             printer.bold(false);
 
             printer.drawLine();
@@ -364,7 +364,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' ' + formatTime(order.scheduledDeliveryTime))
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
             printer.bold(false);
 
             printer.drawLine();
@@ -405,7 +405,7 @@ const n2word = (number) => {
 }
 
 const formatDate = (dateStr) => {
-    const date = moment(dateStr).format("L")
+    const date = moment.utc(dateStr).format("L")
     return date;
 };
 

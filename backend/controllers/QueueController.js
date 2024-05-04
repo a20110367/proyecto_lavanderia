@@ -28,6 +28,8 @@ export const getLaundryQueue = async (req, res) => {
                         },
 
                         notes: true,
+                        scheduledDeliveryDate: true,
+                        scheduledDeliveryTime: true,
                     },
                 },
                 WashDetail: {
@@ -545,6 +547,8 @@ export const getIronQueue = async (req, res) => {
                     },
                 },
                 notes: true,
+                scheduledDeliveryDate: true,
+                scheduledDeliveryTime: true,
 
 
             },
@@ -742,6 +746,8 @@ export const getDrycleanQueue = async (req, res) => {
                     },
                 },
                 notes: true,
+                scheduledDeliveryDate: true,
+                scheduledDeliveryTime: true,
 
             },
         });
@@ -910,6 +916,8 @@ export const getOtherQueue = async (req, res) => {
                         },
 
                         notes: true,
+                        scheduledDeliveryDate: true,
+                        scheduledDeliveryTime: true,
                     },
                 },
                 //WashDetail:true,

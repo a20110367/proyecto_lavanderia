@@ -480,18 +480,18 @@ export default function PuntoVenta() {
                           setPayStatus("unpaid");
                         }
                       }}
-                      value={serviceType === "producto" ? "advance" : payForm}
+                      value={serviceType === "productos" ? "advance" : payForm}
                       disabled
                     >
                       <Option
                         value="delivery"
-                        disabled={serviceType === "producto"}
+                        disabled={serviceType === "productos"}
                       >
                         A la Entrega
                       </Option>
                       <Option value="advance">Anticipado</Option>
                     </Select>
-                    {(payForm === "advance" || serviceType === "producto") && (
+                    {(payForm === "advance" || serviceType === "productos") && (
                       <div>
                         <p style={{ fontSize: "18px", fontWeight: "bold" }}>
                           Método de Pago Anticipado:
@@ -499,7 +499,8 @@ export default function PuntoVenta() {
                         <Select
                           style={{ width: "100%", fontSize: "16px" }}
                           onChange={(value) => setPayMethod(value)}
-                          value={payMethod}
+                          value={serviceType === "productos" ? "cash" : payMethod}
+                          disabled = { serviceType === 'productos'}
                         >
                           <Option value="credit">Tarjeta</Option>
                           <Option value="cash">Efectivo</Option>

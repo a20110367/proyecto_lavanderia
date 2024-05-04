@@ -385,7 +385,7 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.SelfService.created)}
+                    {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (

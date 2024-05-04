@@ -258,7 +258,7 @@ function PedidosVarios() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.otherService.created)}
+                    {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (

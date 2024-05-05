@@ -228,7 +228,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.bold(true)
                 printer.println('No. de Orden:')
                 printer.setTextSize(7, 7);
-                printer.println(`${order.id_order}`)
+                // printer.println(`${order.id_order}`)
+                printer.println('888888')
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()

@@ -5,10 +5,12 @@ import {
     getLastIronControl,
     createIronControl,
     updateIronControl,
-    updateDiaryIron,
-    updateCashCutIron,
-    updateTodayIron,
-    updateTomorrowIron,
+    //updateDiaryIron,
+    updateIronRegularOrderDone,
+    updateIronRegularOrderNew,
+    updateIronRegularOrderForTomorrow,
+    updateIronExpressOrderNew,
+    updateIronExpressOrderDone,
     updateCleanCashCutIron,
     deleteIronControl
 
@@ -19,14 +21,17 @@ const router = express.Router();
 router.get('/ironControl', getIronControl);
 router.get('/ironControl/:id', getIronControlById);
 router.get('/lastIronControl', getLastIronControl);
+router.get('/newIronControl', createIronControl);
 
-router.post('/ironControl', createIronControl);
+//router.post('/ironControl', createIronControl);
 
 router.patch('/ironControl/:id', updateIronControl);
-router.patch('/cahsCutIronControl/:id', updateCashCutIron);
-router.patch('/diaryIronControl/:id', updateDiaryIron);
-router.patch('/todayIronControl/:id', updateTodayIron);
-router.patch('/tomorrowIronControl/:id', updateTomorrowIron);
+router.patch('/cahsCutIronControl/:id', updateIronRegularOrderDone);//Este es el que registra los pedidos regulares ya hechos
+//router.patch('/diaryIronControl/:id', updateDiaryIron);
+router.patch('/todayIronControl/:id', updateIronRegularOrderNew);
+router.patch('/tomorrowIronControl/:id', updateIronRegularOrderForTomorrow);
+router.patch('/expressNewOrderIronControl/:id', updateIronExpressOrderNew);
+router.patch('/expressDoneOrderIronControl/:id', updateIronExpressOrderDone);
 router.patch('/cleanCahsCutIronControl/:id', updateCleanCashCutIron);
 
 

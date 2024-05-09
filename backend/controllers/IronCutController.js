@@ -487,6 +487,7 @@ export const updateDiaryIron = async (req, res) => {
     }
 }
 //Actualiza las piezas hechas en el dia, y por lo tanto las quita de backlog de planchado
+//REVISAR POR FALLAS DE DISEÑO LOGICO
 export const updateCashCutIron = async (req, res) => {
 
     try {

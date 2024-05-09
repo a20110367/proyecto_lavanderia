@@ -982,16 +982,59 @@ GET   http://localhost:5000/servicesSelfService
 GET   http://localhost:5000/lastIronControl
 
 ###
-POST http://localhost:5000/ironControl
+
+GET   http://localhost:5000/newIronControl
+
+###
+
+# POST http://localhost:5000/ironControl
+# Content-Type: application/json
+
+# {
+#   "piecesToday":0
+# }
+
+# ###
+# PATCH http://localhost:5000/diaryIronControl/1
+
+# ###
+PATCH http://localhost:5000/cahsCutIronControl/10
 Content-Type: application/json
+
 {
-  "piecesToday":0
+  "pieces":5
 }
-
 ###
-PATCH http://localhost:5000/diaryIronControl/1
+PATCH http://localhost:5000/todayIronControl/10
+Content-Type: application/json
 
+{
+  "pieces":10
+}
 ###
+PATCH http://localhost:5000/tomorrowIronControl/10
+Content-Type: application/json
+
+{
+  "pieces":10
+}
+###
+PATCH http://localhost:5000/expressNewOrderIronControl/10
+Content-Type: application/json
+
+{
+  "pieces":11
+}
+###
+
+PATCH http://localhost:5000/expressDoneOrderIronControl/10
+Content-Type: application/json
+
+{
+  "pieces":10
+}
+###
+
 POST http://localhost:5000/generateTicket
 
 ###

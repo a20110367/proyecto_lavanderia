@@ -68,7 +68,7 @@ model IronStation {
   machineType    MachineType @default(plancha)
   freeForUse     Boolean     @default(true)
   status         Status      @default(available)
-  pieces         Int?
+  pieces         Int? //es el numero diario de piezas que plancha esta estacion
   description    String?
   notes          String
   serialNumber   String      @default("N/A")
@@ -80,18 +80,22 @@ model IronStation {
 
 model IronControl {
   id_ironControl Int @id @default(autoincrement())
-  piecesCashcut  Int @default(0)
+  piecesCashcut  Int @default(0) //Piezas admitidas durante el turno
 
-  piecesToday    Int @default(0)
-  piecesLeft     Int @default(0)
-  piecesTomorrow Int @default(0)
-  piecesExpress  Int @default(0)
-
+  piecesToday    Int @default(0) //Piezas hechas durante el dia
+  piecesLeft     Int @default(0) //Piezas pendientes por hacerse
+  piecesTomorrow Int @default(0) //Piezas que deben mandarse al dia siguiente
+  piecesExpress  Int @default(0) //Piezas express que por politica del negocio se hacen el mismo dia a tarifa doble
+  
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model IronCut {
+  
+  // Hace el corte de plancado basandose en un marcador de ironqueue el cual dice si ya fue contada o no dicha acción
+  // Debe indicarse una fecha final de corte, la fecha inicial es automatica y es secuencial respecto al ultimo corte
+  //Considera un numero constante de 4 estaciones de planchado
   id_ironCut  Int       @id @default(autoincrement())
   startingDay DateTime? @db.Date
   endDay      DateTime? @db.Date
@@ -307,9 +311,9 @@ model IronQueue {
   fk_idIronService  Int
   fk_idServiceOrder Int
   fk_idStaffMember  Int?
-  fk_idIronStation  Int?
+  fk_idIronStation  Int? //La estacion se usa para hacer el corte de planchado
   token_id          Int?
-  accounted         Boolean       @default(false)
+  accounted         Boolean       @default(false) //este marcado se usa para hacer el corte de planchado
   serviceStatus     ServiceStatus @default(pending)
 
   ironStation  IronStation? @relation(fields: [fk_idIronStation], references: [id_ironStation], onDelete: Cascade, onUpdate: Cascade)

@@ -27,6 +27,7 @@ export default function PuntoVenta() {
 
   const navigate = useNavigate();
   const lastIronControlId = parseInt(localStorage.getItem("lastIronControl"));
+  const maxIronCapacity = parseInt(localStorage.getItem('maxCapacity'));
   const [cart, setCart] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState(null);
@@ -192,7 +193,7 @@ export default function PuntoVenta() {
 
       if (categoryId === 3 || categoryId === 4) {
         setPieces(pieces + serviceToAdd.pieces);
-      } else if (categoryId === 3 && numberOfPieces + pieces > 130) {
+      } else if (categoryId === 3 && numberOfPieces + pieces > maxIronCapacity) {
         Swal.fire({
           icon: "error",
           title: "Se ha superado el No. de Piezas diarias",
@@ -316,7 +317,7 @@ export default function PuntoVenta() {
       drycleanPieces = pieces;
     }
 
-    date = (ironDate ? deliveryDate.add(1,'days').toISOString() : deliveryDate)
+    date = (ironDate ? deliveryDate.add(1, 'days').toISOString() : deliveryDate)
 
     try {
       // GEN ORDER
@@ -426,34 +427,40 @@ export default function PuntoVenta() {
 
     try {
       if (categoryId === 3) {
-        if (numberOfPieces + pieces < 130 || isExpress) {
-          saveOrderAndGenerateTicket()
-          await api.patch(`/todayIronControl/${lastIronControlId}`, {
+        if (isExpress) {
+          await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
             pieces: pieces,
           });
         } else {
-          Swal.fire({
-            title: "Se ha superado el No. de Piezas diarias",
-            text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#034078",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, generar el pedido!"
-          }).then(async (result) => {
-            if (result.isConfirmed) {
-              Swal.fire({
-                title: "Pedido Generado!",
-                text: "Tu pedido ha sido generado con exito.",
-                icon: "success"
-              });
-              saveOrderAndGenerateTicket(true)
-              await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
-                pieces: pieces,
-              });
-            }
-          });
-          setIsModalVisible(false);
+          if (numberOfPieces + pieces < maxIronCapacity || isExpress) {
+            saveOrderAndGenerateTicket()
+            await api.patch(`/todayIronControl/${lastIronControlId}`, {
+              pieces: pieces,
+            });
+          } else {
+            Swal.fire({
+              title: "Se ha superado el No. de Piezas diarias",
+              text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#034078",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si, generar el pedido!"
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                Swal.fire({
+                  title: "Pedido Generado!",
+                  text: "Tu pedido ha sido generado con exito.",
+                  icon: "success"
+                });
+                saveOrderAndGenerateTicket(true)
+                await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
+                  pieces: pieces,
+                });
+              }
+            });
+            setIsModalVisible(false);
+          }
         }
       } else {
         saveOrderAndGenerateTicket()
@@ -991,7 +998,7 @@ export default function PuntoVenta() {
               <p className="text-2xl font-semibold text-center ">
                 No. Maximo de Piezas:{" "}
                 <span className="text-RedPantone">
-                  {pieces + parseInt(numberOfPieces)} / 130
+                  {pieces + parseInt(numberOfPieces)} / {maxIronCapacity}
                 </span>
               </p>
             ) : (

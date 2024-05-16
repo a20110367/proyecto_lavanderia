@@ -25,35 +25,39 @@ export const UserProvider = ({ children }) => {
             setCookies('username', res.data.username, { path: '/' }); // optional data
             setCookies('role', res.data.role, { path: '/' }); // optional data
 
-            const lastIronControl = await api.get('/lastIronControl')
-            const now = moment()
-            const lastIronControlDate = moment(lastIronControl)
-            const diff = now.diff(lastIronControlDate, 'days');
-            // const diff = 1
-            // console.log(now)
-            // console.log(lastIronControlDate)
-            // console.log(diff)
-            // console.log(lastIronControl.data)
-            if (!lastIronControl || lastIronControl.data.length === 0) {
-                const res = await api.post("/ironControl", {
-                    piecesToday: 0,
-                });
-                localStorage.setItem('lastIronControl', res.data.id_ironControl)
-            } else if (diff > 0) {
-                const res = await api.post("/ironControl", {
-                    piecesToday: 0,
-                });
-                const resDiary = await api.patch(`/diaryIronControl/${res.data.id_ironControl}`);
-                localStorage.setItem('numberOfPieces', resDiary.data.piecesToday)
-                localStorage.setItem('lastIronControl', resDiary.data.id_ironControl)
-            } else if (diff === 0) {
-                // console.log('mismo dia')
-                // const res = await api.patch(`/diaryIronControl/${lastIronControl.data[0].id_ironControl}`);    
-                localStorage.setItem('numberOfPieces', lastIronControl.data[0].piecesToday)
-                localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
-            } else {
-                localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
-            }
+            const newIronControl = await api.get('/newIronControl')
+            // console.table(newIronControl.data)
+            localStorage.setItem('lastIronControl', newIronControl.data.ironControl.id_ironControl)
+            localStorage.setItem('numberOfPieces', newIronControl.data.ironControl.piecesToday)
+            localStorage.setItem('maxCapacity', newIronControl.data.ironingCapacity.pieces)
+            // const now = moment()
+            // const lastIronControlDate = moment(lastIronControl)
+            // const diff = now.diff(lastIronControlDate, 'days');
+            // // const diff = 1
+            // // console.log(now)
+            // // console.log(lastIronControlDate)
+            // // console.log(diff)
+            // // console.log(lastIronControl.data)
+            // if (!lastIronControl || lastIronControl.data.length === 0) {
+            //     const res = await api.post("/ironControl", {
+            //         piecesToday: 0,
+            //     });
+            //     localStorage.setItem('lastIronControl', res.data.id_ironControl)
+            // } else if (diff > 0) {
+            //     const res = await api.post("/ironControl", {
+            //         piecesToday: 0,
+            //     });
+            //     const resDiary = await api.patch(`/diaryIronControl/${res.data.id_ironControl}`);
+            //     localStorage.setItem('numberOfPieces', resDiary.data.piecesToday)
+            //     localStorage.setItem('lastIronControl', resDiary.data.id_ironControl)
+            // } else if (diff === 0) {
+            //     // console.log('mismo dia')
+            //     // const res = await api.patch(`/diaryIronControl/${lastIronControl.data[0].id_ironControl}`);    
+            //     localStorage.setItem('numberOfPieces', lastIronControl.data[0].piecesToday)
+            //     localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
+            // } else {
+            //     localStorage.setItem('lastIronControl', lastIronControl.data[0].id_ironControl)
+            // }
             navigate('/autoServicio');
         } catch (err) {
             Swal.fire({

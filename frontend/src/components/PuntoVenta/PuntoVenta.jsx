@@ -428,11 +428,12 @@ export default function PuntoVenta() {
     try {
       if (categoryId === 3) {
         if (isExpress) {
+          saveOrderAndGenerateTicket()
           await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
             pieces: pieces,
           });
         } else {
-          if (numberOfPieces + pieces < maxIronCapacity || isExpress) {
+          if (numberOfPieces + pieces < maxIronCapacity) {
             saveOrderAndGenerateTicket()
             await api.patch(`/todayIronControl/${lastIronControlId}`, {
               pieces: pieces,

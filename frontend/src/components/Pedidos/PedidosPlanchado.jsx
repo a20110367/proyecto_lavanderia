@@ -213,9 +213,15 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        await api.patch(`/cahsCutIronControl/${lastIronControlId}`, {
-          pieces: pedido.ironPieces,
-        });
+        if(pedido.express){
+          await api.patch(`/expressDoneOrderIronControl/${lastIronControlId}`, {
+            pieces: pedido.ironPieces,
+          })
+        }else{
+          await api.patch(`/cashCutIronControl/${lastIronControlId}`, {
+            pieces: pedido.ironPieces,
+          });
+        }
 
         showNotification(
           "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."

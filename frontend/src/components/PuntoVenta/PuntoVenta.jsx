@@ -316,8 +316,8 @@ export default function PuntoVenta() {
     } else if (categoryId === 4) {
       drycleanPieces = pieces;
     }
-
-    date = (ironDate ? deliveryDate.add(1, 'days').toISOString() : deliveryDate)
+    
+    date = (ironDate ? deliveryDate.add(1, 'days') : deliveryDate)
 
     try {
       // GEN ORDER

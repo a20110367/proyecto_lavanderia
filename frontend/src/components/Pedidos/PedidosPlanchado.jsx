@@ -218,7 +218,7 @@ function PedidosPlanchado() {
             pieces: pedido.ironPieces,
           })
         }else{
-          await api.patch(`/cashCutIronControl/${lastIronControlId}`, {
+          await api.patch(`/updateIronRegularOrderDone/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
           });
         }

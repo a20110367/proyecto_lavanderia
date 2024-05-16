@@ -28,8 +28,8 @@ router.get('/newIronControl', createIronControl);
 router.patch('/ironControl/:id', updateIronControl);
 router.patch('/cashCutIronControl/:id', updateIronRegularOrderDone);//Este es el que registra los pedidos regulares ya hechos
 //router.patch('/diaryIronControl/:id', updateDiaryIron);
-router.patch('/todayIronControl/:id', updateIronRegularOrderNew);
-router.patch('/tomorrowIronControl/:id', updateIronRegularOrderForTomorrow);
+router.patch('/updateIronRegularOrderNew/:id', updateIronRegularOrderNew);
+router.patch('/updateIronRegularOrderForTomorrow/:id', updateIronRegularOrderForTomorrow);
 router.patch('/expressNewOrderIronControl/:id', updateIronExpressOrderNew);
 router.patch('/expressDoneOrderIronControl/:id', updateIronExpressOrderDone);
 router.patch('/cleanCashCutIronControl/:id', updateCleanCashCutIron);

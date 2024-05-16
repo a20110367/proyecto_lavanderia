@@ -435,7 +435,7 @@ export default function PuntoVenta() {
         } else {
           if (numberOfPieces + pieces < maxIronCapacity) {
             saveOrderAndGenerateTicket()
-            await api.patch(`/todayIronControl/${lastIronControlId}`, {
+            await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
               pieces: pieces,
             });
           } else {
@@ -455,7 +455,7 @@ export default function PuntoVenta() {
                   icon: "success"
                 });
                 saveOrderAndGenerateTicket(true)
-                await api.patch(`/tomorrowIronControl/${lastIronControlId}`, {
+                await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
                   pieces: pieces,
                 });
               }

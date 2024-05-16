@@ -131,15 +131,15 @@ function EntregaPlanchado() {
         payment: {
           fk_idOrder: pedido.id_order,
           payMethod: cobroInfo.metodoPago,
-          payDate: cobroInfo.fechaPago.toISOString(),
-          payTime: cobroInfo.fechaPago.toISOString(),
+          payDate: cobroInfo.fechaPago,
+          payTime: cobroInfo.fechaPago,
           fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
           payTotal: pedido.totalPrice,
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
-          deliveryDate: cobroInfo.fechaPago.toISOString(),
-          deliveryTime: cobroInfo.fechaPago.toISOString(),
+          deliveryDate: cobroInfo.fechaPago,
+          deliveryTime: cobroInfo.fechaPago,
           fk_idOrder: pedido.id_order,
         },
       });
@@ -263,10 +263,8 @@ function EntregaPlanchado() {
           fk_idOrder: pedido.id_order,
           fk_idPayment: pedido.payment.id_payment,
           fk_userCashier: cookies.token,
-          deliveryDate:
-            cobroInfo.fechaPago.toISOString().split("T")[0] + "T00:00:00.000Z",
-          deliveryTime:
-            "1970-01-01T" + cobroInfo.fechaPago.toISOString().split("T")[1],
+          deliveryDate: cobroInfo.fechaPago,
+          deliveryTime: cobroInfo.fechaPago,
         });
         // PIENSO ENVIAR EL TICKET PDF AL CLIENTE
         const updatedFilteredPedidos = filteredPedidos.filter(function (order) {

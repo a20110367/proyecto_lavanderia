@@ -220,7 +220,7 @@ const printOrderDetailTicket = async (order) => {
 
             console.log("AQUI EMPIEZA")
 
-            console.log(detail)
+            console.log(detail) 
             for (let i = 0; i < detail.quantity; i++) {
                 //await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
                 printer.drawLine()
@@ -395,30 +395,6 @@ const printTicketFromBackend = async (orderParameter) => {
     } catch (err) {
         console.error("Print failed:", err);
     }
-}
-
-const n2word = (number) => {
-    try {
-        const word = NumerosALetras(number);
-        return word
-    } catch (err) {
-        console.error(err)
-    }
-}
-
-const formatDate = (dateStr) => {
-    const date = moment.utc(dateStr).format("L")
-    return date;
-};
-
-const formatTime = (dateStr) => {
-    const date = moment(dateStr).format("dddd LT");
-    return date
-}
-
-const formatTicketTime = (dateStr) => {
-    const date = moment(dateStr).format('LT')
-    return date
 }
 
 export const generatePartialCashCutTicket = async (req, res) => {
@@ -842,4 +818,30 @@ const printIronCut = async (ironCut) => {
     printer.cut();
 
     let execute = await printer.execute()
+}
+
+// ----------------------------------------  FORMATS ------------------------------------- //
+
+const formatDate = (dateStr) => {
+    const date = moment.utc(dateStr).format("L")
+    return date;
+};
+
+const formatTime = (dateStr) => {
+    const date = moment(dateStr).format("dddd LT");
+    return date
+}
+
+const formatTicketTime = (dateStr) => {
+    const date = moment(dateStr).format('LT')
+    return date
+}
+
+const n2word = (number) => {
+    try {
+        const word = NumerosALetras(number);
+        return word
+    } catch (err) {
+        console.error(err)
+    }
 }

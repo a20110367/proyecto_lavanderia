@@ -265,6 +265,85 @@ const printOrderDetailTicket = async (order) => {
     }
 }
 
+const printOrderDetailIronTicket = async (order) => {
+    try {
+        printer.clear();
+
+        // CUARTO APROACH
+        //EXTRAS
+        let pivot1 = order.pieces % 6;
+        //MAIN
+        let pivot2 = order.pieces / 6;
+        
+        console.log(" Numero de Piezas Restantes " + pivot1);
+        console.log(" Numero de Paquetes completos " + pivot2);
+        
+        for(let i = 0 ; i < pivot2 ; i++){
+            // PRINT MAIN
+            console.log("SE IMPRIMIO 6 piezas - paquete " + (i + 1));
+        }
+        
+        if(pivot1 != 0){
+            // PRINT EXTRAS
+            console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1) );
+        }
+
+        // // TERCER APROACH
+        // let multiple = 0;
+        // let pivot = pieces;
+        
+        // if(pieces / 6 == 0){
+        //     multiple = (pieces / 6);
+        // }else{
+        //     multiple = (pieces / 6) + 1;
+        // }
+        
+        // for(let i = 0 ; i < multiple ; i++){
+        //     if((pivot - 6) >= 0){
+        //         // IMPRIMIR
+        //         System.out.println("SE IMPRIMIO 6 piezas - paquete " + (i + 1));
+        //         pivot -= 6;
+        //     }else if ((pivot - 6) < 0 && pivot != 0 ) {
+        //         System.out.println("SE IMPRIMIERON " + pivot + " piezas - paquete " + (i + 1) );
+        //         // IMPRIMO PIVOT
+        //     }else{
+        //         System.out.println("NO IMPRIMO POR SER 0");
+        //     }
+        // }
+
+        // // SEGUNDO APROACH
+        // let multiple = order.pieces % 6
+        // let pivot = order.pieces
+
+        // for(let i = 0 ; i < multiple ; i++){
+        //     if((pivot - 6) > 0){
+        //         // IMPRIMIR
+        //         pivot -= 6
+        //     }else {
+        //         // IMPRIMO PIVOT
+        //     }
+        // }
+
+        // PRIMER APROACH
+        // for(let i = 0 ; i < order.pieces ; i + 6){
+        //     if(i % 6 == 0 && i != 0){
+        //         //IMPRIMIR NORMAL 6 PIEZAS
+        //     }else if(i % 6 != 0 && (i + 1) != order.pieces){
+        //         //IMPRIME RESTANTES
+        //     }
+        //     printer.cut()
+        // }
+
+        let execute = await printer.execute()
+
+        // printer.cut();
+
+        printer('Order Detail Print done!')
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 const printTicketFromBackend = async (orderParameter) => {
 
     const order = orderParameter

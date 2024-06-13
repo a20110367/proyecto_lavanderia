@@ -151,8 +151,12 @@ export const generateTicket = async (req, res) => {
         console.log("Print done!");
 
         if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
-            if(order.extraTickets){
-                printOrderDetailTicket(order)
+            if (order.extraTickets) {
+                if (order.serviceType != 'planchado') {
+                    printOrderDetailTicket(order)
+                } else {
+                    printOrderDetailIronTicket(order)
+                }
             }
             printTicketFromBackend(order)
         }
@@ -220,7 +224,7 @@ const printOrderDetailTicket = async (order) => {
 
             console.log("AQUI EMPIEZA")
 
-            console.log(detail) 
+            console.log(detail)
             for (let i = 0; i < detail.quantity; i++) {
                 //await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
                 printer.drawLine()
@@ -269,35 +273,102 @@ const printOrderDetailIronTicket = async (order) => {
     try {
         printer.clear();
 
-        // CUARTO APROACH
-        //EXTRAS
-        let pivot1 = order.pieces % 6;
-        //MAIN
-        let pivot2 = order.pieces / 6;
-        
-        console.log(" Numero de Piezas Restantes " + pivot1);
-        console.log(" Numero de Paquetes completos " + pivot2);
-        
-        for(let i = 0 ; i < pivot2 ; i++){
-            // PRINT MAIN
-            console.log("SE IMPRIMIO 6 piezas - paquete " + (i + 1));
-        }
-        
-        if(pivot1 != 0){
-            // PRINT EXTRAS
-            console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1) );
-        }
+        order.cart.forEach(async (detail, index) => {
+            for (let i = 0; i < detail.quantity; i++) {
+                // CUARTO APROACH
+                //EXTRAS
+                let pivot1 = detail.pieces % 6;
+                //MAIN
+                let pivot2 = detail.pieces / 6;
+
+                console.log(" Numero de Piezas Restantes " + pivot1);
+                console.log(" Numero de Paquetes completos " + pivot2);
+
+                for (let j = 0; j < pivot2; j++) {
+                    // PRINT MAIN
+
+                    printer.drawLine()
+                    printer.setTextSize(2, 2);
+                    printer.bold(true)
+                    printer.println('No. de Orden:')
+                    printer.setTextSize(7, 7);
+                    printer.println(`${order.id_order}`)
+                    printer.setTextSize(2, 2);
+                    printer.println(`Piezas: 6`)
+                    printer.newLine()
+                    printer.println(`Paquete: ${j + 1}`)
+                    printer.newLine()
+                    printer.bold(false)
+                    printer.newLine()
+                    printer.newLine()
+                    printer.setTextQuadArea()
+                    printer.println('Cliente:')
+                    printer.println(`${order.client}`)
+                    printer.newLine()
+                    printer.println('Descripcion:')
+                    printer.println(`${detail.description}`)
+                    printer.newLine()
+                    printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
+                    printer.newLine()
+                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                    printer.newLine()
+                    printer.println(`Observaciones:`)
+                    printer.println(`${order.notes}`)
+
+                    printer.cut();
+
+                    console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
+                }
+
+                if (pivot1 != 0) {
+                    // PRINT EXTRAS
+
+                    printer.drawLine()
+                    printer.setTextSize(2, 2);
+                    printer.bold(true)
+                    printer.println('No. de Orden:')
+                    printer.setTextSize(7, 7);
+                    printer.println(`${order.id_order}`)
+                    printer.setTextSize(2, 2);
+                    printer.println(`Piezas: ${pivot1}`)
+                    printer.newLine()
+                    printer.println(`Paquete: ${pivot2 + 1}`)
+                    printer.newLine()
+                    printer.bold(false)
+                    printer.newLine()
+                    printer.newLine()
+                    printer.setTextQuadArea()
+                    printer.println('Cliente:')
+                    printer.println(`${order.client}`)
+                    printer.newLine()
+                    printer.println('Descripcion:')
+                    printer.println(`${detail.description}`)
+                    printer.newLine()
+                    printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
+                    printer.newLine()
+                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                    printer.newLine()
+                    printer.println(`Observaciones:`)
+                    printer.println(`${order.notes}`)
+
+                    printer.cut();
+
+                    console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
+                }
+            }
+        })
+
 
         // // TERCER APROACH
         // let multiple = 0;
         // let pivot = pieces;
-        
+
         // if(pieces / 6 == 0){
         //     multiple = (pieces / 6);
         // }else{
         //     multiple = (pieces / 6) + 1;
         // }
-        
+
         // for(let i = 0 ; i < multiple ; i++){
         //     if((pivot - 6) >= 0){
         //         // IMPRIMIR
@@ -334,10 +405,11 @@ const printOrderDetailIronTicket = async (order) => {
         //     printer.cut()
         // }
 
-        let execute = await printer.execute()
+        // let execute = await printer.execute()
 
         // printer.cut();
 
+        console.log(order)
         printer('Order Detail Print done!')
     } catch (err) {
         console.log(err)

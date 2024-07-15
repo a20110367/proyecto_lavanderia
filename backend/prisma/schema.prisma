@@ -597,6 +597,7 @@ enum ServiceStatus {
   inProgressWash
   inProgressDry
   finished
+  cancelled
 }
 
 enum CashCutStatus {

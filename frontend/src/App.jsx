@@ -104,7 +104,6 @@ import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
 // ADMINISTRACION
 import ReportesProductos from "./components/Administracion/ReportesProductos";
 import Reportes from "./components/Administracion/Reportes"
-import Reportes from "./components/Administracion/Cancelacion"
 import Cancelacion from "./components/Administracion/Cancelacion";
 
 function App() {

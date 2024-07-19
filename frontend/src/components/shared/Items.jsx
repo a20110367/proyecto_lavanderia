@@ -127,9 +127,14 @@ const items1 = [
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
+  ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
     getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
+    getItem("Cancelación de Servicios", "/cancelacion"),
   ]),
+
   getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/equipos"),
@@ -248,6 +253,9 @@ const items2 = [
     getItem("Retiro de caja", "/retiro"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
+  ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
     getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
   ]),

@@ -60,7 +60,6 @@ import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
 import CajaChica from "./components/Cajas/CajaChica"
 import Reembolso from "./components/Cajas/Reembolso"
-import Reportes from "./components/Cajas/Reportes"
 
 //COLA PEDIDOS
 import EntregaLavanderia from "./components/Lavanderia/EntregaLavanderia"
@@ -100,8 +99,13 @@ import AddProductos from "./components/Productos/AddProductos"
 import EditProductos from "./components/Productos/EditProductos"
 import BuscarPedidos from "./components/Pedidos/BuscarPedidos"
 import HistorialCajaProductos from "./components/Cajas/HistorialCajaProductos";
-import ReportesProductos from "./components/Cajas/ReportesProductos";
 import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
+
+// ADMINISTRACION
+import ReportesProductos from "./components/Administracion/ReportesProductos";
+import Reportes from "./components/Administracion/Reportes"
+import Reportes from "./components/Administracion/Cancelacion"
+import Cancelacion from "./components/Administracion/Cancelacion";
 
 function App() {
     const { cookies } = useAuth();
@@ -140,6 +144,7 @@ function App() {
                     <Route path="/HistorialCajaPlanchado" element={<HistorialCajaPlanchado />} />
                     <Route path="/reportes" element={<Reportes />} />
                     <Route path="/reportesProductos" element={<ReportesProductos />} />
+                    <Route path="/cancelacion" element={<Cancelacion/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />

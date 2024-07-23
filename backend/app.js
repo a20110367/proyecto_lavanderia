@@ -30,13 +30,14 @@ import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
 import OtherService from './routes/ServiceOtherServiceRoute.js'
 import IronCutRoute from './routes/IronCutRoute.js';
 
-import SupplyRoute  from "./routes/SupplyRoute.js";
-import SupplyCashCutRoute  from "./routes/SupplyCashCutRoute.js";
-import SupplyOrderDetailRoute  from "./routes/SupplyOrderDetailRoute.js";
-import SupplyOrderRoute  from "./routes/SupplyOrderRoute.js";
-import SupplyPaymentRoute  from "./routes/SupplyPaymentRoute.js";
+import SupplyRoute from "./routes/SupplyRoute.js";
+import SupplyCashCutRoute from "./routes/SupplyCashCutRoute.js";
+import SupplyOrderDetailRoute from "./routes/SupplyOrderDetailRoute.js";
+import SupplyOrderRoute from "./routes/SupplyOrderRoute.js";
+import SupplyPaymentRoute from "./routes/SupplyPaymentRoute.js";
 
 import Ticket from './routes/TicketRoute.js'
+import Reports from './routes/ReportsRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -77,7 +78,7 @@ app.use(SupplyPaymentRoute)
 app.use(SupplyCashCutRoute)
 app.use(SupplyOrderRoute)
 app.use(IronCutRoute)
-
+app.use(Reports)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

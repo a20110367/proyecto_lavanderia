@@ -1041,11 +1041,9 @@ POST http://localhost:5000/generateTicket
 PATCH http://localhost:5000/cancelOrder/244
 
 ### 
-
 GET http://192.168.1.77/relay/0?turn=off
 
 ###
-
 PATCH  http://localhost:5000/closeSupplyCashCut/7
 
 ###
@@ -1059,10 +1057,20 @@ Content-Type: application/json
   }
 
 ###
-
 GET   http://localhost:5000/calculateIronCut
-
 ###
 GET   http://localhost:5000/ironCuts
+###
 
+#CRUD REPORTES
+GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22
+###
+
+GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22/1/1
+###
+
+GET   http://localhost:5000/suppliesReport/2024-03-01/2024-03-28
+###
+
+GET   http://localhost:5000/suppliesReport/2023-05-15/2024-12-22/2
 ###

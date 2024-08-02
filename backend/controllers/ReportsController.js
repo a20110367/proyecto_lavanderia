@@ -717,8 +717,9 @@ export const getServicesReportById = async (req, res) => {
             }
                 break;
         }
-
-
+        
+        summary[0].startDate=startDate;
+        summary[0].endDate=endDate;
         const response = summary;
 
 
@@ -886,48 +887,11 @@ export const getSuppliesReportById = async (req, res) => {
         console.log(supplyDescription)
         suppliesSummary.description = supplyDescription.description;
 
+        suppliesSummary.startDate=startDate;
+        suppliesSummary.endDate=endDate;
+        const response = suppliesSummary;
 
-
-        // //Ahora hay que recuperar catalogos por categoria, para despues formatear el json final
-        // const suppliesCatalog = await prisma.supply.findMany({
-
-        //     select: {
-        //         id_supply: true,
-        //         description: true,
-        //     }
-
-
-        // });
-
-        // ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
-        // let totalSuppliesSalesVerification = 0;
-        // let totalSuppliesNumberVerification = 0;
-
-        // suppliesSummary.forEach(supply => {
-        //     let supplyDescription = suppliesCatalog.find(supplyItem => supplyItem.id_supply === supply.fk_supplyId);
-        //     supply.description = supplyDescription.description
-        //     totalSuppliesSalesVerification += supply._sum.subtotal;
-        //     totalSuppliesNumberVerification += supply._sum.units;
-        // });
-
-
-
-        // const response =
-        // {
-        //     //Totales por servicios y categorias
-        //     "suppliesSummary": suppliesSummary,
-
-        //     //Sumario Basado en Ordenes de Servicio
-        //     "totalSuppliesSalesVerification": totalSuppliesSalesVerification,
-        //     "totalSuppliesNumberVerification": totalSuppliesNumberVerification,
-
-        //     "startDate": startDate,
-        //     "endDate": endDate
-
-
-        // }
-
-        res.status(200).json(suppliesSummary);
+        res.status(200).json(response);
 
 
     } catch (e) {

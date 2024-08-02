@@ -129,12 +129,6 @@ const items1 = [
     getItem("Caja Chica", "/cajaChica"),
   ]),
 
-  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
-    getItem("Cancelación de Servicios", "/cancelacion"),
-  ]),
-
   getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/equipos"),
@@ -151,6 +145,13 @@ const items1 = [
     getItem("Encargo Varios", "/servicesVarios"),
     getItem("Productos", "/productos"),
   ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+    getItem("Reportes Servicios", "/reportes"),
+    getItem("Reportes Productos", "/reportesProductos"),
+    getItem("Cancelación de Servicios", "/cancelacion"),
+  ]),
+
   { type: "divider", style: { margin: "140px " } },
 
   // getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />),
@@ -255,11 +256,6 @@ const items2 = [
     getItem("Caja Chica", "/cajaChica"),
   ]),
 
-  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
-  ]),
-
   getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
     getItem("Administrar Equipos", "/equipos"),
@@ -273,6 +269,12 @@ const items2 = [
     getItem("Tintoreria", "/servicesTintoreria"),
     getItem("Encargo Varios", "/servicesVarios"),
     getItem("Productos", "/productos"),
+  ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+    getItem("Reportes Servicios", "/reportes"),
+    getItem("Reportes Productos", "/reportesProductos"),
+    getItem("Cancelación de Servicios", "/cancelacion"),
   ]),
 
   { type: "divider", style: { margin: "140px " } },

@@ -6,6 +6,7 @@ import {
     cashWithdrawalTicket,
     pettyCashTicket,
     ironCutTicket,
+    printReportProduct,
 } from "../controllers/TicketController.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.post('/generateCashCutTicket', cashCutTicket);
 router.post('/generateCashWithdrawalTicket', cashWithdrawalTicket)
 router.post('/generatePettyCashTicket', pettyCashTicket)
 router.post('/generateIronCutTicket', ironCutTicket)
+router.post('/generateReportProduct', printReportProduct)
 
 export default router;

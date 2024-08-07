@@ -125,8 +125,6 @@ const items1 = [
       "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
-    getItem("Reembolsos", "/reembolso"),
-    getItem("Caja Chica", "/cajaChica"),
   ]),
 
   getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
@@ -150,6 +148,8 @@ const items1 = [
     getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
     getItem("Cancelación de Servicios", "/cancelacion"),
+    getItem("Reembolsos", "/reembolso"),
+    getItem("Caja Chica", "/cajaChica"),
   ]),
 
   { type: "divider", style: { margin: "140px " } },
@@ -252,8 +252,6 @@ const items2 = [
       "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
-    getItem("Reembolsos", "/reembolso"),
-    getItem("Caja Chica", "/cajaChica"),
   ]),
 
   getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
@@ -275,6 +273,8 @@ const items2 = [
     getItem("Reportes Servicios", "/reportes"),
     getItem("Reportes Productos", "/reportesProductos"),
     getItem("Cancelación de Servicios", "/cancelacion"),
+    getItem("Reembolsos", "/reembolso"),
+    getItem("Caja Chica", "/cajaChica"),
   ]),
 
   { type: "divider", style: { margin: "140px " } },

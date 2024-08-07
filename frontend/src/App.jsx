@@ -58,8 +58,6 @@ import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
-import CajaChica from "./components/Cajas/CajaChica"
-import Reembolso from "./components/Cajas/Reembolso"
 
 //COLA PEDIDOS
 import EntregaLavanderia from "./components/Lavanderia/EntregaLavanderia"
@@ -105,6 +103,8 @@ import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
 import ReportesProductos from "./components/Administracion/ReportesProductos";
 import Reportes from "./components/Administracion/Reportes"
 import Cancelacion from "./components/Administracion/Cancelacion";
+import CajaChica from "./components/Administracion/CajaChica"
+import Reembolso from "./components/Administracion/Reembolso"
 
 function App() {
     const { cookies } = useAuth();

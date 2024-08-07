@@ -467,4 +467,9 @@ thead th {
   .login-container {
     @apply w-screen h-screen grid-cols-2 grid place-items-center
   }
+
+  .swal-wide{
+    @apply w-3/5 !important;
+    @apply h-screen !important;
+  }
 }

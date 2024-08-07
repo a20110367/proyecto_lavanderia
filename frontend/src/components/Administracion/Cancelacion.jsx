@@ -24,26 +24,41 @@ function Cancelacion() {
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
 
+  const [prueba, setPrueba] = useState([]);
+
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
 
+
+  // const fetch = async (data) => {
+  //   const res = await data.map(
+  //     (obj) => obj.payStatus = api.get(`/orders/${obj.serviceOrder}`).then(json => setPrueba({...prueba, json}))
+
+
+  //   )
+  //   console.log(res)
+  //   return res;
+  // }
+
   const fetcher = async () => {
     const response = await api.get("/cashWithdrawals");
+    // return await fetch(response.data);
     return response.data;
   };
-
   const { data } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
-      const cancelacionesFiltrados = data.filter(
-        (cancelacion) => cancelacion.cashWithdrawalType === "refound"
+      const cancelacionesFiltrados = data.map(
+        (cancelacion) => cancelacion.cashWithdrawalType === "refound" ? {...cancelacion, payStatus: 'paid'} : cancelacion
       );
+
       setCancelaciones(cancelacionesFiltrados);
       setFilteredCancelaciones(cancelacionesFiltrados);
+      console.log(cancelacionesFiltrados)
     }
   }, [data]);
 
@@ -63,6 +78,10 @@ function Cancelacion() {
     setFilteredCancelaciones(filtered);
     setCurrentPage(0);
   };
+
+  const handleReembolsar = () => {
+
+  }
 
   const handleCancelacion = () => {
     if (!localStorage.getItem("cashCutId")) {
@@ -203,7 +222,7 @@ function Cancelacion() {
       </div>
       <div className="mt-3 mb-3">
         <button onClick={handleCancelacion} className="btn-primary">
-          Registrar Cancelación
+          Registrar Reembolso / Cancelación
         </button>
       </div>
       <table className="w-full text-sm text-left text-gray-500">
@@ -211,9 +230,11 @@ function Cancelacion() {
           <tr>
             <th>No. Cancelación</th>
             <th>Número de Pedido</th>
+            <th>Estatus</th>
             <th>Monto</th>
             <th>Motivo</th>
             <th>Fecha</th>
+            <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
@@ -230,15 +251,27 @@ function Cancelacion() {
                   {cancelacion.id_cashWithdrawal}
                 </td>
                 <td className="py-3 px-6">{cancelacion.serviceOrder}</td>
+                <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGAO' : 'NO PAGAO'}</td>
                 <td className="py-3 px-6">{"$" + cancelacion.amount}</td>
                 <td className="py-3 px-6">{cancelacion.cause}</td>
                 <td className="py-3 px-6">{formatDate(cancelacion.date)}</td>
+                <td>
+                  <button
+                    onClick={() =>
+                      navigate(`/editEquipo/${machine.id_machine}`)
+                    }
+                    className={`py-3 px-6 ${cancelacion.payStatus === 'paid'
+                      ? "btn-back w-11/12 p-0 m-0"
+                      : "btn-payment w-11/12 p-0 m-0"
+                    }`}
+                    >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
+                  </button></td>
               </tr>
             ))}
         </tbody>
       </table>
       <Modal
-        title="Registrar Cancelación"
+        title="Registrar Reembolso / Cancelación"
         open={visible}
         onOk={handleConfirmCancelacion}
         onCancel={handleClose}

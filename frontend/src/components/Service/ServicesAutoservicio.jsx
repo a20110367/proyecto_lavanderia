@@ -29,6 +29,7 @@ function ServicesAutoservicio() {
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
     const response = await api.get("/servicesSelfService");
+    console.log(response.data)
     return response.data;
   };
 

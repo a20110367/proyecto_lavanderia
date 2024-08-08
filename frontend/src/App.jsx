@@ -100,7 +100,7 @@ import HistorialCajaProductos from "./components/Cajas/HistorialCajaProductos";
 import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
 
 // ADMINISTRACION
-import ReportesProductos from "./components/Administracion/ReportesProductos";
+// import ReportesProductos from "./components/Administracion/ReportesProductos";
 import Reportes from "./components/Administracion/Reportes"
 import Cancelacion from "./components/Administracion/Cancelacion";
 import CajaChica from "./components/Administracion/CajaChica"
@@ -142,7 +142,7 @@ function App() {
                     <Route path="/HistorialCajaProductos" element={<HistorialCajaProductos />} />
                     <Route path="/HistorialCajaPlanchado" element={<HistorialCajaPlanchado />} />
                     <Route path="/reportes" element={<Reportes />} />
-                    <Route path="/reportesProductos" element={<ReportesProductos />} />
+                    {/* <Route path="/reportesProductos" element={<ReportesProductos />} /> */}
                     <Route path="/cancelacion" element={<Cancelacion/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />

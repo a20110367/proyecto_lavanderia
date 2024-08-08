@@ -145,8 +145,8 @@ const items1 = [
   ]),
 
   getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
+    getItem("Reportes", "/reportes"),
+    // getItem("Reportes Productos", "/reportesProductos"),
     getItem("Cancelación de Servicios", "/cancelacion"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
@@ -270,8 +270,8 @@ const items2 = [
   ]),
 
   getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
+    getItem("Reportes", "/reportes"),
+    // getItem("Reportes Productos", "/reportesProductos"),
     getItem("Cancelación de Servicios", "/cancelacion"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),

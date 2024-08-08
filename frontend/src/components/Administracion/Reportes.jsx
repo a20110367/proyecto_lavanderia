@@ -11,6 +11,31 @@ import moment from "moment";
 
 function Reportes() {
 
+  const [serviceReportResponse, setServiceReportResponse] = useState({
+    startDate: "2024-09-12T00:10:10.000Z",
+    endDate: "2024-09-12T00:10:10.000Z",
+    totalSuppliesNumberVerification: 0,
+    totalSuppliesSalesVerification: 0,
+    suppliesSummary: [
+      {
+        fk_supplyId: 0,
+        description: "Hardcoded Value 4 map 1",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      },
+      {
+        fk_supplyId: 1,
+        description: "Hardcoded Value 4 map 2",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      }]
+  })
+
+  // %%%%%%%%%%%%%%%%%%%%%%%%%% PRODUCTS 
   const [productReportResponse, setProductReportResponse] = useState({
     startDate: "2024-09-12T00:10:10.000Z",
     endDate: "2024-09-12T00:10:10.000Z",
@@ -46,39 +71,19 @@ function Reportes() {
     }
   })
 
-  const [serviceReportResponse, setServiceReportResponse] = useState({
-    startDate: "2024-09-12T00:10:10.000Z",
-    endDate: "2024-09-12T00:10:10.000Z",
-    totalSuppliesNumberVerification: 0,
-    totalSuppliesSalesVerification: 0,
-    suppliesSummary: [
-      {
-        fk_supplyId: 0,
-        description: "Hardcoded Value 4 map 1",
-        _sum: {
-          subtotal: 0,
-          units: 0,
-        }
-      },
-      {
-        fk_supplyId: 1,
-        description: "Hardcoded Value 4 map 2",
-        _sum: {
-          subtotal: 0,
-          units: 0,
-        }
-      }]
-  })
-
+  // %%%%%%%%%%%%%%%%%%%%%%%%%% VARS %%%%%%%%%%%%%%%%%%%%%%%%%% //
   const [dateRange, setDateRange] = useState([null]);
   const [datesSelected, setDatesSelected] = useState(false);
   const [isFirstOpen, setIsFirstOpen] = useState(false);
   const [reportType, setReportType] = useState(0);
   const [document, setDocument] = useState();
+  
+  // ========================== SERVICES 
   const [categoryId, setCategoryId] = useState(0);
   const [serviceId, setServiceId] = useState(0);
-  const [productId, setProductId] = useState();
 
+  // ========================== PRODUCTS
+  const [productId, setProductId] = useState();
   const [products, setProducts] = useState([]);
 
   //-------------------------- MODALS STATES --------------------------
@@ -95,9 +100,15 @@ function Reportes() {
     const res = await api.get("/supplies");
     return res.data;
   };
-
   const { data: dataProducts } = useSWR("allSupplies", fetcherProducts);
 
+  // const fetcherServices = async () => {
+  //   const res = await api.get("/services");
+  //   return res.data;
+  // };
+  // const { data: dataServices } = useSWR("allServices", fetcherServices);
+
+  // $$$$$$$$$$$$$$$$$$$$$$$$ useEffect $$$$$$$$$$$$$$$$$$$$$$$$$$$ //
   useEffect(() => {
     if (!isFirstOpen) {
       showModal()

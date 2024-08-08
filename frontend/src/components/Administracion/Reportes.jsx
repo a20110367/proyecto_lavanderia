@@ -2,553 +2,545 @@ import React, { useState, useEffect } from "react";
 import locale from "antd/es/date-picker/locale/es_ES";
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
-import ReactPaginate from "react-paginate";
+import { Select } from "antd";
 import { formatDate } from "../../utils/format";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import api from "../../api/api";
 import Swal from "sweetalert2";
 import moment from "moment";
 
 function Reportes() {
-  const [Cortes, setCortes] = useState([]);
-  const [filteredCortes, setFilteredCortes] = useState([]);
-  const [totalCajaFechasSeleccionadas, setTotalCajaFechasSeleccionadas] =
-    useState(0);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedCorte, setSelectedCorte] = useState(null);
+  const [productReportResponse, setProductReportResponse] = useState({
+    startDate: "2024-09-12T00:10:10.000Z",
+    endDate: "2024-09-12T00:10:10.000Z",
+    totalSuppliesNumberVerification: 0,
+    totalSuppliesSalesVerification: 0,
+    suppliesSummary: [
+      {
+        fk_supplyId: 0,
+        description: "Hardcoded Value 4 map 1",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      },
+      {
+        fk_supplyId: 1,
+        description: "Hardcoded Value 4 map 2",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      }]
+  })
+
+  const [productReportResponseId, setProductReportResponseId] = useState({
+    startDate: "2024-09-12T00:10:10.000Z",
+    endDate: "2024-09-12T00:10:10.000Z",
+    fk_supplyId: 0,
+    description: "Hardcoded Value 4 map 1",
+    _sum: {
+      subtotal: 0,
+      units: 0,
+    }
+  })
+
+  const [serviceReportResponse, setServiceReportResponse] = useState({
+    startDate: "2024-09-12T00:10:10.000Z",
+    endDate: "2024-09-12T00:10:10.000Z",
+    totalSuppliesNumberVerification: 0,
+    totalSuppliesSalesVerification: 0,
+    suppliesSummary: [
+      {
+        fk_supplyId: 0,
+        description: "Hardcoded Value 4 map 1",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      },
+      {
+        fk_supplyId: 1,
+        description: "Hardcoded Value 4 map 2",
+        _sum: {
+          subtotal: 0,
+          units: 0,
+        }
+      }]
+  })
+
   const [dateRange, setDateRange] = useState([null]);
   const [datesSelected, setDatesSelected] = useState(false);
+  const [isFirstOpen, setIsFirstOpen] = useState(false);
+  const [reportType, setReportType] = useState(0);
+  const [document, setDocument] = useState();
+  const [categoryId, setCategoryId] = useState(0);
+  const [serviceId, setServiceId] = useState(0);
+  const [productId, setProductId] = useState();
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
-  const handlePageChange = (selectedPage) => {
-    setCurrentPage(selectedPage.selected);
+  const [products, setProducts] = useState([]);
+
+  //-------------------------- MODALS STATES --------------------------
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGServiceOpen, setIsGServiceOpen] = useState(false);
+  const [isIdServiceOpen, setIsIdServiceOpen] = useState(false);
+  const [isGProductOpen, setIsGProductOpen] = useState(false);
+  const [isIdProductOpen, setIsIdProductOpen] = useState(false);
+  const [isDatePickerModal, setIsDatePickerModal] = useState(false);
+  const [isIdProductResultModal, setIsIdProductResultModal] = useState(false);
+
+  //-------------------------- REQUESTS --------------------------
+  const fetcherProducts = async () => {
+    const res = await api.get("/supplies");
+    return res.data;
   };
 
-  const fetchCashCuts = async () => {
-    try {
-      const response = await api.get("/cashCuts");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching cash cuts:", error);
-      return [];
-    }
-  };
+  const { data: dataProducts } = useSWR("allSupplies", fetcherProducts);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const cashCuts = await fetchCashCuts();
-        setCortes(cashCuts);
-        setFilteredCortes(cashCuts);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if (!isFirstOpen) {
+      showModal()
+      setIsFirstOpen(true);
+    }
+    if (dataProducts) {
+      setProducts(dataProducts);
+    }
+  }, [dataProducts]);
 
-    fetchData();
-  }, []);
-
-  const { data } = useSWR("cashCuts", fetchCashCuts);
-  if (!data) return <h2>Loading...</h2>;
-
-  const handleDetallesClick = (corte) => {
-    setSelectedCorte(corte);
-    setModalVisible(true);
+  //-------------------------- MODALS FUN --------------------------
+  const showModal = () => {
+    setIsModalOpen(true);
   };
 
-  const handleModalPrint = () => {
-    const doc = new jsPDF();
-
-    if (selectedCorte) {
-      doc.text(`Detalles del Corte`, 10, 10);
-      doc.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
-      doc.text(`Usuario: ${selectedCorte.user.name}`, 10, 30);
-      doc.text(
-        `Turno: ${
-          selectedCorte.workShift === "morning"
-            ? "Matutino"
-            : selectedCorte.workShift === "evening"
-            ? "Vespertino"
-            : "Nocturno"
-        }`,
-        10,
-        40
-      );
-      doc.text(`Fecha: ${formatDate(selectedCorte.cashCutD)}`, 10, 50);
-      doc.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60);
-
-      // Separación
-      doc.text(`Detalles de Ingresos por Servicio:`, 10, 80);
-
-      selectedCorte.totalAutoservicio
-        ? doc.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 90)
-        : doc.text("Autoservicio: $0", 10, 90);
-
-      selectedCorte.totalEncargo
-        ? doc.text(
-            `Lavado por Encargo: $${selectedCorte.totalEncargo}`,
-            10,
-            100
-          )
-        : doc.text("Lavado por Encargo: $0", 10, 100);
-
-      selectedCorte.totalPlanchado
-        ? doc.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 110)
-        : doc.text("Planchado: $0", 10, 110);
-
-      selectedCorte.totalTintoreria
-        ? doc.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 120)
-        : doc.text("Tintorería: $0", 10, 120);
-
-      selectedCorte.totalOtrosEncargo
-        ? doc.text(
-            `Encargo Varios: $${selectedCorte.totalOtrosEncargo}`,
-            10,
-            130
-          )
-        : doc.text("Encargo Varios: $0", 10, 130);
-
-      doc.text(
-        `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
-        10,
-        140
-      );
-      selectedCorte.totalCash
-        ? doc.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 160)
-        : doc.text("Ingreso en Efectivo: $0", 10, 160);
-
-      // Separación
-      selectedCorte.totalCredit
-        ? doc.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 170)
-        : doc.text("Ingreso en Tarjeta: $0", 10, 170);
-
-      selectedCorte.totalCashWithdrawal
-        ? doc.text(
-            `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
-            10,
-            180
-          )
-        : doc.text("Retiros Totales: $0", 10, 180);
-      doc.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 190);
-
-      doc.save("detalle_corte_servicios.pdf");
-    }
+  const showGeneralServicesModal = () => {
+    setIsGServiceOpen(true);
   };
 
-  const handleFiltroPorFecha = () => {
-    if (!dateRange || dateRange.length !== 2) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Debes seleccionar una fecha de inicio y una fecha de término para buscar.",
-        confirmButtonColor: "#034078",
-      });
-      return;
-    }
-    if (dateRange.length === 2) {
-      const [startDate, endDate] = dateRange.map((date) => date.toDate());
-
-      const filteredCortes = Cortes.filter((corte) => {
-        return moment(corte.cashCutD).isBetween(startDate, endDate, null, "[]");
-      });
-
-      const startDateStr = startDate.toISOString().split("T")[0];
-      const endDateStr = endDate.toISOString().split("T")[0];
-
-      const filtered = Cortes.filter((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
-          .toISOString()
-          .split("T")[0];
-        return corteDateStr >= startDateStr && corteDateStr <= endDateStr;
-      });
-
-      const startCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
-          .toISOString()
-          .split("T")[0];
-        return corteDateStr === startDateStr;
-      });
-
-      const endCorte = Cortes.find((corte) => {
-        const corteDateStr = new Date(corte.cashCutD)
-          .toISOString()
-          .split("T")[0];
-        return corteDateStr === endDateStr;
-      });
-
-      if (
-        startCorte &&
-        !filtered.some((c) => c.id_cashCut === startCorte.id_cashCut)
-      ) {
-        filtered.push(startCorte);
-      }
-
-      if (
-        endCorte &&
-        !filtered.some((c) => c.id_cashCut === endCorte.id_cashCut)
-      ) {
-        filtered.push(endCorte);
-      }
-
-      setFilteredCortes(filtered);
-      setDatesSelected(true);
-      setCurrentPage(0);
-    } else {
-      setDatesSelected(false);
-      if (!datesSelected) {
-        setFilteredCortes(Cortes);
-      }
-    }
+  const showIdServicesModal = () => {
+    setIsIdServiceOpen(true);
   };
 
-  const handleGenerarPDF = async () => {
+  const showGeneralProductsModal = () => {
+    setIsGProductOpen(true);
+  };
+
+  const showIdProductsModal = () => {
+    setIsIdProductOpen(true);
+  };
+
+  const showIdProductResultModal = () => {
+    setIsIdProductResultModal(true);
+  };
+
+  const datePickerModal = (number) => {
+    setReportType(number);
+    setIsDatePickerModal(true);
+  }
+
+  //-------------------------- FUNS --------------------------
+
+  const handleGenerarDocumento = async () => {
+    if (reportType === 1) {
+
+    } else if (reportType === 2) {
+
+    } else if (reportType === 3) {
+      const doc = new jsPDF("p", "mm", "letter");
+
+      doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+      doc.text(`Fechas seleccionadas:`, 10, 30);
+      doc.text(`(${formatDate(productReportResponse.startDate)}) - (${formatDate(productReportResponse.endDate)})`, 10, 40);
+
+      doc.text(`No. Total para Verificación: ${productReportResponse.totalSuppliesNumberVerification}`, 10, 60);
+      doc.text(`Total de Venta para Verificación: $${productReportResponse.totalSuppliesSalesVerification}`, 10, 70);
+
+      doc.setLineWidth(3)
+      doc.line(10, 80, 205, 80, 'S');
+
+      // Mostrar detalles de ingresos por servicio
+      doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
+      let count = 110;
+
+      productReportResponse.suppliesSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_supplyId}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+      setDocument(doc);
+    } else if (reportType === 4) {
+      const doc = new jsPDF("p", "mm", "letter");
+      doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+      doc.text(`Fechas seleccionadas:`, 10, 30);
+      doc.text(`(${formatDate(productReportResponseId.startDate)}) - (${formatDate(productReportResponseId.endDate)})`, 10, 40);
+
+      doc.setLineWidth(3)
+      doc.line(10, 80, 205, 80, 'S');
+
+      // Mostrar detalles de ingresos por servicio
+      doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
+      let count = 110;
+
+      doc.text(`Descripción: ${productReportResponseId.description}`, 10, count);
+      count += 10;
+      doc.text(`Subtotal: $${productReportResponseId._sum.subtotal}`, 10, count);
+      count += 10;
+      doc.text(`Unidades: ${productReportResponseId._sum.units}`, 10, count);
+      count += 20;
+      setDocument(doc);
+    } else Swal.fire("Tipo de reporte no encontrado", "", "error");
+  }
+
+  const handleGuardarPDF = async () => {
+    await handleGenerarDocumento()
+    const formattedStartDate = productReportResponse.startDate.split("/").join("-");
+    const formattedEndDate = productReportResponse.endDate.split("/").join("-");
+    document.save(`Reporte de productos ${formattedStartDate} - ${formattedEndDate}.pdf`);
+    Swal.fire("Reporte Guardado", "", "success");
+  }
+
+  const handleEnviarPDF = async () => {
+    await handleGenerarDocumento()
+    const out = document.output("datauristring");
+    await api.post("/sendReport", {
+      startDate: formatDate(dateRange[0].toDate()),
+      endDate: formatDate(dateRange[1].toDate())
+      ,
+      pdf: out.split("base64,")[1],
+    });
+    Swal.fire("Reporte Enviado", "", "success");
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%% # SERVICE %%%%%%%%%%%%%%%%%%%%%
+
+  //%%%%%%%%%%%%%%%%%%%%% GENERAL SERVICE
+  //%%%%%%%%%%%%%%%%%%%%% ID SERVICE
+
+
+  //%%%%%%%%%%%%%%%%%%%%% # PRODUCT %%%%%%%%%%%%%%%%%%%%%
+
+  const handleGenerateProductReport = async () => {
     try {
-      if (filteredCortes.length > 0 && dateRange.length === 2) {
-        const doc = new jsPDF();
+      if (dateRange.length === 2) {
+        const res = reportType === 3 ?
+          await api.get(`/suppliesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}`)
+          : await api.get(`/suppliesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}/${productId}`)
 
-        const report = {
-          sumAutoservicio: 0,
-          sumEncargo: 0,
-          sumPlanchado: 0,
-          sumTintoreria: 0,
-          sumOtrosEncargo: 0,
-          sumTotalIncome: 0,
-          sumTotalCash: 0,
-          sumTotalCredit: 0,
-          sumTotalCashWithdrawal: 0,
-          sumTotal: 0,
-        };
-
-        filteredCortes.map((corte) => {
-          report.sumAutoservicio += corte.totalAutoservicio || 0;
-          report.sumEncargo += corte.totalEncargo || 0;
-          report.sumPlanchado += corte.totalPlanchado || 0;
-          report.sumTintoreria += corte.totalTintoreria || 0;
-          report.sumOtrosEncargo += corte.totalOtrosEncargo || 0;
-          report.sumTotalIncome += corte.totalIncome || 0;
-          report.sumTotalCash += corte.totalCash || 0;
-          report.sumTotalCredit += corte.totalCredit || 0;
-          report.sumTotalCashWithdrawal += corte.totalCashWithdrawal || 0;
-          report.sumTotal += corte.total || 0;
+        console.log(res)
+        if (reportType === 3) {
+          if (res.data.suppliesSummary.length == 0) {
+            Swal.fire('No hay reportes en esas fechas', "", "error")
+          } else {
+            setProductReportResponse(res.data)
+            showModal()
+          }
+        } else {
+          setProductReportResponseId(res.data)
+          showIdProductResultModal();
+        }
+      } else if (!dateRange || dateRange.length !== 2) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Debes seleccionar una fecha de inicio y una fecha de término para buscar.",
+          confirmButtonColor: "#034078",
         });
-
-        doc.text(`Total de Caja de las Fechas Seleccionadas`, 10, 10);
-
-        // Obtener las fechas seleccionadas en formato legible
-        const startDate = formatDate(dateRange[0].toDate());
-        const endDate = formatDate(dateRange[1].toDate());
-
-        doc.text(`Fechas seleccionadas: ${startDate} - ${endDate}`, 10, 20);
-
-        doc.text(
-          `Total de Ingresos en Efectivo: $${report.sumTotalCash}`,
-          10,
-          40
-        );
-        doc.text(
-          `Total de Ingresos en Tarjeta: $${report.sumTotalCredit}`,
-          10,
-          50
-        );
-        // Mostrar detalles de ingresos por servicio
-        doc.text(`Detalles de Ingresos por Servicio:`, 10, 70);
-        doc.text(`Autoservicio: $${report.sumAutoservicio}`, 10, 80);
-        doc.text(`Lavado por Encargo: $${report.sumEncargo}`, 10, 90);
-        doc.text(`Planchado: $${report.sumPlanchado}`, 10, 100);
-        doc.text(`Tintorería: $${report.sumTintoreria}`, 10, 110);
-        doc.text(`Encargo Varios: $${report.sumOtrosEncargo}`, 10, 120);
-        doc.text(
-          `Total (Suma de los Servicios): $${report.sumTotalIncome}`,
-          10,
-          130
-        );
-        // Mostrar retiros y total de ingresos del intervalo de fechas
-        doc.text(`Retiros Totales: $${report.sumTotalCashWithdrawal}`, 10, 150);
-        doc.text(
-          `Total de Ingresos de  ${startDate} - ${endDate}: $${report.sumTotal}`,
-          10,
-          170
-        );
-
-        const formattedStartDate = startDate.split("/").join("-");
-        const formattedEndDate = endDate.split("/").join("-");
-        doc.save(
-          `Reporte de servicios ${formattedStartDate} - ${formattedEndDate}.pdf`
-        );
-
-        const out = doc.output("datauristring");
-        await api.post("/sendReport", {
-          startDate: formatDate(dateRange[0].toDate()),
-          endDate: formatDate(dateRange[1].toDate()),
-          pdf: out.split("base64,")[1],
-        });
+        return;
       }
     } catch (err) {
+      Swal.fire("Hubo un error", "", "error");
       console.error(err);
     }
   };
 
+  //%%%%%%%%%%%%%%%%%%%%% GENERAL PRODUCT
+  const handlePrint = async () => {
+    try {
+      await api.post("/generateReportProduct", {
+        report: reportResponse,
+      })
+    } catch (err) {
+      Swal.fire("Error al imprimir", "", "error");
+      console.error(err);
+    }
+  }
+
+  //%%%%%%%%%%%%%%%%%%%%% ID PRODUCT
+  const handlePrintId = async () => {
+    try {
+      await api.post("/generateReportProduct", {
+        report: reportResponse,
+      })
+    } catch (err) {
+      Swal.fire("Error al imprimir", "", "error");
+      console.error(err);
+    }
+  }
+
   return (
-    <div className="text-center mt-4">
-      <div>
-        <div className="mb-3">
-          <div className="title-container">
-            <strong className="title-strong">Reportes de Servicios</strong>
+    <div>
+      <Modal title={`Generando un Reporte del día (${moment().format('DD/MM/YYYY')})`} open={isModalOpen} width={1000} onCancel={() => setIsModalOpen(false)}
+        footer={[null]}>
+        <div className="flex-auto justify-center" style={{ height: "500px" }}>
+          <div className="w-full">
+            <h1 className="text-center m-0 text-3xl font-bold">Reportes</h1>
           </div>
-        </div>
-        <div className="flex items-center mb-4">
-          <div className="relative w-full">
-            <div className="relative w-full flex items-center">
-              <DatePicker.RangePicker
-                locale={locale}
-                onChange={(dates) => {
-                  setDateRange(dates);
-                  if (!dates || dates.length === 0) {
-                    setDatesSelected(false);
-                    setFilteredCortes(Cortes);
-                  }
-                }}
-                value={dateRange}
-                format="DD/MM/YYYY"
-                className="border-2 rounded-md py-2  pl-10  border-Cerulean mt-2"
-              />
-              <button className="btn-search" onClick={handleFiltroPorFecha}>
-                Buscar
-              </button>
-              {datesSelected && (
-                <button
-                  key="print"
-                  onClick={handleGenerarPDF}
-                  className="btn-search text-white ml-2"
-                >
-                  Guardar Reporte
-                </button>
-              )}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+              <button onClick={() => datePickerModal(1)} className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-2 text-xl mr-0">Reportes Generales de Servicios</button>
+              <button onClick={() => datePickerModal(2)} className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-2 text-xl mr-0">Reportes por Servicio en Especifico</button>
+            </div>
+            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+              <button onClick={() => datePickerModal(3)} className="btn-back w-3/4 h-1/3 text-xl">Reportes Generales de Productos</button>
+              <button onClick={() => datePickerModal(4)} className="btn-back w-3/4 h-1/3 text-xl">Reportes por Producto en Especifico</button>
             </div>
           </div>
         </div>
-        <div className="mt-4" style={{ overflowX: "auto" }}>
-          <table className="w-full text-sm text-left text-gray-500 ">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-              <tr>
-                <th>No. Corte</th>
-                <th>FECHA</th>
-                <th>
-                  DINERO <br />
-                  EN FONDO
-                </th>
-                <th>
-                  INGRESO <br />
-                  EN EFECTIVO
-                </th>
-                <th>
-                  INGRESO <br />
-                  EN TARJETA
-                </th>
-                <th>
-                  RETIROS <br />
-                  TOTALES
-                </th>
-                <th>
-                  FINAL <br />
-                  TOTAL CAJA
-                </th>
-                <th>USUARIO</th>
-                <th>TURNO</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCortes
-                .slice()
-                .reverse()
-                .slice(
-                  currentPage * itemsPerPage,
-                  (currentPage + 1) * itemsPerPage
-                )
-                .map((corte) => (
-                  <tr className="bg-white border-b" key={corte.id_cashCut}>
-                    <td className="">{corte.id_cashCut}</td>
-                    <td className="">{formatDate(corte.cashCutD)}</td>
-                    <td className="">
-                      ${corte.initialCash ? corte.initialCash : 0}
-                    </td>
-                    <td className="">
-                      ${corte.totalCash ? corte.totalCash : 0}
-                    </td>
-                    <td className="">
-                      ${corte.totalCredit ? corte.totalCredit : 0}
-                    </td>
-                    <td className="">
-                      $
-                      {corte.totalCashWithdrawal
-                        ? corte.totalCashWithdrawal
-                        : 0}
-                    </td>
-                    <td className="">${corte.total ? corte.total : 0}</td>
-                    <td className="">
-                      {corte.user.name} {corte.user.firstLN}{" "}
-                      {corte.user.secondLN}
-                    </td>
-                    <td className="">
-                      {corte.workShift === "morning"
-                        ? "Matutino"
-                        : corte.workShift === "evening"
-                        ? "Vespertino"
-                        : "Nocturno"}
-                    </td>
+      </Modal>
 
-                    <td className="min-w-[60px]">
-                      <button
-                        className="btn-primary mt-1 mb-1"
-                        onClick={() => handleDetallesClick(corte)}
-                      >
-                        <AiOutlinePlusCircle size={20} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+      {/*SERVICIOS*/}
+      <Modal title={`Reporte General de Servicios`} open={isGServiceOpen} width={1000} onCancel={() => { setIsGServiceOpen(false) }} maskClosable={false}
+        footer={[null]}>
+      </Modal>
+
+      <Modal title={`Reporte por Servicio en Especifico`} open={isIdServiceOpen} width={1000} onCancel={() => { setIsIdServiceOpen(false) }} maskClosable={false}
+        footer={[null]}>
+      </Modal>
+
+      {/* GENERAL PRODUCT*/}
+      <Modal title={`Resultado del Reporte General de Productos`} open={isGProductOpen} width={1000} onCancel={() => { setIsGProductOpen(false) }} maskClosable={false}
+        footer={[
+          <Button
+            onClick={() => (handlePrint())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            onClick={() => (handleGuardarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="save"
+          >
+            Guardar
+          </Button>,
+          <Button
+            onClick={() => (handleEnviarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="generate"
+          >
+            Enviar al Correo
+          </Button>,
+          <Button
+            onClick={() => setIsGProductOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex overflow-scroll" style={{ height: "700px" }}>
+          {/* Primera Columna */}
+          <div className="w-1/4 text-lg sticky top-10">
+            <p className="text-lg font-bold">Fecha Inicial:</p>
+            <p>{formatDate(productReportResponse.startDate)}</p>
+
+            <p className="text-lg font-bold">Fecha de Termino:</p>
+            <p>{formatDate(productReportResponse.endDate)}</p>
+          </div>
+          {/* Segunda Columna */}
+          <div className="w-1/2 text-lg">
+            <p className="font-bold text-xl">Detalles de Ingresos por Producto:</p>
+            <br />
+            {productReportResponse ?
+              productReportResponse.suppliesSummary.map(item => (
+                <div key={item.fk_supplyId}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center"} >Descripción del Producto:</p>
+                  <br />
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <br />
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+          </div>
+          {/* Tercera Columna */}
+          <div className="w-1/3 text-lg sticky top-3/4 ml-5">
+            <p className="font-bold text-xl">Resumen para Verificar:</p>
+            <br />
+
+            <p className="font-bold"> No. Total para Verificación:</p>
+            <p className="text-2xl">{productReportResponse.totalSuppliesNumberVerification}</p>
+
+            <p className="font-bold"> Total de Venta para Verificación:</p>
+            <p className="text-2xl">${productReportResponse.totalSuppliesSalesVerification}</p>
+
+          </div>
         </div>
+      </Modal>
 
-        {/* Modal para mostrar detalles */}
-        <Modal
-          title="Detalles del Corte"
-          open={modalVisible}
-          onOk={() => setModalVisible(false)}
-          onCancel={() => setModalVisible(false)}
-          width={600}
-          footer={[
-            <Button
-              key="print"
-              onClick={handleModalPrint}
-              className="btn-print text-white"
-            >
-              Guardar
-            </Button>,
-            <Button
-              key="close"
-              onClick={() => setModalVisible(false)}
-              className="btn-cancel-modal text-white"
-            >
-              Cerrar
-            </Button>,
-          ]}
-        >
-          {selectedCorte && (
-            <div>
-              <div className="flex">
-                <div className="w-1/2">
-                  <p className="text-lg">
-                    <span className="font-bold">ID:</span>{" "}
-                    {selectedCorte.id_cashCut}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Usuario:</span>{" "}
-                    {selectedCorte.user.name}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Turno:</span>{" "}
-                    {selectedCorte.workShift === "morning"
-                      ? "Matutino"
-                      : selectedCorte.workShift === "evening"
-                      ? "Vespertino"
-                      : "Nocturno"}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Fecha:</span>{" "}
-                    {formatDate(selectedCorte.cashCutD)}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Dinero en Fondo:</span> $
-                    {selectedCorte.initialCash ? selectedCorte.initialCash : 0}
-                  </p>
-                </div>
-                <div className="w-1/2">
-                  <p className="text-lg">
-                    <span className="font-bold">Ingreso en Efectivo:</span> $
-                    {selectedCorte.totalCash ? selectedCorte.totalCash : 0}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Ingreso en Tarjeta:</span> $
-                    {selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Retiros Totales:</span> $
-                    {selectedCorte.totalCashWithdrawal
-                      ? selectedCorte.totalCashWithdrawal
-                      : 0}
-                  </p>
-                  <p className="text-lg">
-                    <span className="font-bold">Final Total en Caja:</span> $
-                    {selectedCorte.total ? selectedCorte.total : 0}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-bold mt-4">
-                  Detalles de Ingresos por Servicio:
-                </h3>
-                <p className="text-lg">
-                  <span className="font-bold">Autoservicio:</span> $
-                  {selectedCorte.totalAutoservicio
-                    ? selectedCorte.totalAutoservicio
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Lavado por Encargo:</span> $
-                  {selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Planchado:</span> $
-                  {selectedCorte.totalPlanchado
-                    ? selectedCorte.totalPlanchado
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Tintorería:</span> $
-                  {selectedCorte.totalTintoreria
-                    ? selectedCorte.totalTintoreria
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">Encargo Varios:</span> $
-                  {selectedCorte.totalOtrosEncargo
-                    ? selectedCorte.totalOtrosEncargo
-                    : 0}
-                </p>
-                <p className="text-lg">
-                  <span className="font-bold">
-                    Total (Suma de los Servicios):
-                  </span>{" "}
-                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
-                </p>
-              </div>
+      {/* ID PRODUCT */}
+      <Modal title={`Reporte por Producto en Especifico`} open={isIdProductOpen} width={1000} onCancel={() => { setIsIdProductOpen(false) }} maskClosable={false}
+        footer={[
+          <Button
+            onClick={() => setIsIdProductOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex-auto justify-center" style={{ height: "500px" }}>
+          <div className="w-full">
+            <h1 className="text-center m-0 text-3xl font-bold">Selecciona un Producto <br /> para  generar el reporte en especifico</h1>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+              <Select
+                id="productTypes"
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setProductId(value)}
+                value={productId}
+                defaultValue={"Selecciona un Producto."}
+              >
+                {products.map((item) =>
+                  (<Select.Option key={item.id_supply} value={item.id_supply}>{item.description}</Select.Option>)
+                )};
+              </Select>
+              <button onClick={() => {
+                if (productId) {
+                  handleGenerateProductReport();
+                } else Swal.fire("Selecciona un producto", "", "info")
+              }}
+                className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-16 text-xl mr-0">Buscar producto en especifico</button>
             </div>
-          )}
-        </Modal>
-      </div>
-      <div className="flex justify-center mt-4 mb-4">
-        <ReactPaginate
-          previousLabel={"Anterior"}
-          nextLabel={"Siguiente"}
-          breakLabel={"..."}
-          pageCount={Math.ceil(filteredCortes.length / itemsPerPage)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={2}
-          onPageChange={handlePageChange}
-          containerClassName={"pagination flex"}
-          pageLinkClassName="pageLinkClassName"
-          previousLinkClassName="prevOrNextLinkClassName"
-          nextLinkClassName="prevOrNextLinkClassName"
-          breakLinkClassName="breakLinkClassName"
-          activeLinkClassName="activeLinkClassName"
-        />
-      </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ID PRODUCT RESULT*/}
+      <Modal title={`Resultado del Reporte por Producto en Especifico`} open={isIdProductResultModal} width={1000} onCancel={() => { setIsIdProductResultModal(false) }} maskClosable={false}
+        footer={[
+          <Button
+            onClick={() => (handlePrintId())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            onClick={() => (handleGuardarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="save"
+          >
+            Guardar
+          </Button>,
+          <Button
+            onClick={() => (handleEnviarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="generate"
+          >
+            Enviar al Correo
+          </Button>,
+          <Button
+            onClick={() => setIsIdProductResultModal(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex overflow-scroll" style={{ height: "700px" }}>
+          {/* Primera Columna */}
+          <div className="w-1/4 text-lg sticky top-10">
+            <p className="text-lg font-bold">Fecha Inicial:</p>
+            <p>{formatDate(productReportResponseId.startDate)}</p>
+
+            <p className="text-lg font-bold">Fecha de Termino:</p>
+            <p>{formatDate(productReportResponseId.endDate)}</p>
+          </div>
+          {/* Segunda Columna */}
+          <div className="w-1/2 text-lg">
+            <p className="font-bold text-xl">Detalles de Ingresos por Producto:</p>
+            <br />
+            <div key={productReportResponseId.productId}>
+              <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center"} >Descripción del Producto:</p>
+              <br />
+              <p className="text-xl font-bold text-center">{productReportResponseId.description}</p>
+              <br />
+              <p className="text-lg font-bold">ID: <span className="font-normal" >{productId}</span></p>
+              <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {productReportResponseId._sum.subtotal}</span></p>
+              <p className="text-lg font-bold" >Unidades: <span className="font-normal">{productReportResponseId._sum.units}</span></p>
+              <br />
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/*DATE PICKER*/}
+      <Modal title={`Seleccionando Fecha`} open={isDatePickerModal} width={1000} onCancel={() => { setIsDatePickerModal(false) }} maskClosable={false}
+        footer={[null]}>
+        <div className="flex-auto justify-center" style={{ height: "500px" }}>
+          <DatePicker.RangePicker
+            locale={locale}
+            onChange={(dates) => {
+              setDateRange(dates);
+              if (!dates || dates.length === 0) {
+                setDatesSelected(false);
+              }
+            }}
+            onMouseEnter={() => {
+              setDatesSelected(false);
+            }}
+            value={dateRange}
+            format="DD/MM/YYYY"
+            className="border-2 rounded-md py-2  pl-10  border-Cerulean mt-2"
+          />
+          <button className="btn-search" onClick={() => {
+            switch (reportType) {
+              case 1:
+                showGeneralServicesModal();
+                break;
+              case 2:
+                showIdServicesModal();
+                break;
+              case 3:
+                handleGenerateProductReport()
+                showGeneralProductsModal();
+                break;
+              case 4:
+                showIdProductsModal();
+                break;
+              default:
+                Swal.fire("Error de selección de Reportes", "", "error");
+                break;
+            }
+          }
+          }>
+            Buscar
+          </button>
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-xl font-semibold mt-10">{`Fecha seleccionada:`}</p>
+            <p className="text-3xl font-semibold mt-16">{dateRange[0] ? `${formatDate(dateRange[0].toDate())}` : "Esperando que seleccione una Fecha de Inicio"}</p>
+            <p className="text-3xl font-semibold mt-8">-</p>
+            <p className="text-3xl font-semibold mt-16">{dateRange[1] ? `${formatDate(dateRange[1].toDate())}` : "Esperando que seleccione una Fecha de Termino"}</p>
+          </div>
+        </div>
+      </Modal>
+
     </div>
   );
 }

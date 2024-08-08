@@ -29,6 +29,7 @@ function Productos() {
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
     const response = await api.get("/supplies");
+    console.log(response)
     return response.data;
   };
 

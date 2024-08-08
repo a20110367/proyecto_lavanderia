@@ -301,7 +301,7 @@ function Reportes() {
 
   return (
     <div>
-      <Modal title={`Generando un Reporte del día (${moment().format('DD/MM/YYYY')})`} open={isModalOpen} width={1000} onCancel={() => setIsModalOpen(false)}
+      <Modal title={`Generando un Reporte del día (${moment().format('DD/MM/YYYY')})`} open={isModalOpen} width={1000} onCancel={() => window.history.back()}
         footer={[null]}>
         <div className="flex-auto justify-center" style={{ height: "500px" }}>
           <div className="w-full">

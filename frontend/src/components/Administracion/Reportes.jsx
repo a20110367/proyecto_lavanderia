@@ -77,7 +77,7 @@ function Reportes() {
   const [isFirstOpen, setIsFirstOpen] = useState(false);
   const [reportType, setReportType] = useState(0);
   const [document, setDocument] = useState();
-  
+
   // ========================== SERVICES 
   const [categoryId, setCategoryId] = useState(0);
   const [serviceId, setServiceId] = useState(0);
@@ -248,7 +248,7 @@ function Reportes() {
           await api.get(`/suppliesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}`)
           : await api.get(`/suppliesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}/${productId}`)
 
-        console.log(res)
+        // console.log(res)
         if (reportType === 3) {
           if (res.data.suppliesSummary.length == 0) {
             Swal.fire('No hay reportes en esas fechas', "", "error")
@@ -301,8 +301,16 @@ function Reportes() {
 
   return (
     <div>
+      {/* MENU*/}
       <Modal title={`Generando un Reporte del día (${moment().format('DD/MM/YYYY')})`} open={isModalOpen} width={1000} onCancel={() => window.history.back()}
-        footer={[null]}>
+        footer={[
+          <Button
+            onClick={() => window.history.back()}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,]}>
         <div className="flex-auto justify-center" style={{ height: "500px" }}>
           <div className="w-full">
             <h1 className="text-center m-0 text-3xl font-bold">Reportes</h1>
@@ -320,11 +328,12 @@ function Reportes() {
         </div>
       </Modal>
 
-      {/*SERVICIOS*/}
+      {/* GENERAL SERVICE*/}
       <Modal title={`Reporte General de Servicios`} open={isGServiceOpen} width={1000} onCancel={() => { setIsGServiceOpen(false) }} maskClosable={false}
         footer={[null]}>
       </Modal>
 
+      {/* ID SERVICE*/}
       <Modal title={`Reporte por Servicio en Especifico`} open={isIdServiceOpen} width={1000} onCancel={() => { setIsIdServiceOpen(false) }} maskClosable={false}
         footer={[null]}>
       </Modal>
@@ -503,7 +512,14 @@ function Reportes() {
 
       {/*DATE PICKER*/}
       <Modal title={`Seleccionando Fecha`} open={isDatePickerModal} width={1000} onCancel={() => { setIsDatePickerModal(false) }} maskClosable={false}
-        footer={[null]}>
+        footer={[
+          <Button
+            onClick={() => setIsDatePickerModal(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,]}>
         <div className="flex-auto justify-center" style={{ height: "500px" }}>
           <DatePicker.RangePicker
             locale={locale}

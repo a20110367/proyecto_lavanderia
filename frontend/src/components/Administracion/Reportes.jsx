@@ -233,14 +233,26 @@ function Reportes() {
     Swal.fire("Reporte Enviado", "", "success");
   }
 
-  //%%%%%%%%%%%%%%%%%%%%% # SERVICE %%%%%%%%%%%%%%%%%%%%%
+  const handlePrint = async () => {
+    try {
+      await api.post("/generateReportProduct", {
+        report: reportResponse,
+        reportType: reportType,
+      })
+    } catch (err) {
+      Swal.fire("Error al imprimir", "", "error");
+      console.error(err);
+    }
+  }
 
+  //%%%%%%%%%%%%%%%%%%%%% # SERVICE %%%%%%%%%%%%%%%%%%%%%
   //%%%%%%%%%%%%%%%%%%%%% GENERAL SERVICE
   //%%%%%%%%%%%%%%%%%%%%% ID SERVICE
 
 
   //%%%%%%%%%%%%%%%%%%%%% # PRODUCT %%%%%%%%%%%%%%%%%%%%%
-
+  //%%%%%%%%%%%%%%%%%%%%% GENERAL PRODUCT
+  //%%%%%%%%%%%%%%%%%%%%% ID PRODUCT
   const handleGenerateProductReport = async () => {
     try {
       if (dateRange.length === 2) {
@@ -274,30 +286,6 @@ function Reportes() {
       console.error(err);
     }
   };
-
-  //%%%%%%%%%%%%%%%%%%%%% GENERAL PRODUCT
-  const handlePrint = async () => {
-    try {
-      await api.post("/generateReportProduct", {
-        report: reportResponse,
-      })
-    } catch (err) {
-      Swal.fire("Error al imprimir", "", "error");
-      console.error(err);
-    }
-  }
-
-  //%%%%%%%%%%%%%%%%%%%%% ID PRODUCT
-  const handlePrintId = async () => {
-    try {
-      await api.post("/generateReportProduct", {
-        report: reportResponse,
-      })
-    } catch (err) {
-      Swal.fire("Error al imprimir", "", "error");
-      console.error(err);
-    }
-  }
 
   return (
     <div>
@@ -455,7 +443,7 @@ function Reportes() {
       <Modal title={`Resultado del Reporte por Producto en Especifico`} open={isIdProductResultModal} width={1000} onCancel={() => { setIsIdProductResultModal(false) }} maskClosable={false}
         footer={[
           <Button
-            onClick={() => (handlePrintId())}
+            onClick={() => (handlePrint())}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="print"
           >

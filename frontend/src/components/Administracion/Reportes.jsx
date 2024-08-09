@@ -444,6 +444,7 @@ function Reportes() {
             Swal.fire('No hay reportes en esas fechas', "", "error")
           } else {
             setServiceReportResponse(res.data)
+            showGeneralServicesModal()
             console.log(res.data)
           }
         } else {
@@ -534,7 +535,7 @@ function Reportes() {
       </Modal>
 
       {/* GENERAL SERVICE*/}
-      <Modal title={`Reporte General de Servicios`} open={isGServiceOpen} width={1000} onCancel={() => { setIsGServiceOpen(false) }} maskClosable={false}
+      <Modal title={`Reporte General de Servicios`} open={isGServiceOpen} width={1300} onCancel={() => { setIsGServiceOpen(false) }} maskClosable={false}
         footer={[
           <Button
             onClick={() => (handlePrint())}
@@ -575,17 +576,74 @@ function Reportes() {
             <p>{formatDate(serviceReportResponse.endDate)}</p>
           </div>
           {/* Segunda Columna */}
-          <div className="w-1/2 text-lg">
+          <div className="w-1/3 text-lg">
             <p className="font-bold text-xl">Detalles:</p>
             <br />
+
+            <p className={"text-white text-lx font-bold rounded-md bg-sky-500 text-center py-2"} ></p>
+            <p className="text-xl font-bold text-center">AutoServicio</p>
             {serviceReportResponse ?
-              serviceReportResponse.suppliesSummary.map(item => (
-                <div key={item.fk_supplyId}>
-                  <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
-                  <br />
+              serviceReportResponse.selfServiceSummary.map(item => (
+                <div key={item.fk_selfService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
                   <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_selfService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p>
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            <p className={"text-white text-lx font-bold rounded-md bg-rose-500 text-center py-2"} ></p>
+            <p className="text-xl font-bold text-center">Encargo</p>
+            {serviceReportResponse ?
+              serviceReportResponse.laundryServiceSummary.map(item => (
+                <div key={item.fk_laundryService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_laundryService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            <p className={"text-white text-lx font-bold rounded-md bg-yellow-500 text-center py-2"} ></p>
+            <p className="text-xl font-bold text-center">Planchado</p>
+            {serviceReportResponse ?
+              serviceReportResponse.ironServiceSummary.map(item => (
+                <div key={item.fk_ironService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_ironService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            <p className={"text-white text-lx font-bold rounded-md bg-lime-500 text-center py-2"} ></p>
+            <p className="text-xl font-bold text-center">Tintoreria</p>
+            {serviceReportResponse ?
+              serviceReportResponse.drycleanServiceSummary.map(item => (
+                <div key={item.fk_drycleanService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_drycleanService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            <p className={"text-white text-lx font-bold rounded-md bg-orange-500 text-center py-2"} ></p>
+            <p className="text-xl font-bold text-center">Otros</p>
+            {serviceReportResponse ?
+              serviceReportResponse.otherServiceSumary.map(item => (
+                <div key={item.fk_otherService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_otherService}</span></p>
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
@@ -593,15 +651,47 @@ function Reportes() {
               )) : <p className="text-lg" > Cargando Información...</p>}
           </div>
           {/* Tercera Columna */}
-          <div className="w-1/3 text-lg sticky top-3/4 ml-5">
-            <p className="font-bold text-xl">Resumen para Verificar:</p>
+          <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-5 ">
+            <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <br />
+            <p className="font-bold text-lg">Resumen de Estatus de la Ordenes:</p>
+            <p className={"text-white text-lx font-bold rounded-md bg-red-900 text-center py-2"} ></p>
+            {serviceReportResponse.deliverySatusOrderSummary.map(item => (
+              <div key={item.fk_otherService}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas" : "No. de Ordenes Terminadas"}</p>
+                <p className="text-lg">{item._count.id_order}</p>
+                <p className="font-bold">No. de Servicios</p>
+                <p className="text-lg">{item._sum.numberOfItems}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${item._sum.totalPrice}</p>
+                <br />
+              </div>
+            ))}
+            <p className="font-bold text-lg">Resumen de Estatus de Pago:</p>
+            <p className={"text-white text-lx font-bold rounded-md bg-blue-900 text-center py-2"} ></p>
+            {serviceReportResponse.payStatusOrderSummary.map(item => (
+              <div key={item.fk_otherService}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
+                <p className="font-bold">{item.payStatus === "paid" ? "No. de Ordenes Pagadas" : "No. de Ordenes NO Pagadas"}</p>
+                <p className="text-lg">{item._count.id_order}</p>
+                <p className="font-bold">No. de Servicios</p>
+                <p className="text-lg">{item._sum.numberOfItems}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${item._sum.totalPrice}</p>
+                <br />
+              </div>
+            ))}
+          </div>
+          {/* Cuarta Columna */}
+          <div className="w-1/4 text-lg sticky top-3/4 ml-5">
+            <p className="font-bold text-xl">Resumen de Ordenes:</p>
+            <p className="font-bold text-xl">Resumen General:</p>
+            <p className="font-bold">No. Total de Ordenes:</p>
+            <p className="text-2xl">{serviceReportResponse.totalServiceNumberVerification}</p>
 
-            <p className="font-bold"> No. Total para Verificación:</p>
-            <p className="text-2xl">{productReportResponse.totalSuppliesNumberVerification}</p>
-
-            <p className="font-bold"> Total de Venta para Verificación:</p>
-            <p className="text-2xl">${productReportResponse.totalSuppliesSalesVerification}</p>
+            <p className="font-bold">Venta Total:</p>
+            <p className="text-2xl">${serviceReportResponse.totalServiceSalesVerification}</p>
 
           </div>
         </div>

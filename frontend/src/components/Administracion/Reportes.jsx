@@ -14,25 +14,98 @@ function Reportes() {
   const [serviceReportResponse, setServiceReportResponse] = useState({
     startDate: "2024-09-12T00:10:10.000Z",
     endDate: "2024-09-12T00:10:10.000Z",
-    totalSuppliesNumberVerification: 0,
-    totalSuppliesSalesVerification: 0,
-    suppliesSummary: [
+    totalServiceSalesVerification: 0,
+    totalServiceNumberVerification: 0,
+    totalDeliveryStatusSalesVerification: 0,
+    totalDeliveryStatusOrdersVerification: 0,
+    totalDeliveryStatusItemsVerification: 0,
+    totalPayStatusSalesVerification: 0,
+    totalPayStatusNumberVerification: 0,
+    totalPayStatusItemsVerification: 0,
+
+    selfServiceSummary: [
       {
-        fk_supplyId: 0,
-        description: "Hardcoded Value 4 map 1",
         _sum: {
-          subtotal: 0,
-          units: 0,
-        }
+          units: 46,
+          subtotal: 2300
+        },
+        fk_selfService: 1,
+        description: "Autoservicio Secado"
+      },],
+    laundryServiceSummary: [
+      {
+        _sum: {
+          units: 4,
+          subtotal: 200
+        },
+        fk_laundryService: 1,
+        description: "Autoservicio Lavado 10K"
+      },],
+    ironServiceSummary: [
+      {
+        _sum: {
+          units: 29,
+          subtotal: 1800
+        },
+        fk_ironService: 1,
+        description: "Planchado 12pzs"
+      },],
+    drycleanServiceSummary: [
+      {
+        _sum: {
+          units: 36,
+          subtotal: 3600
+        },
+        fk_drycleanService: 1,
+        description: "Tintoreria 5pz"
+      },],
+    otherServiceSumary: [
+      {
+        _sum: {
+          units: 14,
+          subtotal: 560
+        },
+        fk_otherService: 1,
+        description: "Lavado de tenis"
       },
+    ],
+    payStatusOrderSummary: [
       {
-        fk_supplyId: 1,
-        description: "Hardcoded Value 4 map 2",
+        _count: {
+          id_order: 211
+        },
         _sum: {
-          subtotal: 0,
-          units: 0,
-        }
-      }]
+          totalPrice: 35396.75,
+          numberOfItems: 416
+        },
+        payStatus: "paid"
+      },],
+    deliverySatusOrderSummary: [
+      {
+        _count: {
+          id_order: 186
+        },
+        _sum: {
+          totalPrice: 28372.75,
+          numberOfItems: 345
+        },
+        orderStatus: "delivered"
+      },],
+  })
+
+  const [serviceResponseId, setServiceReportResponseId] = useState({
+    startDate: "2024-09-12T00:10:10.000Z",
+    endDate: "2024-09-12T00:10:10.000Z",
+    fk_selfService: 0,
+    fk_laundryService: 0,
+    fk_ironService: 0,
+    fk_drycleanService: 0,
+    fk_otherService: 0,
+    description: "Hardcoded Value 4 map 1",
+    _sum: {
+      subtotal: 0,
+      units: 0,
+    }
   })
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%% PRODUCTS 
@@ -79,8 +152,26 @@ function Reportes() {
   const [document, setDocument] = useState();
 
   // ========================== SERVICES 
-  const [categoryId, setCategoryId] = useState(0);
-  const [serviceId, setServiceId] = useState(0);
+  const [categoryId, setCategoryId] = useState();
+  const [serviceId, setServiceId] = useState();
+  const [categories, setCategories] = useState([
+    {
+      description: "Autoservicio",
+      category_id: 1,
+    }, {
+      description: "Encargo",
+      category_id: 2,
+    }, {
+      description: "Planchado",
+      category_id: 3,
+    }, {
+      description: "Tintoreria",
+      category_id: 4,
+    }, {
+      description: "Varios",
+      category_id: 5,
+    }])
+  const [services, setServices] = useState([]);
 
   // ========================== PRODUCTS
   const [productId, setProductId] = useState();
@@ -94,6 +185,7 @@ function Reportes() {
   const [isIdProductOpen, setIsIdProductOpen] = useState(false);
   const [isDatePickerModal, setIsDatePickerModal] = useState(false);
   const [isIdProductResultModal, setIsIdProductResultModal] = useState(false);
+  const [isIdServiceResultModal, setIsIdServiceResultModal] = useState(false);
 
   //-------------------------- REQUESTS --------------------------
   const fetcherProducts = async () => {
@@ -102,11 +194,40 @@ function Reportes() {
   };
   const { data: dataProducts } = useSWR("allSupplies", fetcherProducts);
 
-  // const fetcherServices = async () => {
-  //   const res = await api.get("/services");
+  // const fetcherSelfService = async () => {
+  //   const res = await api.get("/servicesSelfService");
   //   return res.data;
-  // };
-  // const { data: dataServices } = useSWR("allServices", fetcherServices);
+  // }
+
+  // const { data: dataSelfService } = useSWR("selfService", fetcherSelfService);
+
+  // const fetcherLaundryService = async () => {
+  //   const res = await api.get("/servicesLaundry");
+  //   return res.data;
+  // }
+
+  // const { data: dataLaundryService } = useSWR("laundryService", fetcherLaundryService);
+
+  // const fetcherIronService = async () => {
+  //   const res = await api.get("/servicesIron");
+  //   return res.data;
+  // }
+
+  // const { data: dataIronService } = useSWR("ironService", fetcherIronService);
+
+  // const fetcherDryService = async () => {
+  //   const res = await api.get("/servicesDryclean");
+  //   return res.data;
+  // }
+
+  // const { data: dataDryService } = useSWR("dryService", fetcherDryService);
+
+  // const fetcherOtherService = async () => {
+  //   const res = await api.get("/servicesOtherService");
+  //   return res.data;
+  // }
+
+  // const { data: dataOtherService } = useSWR("otherService", fetcherOtherService);
 
   // $$$$$$$$$$$$$$$$$$$$$$$$ useEffect $$$$$$$$$$$$$$$$$$$$$$$$$$$ //
   useEffect(() => {
@@ -117,7 +238,64 @@ function Reportes() {
     if (dataProducts) {
       setProducts(dataProducts);
     }
+    // const fetchData = async () => {
+    //   if (dataSelfService || dataLaundryService || dataIronService || dataDryService || dataOtherService) {
+    //     categoryId === 1 ? setServices(await dataSelfService)
+    //       : categoryId === 2 ? setServices(await dataLaundryService)
+    //         : categoryId === 3 ? setServices(await dataIronService)
+    //           : categoryId === 4 ? setServices(await dataDryService)
+    //             : categoryId === 5 ? setServices(await dataOtherService)
+    //               : console.log("Esperando Datos")
+    //   }
+    // }
+    const fetchData = async () => {
+      if (isIdServiceOpen) {
+        if (categoryId === 1) {
+          const res = await api.get("/servicesSelfService");
+          setServices(res.data);
+        } else if (categoryId === 2) {
+          const res = await api.get("/servicesLaundry");
+          setServices(res.data);
+        } else if (categoryId === 3) {
+          const res = await api.get("/servicesIron");
+          setServices(res.data);
+        } else if (categoryId === 4) {
+          const res = await api.get("/servicesDryclean");
+          setServices(res.data);
+        } else if (categoryId === 5) {
+          const res = await api.get("/servicesOtherService");
+          setServices(res.data);
+        }
+      }
+    }
+    fetchData();
   }, [dataProducts]);
+
+  // const onChangeCategory = async () => {
+  //   if (dataSelfService && dataLaundryService && dataIronService && dataDryService && dataOtherService && categoryId) {
+  //     switch (categoryId) {
+  //       case 1:
+  //         await setServices(dataSelfService);
+  //         break;
+  //       case 2:
+  //         await setServices(dataLaundryService);
+  //         break;
+  //       case 3:
+  //         await setServices(dataIronService);
+  //         break;
+  //       case 4:
+  //         await setServices(dataDryService);
+  //         break;
+  //       case 5:
+  //         await setServices(dataOtherService);
+  //         break;
+  //       default:
+  //         Swal.fire("Categoria fuera de Rango, llame a IT", "", "error");
+  //         break;
+  //     }
+
+  //   }
+  // }
 
   //-------------------------- MODALS FUN --------------------------
   const showModal = () => {
@@ -248,6 +426,45 @@ function Reportes() {
   //%%%%%%%%%%%%%%%%%%%%% # SERVICE %%%%%%%%%%%%%%%%%%%%%
   //%%%%%%%%%%%%%%%%%%%%% GENERAL SERVICE
   //%%%%%%%%%%%%%%%%%%%%% ID SERVICE
+  const handleGenerateServiceReport = async () => {
+    try {
+      if (dateRange.length === 2) {
+        const res = reportType === 1 ?
+          await api.get(`/servicesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}`)
+          : await api.get(`/servicesReport/${moment(dateRange[0].toDate()).format()}/${moment(dateRange[1].toDate()).format()}/${categoryId}/${serviceId}`)
+
+        // console.log(res)
+        if (reportType === 1) {
+          if (res.data.selfServiceSummary.length == 0
+            || res.data.laundryServiceSummary.length == 0
+            || res.data.ironServiceSummary.length == 0
+            || res.data.drycleanServiceSummary.length == 0
+            || res.data.otherServiceSumary.length == 0
+          ) {
+            Swal.fire('No hay reportes en esas fechas', "", "error")
+          } else {
+            setServiceReportResponse(res.data)
+            console.log(res.data)
+          }
+        } else {
+          setServiceReportResponseId(res.data)
+          console.log(res.data)
+          showIdServicesModal()
+        }
+      } else if (!dateRange || dateRange.length !== 2) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Debes seleccionar una fecha de inicio y una fecha de término para buscar.",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+    } catch (err) {
+      Swal.fire("Hubo un error", "", "error");
+      console.error(err);
+    }
+  };
 
 
   //%%%%%%%%%%%%%%%%%%%%% # PRODUCT %%%%%%%%%%%%%%%%%%%%%
@@ -266,7 +483,7 @@ function Reportes() {
             Swal.fire('No hay reportes en esas fechas', "", "error")
           } else {
             setProductReportResponse(res.data)
-            showModal()
+            showGeneralProductsModal();
           }
         } else {
           setProductReportResponseId(res.data)
@@ -318,12 +535,199 @@ function Reportes() {
 
       {/* GENERAL SERVICE*/}
       <Modal title={`Reporte General de Servicios`} open={isGServiceOpen} width={1000} onCancel={() => { setIsGServiceOpen(false) }} maskClosable={false}
-        footer={[null]}>
+        footer={[
+          <Button
+            onClick={() => (handlePrint())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            onClick={() => (handleGuardarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="save"
+          >
+            Guardar
+          </Button>,
+          <Button
+            onClick={() => (handleEnviarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="generate"
+          >
+            Enviar al Correo
+          </Button>,
+          <Button
+            onClick={() => setIsGServiceOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex overflow-scroll" style={{ height: "700px" }}>
+          {/* Primera Columna */}
+          <div className="w-1/4 text-lg sticky top-10">
+            <p className="text-lg font-bold">Fecha Inicial:</p>
+            <p>{formatDate(serviceReportResponse.startDate)}</p>
+
+            <p className="text-lg font-bold">Fecha de Termino:</p>
+            <p>{formatDate(serviceReportResponse.endDate)}</p>
+          </div>
+          {/* Segunda Columna */}
+          <div className="w-1/2 text-lg">
+            <p className="font-bold text-xl">Detalles:</p>
+            <br />
+            {serviceReportResponse ?
+              serviceReportResponse.suppliesSummary.map(item => (
+                <div key={item.fk_supplyId}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
+                  <br />
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <br />
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+          </div>
+          {/* Tercera Columna */}
+          <div className="w-1/3 text-lg sticky top-3/4 ml-5">
+            <p className="font-bold text-xl">Resumen para Verificar:</p>
+            <br />
+
+            <p className="font-bold"> No. Total para Verificación:</p>
+            <p className="text-2xl">{productReportResponse.totalSuppliesNumberVerification}</p>
+
+            <p className="font-bold"> Total de Venta para Verificación:</p>
+            <p className="text-2xl">${productReportResponse.totalSuppliesSalesVerification}</p>
+
+          </div>
+        </div>
       </Modal>
 
       {/* ID SERVICE*/}
       <Modal title={`Reporte por Servicio en Especifico`} open={isIdServiceOpen} width={1000} onCancel={() => { setIsIdServiceOpen(false) }} maskClosable={false}
-        footer={[null]}>
+        footer={[
+          <Button
+            onClick={() => setIsIdServiceOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex-auto justify-center" style={{ height: "500px" }}>
+          <div className="w-full">
+            <h1 className="text-center m-0 text-3xl font-bold">Selecciona un Servicio <br /> para  generar el reporte en especifico</h1>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+              {/*&&&&&&&&&&&&&&&&& CATEGORY SELECT*/}
+              <Select
+                id="categoryTypes"
+                style={{ width: "100%", fontSize: "16px" }}
+                onChange={(value) => setCategoryId(value)}
+                value={categoryId}
+                defaultValue={"Selecciona una Categoria."}
+              >
+                {categories.map((item) =>
+                  (<Select.Option key={item.category_id} value={item.category_id}>{item.description}</Select.Option>)
+                )};
+              </Select>
+              {/*&&&&&&&&&&&&&&&&& SERVICE SELECT*/}
+              <Select
+                id="serviceTypes"
+                style={{ width: "100%", fontSize: "16px", marginTop: "32px" }}
+                onChange={(value) => setServiceId(value)}
+                value={serviceId}
+                defaultValue={"Selecciona un Servicio."}
+                disabled={!categoryId}
+              >
+                {services.map((item) =>
+                  (<Select.Option key={item.id_service} value={item.id_service}>{item.description}</Select.Option>)
+                )};
+              </Select>
+              <button onClick={() => {
+                if (serviceId) {
+                  handleGenerateServiceReport();
+                } else Swal.fire("Selecciona un Servicio", "", "info")
+              }}
+                className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-16 text-xl mr-0">Buscar producto en especifico</button>
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ID SERVICE RESULT*/}
+      <Modal title={`Resultado del Reporte por Servicio en Especifico`} open={isIdServiceResultModal} width={1000} onCancel={() => { setIsIdServiceResultModal(false) }} maskClosable={false}
+        footer={[
+          <Button
+            onClick={() => (handlePrint())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            onClick={() => (handleGuardarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="save"
+          >
+            Guardar
+          </Button>,
+          <Button
+            onClick={() => (handleEnviarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="generate"
+          >
+            Enviar al Correo
+          </Button>,
+          <Button
+            onClick={() => setIsIdServiceResultModal(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex overflow-scroll" style={{ height: "700px" }}>
+          {/* Primera Columna */}
+          <div className="w-1/4 text-lg sticky top-10">
+            <p className="text-lg font-bold">Fecha Inicial:</p>
+            <p>{formatDate(serviceResponseId.startDate)}</p>
+
+            <p className="text-lg font-bold">Fecha de Termino:</p>
+            <p>{formatDate(serviceResponseId.endDate)}</p>
+          </div>
+          {/* Segunda Columna */}
+          <div className="w-1/2 text-lg">
+            <p className="font-bold text-xl">Detalles del Producto:</p>
+            <br />
+            <div key={
+              categoryId === 1 ? serviceResponseId.fk_selfService
+                : categoryId === 2 ? serviceResponseId.fk_laundryService
+                  : categoryId === 3 ? serviceResponseId.fk_ironService
+                    : categoryId === 4 ? serviceResponseId.fk_drycleanService
+                      : categoryId === 5 ? serviceResponseId.fk_otherService
+                        : serviceResponseId.description}>
+              <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
+              <p className="text-xl font-bold text-center">{serviceResponseId.description}</p>
+              <p className="text-lg font-bold">ID: <span className="font-normal" >{
+                categoryId === 1 ? serviceResponseId.fk_selfService
+                  : categoryId === 2 ? serviceResponseId.fk_laundryService
+                    : categoryId === 3 ? serviceResponseId.fk_ironService
+                      : categoryId === 4 ? serviceResponseId.fk_drycleanService
+                        : categoryId === 5 ? serviceResponseId.fk_otherService
+                          : serviceResponseId.description
+              }</span></p>
+              <p className="text-lg font-bold">Subtotal: <span className="font-normal">${serviceResponseId._sum.subtotal}</span></p>
+              <p className="text-lg font-bold" >Unidades: <span className="font-normal">{serviceResponseId._sum.units}</span></p>
+              <br />
+            </div>
+          </div>
+        </div>
       </Modal>
 
       {/* GENERAL PRODUCT*/}
@@ -369,15 +773,13 @@ function Reportes() {
           </div>
           {/* Segunda Columna */}
           <div className="w-1/2 text-lg">
-            <p className="font-bold text-xl">Detalles de Ingresos por Producto:</p>
+            <p className="font-bold text-xl">Detalles del Producto:</p>
             <br />
             {productReportResponse ?
               productReportResponse.suppliesSummary.map(item => (
                 <div key={item.fk_supplyId}>
-                  <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center"} >Descripción del Producto:</p>
-                  <br />
+                  <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
                   <p className="text-xl font-bold text-center">{item.description}</p>
-                  <br />
                   <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p>
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
@@ -387,13 +789,13 @@ function Reportes() {
           </div>
           {/* Tercera Columna */}
           <div className="w-1/3 text-lg sticky top-3/4 ml-5">
-            <p className="font-bold text-xl">Resumen para Verificar:</p>
+            <p className="font-bold text-xl">Resumen:</p>
             <br />
 
-            <p className="font-bold"> No. Total para Verificación:</p>
+            <p className="font-bold">No. Total de Unidades:</p>
             <p className="text-2xl">{productReportResponse.totalSuppliesNumberVerification}</p>
 
-            <p className="font-bold"> Total de Venta para Verificación:</p>
+            <p className="font-bold">Venta Total:</p>
             <p className="text-2xl">${productReportResponse.totalSuppliesSalesVerification}</p>
 
           </div>
@@ -482,13 +884,11 @@ function Reportes() {
           </div>
           {/* Segunda Columna */}
           <div className="w-1/2 text-lg">
-            <p className="font-bold text-xl">Detalles de Ingresos por Producto:</p>
+            <p className="font-bold text-xl">Detalles del Producto:</p>
             <br />
             <div key={productReportResponseId.productId}>
-              <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center"} >Descripción del Producto:</p>
-              <br />
+              <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
               <p className="text-xl font-bold text-center">{productReportResponseId.description}</p>
-              <br />
               <p className="text-lg font-bold">ID: <span className="font-normal" >{productId}</span></p>
               <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {productReportResponseId._sum.subtotal}</span></p>
               <p className="text-lg font-bold" >Unidades: <span className="font-normal">{productReportResponseId._sum.units}</span></p>
@@ -527,14 +927,13 @@ function Reportes() {
           <button className="btn-search" onClick={() => {
             switch (reportType) {
               case 1:
-                showGeneralServicesModal();
+                handleGenerateServiceReport();
                 break;
               case 2:
                 showIdServicesModal();
                 break;
               case 3:
                 handleGenerateProductReport()
-                showGeneralProductsModal();
                 break;
               case 4:
                 showIdProductsModal();

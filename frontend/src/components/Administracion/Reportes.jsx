@@ -566,7 +566,7 @@ function Reportes() {
             Cerrar
           </Button>,
         ]}>
-        <div className="flex overflow-scroll" style={{ height: "700px" }}>
+        <div className="flex" style={{ height: "700px" }}>
           {/* Primera Columna */}
           <div className="w-1/6 text-lg sticky top-10">
             <p className="text-lg font-bold">Fecha Inicial:</p>
@@ -576,7 +576,7 @@ function Reportes() {
             <p>{formatDate(serviceReportResponse.endDate)}</p>
           </div>
           {/* Segunda Columna */}
-          <div className="w-1/3 text-lg ">
+          <div className="w-1/3 text-lg overflow-scroll">
             <p className="font-bold text-xl">Detalles:</p>
             <br />
 

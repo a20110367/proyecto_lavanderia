@@ -651,7 +651,7 @@ function Reportes() {
               )) : <p className="text-lg" > Cargando Información...</p>}
           </div>
           {/* Tercera Columna */}
-          <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-10 ">
+          <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-20 ">
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <p className="font-bold text-lg">Resumen de Estatus de la Ordenes:</p>
             <p className={"text-white text-lx font-bold rounded-md bg-red-900 text-center py-2"} ></p>
@@ -683,7 +683,7 @@ function Reportes() {
             ))}
           </div>
           {/* Cuarta Columna */}
-          <div className="w-1/4 text-lg sticky top-0 ml-10">
+          <div className="w-1/4 text-lg sticky top-0 ml-20">
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <p className="font-bold text-xl">Resumen General:</p>
             <p className="font-bold">No. Total de Ordenes:</p>

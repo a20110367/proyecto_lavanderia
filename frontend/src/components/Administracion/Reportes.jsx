@@ -568,7 +568,7 @@ function Reportes() {
         ]}>
         <div className="flex overflow-scroll" style={{ height: "700px" }}>
           {/* Primera Columna */}
-          <div className="w-1/4 text-lg sticky top-10">
+          <div className="w-1/6 text-lg sticky top-10">
             <p className="text-lg font-bold">Fecha Inicial:</p>
             <p>{formatDate(serviceReportResponse.startDate)}</p>
 
@@ -576,7 +576,7 @@ function Reportes() {
             <p>{formatDate(serviceReportResponse.endDate)}</p>
           </div>
           {/* Segunda Columna */}
-          <div className="w-1/3 text-lg">
+          <div className="w-1/3 text-lg ">
             <p className="font-bold text-xl">Detalles:</p>
             <br />
 
@@ -651,14 +651,14 @@ function Reportes() {
               )) : <p className="text-lg" > Cargando Información...</p>}
           </div>
           {/* Tercera Columna */}
-          <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-5 ">
+          <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-10 ">
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <p className="font-bold text-lg">Resumen de Estatus de la Ordenes:</p>
             <p className={"text-white text-lx font-bold rounded-md bg-red-900 text-center py-2"} ></p>
             {serviceReportResponse.deliverySatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
-                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
                 <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
                 <p className="text-lg">{item._count.id_order}</p>
                 <p className="font-bold">No. de Servicios:</p>
                 <p className="text-lg">{item._sum.numberOfItems}</p>
@@ -671,8 +671,8 @@ function Reportes() {
             <p className={"text-white text-lx font-bold rounded-md bg-blue-900 text-center py-2"} ></p>
             {serviceReportResponse.payStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
-                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
                 <p className="font-bold">{item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"}</p>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
                 <p className="text-lg">{item._count.id_order}</p>
                 <p className="font-bold">No. de Servicios:</p>
                 <p className="text-lg">{item._sum.numberOfItems}</p>
@@ -683,7 +683,7 @@ function Reportes() {
             ))}
           </div>
           {/* Cuarta Columna */}
-          <div className="w-1/4 text-lg sticky top-3/4 ml-5">
+          <div className="w-1/4 text-lg sticky top-0 ml-10">
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <p className="font-bold text-xl">Resumen General:</p>
             <p className="font-bold">No. Total de Ordenes:</p>

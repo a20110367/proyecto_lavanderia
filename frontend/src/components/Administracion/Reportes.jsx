@@ -653,15 +653,14 @@ function Reportes() {
           {/* Tercera Columna */}
           <div className="w-1/4 text-lg sticky overflow-scroll top-0 ml-5 ">
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
-            <br />
             <p className="font-bold text-lg">Resumen de Estatus de la Ordenes:</p>
             <p className={"text-white text-lx font-bold rounded-md bg-red-900 text-center py-2"} ></p>
             {serviceReportResponse.deliverySatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
-                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas" : "No. de Ordenes Terminadas"}</p>
+                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
                 <p className="text-lg">{item._count.id_order}</p>
-                <p className="font-bold">No. de Servicios</p>
+                <p className="font-bold">No. de Servicios:</p>
                 <p className="text-lg">{item._sum.numberOfItems}</p>
                 <p className="font-bold">Total:</p>
                 <p className="text-lg">${item._sum.totalPrice}</p>
@@ -673,9 +672,9 @@ function Reportes() {
             {serviceReportResponse.payStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>
-                <p className="font-bold">{item.payStatus === "paid" ? "No. de Ordenes Pagadas" : "No. de Ordenes NO Pagadas"}</p>
+                <p className="font-bold">{item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"}</p>
                 <p className="text-lg">{item._count.id_order}</p>
-                <p className="font-bold">No. de Servicios</p>
+                <p className="font-bold">No. de Servicios:</p>
                 <p className="text-lg">{item._sum.numberOfItems}</p>
                 <p className="font-bold">Total:</p>
                 <p className="text-lg">${item._sum.totalPrice}</p>

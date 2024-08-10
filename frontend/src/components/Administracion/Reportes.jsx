@@ -80,7 +80,7 @@ function Reportes() {
         },
         payStatus: "paid"
       },],
-    deliverySatusOrderSummary: [
+    deliveryStatusOrderSummary: [
       {
         _count: {
           id_order: 186
@@ -655,7 +655,7 @@ function Reportes() {
             <p className="font-bold text-xl">Resumen de Ordenes:</p>
             <p className="font-bold text-lg">Resumen de Estatus de la Ordenes:</p>
             <p className={"text-white text-lx font-bold rounded-md bg-red-900 text-center py-2"} ></p>
-            {serviceReportResponse.deliverySatusOrderSummary.map(item => (
+            {serviceReportResponse.deliveryStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-2"} ></p>

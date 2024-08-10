@@ -351,7 +351,7 @@ export const getServicesReport = async (req, res) => {
 
         });
 
-        const deliverySatusOrderSummary = await prisma.serviceOrder.groupBy({
+        const deliveryStatusOrderSummary = await prisma.serviceOrder.groupBy({
             by: ["orderStatus"],
             where: {
                 AND: [
@@ -386,7 +386,7 @@ export const getServicesReport = async (req, res) => {
         let totalDeliveryStatusOrdersVerification = 0;
         let totalDeliveryStatusItemsVerification = 0;
 
-        deliverySatusOrderSummary.forEach(item => {
+        deliveryStatusOrderSummary.forEach(item => {
             totalDeliveryStatusSalesVerification += item._sum.totalPrice;
             totalDeliveryStatusOrdersVerification += item._count.id_order;
             totalDeliveryStatusItemsVerification += item._sum.numberOfItems;
@@ -413,7 +413,7 @@ export const getServicesReport = async (req, res) => {
             //Ordenes por su estado de pago
             "payStatusOrderSummary": payStatusOrderSummary,
             //Ordenes por su estado de entrega
-            "deliverySatusOrderSummary": deliverySatusOrderSummary,
+            "deliveryStatusOrderSummary": deliveryStatusOrderSummary,
             //Sumario Basado en Ordenes de Servicio
             "totalServiceSalesVerification": totalServiceSalesVerification,
             "totalServiceNumberVerification": totalServiceNumberVerification,

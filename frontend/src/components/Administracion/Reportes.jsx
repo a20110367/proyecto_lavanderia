@@ -194,6 +194,27 @@ function Reportes() {
   };
   const { data: dataProducts } = useSWR("allSupplies", fetcherProducts);
 
+  const fetchData = async (category) => {
+    if (isIdServiceOpen) {
+      if (category === 1) {
+        const res = await api.get("/servicesSelfService");
+        return res.data;
+      } else if (category === 2) {
+        const res = await api.get("/servicesLaundry");
+        return res.data;
+      } else if (category === 3) {
+        const res = await api.get("/servicesIron");
+        return res.data;
+      } else if (category === 4) {
+        const res = await api.get("/servicesDryclean");
+        return res.data;
+      } else if (category === 5) {
+        const res = await api.get("/servicesOtherService");
+        return res.data;
+      }
+    }
+  }
+
   // const fetcherSelfService = async () => {
   //   const res = await api.get("/servicesSelfService");
   //   return res.data;
@@ -248,27 +269,6 @@ function Reportes() {
     //               : console.log("Esperando Datos")
     //   }
     // }
-    const fetchData = async () => {
-      if (isIdServiceOpen) {
-        if (categoryId === 1) {
-          const res = await api.get("/servicesSelfService");
-          setServices(res.data);
-        } else if (categoryId === 2) {
-          const res = await api.get("/servicesLaundry");
-          setServices(res.data);
-        } else if (categoryId === 3) {
-          const res = await api.get("/servicesIron");
-          setServices(res.data);
-        } else if (categoryId === 4) {
-          const res = await api.get("/servicesDryclean");
-          setServices(res.data);
-        } else if (categoryId === 5) {
-          const res = await api.get("/servicesOtherService");
-          setServices(res.data);
-        }
-      }
-    }
-    fetchData();
   }, [dataProducts]);
 
   // const onChangeCategory = async () => {
@@ -717,7 +717,11 @@ function Reportes() {
               <Select
                 id="categoryTypes"
                 style={{ width: "100%", fontSize: "16px" }}
-                onChange={(value) => setCategoryId(value)}
+                onChange={async (value) => {
+                  setCategoryId(value);
+                  const services = await fetchData(value);
+                  setServices(services);
+                }}
                 value={categoryId}
                 defaultValue={"Selecciona una Categoria."}
               >

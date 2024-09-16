@@ -2,6 +2,7 @@ import express from 'express';
 import {
     getOrders,
     getActiveOrders,
+    getPendingOrders,
     getOrdersById,
     getOrdersStatusById,
     getOrdersByIdClient,
@@ -35,6 +36,7 @@ const router = express.Router();
 
 router.get('/orders', getOrders);
 router.get('/ordersActive', getActiveOrders);
+router.get('/ordersPending', getPendingOrders);
 router.get('/orders/:id', getOrdersById);
 router.get('/ordersByClient/:fk_client', getOrdersByIdClient);
 router.get('/orderStatusById/:id', getOrdersStatusById);

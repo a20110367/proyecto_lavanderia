@@ -57,7 +57,7 @@ export const getOrders = async (req, res) => {
 }
 
 export const getActiveOrders = async (req, res) => {
-    var lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
     console.log(lastDate)
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -66,6 +66,75 @@ export const getActiveOrders = async (req, res) => {
                 created: {
                     gte: new Date(lastDate)
                 },
+            },
+
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+
+export const getPendingOrders = async (req, res) => {
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+    console.log(lastDate)
+    try {
+        const response = await prisma.serviceOrder.findMany({
+
+            where: {
+                AND:
+                    [
+                        {
+                            created: {
+                                gte: new Date(lastDate)
+                            },
+                        },
+                        {
+                            orderStatus: "pending"
+                        }
+
+                    ],
+
             },
 
 
@@ -174,11 +243,11 @@ export const getOrdersStatusById = async (req, res) => {
             where: {
                 id_order: Number(req.params.id)
             },
-            
-            select:{
-                orderStatus:true
+
+            select: {
+                orderStatus: true
             },
-            
+
 
         });
 
@@ -1377,199 +1446,7 @@ export const createDrycleanServiceOrder = async (req, res) => {
 }
 
 
-// export const createIronServiceOrder = async (req, res) => {
 
-//     try {
-//         console.log(req.body.services);
-//         const services = req.body.services.at(0);
-//         //const{id_service,quantity,price,category_id}=services;
-
-//         const service = await prisma.service.findFirst({
-//             where: {
-
-//                 id_service: services.fk_Service,
-//             },
-
-//             include: {
-//                 IronService: true,
-//             },
-
-//         });
-//         console.log(service);
-
-
-//         const serviceOrder = await prisma.serviceOrder.create({
-
-//             data: req.body.serviceOrder
-
-//         });
-
-//         console.log(serviceOrder.id_order);
-
-//         const orderDetail = await prisma.serviceOrderDetail.create({
-
-//             data: {
-//                 units: services.units,
-//                 subtotal: services.subtotal,
-//                 fk_Service: services.fk_Service,
-//                 fk_ServiceOrder: serviceOrder.id_order
-//             },
-
-//         });
-
-
-//         console.log(service.IronService.at(0));
-//         const ironService = await prisma.IronQueue.create({
-
-//             data: {
-//                 ironService: {
-//                     connect: { id_service: service.IronService.at(0).id_service },
-//                 },
-//                 serviceOrder: {
-//                     connect: { id_order: serviceOrder.id_order },
-//                 }
-//             }
-
-//         });
-
-//         const response = {
-
-//             "serviceOrder": serviceOrder,
-//             "orderDetail": orderDetail,
-//             "ironService": ironService
-//         }
-
-//         res.status(201).json(response);
-
-//     } catch (e) {
-//         res.status(400).json({ msg: e.message });
-//     }
-// }
-
-// export const createSelfServiceOrder = async (req, res) => {
-
-//     try {
-
-//         const services = req.body.services;
-//         const washServiceCreated = [];
-//         const dryServiceCreated = [];
-//         console.log(services);
-
-//         //const{id_service,quantity,price,category_id}=services;
-
-//         const serviceOrder = await prisma.serviceOrder.create({
-
-//             data: req.body.serviceOrder
-
-//         });
-
-//         console.log(serviceOrder.id_order);
-
-//         const serviceDetail = services.map(item => ({ ...item, fk_ServiceOrder: serviceOrder.id_order }));
-
-//         //console.log(serviceOrder.id_order);
-
-//         const orderDetail = await prisma.serviceOrderDetail.createMany({
-
-//             data: serviceDetail,
-//             // data:{
-//             //     units:quantity,
-//             //     subtotal:price,
-//             //     fk_Service:id_service,
-//             //     fk_ServiceOrder:serviceOrder.id_order
-//             // },
-
-//         });
-
-//         serviceDetail.forEach(async element => {
-
-
-//             let cicloTimes = element.units;
-//             while (cicloTimes > 0) {
-
-//                 var typeWashService = true;
-
-//                 var serviceWash = await prisma.washService.findFirst({
-//                     where: {
-//                         fk_idService: element.fk_Service,
-//                     },
-//                 });
-
-//                 console.log(serviceWash);
-
-//                 if (serviceWash === null) {
-
-//                     var serviceDry = await prisma.dryService.findFirst({
-//                         where: {
-//                             fk_idService: element.fk_Service
-//                         },
-
-//                     });
-
-//                     console.log(serviceDry);
-
-//                     typeWashService = false;
-
-//                     var dryService = await prisma.laundryDryQueue.create({
-//                         data: {
-//                             dryService: {
-//                                 connect: { id_dryService: serviceDry.id_dryService },
-//                             },
-//                             serviceOrder: {
-//                                 connect: { id_order: serviceOrder.id_order },
-//                             }
-//                         }
-
-//                     });
-
-//                     console.log(dryService);
-
-//                     //dryServiceCreated.push({dryService});
-
-
-//                 } else {
-
-//                     var washService = await prisma.laundryWashQueue.create({
-
-//                         data: {
-//                             washService: {
-//                                 connect: { id_washService: serviceWash.id_washService },
-//                             },
-//                             serviceOrder: {
-//                                 connect: { id_order: serviceOrder.id_order },
-//                             }
-//                         }
-
-//                     });
-//                     console.log(washService);
-
-//                     //washServiceCreated.push({...washService});
-
-
-//                 }
-
-//                 cicloTimes--;
-
-//             }
-
-
-//         });
-
-
-//         const response = {
-
-//             "serviceOrder": serviceOrder,
-//             "orderDetail": orderDetail,
-//             //"washService": washServiceCreated.length,
-//             //dryService": dryServiceCreated.length
-//         }
-
-//         res.status(201).json(response);
-
-//     } catch (e) {
-//         res.status(400).json({ msg: e.message });
-//     }
-// }
 
 export const updateStoredOrders = async (req, res) => {
 
@@ -1604,22 +1481,249 @@ export const updateStoredOrders = async (req, res) => {
 }
 export const updateCancelledOrder = async (req, res) => {
     try {
-        const response = await prisma.serviceOrder.updateMany({
+
+
+        const getOrderDetail = prisma.serviceOrderDetail.findMany({
+
             where: {
-                AND: [
-                    {
-                        id_order: Number(req.params.id)
-                    },
-                    {
-                        payStatus: "paid"
-                    }
-                ],
+                fk_serviceOrder: Number(req.params.id)
             },
+
+            select: {
+                fk_serviceOrder: true,
+                units: true,
+                subtotal: true,
+                fk_laundryService: true,
+                fk_selfService: true,
+                fk_ironService: true,
+                fk_drycleanService: true,
+                fk_otherService: true
+            },
+        });
+
+        const getCurrentCashCut = prisma.cashCut.findFirst({
+
+            select: {
+                fk_user: true,
+                id_cashCut: true,
+
+            }
+
+        });
+
+        const getOrderData = prisma.serviceOrder.findFirst({
+
+            where: {
+                id_order: Number(req.params.id)
+            },
+
+            select: {
+                id_order: true,
+                totalPrice: true,
+                payStatus: true,
+                ironPieces: true,
+                drycleanPieces: true,
+                express: true,
+
+                category: {
+                    select: {
+                        categoryDescription: true,
+                        id_category: true,
+                    },
+                },
+            },
+
+
+
+
+        });
+
+        const getPaymentData = prisma.payment.findFirst({
+            where: {
+                fk_idOrder: Number(req.params.id)
+            },
+
+            select: {
+                payMethod: true,
+                fk_cashCut: true,
+                payTotal: true
+            },
+
+        });
+
+
+        const getIronControl = prisma.ironControl.findFirst({
+
+            select: {
+                id_ironControl: true
+            },
+
+        });
+
+
+
+
+        const [cashCutData, orderData, orderDetail, paymentData, ironControlData] = await prisma.$transaction([getCurrentCashCut, getOrderData, getOrderDetail, getPaymentData, getIronControl])
+
+        let payTotal = paymentData == null ? 0 : paymentData.payTotal;
+        let cancelationTypeDefinition = orderData.payStatus == "paid" ? "refund" : "cancellation";
+        let regularIronPieces = 0;
+        let expressIronPieces = 0;
+        let drycleanPieces = 0;
+
+
+        console.log(paymentData);
+        console.log(cancelationTypeDefinition);
+
+
+        if (orderData.express)
+            expressIronPieces = orderData.ironPieces + 0;
+        else
+            regularIronPieces = orderData.ironPieces + 0;
+
+        if (drycleanPieces != null)
+            drycleanPieces = orderData.drycleanPieces + 0;
+
+        console.log(expressIronPieces);
+        console.log(regularIronPieces);
+        console.log(drycleanPieces);
+
+        const createCancelledOrderDetail = prisma.cancelledServiceOrderDetail.createMany({
+            data: orderDetail
+        });
+
+        const createCancelledOrderRecord = prisma.cancelledServiceOrder.create({
+            data: {
+                fk_idServiceOrder: orderData.id_order,
+                fk_user: cashCutData.fk_user,
+                amount: orderData.totalPrice,
+                cause: "Cancelacion del servicio",
+                CancellationTypes: cancelationTypeDefinition
+            }
+        });
+
+
+
+
+        const updateCancelledOrderDetail = prisma.serviceOrderDetail.updateMany({
+
+            where: {
+                fk_serviceOrder: Number(req.params.id)
+            },
+
+            data: {
+                units: 0,
+                subtotal: 0,
+            }
+
+        });
+
+
+
+        const updateCancelledOrderStatus = prisma.serviceOrder.update({
+
+            where: {
+                id_order: Number(req.params.id)
+            },
+
             data: {
                 orderStatus: "cancelled"
             }
 
         });
+
+        const updateIronControl = prisma.ironControl.updateMany({
+            where: {
+                id_ironControl: ironControlData.id_ironControl
+            },
+
+            data: {
+                piecesLeft: {
+                    decrement: Number(regularIronPieces),
+                },
+                piecesExpress: {
+                    decrement: Number(expressIronPieces),
+                }
+            }
+
+        })
+
+        const cancelLaundryQueue = prisma.laundryQueue.deleteMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+        })
+
+        const cancelSelfServiceQueue = prisma.selfServiceQueue.deleteMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+        })
+
+        const cancelIronQueue = prisma.ironQueue.deleteMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+        })
+
+        const cancelDrycleanQueue = prisma.drycleanQueue.deleteMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+        })
+
+        const cancelOtherQueue = prisma.otherQueue.deleteMany({
+            where: {
+                fk_idServiceOrder: Number(req.params.id)
+            },
+
+        })
+
+        const refoundPayment = prisma.cashWithdrawal.create({
+
+            data: {
+                fk_cashCut: cashCutData.id_cashCut,
+                fk_user: cashCutData.fk_user,
+                cashWithdrawalType: "service_cancelled",
+                amount: payTotal,
+                cause: "cancelation order",
+                serviceOrder: orderData.id_order,
+                date: new Date(),
+            }
+
+        });
+
+
+
+        if (cancelationTypeDefinition === "refund") {
+            console.log("que la chingada")
+
+            const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue, refound] =
+                await prisma.$transaction
+                    ([createCancelledOrderDetail, createCancelledOrderRecord, updateCancelledOrderDetail, updateCancelledOrderStatus, updateIronControl, cancelLaundryQueue, cancelSelfServiceQueue, cancelIronQueue, cancelDrycleanQueue, cancelOtherQueue, refoundPayment])
+        }
+        if (cancelationTypeDefinition === "cancellation") {
+            console.log("que la chingada2")
+            const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue] =
+                await prisma.$transaction
+                    ([createCancelledOrderDetail, createCancelledOrderRecord, updateCancelledOrderDetail, updateCancelledOrderStatus, updateIronControl, cancelLaundryQueue, cancelSelfServiceQueue, cancelIronQueue, cancelDrycleanQueue, cancelOtherQueue])
+        }
+
+
+
+
+
+
+        console.log(cashCutData);
+        console.log(orderData);
+        console.log(orderDetail);
+        // console.log(paymentData);
+        const response = orderData;
+
 
         res.status(200).json(response);
     } catch (e) {

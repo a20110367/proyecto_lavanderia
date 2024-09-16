@@ -26,6 +26,9 @@ model User {
   ServiceOrders  ServiceOrder[]
   PettyCash      PettyCash[]
   SupplyOrder    SupplyOrder[]
+
+  CancelledServiceOrder CancelledServiceOrder[]
+  CancelledSupplyOrder  CancelledSupplyOrder[]
 }
 
 model Client {
@@ -86,13 +89,12 @@ model IronControl {
   piecesLeft     Int @default(0) //Piezas pendientes por hacerse
   piecesTomorrow Int @default(0) //Piezas que deben mandarse al dia siguiente
   piecesExpress  Int @default(0) //Piezas express que por politica del negocio se hacen el mismo dia a tarifa doble
-  
+
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model IronCut {
-  
   // Hace el corte de plancado basandose en un marcador de ironqueue el cual dice si ya fue contada o no dicha acción
   // Debe indicarse una fecha final de corte, la fecha inicial es automatica y es secuencial respecto al ultimo corte
   //Considera un numero constante de 4 estaciones de planchado
@@ -125,48 +127,51 @@ model Category {
 }
 
 model IronService {
-  id_service         Int                  @id @default(autoincrement())
-  machineType        MachineType          @default(plancha)
-  description        String               @unique
-  price              Float
-  pieces             Int
-  cycleTime          Int
-  token_id           Int?
-  category_id        Int
-  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
-  ServiceOrderDetail ServiceOrderDetail[]
-  IronQueue          IronQueue[]
+  id_service                  Int                           @id @default(autoincrement())
+  machineType                 MachineType                   @default(plancha)
+  description                 String                        @unique
+  price                       Float
+  pieces                      Int
+  cycleTime                   Int
+  token_id                    Int?
+  category_id                 Int
+  Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail          ServiceOrderDetail[]
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  IronQueue                   IronQueue[]
 }
 
 model SelfService {
-  id_service         Int                  @id @default(autoincrement())
-  description        String               @unique
-  price              Float
-  weight             Int
-  cycleTime          Int
-  machineType        MachineType
-  created            DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  category_id        Int
-  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
-  ServiceOrderDetail ServiceOrderDetail[]
-  SelfServiceQueue   SelfServiceQueue[]
+  id_service                  Int                           @id @default(autoincrement())
+  description                 String                        @unique
+  price                       Float
+  weight                      Int
+  cycleTime                   Int
+  machineType                 MachineType
+  created                     DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  category_id                 Int
+  Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail          ServiceOrderDetail[]
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  SelfServiceQueue            SelfServiceQueue[]
 }
 
 model LaundryService {
-  id_service         Int                  @id @default(autoincrement())
-  description        String               @unique
-  price              Float
-  washWeight         Int
-  washCycleTime      Int
-  dryWeight          Int
-  dryCycleTime       Int
-  created            DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
-  category_id        Int
-  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
-  ServiceOrderDetail ServiceOrderDetail[]
-  LaundryQueue       LaundryQueue[]
+  id_service                  Int                           @id @default(autoincrement())
+  description                 String                        @unique
+  price                       Float
+  washWeight                  Int
+  washCycleTime               Int
+  dryWeight                   Int
+  dryCycleTime                Int
+  created                     DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  category_id                 Int
+  Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail          ServiceOrderDetail[]
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  LaundryQueue                LaundryQueue[]
 }
 
 model DrycleanService {
@@ -179,9 +184,10 @@ model DrycleanService {
   created     DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
-  ServiceOrderDetail ServiceOrderDetail[]
-  DrycleanQueue      DrycleanQueue[]
+  Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail          ServiceOrderDetail[]
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  DrycleanQueue               DrycleanQueue[]
 }
 
 model OtherService {
@@ -193,43 +199,48 @@ model OtherService {
   created     DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  Category           Category             @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
-  ServiceOrderDetail ServiceOrderDetail[]
-  OtherQueue         OtherQueue[]
+  Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
+  ServiceOrderDetail          ServiceOrderDetail[]
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  OtherQueue                  OtherQueue[]
 }
 
 model ServiceOrder {
-  id_order              Int                  @id @default(autoincrement())
-  receptionDate         DateTime             @db.Date
-  orderStatus           OrderStatus          @default(pending)
+  id_order              Int         @id @default(autoincrement())
+  receptionDate         DateTime    @db.Date
+  orderStatus           OrderStatus @default(pending)
   totalPrice            Float
   notes                 String?
   fk_client             Int
-  created               DateTime             @default(now())
-  numberOfItems         Int                  @default(1)
-  payForm               PayForm              @default(delivery)
-  payStatus             PayStatus            @default(unpaid)
-  receptionTime         DateTime             @db.Time(0)
-  updatedAt             DateTime             @updatedAt
+  created               DateTime    @default(now())
+  numberOfItems         Int         @default(1)
+  payForm               PayForm     @default(delivery)
+  payStatus             PayStatus   @default(unpaid)
+  receptionTime         DateTime    @db.Time(0)
+  updatedAt             DateTime    @updatedAt
   fk_user               Int
-  scheduledDeliveryDate DateTime             @db.Date
-  scheduledDeliveryTime DateTime?            @db.Time(0)
+  scheduledDeliveryDate DateTime    @db.Date
+  scheduledDeliveryTime DateTime?   @db.Time(0)
   fk_categoryId         Int
   fk_deliveryDetail     Int?
   ironPieces            Int?
   drycleanPieces        Int?
-  express               Boolean              @default(false)
-  category              Category             @relation(fields: [fk_categoryId], references: [id_category], onDelete: Cascade, onUpdate: Cascade)
-  client                Client               @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
-  user                  User                 @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  deliveryDetail        DeliveryDetail?
-  payment               Payment?
-  ServiceOrderDetail    ServiceOrderDetail[]
-  LaundryQueue          LaundryQueue[]
-  SelfServiceQueue      SelfServiceQueue[]
-  IronQueue             IronQueue[]
-  DrycleanQueue         DrycleanQueue[]
-  OtherQueue            OtherQueue[]
+  express               Boolean     @default(false)
+  category              Category    @relation(fields: [fk_categoryId], references: [id_category], onDelete: Cascade, onUpdate: Cascade)
+  client                Client      @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
+  user                  User        @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+
+  deliveryDetail     DeliveryDetail?
+  payment            Payment?
+  ServiceOrderDetail ServiceOrderDetail[]
+  LaundryQueue       LaundryQueue[]
+  SelfServiceQueue   SelfServiceQueue[]
+  IronQueue          IronQueue[]
+  DrycleanQueue      DrycleanQueue[]
+  OtherQueue         OtherQueue[]
+
+  CancelledServiceOrder       CancelledServiceOrder?
+  CancelledServiceOrderDetail CancelledServiceOrderDetail[]
 }
 
 model ServiceOrderDetail {
@@ -244,6 +255,41 @@ model ServiceOrderDetail {
   fk_ironService        Int?
   fk_drycleanService    Int?
   fk_otherService       Int?
+
+  serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+  LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])
+  SelfService     SelfService?     @relation(fields: [fk_selfService], references: [id_service])
+  IronService     IronService?     @relation(fields: [fk_ironService], references: [id_service])
+  DrycleanService DrycleanService? @relation(fields: [fk_drycleanService], references: [id_service])
+  OtherService    OtherService?    @relation(fields: [fk_otherService], references: [id_service])
+}
+
+model CancelledServiceOrder {
+  id_cancelledOrder Int               @id @default(autoincrement())
+  fk_idServiceOrder Int               @unique
+  fk_user           Int
+  CancellationTypes CancellationTypes @default(cancellation)
+  amount            Float
+  cause             String
+  created           DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  user         User         @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  serviceOrder ServiceOrder @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model CancelledServiceOrderDetail {
+  id_cancelledServiceOrderDetail Int      @id @default(autoincrement())
+  units                          Int      @default(1)
+  subtotal                       Float    @default(0.00)
+  created                        DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
+  fk_serviceOrder                Int
+  fk_laundryService              Int?
+  fk_selfService                 Int?
+  fk_ironService                 Int?
+  fk_drycleanService             Int?
+  fk_otherService                Int?
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
   LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])
@@ -435,6 +481,7 @@ model CashWithdrawal {
   amount             Float
   cause              String
   serviceOrder       Int?
+  supplyOrder        Int?
   date               DateTime?          @db.Date
   created            DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -502,22 +549,24 @@ model SupplyPayment {
 }
 
 model SupplyOrder {
-  id_supplyOrder Int       @id @default(autoincrement())
-  receptionDate  DateTime  @db.Date
-  totalPrice     Float
-  fk_client      Int
-  created        DateTime  @default(now())
-  numberOfItems  Int       @default(1)
-  payForm        PayForm   @default(delivery) //eliminar en la proxima revision
-  payStatus      PayStatus @default(unpaid)
-  updatedAt      DateTime  @updatedAt
-  fk_user        Int
-  id_payment     Int? //Checar la dependencia con las pruebas
+  id_supplyOrder    Int               @id @default(autoincrement())
+  receptionDate     DateTime          @db.Date
+  totalPrice        Float
+  fk_client         Int
+  created           DateTime          @default(now())
+  numberOfItems     Int               @default(1)
+  payForm           PayForm           @default(advance) //eliminar en la proxima revision
+  payStatus         PayStatus         @default(paid)
+  updatedAt         DateTime          @updatedAt
+  fk_user           Int
+  supplyOrderStatus SupplyOrderStatus @default(active)
 
-  client            Client              @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
-  user              User                @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  SupplyPayment     SupplyPayment?
-  SupplyOrderDetail SupplyOrderDetail[]
+  client                     Client                       @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
+  user                       User                         @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  SupplyPayment              SupplyPayment?
+  SupplyOrderDetail          SupplyOrderDetail[]
+  CancelledSupplyOrder       CancelledSupplyOrder?
+  CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
 }
 
 model SupplyOrderDetail {
@@ -533,16 +582,44 @@ model SupplyOrderDetail {
   Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
 }
 
+model CancelledSupplyOrder {
+  id_cancelledSupplyOrder Int               @id @default(autoincrement())
+  fk_idSupplyOrder        Int               @unique
+  fk_user                 Int
+  CancellationTypes       CancellationTypes @default(refund)
+  amount                  Float
+  cause                   String
+  created                 DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+
+  user        User        @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  supplyOrder SupplyOrder @relation(fields: [fk_idSupplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model CancelledSupplyOrderDetail {
+  id_cancelledSupplyOrderDetail Int      @id @default(autoincrement())
+  units                         Int      @default(1)
+  subtotal                      Float    @default(0.00)
+  created                       DateTime @default(now())
+  updatedAt                     DateTime @updatedAt
+  fk_supplyOrder                Int
+  fk_supplyId                   Int
+
+  SupplyOrder SupplyOrder @relation(fields: [fk_supplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+  Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
+}
+
 model Supply {
-  id_supply         Int                 @id @default(autoincrement())
-  description       String              @unique
-  price             Float
-  category          SupplyCategory
-  unit              Unit
-  value             Int
-  created           DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  SupplyOrderDetail SupplyOrderDetail[]
+  id_supply                  Int                          @id @default(autoincrement())
+  description                String                       @unique
+  price                      Float
+  category                   SupplyCategory
+  unit                       Unit
+  value                      Int
+  created                    DateTime                     @default(now())
+  updatedAt                  DateTime                     @updatedAt
+  SupplyOrderDetail          SupplyOrderDetail[]
+  CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
 }
 
 enum Unit {
@@ -591,6 +668,12 @@ enum OrderStatus {
   cancelled
 }
 
+enum SupplyOrderStatus {
+  active
+  stored
+  cancelled
+}
+
 enum ServiceStatus {
   pending
   inProgress
@@ -608,6 +691,8 @@ enum CashCutStatus {
 enum CashWithdrawalType {
   withdrawal
   refound
+  service_cancelled
+  supply_cancelled
 }
 
 enum PettyCashType {
@@ -633,4 +718,9 @@ enum SupplyCategory {
   ganchos
   wc
   otros
+}
+
+enum CancellationTypes {
+  cancellation
+  refund
 }

@@ -9,7 +9,8 @@ import {
     createOrderMany,
     updateOrder,
     deleteOrder,
-    deleteOrderAll
+    deleteOrderAll,
+    updateCancelledSupplyOrder
 } from "../controllers/SupplyOrderController.js";
 
 const router = express.Router();

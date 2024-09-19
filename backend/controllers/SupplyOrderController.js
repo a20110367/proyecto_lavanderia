@@ -39,6 +39,50 @@ export const getSupplyOrders = async (req, res) => {
     }
 }
 
+export const getActiveSupplyOrders = async (req, res) => {
+
+    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+
+    try {
+        const response = await prisma.supplyOrder.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                SupplyOrderDetail: true,
+                SupplyPayment: true,
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+
 
 export const getSupplyOrdersById = async (req, res) => {
     try {
@@ -324,15 +368,14 @@ export const updateCancelledSupplyOrder = async (req, res) => {
                 fk_supplyId: true,
                 units: true,
                 subtotal: true,
-
             },
         });
-
-        const getSupplyCurrentCashCut = prisma.supplyCashCut.findFirst({
+        //para terminos practicos se debe buscar el caahcut de servicios, ya que de otra forma la tabla queda con una dependencia incorrecta
+        const getCurrentCashCut = prisma.cashCut.findFirst({
 
             select: {
                 fk_user: true,
-                id_supplyCashCut: true,
+                id_cashCut: true,
 
             }
 
@@ -365,13 +408,17 @@ export const updateCancelledSupplyOrder = async (req, res) => {
 
         });
 
-        const [supplyCashCutData, supplyOrderData, supplyOrderDetail, supplyPaymentData] = await prisma.$transaction([getSupplyCurrentCashCut, getSupplyOrderData, getSupplyOrderDetail, getSupplyPaymentData])
+        const [cashCutData, supplyOrderData, supplyPaymentData, supplyOrderDetail] = await prisma.$transaction([getCurrentCashCut, getSupplyOrderData, getSupplyPaymentData, getSupplyOrderDetail])
 
         let payTotal = supplyPaymentData == null ? 0 : supplyPaymentData.payTotal;
         let cancelationTypeDefinition = supplyOrderData.payStatus == "paid" ? "refund" : "cancellation";
+        let cancelledOrder;
 
-        console.log(supplyPaymentData);
-        console.log(cancelationTypeDefinition);
+        //console.log(supplyPaymentData);
+        //console.log(cancelationTypeDefinition);
+        //console.log(supplyCashCutData);
+        //console.log(supplyOrderData);
+        console.log(supplyOrderDetail);
 
         const createCancelledSupplyOrderDetail = prisma.cancelledSupplyOrderDetail.createMany({
             data: supplyOrderDetail
@@ -379,9 +426,9 @@ export const updateCancelledSupplyOrder = async (req, res) => {
 
         const createCancelledSupplyOrderRecord = prisma.cancelledSupplyOrder.create({
             data: {
-                fk_idSupplyOrder: orderData.id_order,
+                fk_idSupplyOrder: supplyOrderData.id_supplyOrder,
                 fk_user: cashCutData.fk_user,
-                amount: orderData.totalPrice,
+                amount: supplyOrderData.totalPrice,
                 cause: "Cancelacion del pedido de insumos",
                 CancellationTypes: cancelationTypeDefinition
             }
@@ -412,7 +459,7 @@ export const updateCancelledSupplyOrder = async (req, res) => {
             },
 
             data: {
-                supplyOrderStatus: "cancelled"
+                supplyOrderStatus: "cancelled",
             }
 
         });
@@ -422,8 +469,8 @@ export const updateCancelledSupplyOrder = async (req, res) => {
         const refoundSupplyPayment = prisma.cashWithdrawal.create({
 
             data: {
-                fk_cashCut: supplyCashCutData.id_cashCut,
-                fk_user: supplyCashCutData.fk_user,
+                fk_cashCut: cashCutData.id_cashCut,
+                fk_user: cashCutData.fk_user,
                 cashWithdrawalType: "supply_cancelled",
                 amount: payTotal,
                 cause: "cancelation order",
@@ -441,24 +488,21 @@ export const updateCancelledSupplyOrder = async (req, res) => {
             const [cancelledSupplyOrderDetail, cancelledSupplyOrderRecord, updatedSupplyOrderDetail, updatedSupplyOrderStatus, supplyRefound] =
                 await prisma.$transaction
                     ([createCancelledSupplyOrderDetail, createCancelledSupplyOrderRecord, updateCancelledSupplyOrderDetail, updateCancelledSupplyOrderStatus, refoundSupplyPayment])
+
+            cancelledOrder = cancelledSupplyOrderRecord;
+
         }
         if (cancelationTypeDefinition === "cancellation") {
             console.log("que la chingada2")
             const [cancelledSupplyOrderDetail, cancelledSupplyOrderRecord, updatedSupplyOrderDetail, updatedSupplyOrderStatus] =
                 await prisma.$transaction
                     ([createCancelledSupplyOrderDetail, createCancelledSupplyOrderRecord, updateCancelledSupplyOrderDetail, updateCancelledSupplyOrderStatus])
+
+            cancelledOrder = cancelledSupplyOrderRecord;
         }
 
 
-
-
-
-
-        console.log(supplyCashCutData);
-        console.log(supplyOrderData);
-        console.log(supplyOrderDetail);
-        // console.log(paymentData);
-        const response = supplyOrderData;
+        const response = cancelledOrder;
 
 
         res.status(200).json(response);

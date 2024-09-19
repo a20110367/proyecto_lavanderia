@@ -18,6 +18,8 @@ import {
     getOrdersOtherServiceFinished,
     getOrdersDryclean,
     getOrderOtherService,
+    getCancelableOrders,
+    getCancelledOrders,
     createOrder,
     createLaudryServiceOrder,
     createIronServiceOrder,
@@ -40,7 +42,8 @@ router.get('/ordersPending', getPendingOrders);
 router.get('/orders/:id', getOrdersById);
 router.get('/ordersByClient/:fk_client', getOrdersByIdClient);
 router.get('/orderStatusById/:id', getOrdersStatusById);
-
+router.get('/orderCancelable', getCancelableOrders); //Ruta para obtener ordenes cancelables, tiene un año de historial de forma temporal
+router.get('/orderCancelled', getCancelledOrders);//Ruta para obtener ordenes canceladas, tiene un año de historial de forma temporal
 
 router.get('/ordersByUser/:fk_user', getOrdersByIdUser);
 router.get('/ordersSelfService', getOrdersSelfService);
@@ -67,7 +70,7 @@ router.post('/storedOrdersByClientName', getStoredOrdersByClientName);
 
 router.patch('/orders/:id', updateOrder);
 router.patch('/storedOrders/', updateStoredOrders);
-router.patch('/cancelOrder/:id', updateCancelledOrder);
+router.patch('/cancelOrder', updateCancelledOrder); //esta ruta cancela las ordenes
 
 
 router.delete('/orders/:id', deleteOrder);

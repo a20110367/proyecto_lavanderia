@@ -391,7 +391,7 @@ thead th {
   }
 
   .side-menu {
-    @apply max-h-[calc(100vh-64px)] overflow-y-auto sticky top-16 z-50;
+    @apply max-h-[calc(100vh-64px)] overflow-y-auto sticky top-16 z-50 flex-wrap;
   }
 
   .content {

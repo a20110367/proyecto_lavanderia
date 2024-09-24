@@ -12,11 +12,11 @@ import api from "../../api/api";
 function Cancelacion() {
   const navigate = useNavigate();
   const [cancelaciones, setCancelaciones] = useState([]);
-  const [filteredCancelaciones, setFilteredCancelaciones] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
-  const [numeroPedido, setNumeroPedido] = useState("");
-  const [motivo, setMotivo] = useState("");
+  const [orderID, setOrderId] = useState("");
+  const [cause, setCause] = useState("");
+  const [amount, setAmount] = useState(0);
   const { cookies } = useAuth();
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
@@ -36,7 +36,6 @@ function Cancelacion() {
   useEffect(() => {
     if (data) {
       setCancelaciones(data);
-      setFilteredCancelaciones(data);
     }
   }, [data]);
 
@@ -50,11 +49,11 @@ function Cancelacion() {
         );
       });
     setFiltro(event.target.value);
-    setFilteredCancelaciones(filtered);
+    setCancelaciones(filtered);
     setCurrentPage(0);
   };
 
-  const handleCancelacion = () => {
+  const handleCancelacion = (id_order, amount, payStatus) => {
     if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
@@ -65,15 +64,13 @@ function Cancelacion() {
       navigate("/inicioCaja");
       return;
     }
+    setOrderId(id_order);
+    if(payStatus === "paid"){
+      setAmount(amount)
+    }else{
+      setAmount(0)
+    }
     setVisible(true);
-  };
-
-  const handleMontoInput = () => {
-    setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
-  };
-
-  const handleNpedidoInput = () => {
-    setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
 
   const handleMotivoInput = () => {
@@ -85,14 +82,14 @@ function Cancelacion() {
       // Validación de campos obligatorios
       let isValid = true;
 
-      if (!numeroPedido) {
+      if (!orderID) {
         setNumeroPedidoError("Este campo es obligatorio");
         isValid = false;
       } else {
         setNumeroPedidoError("");
       }
 
-      if (!motivo) {
+      if (!cause) {
         setMotivoError("Este campo es obligatorio");
         isValid = false;
       } else {
@@ -109,20 +106,9 @@ function Cancelacion() {
       if (isValid) {
 
         await api.patch("/cancelOrder", {
-          id_order: numeroPedido,
-          cause: motivo,
+          id_order: orderID,
+          cause: cause,
         })
-
-        // const nuevaCancelacion = {
-        //   id_cashWithdrawal: res.data.id_cashWithdrawal,
-        //   cashWithdrawalType: "refound",
-        //   serviceOrder: parseInt(numeroPedido),
-        //   amount: parseInt(monto),
-        //   cause: motivo,
-        //   date: date,
-        // };
-
-        // setFilteredCancelaciones([...cancelaciones, nuevaCancelacion]);
 
         setVisible(false);
       }
@@ -134,8 +120,8 @@ function Cancelacion() {
 
   const handleClose = () => {
     setVisible(false);
-    setMotivo("");
-    setNumeroPedido("")
+    setCause("");
+    setOrderId("")
   };
 
   return (
@@ -172,7 +158,7 @@ function Cancelacion() {
           </tr>
         </thead>
         <tbody>
-          {filteredCancelaciones
+          {cancelaciones
             .slice()
             .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
@@ -184,7 +170,7 @@ function Cancelacion() {
                 <td className="py-3 px-1 text-center">
                   {cancelacion.id_order}
                 </td>
-                <td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN }</td>
+                <td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>
                 <td className="py-3 px-6 font-bold">{"$" + cancelacion.totalPrice}</td>
                 <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGADO' : 'NO PAGADO'}</td>
                 <td className="py-3 px-6">{cancelacion.orderStatus}</td>
@@ -192,13 +178,13 @@ function Cancelacion() {
                 <td>
                   <button
                     onClick={() =>
-                      handleCancelacion()
+                      handleCancelacion(cancelacion.id_order, cancelacion.totalPrice, cancelacion.payStatus)
                     }
                     className={`py-3 px-6 ${cancelacion.payStatus === 'paid'
                       ? "btn-back w-11/12 p-0 m-0"
                       : "btn-payment w-11/12 p-0 m-0"
-                    }`}
-                    >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
+                      }`}
+                  >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
                   </button></td>
               </tr>
             ))}
@@ -227,41 +213,31 @@ function Cancelacion() {
           </Button>,
         ]}
       >
-        <form>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Número de Pedido:
-            </label>
-            <Input
-              type="number"
-              value={numeroPedido}
-              onChange={(e) => setNumeroPedido(e.target.value)}
-              placeholder="Ingrese el número de pedido"
-              onInput={handleNpedidoInput}
-            />
-            <p className="text-red-500">{numeroPedidoError}</p>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Motivo:
-            </label>
-            <Input
-              value={motivo}
-              onChange={(e) => setMotivo(e.target.value)}
-              placeholder="Ingrese el motivo"
-              onInput={handleMotivoInput}
-            />
-            <p className="text-red-500">{motivoError}</p>
-          </div>
-        </form>
+          <form>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2 ">
+                Motivo:
+              </label>
+              <Input
+                value={cause}
+                onChange={(e) => setCause(e.target.value)}
+                placeholder="Ingrese el motivo"
+                onInput={handleMotivoInput}
+              />
+              <p className="text-red-500">{motivoError}</p>
+            </div>
+            <div className="text-right mr-8">
+              <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderID}</span></p>
+              {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
+            </div>
+          </form>
       </Modal>
       <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(filteredCancelaciones.length / itemsPerPage)}
+          pageCount={Math.ceil(cancelaciones.length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}

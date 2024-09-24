@@ -215,41 +215,6 @@ function Reportes() {
     }
   }
 
-  // const fetcherSelfService = async () => {
-  //   const res = await api.get("/servicesSelfService");
-  //   return res.data;
-  // }
-
-  // const { data: dataSelfService } = useSWR("selfService", fetcherSelfService);
-
-  // const fetcherLaundryService = async () => {
-  //   const res = await api.get("/servicesLaundry");
-  //   return res.data;
-  // }
-
-  // const { data: dataLaundryService } = useSWR("laundryService", fetcherLaundryService);
-
-  // const fetcherIronService = async () => {
-  //   const res = await api.get("/servicesIron");
-  //   return res.data;
-  // }
-
-  // const { data: dataIronService } = useSWR("ironService", fetcherIronService);
-
-  // const fetcherDryService = async () => {
-  //   const res = await api.get("/servicesDryclean");
-  //   return res.data;
-  // }
-
-  // const { data: dataDryService } = useSWR("dryService", fetcherDryService);
-
-  // const fetcherOtherService = async () => {
-  //   const res = await api.get("/servicesOtherService");
-  //   return res.data;
-  // }
-
-  // const { data: dataOtherService } = useSWR("otherService", fetcherOtherService);
-
   // $$$$$$$$$$$$$$$$$$$$$$$$ useEffect $$$$$$$$$$$$$$$$$$$$$$$$$$$ //
   useEffect(() => {
     if (!isFirstOpen) {
@@ -271,32 +236,6 @@ function Reportes() {
     // }
   }, [dataProducts]);
 
-  // const onChangeCategory = async () => {
-  //   if (dataSelfService && dataLaundryService && dataIronService && dataDryService && dataOtherService && categoryId) {
-  //     switch (categoryId) {
-  //       case 1:
-  //         await setServices(dataSelfService);
-  //         break;
-  //       case 2:
-  //         await setServices(dataLaundryService);
-  //         break;
-  //       case 3:
-  //         await setServices(dataIronService);
-  //         break;
-  //       case 4:
-  //         await setServices(dataDryService);
-  //         break;
-  //       case 5:
-  //         await setServices(dataOtherService);
-  //         break;
-  //       default:
-  //         Swal.fire("Categoria fuera de Rango, llame a IT", "", "error");
-  //         break;
-  //     }
-
-  //   }
-  // }
-
   //-------------------------- MODALS FUN --------------------------
   const showModal = () => {
     setIsModalOpen(true);
@@ -308,6 +247,10 @@ function Reportes() {
 
   const showIdServicesModal = () => {
     setIsIdServiceOpen(true);
+  };
+
+  const showIdServiceResultModal = () => {
+    setIsIdServiceResultModal(true);
   };
 
   const showGeneralProductsModal = () => {
@@ -448,9 +391,9 @@ function Reportes() {
             console.log(res.data)
           }
         } else {
-          setServiceReportResponseId(res.data)
-          console.log(res.data)
-          showIdServicesModal()
+          setServiceReportResponseId(res.data[0])
+          console.log(res.data[0])
+          showIdServiceResultModal()
         }
       } else if (!dateRange || dateRange.length !== 2) {
         Swal.fire({
@@ -754,7 +697,7 @@ function Reportes() {
       </Modal>
 
       {/* ID SERVICE RESULT*/}
-      <Modal title={`Resultado del Reporte por Servicio en Especifico`} open={isIdServiceResultModal} width={1000} onCancel={() => { setIsIdServiceResultModal(false) }} maskClosable={false}
+      <Modal title={`Resultado del Reporte por Servicio en Especifico`} open={isIdServiceResultModal} width={1000} onCancel={() => { showIdServiceResultModal(false) }} maskClosable={false}
         footer={[
           <Button
             onClick={() => (handlePrint())}

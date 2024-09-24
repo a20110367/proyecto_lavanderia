@@ -158,6 +158,10 @@ const items1 = [
       <span style={{ lineHeight: 1 }}>Cancelación de</span>
       <span style={{ lineHeight: 1 }}>Servicios</span>
     </div>, "/cancelacion"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Historial de</span>
+      <span style={{ lineHeight: 1 }}>Cancelaciones</span>
+    </div>, "/historialOrdenesCanceladas"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
   ]),
@@ -292,6 +296,10 @@ const items2 = [
       <span style={{ lineHeight: 1 }}>Cancelación de</span>
       <span style={{ lineHeight: 1 }}>Servicios</span>
     </div>, "/cancelacion"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Historial de</span>
+      <span style={{ lineHeight: 1 }}>Cancelaciones</span>
+    </div>, "/historialOrdenesCanceladas"),
     getItem("Reembolsos", "/reembolso"),
     getItem("Caja Chica", "/cajaChica"),
   ]),

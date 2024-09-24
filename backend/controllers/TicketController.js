@@ -971,6 +971,8 @@ const printIronCut = async (ironCut) => {
     let execute = await printer.execute()
 }
 
+// PRODUCTS AND SERVICES ----------------------------------------------------------------------------
+
 export const printReportProduct = async (req, res) => {
     try {
         const { report } = req.body
@@ -979,6 +981,52 @@ export const printReportProduct = async (req, res) => {
 
         printer.setTextQuadArea();
         printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.setTextNormal();
+
+        printer.println("Fechas seleccionadas:");
+        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
+        printer.newLine();
+
+        printer.setTextQuadArea();
+        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
+        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
+        printer.setTextNormal();
+
+        printer.drawLine();
+
+        printer.println(`Detalles de Ingresos por Producto:`);
+        printer.newLine();
+
+        report.suppliesSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`Descripción: ${item.description}`);
+            printer.setTextNormal();
+            printer.println(`ID: ${item.fk_supplyId}`);
+            printer.println(`Subtotal: $${item._sum.subtotal}`);
+            printer.println(`Unidades: ${item._sum.units}`);
+            printer.newLine();
+        })
+
+        let execute = await printer.execute();
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
+// ORDERS CANCELED ----------------------------------------------------------------------------
+
+export const printCanceledOrder = async (req, res) => {
+    try {
+        const { report } = req.body
+
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.setTextQuadArea();
+        printer.println(`DÍA DE ORDEN CANCELADA (${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
 
         printer.println("Fechas seleccionadas:");

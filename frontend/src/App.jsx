@@ -103,6 +103,7 @@ import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
 // import ReportesProductos from "./components/Administracion/ReportesProductos";
 import Reportes from "./components/Administracion/Reportes"
 import Cancelacion from "./components/Administracion/Cancelacion";
+import HistorialOrdenesCanceladas from "./components/Administracion/CancelHistoryOrder"
 import CajaChica from "./components/Administracion/CajaChica"
 import Reembolso from "./components/Administracion/Reembolso"
 
@@ -144,6 +145,7 @@ function App() {
                     <Route path="/reportes" element={<Reportes />} />
                     {/* <Route path="/reportesProductos" element={<ReportesProductos />} /> */}
                     <Route path="/cancelacion" element={<Cancelacion/>}/>
+                    <Route path="/historialOrdenesCanceladas" element={<HistorialOrdenesCanceladas/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />

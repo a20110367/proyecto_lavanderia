@@ -588,6 +588,10 @@ GET http://localhost:5000/ordersActive
 
 ###
 
+GET http://localhost:5000/ordersPending
+
+###
+
 GET http://localhost:5000/orders/186
 
 ####
@@ -987,17 +991,6 @@ GET   http://localhost:5000/newIronControl
 
 ###
 
-# POST http://localhost:5000/ironControl
-# Content-Type: application/json
-
-# {
-#   "piecesToday":0
-# }
-
-# ###
-# PATCH http://localhost:5000/diaryIronControl/1
-
-# ###
 PATCH http://localhost:5000/cahsCutIronControl/10
 Content-Type: application/json
 
@@ -1073,4 +1066,29 @@ GET   http://localhost:5000/suppliesReport/2024-03-01/2024-03-28
 ###
 
 GET   http://localhost:5000/suppliesReport/2023-05-15/2024-12-22/2
+###
+
+GET http://localhost:5000/orderCancelable
+
+###
+
+
+GET http://localhost:5000/orderCancelled
+
+###
+
+PATCH http://localhost:5000/cancelOrder
+Content-Type: application/json
+
+{
+
+  "id_order":411,
+  "cause":"Prueba de cancelacion"
+
+}
+
+###
+
+PATCH http://localhost:5000/cancelSupplyOrder/53
+
 ###

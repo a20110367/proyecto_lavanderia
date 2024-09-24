@@ -39,6 +39,50 @@ export const getSupplyOrders = async (req, res) => {
     }
 }
 
+export const getActiveSupplyOrders = async (req, res) => {
+
+    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+
+    try {
+        const response = await prisma.supplyOrder.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                SupplyOrderDetail: true,
+                SupplyPayment: true,
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
+
 
 export const getSupplyOrdersById = async (req, res) => {
     try {
@@ -306,6 +350,164 @@ export const updateOrder = async (req, res) => {
         res.status(200).json(supplyOrder);
     } catch (e) {
         res.status(404).json({ msg: e.message });
+    }
+}
+
+export const updateCancelledSupplyOrder = async (req, res) => {
+    try {
+
+
+        const getSupplyOrderDetail = prisma.supplyOrderDetail.findMany({
+
+            where: {
+                fk_supplyOrder: Number(req.params.id)
+            },
+
+            select: {
+                fk_supplyOrder: true,
+                fk_supplyId: true,
+                units: true,
+                subtotal: true,
+            },
+        });
+        //para terminos practicos se debe buscar el caahcut de servicios, ya que de otra forma la tabla queda con una dependencia incorrecta
+        const getCurrentCashCut = prisma.cashCut.findFirst({
+
+            select: {
+                fk_user: true,
+                id_cashCut: true,
+
+            }
+
+        });
+
+        const getSupplyOrderData = prisma.supplyOrder.findFirst({
+
+            where: {
+                id_supplyOrder: Number(req.params.id)
+            },
+
+            select: {
+                id_supplyOrder: true,
+                totalPrice: true,
+                payStatus: true,
+                fk_client: true,
+            },
+        });
+
+        const getSupplyPaymentData = prisma.supplyPayment.findFirst({
+            where: {
+                fk_idOrder: Number(req.params.id)
+            },
+
+            select: {
+                payMethod: true,
+                fk_cashCut: true,
+                payTotal: true
+            },
+
+        });
+
+        const [cashCutData, supplyOrderData, supplyPaymentData, supplyOrderDetail] = await prisma.$transaction([getCurrentCashCut, getSupplyOrderData, getSupplyPaymentData, getSupplyOrderDetail])
+
+        let payTotal = supplyPaymentData == null ? 0 : supplyPaymentData.payTotal;
+        let cancelationTypeDefinition = supplyOrderData.payStatus == "paid" ? "refund" : "cancellation";
+        let cancelledOrder;
+
+        //console.log(supplyPaymentData);
+        //console.log(cancelationTypeDefinition);
+        //console.log(supplyCashCutData);
+        //console.log(supplyOrderData);
+        console.log(supplyOrderDetail);
+
+        const createCancelledSupplyOrderDetail = prisma.cancelledSupplyOrderDetail.createMany({
+            data: supplyOrderDetail
+        });
+
+        const createCancelledSupplyOrderRecord = prisma.cancelledSupplyOrder.create({
+            data: {
+                fk_idSupplyOrder: supplyOrderData.id_supplyOrder,
+                fk_user: cashCutData.fk_user,
+                amount: supplyOrderData.totalPrice,
+                cause: "Cancelacion del pedido de insumos",
+                CancellationTypes: cancelationTypeDefinition
+            }
+        });
+
+
+
+
+        const updateCancelledSupplyOrderDetail = prisma.supplyOrderDetail.updateMany({
+
+            where: {
+                fk_supplyOrder: Number(req.params.id)
+            },
+
+            data: {
+                units: 0,
+                subtotal: 0,
+            }
+
+        });
+
+
+
+        const updateCancelledSupplyOrderStatus = prisma.supplyOrder.update({
+
+            where: {
+                id_supplyOrder: Number(req.params.id)
+            },
+
+            data: {
+                supplyOrderStatus: "cancelled",
+            }
+
+        });
+
+
+
+        const refoundSupplyPayment = prisma.cashWithdrawal.create({
+
+            data: {
+                fk_cashCut: cashCutData.id_cashCut,
+                fk_user: cashCutData.fk_user,
+                cashWithdrawalType: "supply_cancelled",
+                amount: payTotal,
+                cause: "cancelation order",
+                supplyOrder: supplyOrderData.id_supplyOrder,
+                date: new Date(),
+            }
+
+        });
+
+
+
+        if (cancelationTypeDefinition === "refund") {
+            console.log("que la chingada")
+
+            const [cancelledSupplyOrderDetail, cancelledSupplyOrderRecord, updatedSupplyOrderDetail, updatedSupplyOrderStatus, supplyRefound] =
+                await prisma.$transaction
+                    ([createCancelledSupplyOrderDetail, createCancelledSupplyOrderRecord, updateCancelledSupplyOrderDetail, updateCancelledSupplyOrderStatus, refoundSupplyPayment])
+
+            cancelledOrder = cancelledSupplyOrderRecord;
+
+        }
+        if (cancelationTypeDefinition === "cancellation") {
+            console.log("que la chingada2")
+            const [cancelledSupplyOrderDetail, cancelledSupplyOrderRecord, updatedSupplyOrderDetail, updatedSupplyOrderStatus] =
+                await prisma.$transaction
+                    ([createCancelledSupplyOrderDetail, createCancelledSupplyOrderRecord, updateCancelledSupplyOrderDetail, updateCancelledSupplyOrderStatus])
+
+            cancelledOrder = cancelledSupplyOrderRecord;
+        }
+
+
+        const response = cancelledOrder;
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 

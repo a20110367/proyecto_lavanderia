@@ -21,6 +21,34 @@ export const getCashWithdrawals = async (req, res) =>{
     }
 }
 
+export const getActiveCashWithdrawals = async (req, res) =>{
+    try {
+
+        let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+
+        const response = await prisma.cashWithdrawal.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+            include: {
+                user: {
+                    select: {
+                        name:true,
+                    },
+                },
+            },
+        }
+        );
+        res.status(200).json(response);
+    }catch(e){
+        res.status(500).json({msg:e.message});
+    }
+}
+
 export const getCashWithdrawalsById = async (req, res) =>{
     try {
         const response = await prisma.cashWithdrawal.findUnique({

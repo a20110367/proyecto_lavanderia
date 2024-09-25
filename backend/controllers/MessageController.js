@@ -134,14 +134,21 @@ export const sendCashCut = async (req, res) => {
 export const sendWarningCanceledOrder = async (req, res) => {
     
     const {canceledOrder, casher, date} = req.body;
-    const message = `// ${date} //La orden No. ${canceledOrder.id_order} | ${canceledOrder.payStatus === "paid" ? "PAGADA" : "NO PAGADA"} | pertenenciente al cliente: ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
-    fue cancelada por un monto de ${canceledOrder.totalPrice} por el cajero ${casher}`;
+    const message = `// ${date} //
+    La orden No. ${canceledOrder.id_order} | ${canceledOrder.payStatus === "paid" ? "PAGADA" : "NO PAGADA"} | 
+    Pertenenciente al cliente: ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
+    Fue cancelada por un monto de ${canceledOrder.totalPrice} 
+    Por el cajero ${casher}`;
 
     try{
+
+        //OWNER
         restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')
+
+        //CLIENTe
     }catch(err) {
         console.error(err)
         res.status(400).json({ message: 'Algo salio mal!' })

@@ -72,7 +72,6 @@ function Cancelacion() {
     }else{
       setAmount(0)
     }
-    console.log(cancelacion)
     setCanceledOrder(cancelacion)
     setVisible(true);
   };
@@ -117,7 +116,8 @@ function Cancelacion() {
         await api.post('/sendWarning',{
           canceledOrder: canceledOrder,
           casher: cookies.username,
-          date: moment().format('DD/MM/YYYY')
+          date: moment().format('DD/MM/YYYY'),
+          cause: cause
         })
 
         Swal.fire({

@@ -133,13 +133,13 @@ export const sendCashCut = async (req, res) => {
 
 export const sendWarningCanceledOrder = async (req, res) => {
     
-    const {canceledOrder, casher, date} = req.body;
+    const {canceledOrder, casher, date, cause} = req.body;
     const message = `// ${date} //
     La orden No. ${canceledOrder.id_order} | ${canceledOrder.payStatus === "paid" ? "PAGADA" : "NO PAGADA"} | 
-    Pertenenciente al cliente: ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
-    Fue cancelada por un monto de $${canceledOrder.totalPrice} 
-    Cancelada por el cajero ${casher}
-    Por el motivo de ${canceledOrder.cause}`;
+    Pertenenciente al cliente:  ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
+    Fue cancelada por un monto de:  $${canceledOrder.totalPrice} Pesos
+    Cancelada por el cajero:  ${casher}
+    Por el motivo de:  ${cause}`;
 
     try{
 

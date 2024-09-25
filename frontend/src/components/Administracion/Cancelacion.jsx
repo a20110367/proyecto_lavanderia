@@ -10,11 +10,13 @@ import Swal from "sweetalert2";
 import api from "../../api/api";
 
 function Cancelacion() {
+
   const navigate = useNavigate();
   const [cancelaciones, setCancelaciones] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
-  const [orderID, setOrderId] = useState("");
+  const [canceledOrder, setCanceledOrder] = useState()
+  const [orderId, setOrderId] = useState("");
   const [cause, setCause] = useState("");
   const [amount, setAmount] = useState(0);
   const { cookies } = useAuth();
@@ -53,7 +55,7 @@ function Cancelacion() {
     setCurrentPage(0);
   };
 
-  const handleCancelacion = (id_order, amount, payStatus) => {
+  const handleCancelacion = (cancelacion) => {
     if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
@@ -64,12 +66,14 @@ function Cancelacion() {
       navigate("/inicioCaja");
       return;
     }
-    setOrderId(id_order);
-    if(payStatus === "paid"){
-      setAmount(amount)
+    setOrderId(cancelacion.id_order);
+    if(cancelacion.payStatus === "paid"){
+      setAmount(cancelacion.amount)
     }else{
       setAmount(0)
     }
+    console.log(cancelacion)
+    setCanceledOrder(cancelacion)
     setVisible(true);
   };
 
@@ -82,7 +86,7 @@ function Cancelacion() {
       // Validación de campos obligatorios
       let isValid = true;
 
-      if (!orderID) {
+      if (!orderId) {
         setNumeroPedidoError("Este campo es obligatorio");
         isValid = false;
       } else {
@@ -106,8 +110,14 @@ function Cancelacion() {
       if (isValid) {
 
         await api.patch("/cancelOrder", {
-          id_order: orderID,
+          id_order: orderId,
           cause: cause,
+        })
+
+        await api.post('/sendWarning',{
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY')
         })
 
         setVisible(false);
@@ -173,12 +183,12 @@ function Cancelacion() {
                 <td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>
                 <td className="py-3 px-6 font-bold">{"$" + cancelacion.totalPrice}</td>
                 <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGADO' : 'NO PAGADO'}</td>
-                <td className="py-3 px-6">{cancelacion.orderStatus}</td>
+                <td className="py-3 px-6">{cancelacion.orderStatus === "pending" ? "Pendiente" : cancelacion.orderStatus}</td>
                 <td className="py-3 px-6">{cancelacion.user.name + ' ' + cancelacion.user.firstLN + ' ' + cancelacion.user.secondLN}</td>
                 <td>
                   <button
                     onClick={() =>
-                      handleCancelacion(cancelacion.id_order, cancelacion.totalPrice, cancelacion.payStatus)
+                      handleCancelacion(cancelacion)
                     }
                     className={`py-3 px-6 ${cancelacion.payStatus === 'paid'
                       ? "btn-back w-11/12 p-0 m-0"
@@ -227,7 +237,7 @@ function Cancelacion() {
               <p className="text-red-500">{motivoError}</p>
             </div>
             <div className="text-right mr-8">
-              <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderID}</span></p>
+              <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderId}</span></p>
               {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
             </div>
           </form>

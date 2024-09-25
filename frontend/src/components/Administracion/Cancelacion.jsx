@@ -122,7 +122,7 @@ function Cancelacion() {
 
         Swal.fire({
           title: "Orden Cancelada con Exito!",
-          text: "Se elimino con exito la orden además de notificar al dueño!",
+          text: "Se elimino con exito la orden además de notificar al dueño.",
           icon: "success"
         });
 

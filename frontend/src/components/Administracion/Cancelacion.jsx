@@ -120,6 +120,12 @@ function Cancelacion() {
           date: moment().format('DD/MM/YYYY')
         })
 
+        Swal.fire({
+          title: "Orden Cancelada con Exito!",
+          text: "Se elimino con exito la orden además de notificar al dueño!",
+          icon: "success"
+        });
+
         setVisible(false);
       }
     }

@@ -137,8 +137,9 @@ export const sendWarningCanceledOrder = async (req, res) => {
     const message = `// ${date} //
     La orden No. ${canceledOrder.id_order} | ${canceledOrder.payStatus === "paid" ? "PAGADA" : "NO PAGADA"} | 
     Pertenenciente al cliente: ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
-    Fue cancelada por un monto de ${canceledOrder.totalPrice} 
-    Cancelada por el cajero ${casher}`;
+    Fue cancelada por un monto de $${canceledOrder.totalPrice} 
+    Cancelada por el cajero ${casher}
+    Por el motivo de ${canceledOrder.cause}`;
 
     try{
 

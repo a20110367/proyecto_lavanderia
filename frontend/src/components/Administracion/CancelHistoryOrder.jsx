@@ -8,15 +8,42 @@ import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import Swal from "sweetalert2";
 import api from "../../api/api";
+import { formatDate, formatTime } from "../../utils/format";
 
 function Cancelacion() {
     const navigate = useNavigate();
     const [cancelaciones, setCancelaciones] = useState([]);
     const [filtro, setFiltro] = useState("");
     const [visible, setVisible] = useState(false);
-    const [orderID, setOrderId] = useState("");
-    const [cause, setCause] = useState("");
-    const [amount, setAmount] = useState(0);
+    const [canceledOrder, setCanceledOrder] = useState({
+        id_cancelledOrder: 0,
+        fk_idServiceOrder: 0,
+        amount: 0,
+        CancellationTypes: "refund",
+        cause: "R",
+        created: "2024"
+    });
+    const [order, setOrder] = useState({
+        id_order: 0,
+        user: {
+            name: "A",
+            firstLN: "B",
+            secondLN: "C"
+        },
+        client: {
+            name: "A",
+            firstLN: "B",
+            secondLN: "C"
+        },
+        category: {
+            categoryDescription: "Autoservicio",
+        },
+        numberOfItems: 0,
+        payStatus: "unpaid",
+        payForm: "Advance",
+        notes: "",
+        created: "2024"
+    });
     const { cookies } = useAuth();
     const [numeroPedidoError, setNumeroPedidoError] = useState("");
     const [motivoError, setMotivoError] = useState("");
@@ -53,23 +80,20 @@ function Cancelacion() {
         setCurrentPage(0);
     };
 
-    const handleCancelacion = (id_order, amount, payStatus) => {
-        if (!localStorage.getItem("cashCutId")) {
-            Swal.fire({
-                icon: "warning",
-                title: "No has inicializado caja!",
-                text: "Da click en Iniciar Caja.",
-                confirmButtonColor: "#034078",
-            });
-            navigate("/inicioCaja");
-            return;
-        }
-        setOrderId(id_order);
-        if (payStatus === "paid") {
-            setAmount(amount)
-        } else {
-            setAmount(0)
-        }
+    const handleCancelacion = async (canceled) => {
+        // if (!localStorage.getItem("cashCutId")) {
+        //     Swal.fire({
+        //         icon: "warning",
+        //         title: "No has inicializado caja!",
+        //         text: "Da click en Iniciar Caja.",
+        //         confirmButtonColor: "#034078",
+        //     });
+        //     navigate("/inicioCaja");
+        //     return;
+        // }
+        setCanceledOrder(canceled)
+        const res = await api.get(`/orders/${canceled.fk_idServiceOrder}`)
+        setOrder(res.data)
         setVisible(true);
     };
 
@@ -79,39 +103,7 @@ function Cancelacion() {
 
     const handleConfirmCancelacion = async () => {
         try {
-            // Validación de campos obligatorios
-            let isValid = true;
-
-            if (!orderID) {
-                setNumeroPedidoError("Este campo es obligatorio");
-                isValid = false;
-            } else {
-                setNumeroPedidoError("");
-            }
-
-            if (!cause) {
-                setMotivoError("Este campo es obligatorio");
-                isValid = false;
-            } else {
-                setMotivoError("");
-            }
-
-            if (!localStorage.getItem("cashCutId")) {
-                setMotivoError("No se ha inicializado la caja");
-                isValid = false;
-            } else {
-                setMotivoError("");
-            }
-
-            if (isValid) {
-
-                await api.patch("/cancelOrder", {
-                    id_order: orderID,
-                    cause: cause,
-                })
-
-                setVisible(false);
-            }
+            setCanceledOrder
         }
         catch (err) {
             console.error(err)
@@ -120,8 +112,35 @@ function Cancelacion() {
 
     const handleClose = () => {
         setVisible(false);
-        setCause("");
-        setOrderId("")
+        setCanceledOrder({
+            id_cancelledOrder: 0,
+            fk_idServiceOrder: 0,
+            amount: 0,
+            CancellationTypes: "refund",
+            cause: "R",
+            created: "2024"
+        });
+        setOrder({
+            id_order: 0,
+            user: {
+                name: "A",
+                firstLN: "B",
+                secondLN: "C"
+            },
+            client: {
+                name: "A",
+                firstLN: "B",
+                secondLN: "C"
+            },
+            category: {
+                categoryDescription: "Autoservicio",
+            },
+            numberOfItems: 0,
+            payStatus: "unpaid",
+            payForm: "Advance",
+            notes: "",
+            created: "2024"
+        });
     };
 
     return (
@@ -148,12 +167,11 @@ function Cancelacion() {
             <table className="w-full text-sm text-left text-gray-500 mt-8">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-200">
                     <tr>
-                        <th>No. Orden</th>
-                        <th>Cliente</th>
-                        <th>Total</th>
-                        <th>Estatus del Pago</th>
-                        <th>Estatus de la Orden</th>
-                        <th>Cajero</th>
+                        <th>No. Orden Cancelada</th>
+                        <th>Monto</th>
+                        <th>Tipo</th>
+                        <th>Causa</th>
+                        <th>Fecha de la Cancelación</th>
                         <th>Opciones</th>
                     </tr>
                 </thead>
@@ -165,37 +183,35 @@ function Cancelacion() {
                         .map((cancelacion) => (
                             <tr
                                 className="bg-white border-b"
-                                key={cancelacion.id_order}
+                                key={cancelacion.id_cancelledOrder}
                             >
                                 <td className="py-3 px-1 text-center">
-                                    {cancelacion.id_order}
+                                    {cancelacion.id_cancelledOrder}
                                 </td>
-                                <td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>
-                                <td className="py-3 px-6 font-bold">{"$" + cancelacion.totalPrice}</td>
-                                <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGADO' : 'NO PAGADO'}</td>
-                                <td className="py-3 px-6">{cancelacion.orderStatus}</td>
-                                <td className="py-3 px-6">{cancelacion.user.name + ' ' + cancelacion.user.firstLN + ' ' + cancelacion.user.secondLN}</td>
+                                {/*<td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>*/}
+                                <td className="py-3 px-6 font-bold">{"$" + cancelacion.amount}</td>
+                                <td className="py-3 px-6">{cancelacion.CancellationTypes === 'cancellation' ? 'Cancelación' : 'Rembolso'}</td>
+                                <td className="py-3 px-6">{cancelacion.cause}</td>
+                                <td className="py-3 px-6">{formatDate(cancelacion.created)}</td>
+                                {/*<td className="py-3 px-6">{cancelacion.user.name + ' ' + cancelacion.user.firstLN + ' ' + cancelacion.user.secondLN}</td>*/}
                                 <td>
                                     <button
                                         onClick={() =>
-                                            handleCancelacion(cancelacion.id_order, cancelacion.totalPrice, cancelacion.payStatus)
+                                            handleCancelacion(cancelacion)
                                         }
-                                        className={`py-3 px-6 ${cancelacion.payStatus === 'paid'
-                                            ? "btn-back w-11/12 p-0 m-0"
-                                            : "btn-payment w-11/12 p-0 m-0"
-                                            }`}
-                                    >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
+                                        className="py-3 px-6 btn-payment w-11/12 p-0 m-0"
+                                    >Detalles
                                     </button></td>
                             </tr>
                         ))}
                 </tbody>
             </table>
             <Modal
-                title="Registrar Reembolso / Cancelación"
+                title="Detalles de la Orden de Cancelación"
                 open={visible}
                 onOk={handleConfirmCancelacion}
                 onCancel={handleClose}
-                width={600}
+                width={800}
                 footer={[
                     <Button
                         key="confirmar"
@@ -213,24 +229,31 @@ function Cancelacion() {
                     </Button>,
                 ]}
             >
-                <form>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2 ">
-                            Motivo:
-                        </label>
-                        <Input
-                            value={cause}
-                            onChange={(e) => setCause(e.target.value)}
-                            placeholder="Ingrese el motivo"
-                            onInput={handleMotivoInput}
-                        />
-                        <p className="text-red-500">{motivoError}</p>
-                    </div>
-                    <div className="text-right mr-8">
-                        <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderID}</span></p>
-                        {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
-                    </div>
-                </form>
+                <p className="font-bold mx-5 my-2 text-lg">Datos de la Cancelación</p>
+                <div className="grid grid-cols-2 justify-center gap-4 mb-4">
+                    <p className="font-bold mx-5">No. de Cancelación de Orden: <br/><span className="font-normal">{canceledOrder.id_cancelledOrder}</span></p>
+                    <p className="font-bold mx-5">Monto: <br/><span className="font-normal">${canceledOrder.amount}</span></p>
+
+                    <p className="font-bold mx-5">Motivo: <br/><span className="font-normal">{canceledOrder.cause}</span></p>
+                    <p className="font-bold mx-5">Fecha de Cancelación: <br/><span className="font-normal">{formatDate(canceledOrder.created)}</span></p>
+                </div>
+
+                <hr></hr>
+
+                <p className="font-bold mx-5 my-2 text-lg">Datos de la Orden</p>
+                <div className="grid grid-cols-3 justify-center gap-4">
+                    <p className="font-bold mx-5">No. Orden: <br/><span className="font-normal">{order.id_order}</span></p>
+                    <p className="font-bold mx-5">Cliente: <br/><span className="font-normal">{order.client.name + ' ' + order.client.firstLN + ' ' + order.client.secondLN}</span></p>
+                    <p className="font-bold mx-5">Cajero: <br/><span className="font-normal">{order.user.name + ' ' + order.user.firstLN + ' ' + order.user.secondLN}</span></p>
+
+                    <p className="font-bold mx-5">Estatus de Pago: <br/><span className="font-normal">{order.payStatus === "paid" ? "PAGADO" : "NO PAGADO"}</span></p>
+                    <p className="font-bold mx-5">Forma de Pago: <br/><span className="font-normal">{order.payForm === "advance" ? "Anticipado" : "A la Entrega"}</span></p>
+                    <p className="font-bold mx-5">Categoria: <br/><span className="font-normal">{order.category.categoryDescription}</span></p>
+
+                    <p className="font-bold mx-5">Fecha de Creación: <br/><span className="font-normal">{formatDate(order.created)}</span></p>
+                    <p className="font-bold mx-5">No. de Servicios: <br/><span className="font-normal">{order.numberOfItems}</span></p>
+                    <p className="font-bold mx-5">Notas: <br/><span className="font-normal">{order.notes}</span></p>
+                </div>
             </Modal>
             <div className="flex justify-center mt-4 mb-4">
                 <ReactPaginate

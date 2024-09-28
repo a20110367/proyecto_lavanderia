@@ -167,7 +167,8 @@ function Cancelacion() {
             <table className="w-full text-sm text-left text-gray-500 mt-8">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-200">
                     <tr>
-                        <th>No. Orden Cancelada</th>
+                        <th>ID Cancelacion</th>
+                        <th>No. Orden Canceladada</th>
                         <th>Monto</th>
                         <th>Tipo</th>
                         <th>Causa</th>
@@ -189,6 +190,7 @@ function Cancelacion() {
                                     {cancelacion.id_cancelledOrder}
                                 </td>
                                 {/*<td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>*/}
+                                <td className="py-3 px-6">{cancelacion.fk_idServiceOrder}</td>
                                 <td className="py-3 px-6 font-bold">{"$" + cancelacion.amount}</td>
                                 <td className="py-3 px-6">{cancelacion.CancellationTypes === 'cancellation' ? 'Cancelación' : 'Rembolso'}</td>
                                 <td className="py-3 px-6">{cancelacion.cause}</td>
@@ -218,7 +220,7 @@ function Cancelacion() {
                         onClick={handleClose}
                         className="btn-cancel-modal text-white"
                     >
-                        Cancelar
+                        Cerrar
                     </Button>,
                 ]}
             >

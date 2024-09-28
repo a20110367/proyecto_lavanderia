@@ -94,6 +94,12 @@ function Cancelacion() {
 
       if (!cause) {
         setMotivoError("Este campo es obligatorio");
+        Swal.fire({
+          icon: "error",
+          title: "Es necesario ingresar el motivo",
+          text: "No puedes cancelar sin escribir un motivo",
+          confirmButtonColor: "#034078",
+        });
         isValid = false;
       } else {
         setMotivoError("");
@@ -107,7 +113,7 @@ function Cancelacion() {
       }
 
       if (isValid) {
-
+        setVisible(false);
         await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
@@ -124,9 +130,7 @@ function Cancelacion() {
           title: "Orden Cancelada con Exito!",
           text: "Se elimino con exito la orden además de notificar al dueño.",
           icon: "success"
-        });
-
-        setVisible(false);
+        }); 
       }
     }
     catch (err) {

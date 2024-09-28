@@ -214,14 +214,7 @@ function Cancelacion() {
                 width={800}
                 footer={[
                     <Button
-                        key="confirmar"
-                        onClick={handleConfirmCancelacion}
-                        className="btn-print text-white"
-                    >
-                        Confirmar Cancelación de Servicio
-                    </Button>,
-                    <Button
-                        key="cancelar"
+                        key="Cerrar"
                         onClick={handleClose}
                         className="btn-cancel-modal text-white"
                     >

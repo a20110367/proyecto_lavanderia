@@ -161,6 +161,7 @@ export const calculateCashCut = async (req, res) => {
                 amount: true,
             }
         });
+        
         totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
 
         const cash = await prisma.payment.aggregate({

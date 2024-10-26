@@ -101,6 +101,12 @@ function Cancelacion() {
           confirmButtonColor: "#034078",
         });
         isValid = false;
+        await api.post('/sendWarning',{
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY'),
+          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
+        })
       } else {
         setMotivoError("");
       }
@@ -117,6 +123,19 @@ function Cancelacion() {
         await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
+        })
+
+        const res = await api.get(`/orders/${orderId}`);
+
+        await api.post('/generate/order/canceled', {
+          canceled: {
+            id_canceled: canceledOrder.id_order,
+            id_order: orderId,
+            cause: cause,
+            casher: cookies.username,
+            amount: canceledOrder.totalPrice,
+            order: await res.data,
+          }
         })
 
         await api.post('/sendWarning',{
@@ -143,6 +162,8 @@ function Cancelacion() {
     setCause("");
     setOrderId("")
   };
+
+  console.log(cancelaciones)
 
   return (
     <div>

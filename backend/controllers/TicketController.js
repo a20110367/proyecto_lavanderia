@@ -150,16 +150,16 @@ export const generateTicket = async (req, res) => {
         console.log(execute)
         console.log("Print done!");
 
-        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
-            if (order.extraTickets) {
-                if (order.serviceType != 'planchado') {
-                    printOrderDetailTicket(order)
-                } else {
-                    printOrderDetailIronTicket(order)
-                }
+        // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
+        if (order.extraTickets) {
+            if (order.serviceType != 'planchado') {
+                printOrderDetailTicket(order)
+            } else {
+                printOrderDetailIronTicket(order)
             }
-            printTicketFromBackend(order)
         }
+        printTicketFromBackend(order)
+        // }
 
         // printer.bold(true);                                         // Set text bold
         // printer.invert(true);                                       // Background/text color inversion
@@ -232,7 +232,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.bold(true)
                 printer.println('No. de Orden:')
                 printer.setTextSize(7, 7);
-                printer.println(`${order.id_order}`)
+                printer.println(`${order.id_order} - ${i + 1}`)
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()
@@ -274,89 +274,87 @@ const printOrderDetailIronTicket = async (order) => {
         printer.clear();
 
         order.cart.forEach(async (detail, index) => {
-            for (let i = 0; i < detail.quantity; i++) {
-                // CUARTO APROACH
-                //EXTRAS
-                let pivot1 = detail.pieces % 6;
-                //MAIN
-                let pivot2 = detail.pieces / 6;
+            // CUARTO APROACH
+            //EXTRAS
+            let pivot1 = detail.pieces % 6;
+            //MAIN
+            let pivot2 = detail.pieces / 6;
 
-                console.log(" Numero de Piezas Restantes " + pivot1);
-                console.log(" Numero de Paquetes completos " + pivot2);
+            console.log(" Numero de Piezas Restantes " + pivot1);
+            console.log(" Numero de Paquetes completos " + pivot2);
 
-                for (let j = 0; j < pivot2; j++) {
-                    // PRINT MAIN
+            for (let j = 0; j < pivot2; j++) {
+                // PRINT MAIN
 
-                    printer.drawLine()
-                    printer.setTextSize(2, 2);
-                    printer.bold(true)
-                    printer.println('No. de Orden:')
-                    printer.setTextSize(7, 7);
-                    printer.println(`${order.id_order}`)
-                    printer.setTextSize(2, 2);
-                    printer.println(`Piezas: 6`)
-                    printer.newLine()
-                    printer.println(`Paquete: ${j + 1}`)
-                    printer.newLine()
-                    printer.bold(false)
-                    printer.newLine()
-                    printer.newLine()
-                    printer.setTextQuadArea()
-                    printer.println('Cliente:')
-                    printer.println(`${order.client}`)
-                    printer.newLine()
-                    printer.println('Descripcion:')
-                    printer.println(`${detail.description}`)
-                    printer.newLine()
-                    printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
-                    printer.newLine()
-                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                    printer.newLine()
-                    printer.println(`Observaciones:`)
-                    printer.println(`${order.notes}`)
+                printer.drawLine()
+                printer.setTextSize(2, 2);
+                printer.bold(true)
+                printer.println('No. de Orden:')
+                printer.setTextSize(7, 7);
+                printer.println(`${order.id_order} - ${j + 1}`)
+                printer.setTextSize(2, 2);
+                printer.println(`Piezas: 6`)
+                printer.newLine()
+                printer.println(`Paquete: ${j + 1}`)
+                printer.newLine()
+                printer.bold(false)
+                printer.newLine()
+                printer.newLine()
+                printer.setTextQuadArea()
+                printer.println('Cliente:')
+                printer.println(`${order.client}`)
+                printer.newLine()
+                printer.println('Descripcion:')
+                printer.println(`${detail.description}`)
+                printer.newLine()
+                printer.println(`Cantidad: ${index + 1} - ${detail.quantity}`)
+                printer.newLine()
+                printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                printer.newLine()
+                printer.println(`Observaciones:`)
+                printer.println(`${order.notes}`)
 
-                    printer.cut();
+                printer.cut();
 
-                    console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
-                }
-
-                if (pivot1 != 0) {
-                    // PRINT EXTRAS
-
-                    printer.drawLine()
-                    printer.setTextSize(2, 2);
-                    printer.bold(true)
-                    printer.println('No. de Orden:')
-                    printer.setTextSize(7, 7);
-                    printer.println(`${order.id_order}`)
-                    printer.setTextSize(2, 2);
-                    printer.println(`Piezas: ${pivot1}`)
-                    printer.newLine()
-                    printer.println(`Paquete: ${pivot2 + 1}`)
-                    printer.newLine()
-                    printer.bold(false)
-                    printer.newLine()
-                    printer.newLine()
-                    printer.setTextQuadArea()
-                    printer.println('Cliente:')
-                    printer.println(`${order.client}`)
-                    printer.newLine()
-                    printer.println('Descripcion:')
-                    printer.println(`${detail.description}`)
-                    printer.newLine()
-                    printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
-                    printer.newLine()
-                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                    printer.newLine()
-                    printer.println(`Observaciones:`)
-                    printer.println(`${order.notes}`)
-
-                    printer.cut();
-
-                    console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
-                }
+                console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
             }
-        })
+
+            if (pivot1 != 0) {
+                // PRINT EXTRAS
+
+                printer.drawLine()
+                printer.setTextSize(2, 2);
+                printer.bold(true)
+                printer.println('No. de Orden:')
+                printer.setTextSize(7, 7);
+                printer.println(`${order.id_order}`)
+                printer.setTextSize(2, 2);
+                printer.println(`Piezas: ${pivot1}`)
+                printer.newLine()
+                printer.println(`Paquete: ${pivot2 + 1}`)
+                printer.newLine()
+                printer.bold(false)
+                printer.newLine()
+                printer.newLine()
+                printer.setTextQuadArea()
+                printer.println('Cliente:')
+                printer.println(`${order.client}`)
+                printer.newLine()
+                printer.println('Descripcion:')
+                printer.println(`${detail.description}`)
+                printer.newLine()
+                printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
+                printer.newLine()
+                printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                printer.newLine()
+                printer.println(`Observaciones:`)
+                printer.println(`${order.notes}`)
+
+                printer.cut();
+
+                console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
+            }
+        }
 
 
         // // TERCER APROACH
@@ -408,6 +406,8 @@ const printOrderDetailIronTicket = async (order) => {
         // let execute = await printer.execute()
 
         // printer.cut();
+
+        let execute = await printer.execute()
 
         console.log(order)
         printer('Order Detail Print done!')
@@ -1021,7 +1021,7 @@ export const printReportProduct = async (req, res) => {
 
 export const printCanceledOrder = async (req, res) => {
     try {
-        const { report } = req.body
+        const { canceled } = req.body
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
@@ -1029,34 +1029,32 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`DÍA DE ORDEN CANCELADA (${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
 
-        printer.println("Fechas seleccionadas:");
-        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
+        printer.println(`Folio de Cancelación: ${canceled.id_canceled}`);
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
-        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
+        printer.println(`No. de Orden: ${canceled.id_order}`);
         printer.setTextNormal();
 
         printer.drawLine();
-
-        printer.println(`Detalles de Ingresos por Producto:`);
         printer.newLine();
 
-        report.suppliesSummary.forEach(item => {
-            printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
-            printer.setTextNormal();
-            printer.println(`ID: ${item.fk_supplyId}`);
-            printer.println(`Subtotal: $${item._sum.subtotal}`);
-            printer.println(`Unidades: ${item._sum.units}`);
-            printer.newLine();
-        })
+        printer.setTextDoubleHeight();
+        printer.println(`Monto: ${canceled.amount}`);
+        printer.setTextNormal();
+        printer.println(`Motivo: ${canceled.cause}`);
+        printer.println(`Cajero: ${canceled.casher}`);
+        printer.newLine();
 
         let execute = await printer.execute();
 
-        res.status(200).json("Print done!");
+        printer.setTextSize(7, 7);
+        printer.println(`CANCELADA`)
+        printer.setTextNormal();
 
+        printTicketFromBackend(order)
+
+        res.status(200).json("Print done!");
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message })

@@ -113,6 +113,12 @@ function Reembolso() {
       if (!motivo) {
         setMotivoError("Este campo es obligatorio");
         isValid = false;
+        await api.post('/sendWarning',{
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY'),
+          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
+        })
       } else {
         setMotivoError("");
       }

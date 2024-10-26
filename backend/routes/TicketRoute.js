@@ -7,6 +7,8 @@ import {
     pettyCashTicket,
     ironCutTicket,
     printReportProduct,
+    printCanceledOrder,
+    reprintTicket,
 } from "../controllers/TicketController.js";
 
 const router = express.Router();
@@ -18,5 +20,7 @@ router.post('/generateCashWithdrawalTicket', cashWithdrawalTicket)
 router.post('/generatePettyCashTicket', pettyCashTicket)
 router.post('/generateIronCutTicket', ironCutTicket)
 router.post('/generateReportProduct', printReportProduct)
+router.post('/generate/order/canceled', printCanceledOrder);
+router.post('/generate/order/reprint', reprintTicket)
 
 export default router;

@@ -1076,7 +1076,7 @@ export const getCancelableOrders = async (req, res) => {
 }
 
 export const getCancelledOrders = async (req, res) => {
-    let lastDate = (moment().subtract(365, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
+    let lastDate = (moment().subtract(120, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
     console.log(lastDate)
     try {
         const response = await prisma.cancelledServiceOrder.findMany({

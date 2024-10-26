@@ -492,7 +492,7 @@ export const deleteSelfServiceQueue = async (req, res) => {
     }
 }
 
-export const getIronQueue = async (req, res) => {
+export const getIronQueue = async (req, res) => { //tomar en cuenta que iron no tiene cola propia, por lo que se gestiona sobre la orden de servicio
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {

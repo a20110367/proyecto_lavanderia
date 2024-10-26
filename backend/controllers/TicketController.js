@@ -1049,7 +1049,7 @@ export const printCanceledOrder = async (req, res) => {
         let execute = await printer.execute();
 
         printer.setTextSize(7, 7);
-        printer.println(`CANCELADA`)
+        printer.println(`CANCELADO`)
         printer.setTextNormal();
 
         printTicketFromBackend(order)

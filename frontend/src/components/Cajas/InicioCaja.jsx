@@ -12,7 +12,7 @@ function InicioCaja() {
   const [nombreUsuario, setNombreUsuario] = useState(cookies.username || "");
 
   const [workShift, setWorkShift] = useState(
-    moment().hours() < 12 ? "moringn" : "evening"
+    moment().hours() < 12 ? "morning" : "evening"
   );
   const [dineroInicio, setDineroInicio] = useState(0);
   const [fechaHora, setFechaHora] = useState("");

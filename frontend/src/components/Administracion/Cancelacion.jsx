@@ -120,6 +120,13 @@ function Cancelacion() {
 
       if (isValid) {
         setVisible(false);
+
+        Swal.fire({
+          title: "Orden Cancelada con Exito!",
+          text: "Se elimino con exito la orden además de notificar al dueño.",
+          icon: "success"
+        }); 
+        
         await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
@@ -144,12 +151,7 @@ function Cancelacion() {
           date: moment().format('DD/MM/YYYY'),
           cause: cause
         })
-
-        Swal.fire({
-          title: "Orden Cancelada con Exito!",
-          text: "Se elimino con exito la orden además de notificar al dueño.",
-          icon: "success"
-        }); 
+        setCause("");
       }
     }
     catch (err) {
@@ -162,8 +164,6 @@ function Cancelacion() {
     setCause("");
     setOrderId("")
   };
-
-  console.log(cancelaciones)
 
   return (
     <div>

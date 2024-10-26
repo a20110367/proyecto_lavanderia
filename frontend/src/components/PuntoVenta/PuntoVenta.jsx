@@ -383,7 +383,7 @@ export default function PuntoVenta() {
         cart: cart,
         extraTickets: true,
       };
-      console.log(order);
+
       // GENERAR EL TICKET
       await api.post("/generateTicket", {
         order: order,

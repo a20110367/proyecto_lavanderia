@@ -659,7 +659,8 @@ export const generatePartialCashCutTicket = async (req, res) => {
 export const reprintTicket = async (req, res) => {
     try {
         if (lastOrder) {
-            printTicketFromBackend(lastOrder)
+            await printTicketFromBackend(lastOrder)
+            lastOrder = undefined;
             res.status(200).json('Print done!')
         } else {
             res.status(404).json(false)

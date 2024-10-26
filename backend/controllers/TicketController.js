@@ -307,7 +307,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
                 printer.newLine()
-                printer.println(`Cantidad: ${index + 1} - ${detail.quantity}`)
+                printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()
@@ -354,7 +354,7 @@ const printOrderDetailIronTicket = async (order) => {
 
                 console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
             }
-        }
+        })
 
 
         // // TERCER APROACH

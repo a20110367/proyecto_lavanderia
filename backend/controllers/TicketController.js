@@ -19,6 +19,8 @@ let printer = new ThermalPrinter({
 
 export const generateTicket = async (req, res) => {
 
+    printer.clear()
+
     const { order } = req.body
 
     let payMethod = ''
@@ -144,8 +146,8 @@ export const generateTicket = async (req, res) => {
 
         printer.cut();
         lastOrder = order
-        let execute = await printer.execute()
-        console.log(execute)
+        // let execute = await printer.execute()
+        // console.log(execute)
         console.log("Print done!");
 
         // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
@@ -216,7 +218,6 @@ export const generateTicket = async (req, res) => {
 
 const printOrderDetailTicket = async (order) => {
     try {
-        printer.clear();
 
         order.cart.forEach(async (detail, index) => {
 
@@ -269,7 +270,6 @@ const printOrderDetailTicket = async (order) => {
 
 const printOrderDetailIronTicket = async (order) => {
     try {
-        printer.clear();
 
         order.cart.forEach(async (detail, index) => {
             // CUARTO APROACH
@@ -987,6 +987,8 @@ export const printReportProduct = async (req, res) => {
     try {
         const { report } = req.body
 
+        printer.clear();
+
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
         printer.setTextQuadArea();
@@ -1031,6 +1033,8 @@ export const printReportProductId = async (req, res) => {
     try {
         const { report } = req.body
 
+        printer.clear();
+
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
         printer.setTextQuadArea();
@@ -1073,6 +1077,8 @@ export const printReportProductId = async (req, res) => {
 
 export const printReportService = async (req, res) => {
     try {
+        printer.clear();
+
         const { report } = req.body
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
@@ -1118,6 +1124,8 @@ export const printReportService = async (req, res) => {
 export const printReportServiceId = async (req, res) => {
     try {
         const { report } = req.body
+
+        printer.clear();
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 

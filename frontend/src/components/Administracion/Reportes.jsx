@@ -287,8 +287,8 @@ function Reportes() {
       doc.text(`Fechas seleccionadas:`, 10, 30);
       doc.text(`(${formatDate(serviceReportResponse.startDate)}) - (${formatDate(serviceReportResponse.endDate)})`, 10, 40);
 
-      doc.text(`No. Total para Verificación: ${serviceReportResponse.totalServiceNumberVerification}`, 10, 60);
-      doc.text(`Total de Venta para Verificación: $${serviceReportResponse.totalServiceSalesVerification}`, 10, 70);
+      doc.text(`No. Total de Servicios: ${serviceReportResponse.totalServiceNumberVerification}`, 10, 60);
+      doc.text(`Total de Venta: $${serviceReportResponse.totalServiceSalesVerification}`, 10, 70);
 
       doc.setLineWidth(3)
       doc.line(10, 80, 205, 80, 'S');

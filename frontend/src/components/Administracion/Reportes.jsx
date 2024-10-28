@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import IMAGES from "../../images/images";
 import locale from "antd/es/date-picker/locale/es_ES";
 import { Modal, Button, DatePicker } from "antd";
 import jsPDF from "jspdf";
@@ -274,11 +275,229 @@ function Reportes() {
 
   const handleGenerarDocumento = async () => {
     if (reportType === 1) {
+      const doc = new jsPDF("p", "mm", "letter");
+
+      var img = new Image();
+      // img.src = 'images/img/caprelogo.png';
+      img.src = IMAGES.caprelogo;
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+
+      doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+      doc.text(`Fechas seleccionadas:`, 10, 30);
+      doc.text(`(${formatDate(serviceReportResponse.startDate)}) - (${formatDate(serviceReportResponse.endDate)})`, 10, 40);
+
+      doc.text(`No. Total para Verificación: ${serviceReportResponse.totalServiceNumberVerification}`, 10, 60);
+      doc.text(`Total de Venta para Verificación: $${serviceReportResponse.totalServiceSalesVerification}`, 10, 70);
+
+      doc.setLineWidth(3)
+      doc.line(10, 80, 205, 80, 'S');
+
+      // Mostrar detalles de ingresos por servicio AUTOSERVICIO
+      doc.text(`Detalles de Ingreso de Autoservicio:`, 10, 90);
+      doc.setLineWidth(1)
+      doc.line(10, 100, 205, 100, 'S');
+      let count = 110;
+
+      serviceReportResponse.selfServiceSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_selfService}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio ENCARGO
+      doc.text(`Detalles de Ingreso de Encargo:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.laundryServiceSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_laundryService}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio PLANCHADO
+      doc.text(`Detalles de Ingreso de Planchado:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.ironServiceSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_ironService}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio TINTORERIA
+      doc.text(`Detalles de Ingreso de Tintoreria:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.drycleanServiceSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_drycleanService}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio OTROS
+      doc.text(`Detalles de Ingreso de Otros:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.otherServiceSumary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`Descripción: ${item.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${item.fk_otherService}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${item._sum.units}`, 10, count);
+        count += 20;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio RESUMEN DE ORDENES
+      doc.text(`Resumen de Estatus de la Ordenes:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.deliveryStatusOrderSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          count = 40;
+        }
+        doc.text(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`, 10, count);
+        count += 10;
+        doc.text(`No. de Servicios: ${item._sum.numberOfItems}`, 10, count);
+        count += 10;
+        doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
+        count += 10;
+      })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio RESUMEN DE ESTATUS DE PAGO
+      doc.text(`Resumen de Estatus de Pago:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      serviceReportResponse.payStatusOrderSummary.forEach(item => {
+        if (count >= 250) {
+          doc.addPage();
+          count = 40;
+        }
+        doc.text(`${item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"} ${item._count.id_order}`, 10, count);
+        count += 10;
+        doc.text(`No. de Servicios: ${item._sum.numberOfItems}`, 10, count);
+        count += 10;
+        doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
+        count += 10;
+      })
+      setDocument(doc);
 
     } else if (reportType === 2) {
+      const doc = new jsPDF("p", "mm", "letter");
 
+      var img = new Image();
+      // img.src = 'images/img/caprelogo.png';
+      img.src = IMAGES.caprelogo;
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
+      
+      doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+      doc.text(`Fechas seleccionadas:`, 10, 30);
+      doc.text(`(${formatDate(serviceResponseId.startDate)}) - (${formatDate(serviceResponseId.endDate)})`, 10, 40);
+
+      doc.setLineWidth(3)
+      doc.line(10, 80, 205, 80, 'S');
+
+      // Mostrar detalles de ingresos por servicio
+      doc.text(`Detalles de Ingresos del Servicio:`, 10, 90);
+      doc.setLineWidth(1)
+      doc.line(10, 100, 205, 100, 'S');
+      let count = 110;
+
+      doc.text(`Descripción: ${serviceResponseId.description}`, 10, count);
+      count += 10;
+      doc.text(`ID: ${categoryId === 1 ? serviceResponseId.fk_selfService
+        : categoryId === 2 ? serviceResponseId.fk_laundryService
+          : categoryId === 3 ? serviceResponseId.fk_ironService
+            : categoryId === 4 ? serviceResponseId.fk_drycleanService
+              : categoryId === 5 ? serviceResponseId.fk_otherService
+                : serviceResponseId.description}`, 10, count);
+      count += 10;
+      doc.text(`Subtotal: $${serviceResponseId._sum.subtotal}`, 10, count);
+      count += 10;
+      doc.text(`Unidades: ${serviceResponseId._sum.units}`, 10, count);
+      count += 20;
+      setDocument(doc);
     } else if (reportType === 3) {
       const doc = new jsPDF("p", "mm", "letter");
+
+      var img = new Image();
+      // img.src = 'images/img/caprelogo.png';
+      img.src = IMAGES.caprelogo;
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
 
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -293,11 +512,14 @@ function Reportes() {
 
       // Mostrar detalles de ingresos por servicio
       doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
+      doc.setLineWidth(1)
+      doc.line(10, 100, 205, 100, 'S');
       let count = 110;
 
       productReportResponse.suppliesSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -312,6 +534,12 @@ function Reportes() {
       setDocument(doc);
     } else if (reportType === 4) {
       const doc = new jsPDF("p", "mm", "letter");
+
+      var img = new Image();
+      // img.src = 'images/img/caprelogo.png';
+      img.src = IMAGES.caprelogo;
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
+      
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
       doc.text(`Fechas seleccionadas:`, 10, 30);
@@ -324,6 +552,8 @@ function Reportes() {
       doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
       let count = 110;
 
+      doc.text(`ID: ${productId}`, 10, count);
+      count += 10;
       doc.text(`Descripción: ${productReportResponseId.description}`, 10, count);
       count += 10;
       doc.text(`Subtotal: $${productReportResponseId._sum.subtotal}`, 10, count);
@@ -335,11 +565,30 @@ function Reportes() {
   }
 
   const handleGuardarPDF = async () => {
+    await setDocument(undefined);
     await handleGenerarDocumento()
-    const formattedStartDate = productReportResponse.startDate.split("/").join("-");
-    const formattedEndDate = productReportResponse.endDate.split("/").join("-");
-    document.save(`Reporte de productos ${formattedStartDate} - ${formattedEndDate}.pdf`);
-    Swal.fire("Reporte Guardado", "", "success");
+    if(reportType == 1){
+      const formattedStartDate = serviceReportResponse.startDate.split("/").join("-");
+      const formattedEndDate = serviceReportResponse.endDate.split("/").join("-");
+      document.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      Swal.fire("Reporte Guardado", "", "success");
+    }else if(reportType == 2){
+      const formattedStartDate = serviceResponseId.startDate.split("/").join("-");
+      const formattedEndDate = serviceResponseId.endDate.split("/").join("-");
+      document.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      Swal.fire("Reporte Guardado", "", "success");
+    }else if(reportType == 3){
+      const formattedStartDate = productReportResponse.startDate.split("/").join("-");
+      const formattedEndDate = productReportResponse.endDate.split("/").join("-");
+      document.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      Swal.fire("Reporte Guardado", "", "success");
+    }else if(reportType == 4){
+      const formattedStartDate = productReportResponseId.startDate.split("/").join("-");
+      const formattedEndDate = productReportResponseId.endDate.split("/").join("-");
+      document.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      Swal.fire("Reporte Guardado", "", "success");
+    } else Swal.fire("Tipo de reporte no encontrado", "", "error");
+    await setDocument(undefined);
   }
 
   const handleEnviarPDF = async () => {
@@ -356,10 +605,23 @@ function Reportes() {
 
   const handlePrint = async () => {
     try {
-      await api.post("/generateReportProduct", {
-        report: reportResponse,
-        reportType: reportType,
-      })
+      if(reportType == 1){
+        await api.post("/generate/report/Service", {
+          report: serviceReportResponse,
+        })
+      }else if(reportType == 2){
+        await api.post("/generate/report/Service/id", {
+          report: serviceReportResponse,
+        })
+      }else if(reportType == 3){
+        await api.post("/generate/report/Product", {
+          report: productReportResponse,
+        })
+      }else if(reportType == 4){
+        await api.post("/generate/report/Product/id", {
+          report: productReportResponseId,
+        })
+      }else Swal.fire("Tipo de reporte no encontrado", "", "error");
     } catch (err) {
       Swal.fire("Error al imprimir", "", "error");
       console.error(err);
@@ -388,11 +650,9 @@ function Reportes() {
           } else {
             setServiceReportResponse(res.data)
             showGeneralServicesModal()
-            console.log(res.data)
           }
         } else {
           setServiceReportResponseId(res.data[0])
-          console.log(res.data[0])
           showIdServiceResultModal()
         }
       } else if (!dateRange || dateRange.length !== 2) {
@@ -607,7 +867,7 @@ function Reportes() {
             <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p>
             {serviceReportResponse.deliveryStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
-                                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
                 <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
                 <p className="text-lg">{item._count.id_order}</p>
                 <p className="font-bold">No. de Servicios:</p>
@@ -747,7 +1007,7 @@ function Reportes() {
           </div>
           {/* Segunda Columna */}
           <div className="w-1/2 text-lg">
-            <p className="font-bold text-xl">Detalles del Producto:</p>
+            <p className="font-bold text-xl">Detalles del Servicio:</p>
             <br />
             <div key={
               categoryId === 1 ? serviceResponseId.fk_selfService

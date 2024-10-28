@@ -1202,6 +1202,8 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`CANCELADO`)
         printer.setTextNormal();
 
+        printer.cut();
+
         printTicketFromBackend(canceled.order)
 
         res.status(200).json("Print done!");

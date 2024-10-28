@@ -1202,7 +1202,7 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`CANCELADO`)
         printer.setTextNormal();
 
-        printTicketFromBackend(order)
+        printTicketFromBackend(canceled.order)
 
         res.status(200).json("Print done!");
     } catch (err) {

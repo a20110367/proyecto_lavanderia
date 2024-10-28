@@ -1195,6 +1195,8 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`Motivo: ${canceled.cause}`);
         printer.println(`Cajero: ${canceled.casher}`);
         printer.newLine();
+        
+        printer.cut();
 
         let execute = await printer.execute();
 
@@ -1202,7 +1204,7 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`CANCELADO`)
         printer.setTextNormal();
 
-        printer.cut();
+        
 
         printTicketFromBackend(canceled.order)
 

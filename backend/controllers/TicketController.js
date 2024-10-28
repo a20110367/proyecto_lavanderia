@@ -1176,7 +1176,7 @@ export const printCanceledOrder = async (req, res) => {
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
         printer.setTextQuadArea();
-        printer.println(`DÍA DE ORDEN CANCELADA (${moment().format("DD/MM/YYYY")}`)
+        printer.println(`FECHA DE CANCELACIÓN (${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
 
         printer.println(`Folio de Cancelación: ${canceled.id_canceled}`);
@@ -1190,8 +1190,8 @@ export const printCanceledOrder = async (req, res) => {
         printer.newLine();
 
         printer.setTextDoubleHeight();
+        printer.println(`Tipo: ${canceled.type === "cancellation" ? "SIN REMBOLSO" : canceled.type === "refund" ? "CON REMBOLSO" : ''}`)
         printer.println(`Monto: ${canceled.amount}`);
-        printer.setTextNormal();
         printer.println(`Motivo: ${canceled.cause}`);
         printer.println(`Cajero: ${canceled.casher}`);
         printer.newLine();

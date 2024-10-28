@@ -127,16 +127,19 @@ function Cancelacion() {
           icon: "success"
         }); 
         
-        await api.patch("/cancelOrder", {
+        const cancelRes = await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
         })
+
+        console.log(cancelRes)
 
         const res = await api.get(`/orders/${orderId}`);
 
         await api.post('/generate/order/canceled', {
           canceled: {
-            id_canceled: canceledOrder.id_order,
+            id_canceled: cancelRes.data.id_cancelledOrder,
+            type: cancelRes.data.CancellationTypes,
             id_order: orderId,
             cause: cause,
             casher: cookies.username,

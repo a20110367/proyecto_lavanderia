@@ -1178,12 +1178,16 @@ export const printCanceledOrder = async (req, res) => {
         printer.newLine()
 
         printer.setTextQuadArea();
-        printer.println(`Folio de Cancelación: ${canceled.id_canceled}`);
+        printer.println(`Folio de Cancelación:`);
+        printer.println(canceled.id_canceled);
         printer.newLine();
-        printer.println(`FECHA DE CANCELACIÓN ${moment().format("DD/MM/YYYY")}`)
+        printer.println(`FECHA DE CANCELACIÓN`)
+        printer.println(moment().format("DD/MM/YYYY"));
         printer.newLine();
+        printer.println(`No. de Orden CANCELADA:`);
         printer.setTextSize(7, 7);
-        printer.println(`No. de Orden CANCELADA: ${canceled.id_order}`);
+        printer.println(canceled.id_order);
+
         printer.setTextNormal();
 
         printer.drawLine();

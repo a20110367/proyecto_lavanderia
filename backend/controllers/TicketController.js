@@ -1175,15 +1175,15 @@ export const printCanceledOrder = async (req, res) => {
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
-        printer.setTextQuadArea();
-        printer.println(`FECHA DE CANCELACIÓN (${moment().format("DD/MM/YYYY")}`)
-        printer.setTextNormal();
+        printer.newLine()
 
+        printer.setTextQuadArea();
         printer.println(`Folio de Cancelación: ${canceled.id_canceled}`);
         printer.newLine();
-
-        printer.setTextQuadArea();
-        printer.println(`No. de Orden: ${canceled.id_order}`);
+        printer.println(`FECHA DE CANCELACIÓN ${moment().format("DD/MM/YYYY")}`)
+        printer.newLine();
+        printer.setTextSize(7, 7);
+        printer.println(`No. de Orden CANCELADA: ${canceled.id_order}`);
         printer.setTextNormal();
 
         printer.drawLine();

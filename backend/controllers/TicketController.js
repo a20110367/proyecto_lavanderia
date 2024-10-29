@@ -339,7 +339,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
                 printer.newLine()
-                printer.println(`Cantidad: ${index + 1} - ${detail.quantity}`)
+                printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()

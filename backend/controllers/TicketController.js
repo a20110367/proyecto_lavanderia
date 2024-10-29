@@ -149,12 +149,13 @@ export const generateTicket = async (req, res) => {
 
         
 
-        // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
-        if (order.extraTickets) {
-            if (order.serviceType != 'planchado') {
-                printOrderDetailTicket(order)
-            } else {
-                printOrderDetailIronTicket(order)
+        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
+            if (order.extraTickets) {
+                if (order.serviceType != 'planchado' && order.serviceType != 'tintoreria') {
+                    printOrderDetailTicket(order)
+                } else {
+                    printOrderDetailIronTicket(order)
+                }
             }
         }
 
@@ -218,7 +219,7 @@ export const generateTicket = async (req, res) => {
 
 const printOrderDetailTicket = async (order) => {
     try {
-
+        let count = 0;
         order.cart.forEach(async (detail, index) => {
 
             console.log("AQUI EMPIEZA")
@@ -231,7 +232,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.bold(true)
                 printer.println('No. de Orden:')
                 printer.setTextSize(7, 7);
-                printer.println(`${order.id_order} - ${index}`)
+                printer.println(`${order.id_order} - ${count + 1}`)
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()
@@ -243,7 +244,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
                 printer.newLine()
-                printer.println(`Cantidad: ${i + 1} - ${detail.quantity}`)
+                printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()
@@ -251,10 +252,9 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`${order.notes}`)
 
                 printer.cut();
-
+                count++;
                 console.log('Order Detail Printed!')
             }
-
             console.log("AQUI ACABA!!!!!!!!!!!!!!!!!!!!!!")
         })
 

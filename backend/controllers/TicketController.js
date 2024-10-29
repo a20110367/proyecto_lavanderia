@@ -147,7 +147,7 @@ export const generateTicket = async (req, res) => {
         // console.log(execute)
         console.log("Print done!");
 
-        await printTicketFromBackend(order)
+        
 
         // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
         if (order.extraTickets) {
@@ -157,6 +157,8 @@ export const generateTicket = async (req, res) => {
                 printOrderDetailIronTicket(order)
             }
         }
+
+        printTicketFromBackend(order)
         // }
 
         // printer.bold(true);                                         // Set text bold
@@ -256,7 +258,7 @@ const printOrderDetailTicket = async (order) => {
             console.log("AQUI ACABA!!!!!!!!!!!!!!!!!!!!!!")
         })
 
-        let execute = await printer.execute()
+        // let execute = await printer.execute()
 
         // printer.cut();
 
@@ -407,7 +409,7 @@ const printOrderDetailIronTicket = async (order) => {
 
         // printer.cut();
 
-        let execute = await printer.execute()
+        // let execute = await printer.execute()
 
         console.log(order)
         printer('Order Detail Print done!')
@@ -537,7 +539,7 @@ const printTicketFromBackend = async (orderParameter) => {
         ]);
 
         printer.cut();
-        // let execute = await printer.execute()
+        let execute = await printer.execute()
         // console.log(execute)
         console.log("Print done!");
     } catch (err) {

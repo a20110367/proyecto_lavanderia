@@ -279,7 +279,7 @@ const printOrderDetailIronTicket = async (order) => {
             console.log(" Numero de Piezas Restantes " + pivot1);
             console.log(" Numero de Paquetes completos " + pivot2);
 
-            for (let j = 0; j < pivot2; j++) {
+            for (let j = 0; j < detail.quantity; j++) {
                 // PRINT MAIN
 
                 printer.drawLine()
@@ -316,6 +316,10 @@ const printOrderDetailIronTicket = async (order) => {
             }
 
             if (pivot1 != 0) {
+                for(let j = 0 ; j < detail.quantity ; j++){
+
+                
+            
                 // PRINT EXTRAS
 
                 printer.drawLine()
@@ -345,9 +349,9 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.newLine()
                 printer.println(`Observaciones:`)
                 printer.println(`${order.notes}`)
-
+                
                 printer.cut();
-
+                }
                 console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
             }
         })

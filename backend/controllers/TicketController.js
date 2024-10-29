@@ -272,9 +272,9 @@ const printOrderDetailIronTicket = async (order) => {
         order.cart.forEach(async (detail, index) => {
             // CUARTO APROACH
             //EXTRAS
-            let pivot1 = detail.pieces % 6;
+            let pivot1 = parseInt(detail.pieces % 6);
             //MAIN
-            let pivot2 = detail.pieces / 6;
+            let pivot2 = parseInt(detail.pieces / 6);
 
             console.log(" Numero de Piezas Restantes " + pivot1);
             console.log(" Numero de Paquetes completos " + pivot2);
@@ -303,7 +303,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
                 printer.newLine()
-                printer.println(`Cantidad: ${index + 1} - ${pivot2}`)
+                printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.newLine()

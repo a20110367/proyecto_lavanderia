@@ -270,89 +270,91 @@ const printOrderDetailIronTicket = async (order) => {
     try {
 
         order.cart.forEach(async (detail, index) => {
-            // CUARTO APROACH
-            //EXTRAS
-            let pivot1 = detail.pieces % 6
-            //MAIN
-            let pivot2 = parseInt(detail.pieces / 6);
+            for (let i = 0; i < detail.quantity; i++) {
+                // CUARTO APROACH 
+                //EXTRAS
+                let pivot1 = detail.pieces % 6
+                //MAIN
+                let pivot2 = parseInt(detail.pieces / 6);
 
-            console.log(" Numero de Piezas Restantes " + pivot1);
-            console.log(" Numero de Paquetes completos " + pivot2);
+                console.log(" Numero de Piezas Restantes " + pivot1);
+                console.log(" Numero de Paquetes completos " + pivot2);
 
-            for (let j = 0; j < pivot2; j++) {
-                // PRINT MAIN
+                for (let j = 0; j < pivot2; j++) {
+                    // PRINT MAIN
 
-                printer.drawLine()
-                printer.setTextSize(2, 2);
-                printer.bold(true)
-                printer.println('No. de Orden:')
-                printer.setTextSize(7, 7);
-                printer.println(`${order.id_order} - ${index + 1}`)
-                printer.setTextSize(2, 2);
-                printer.println(`Piezas: 6`)
-                printer.newLine()
-                printer.println(`Paquete: ${j + 1}`)
-                printer.newLine()
-                printer.bold(false)
-                printer.newLine()
-                printer.newLine()
-                printer.setTextQuadArea()
-                printer.println('Cliente:')
-                printer.println(`${order.client}`)
-                printer.newLine()
-                printer.println('Descripcion:')
-                printer.println(`${detail.description}`)
-                printer.newLine()
-                printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
-                printer.newLine()
-                printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                printer.newLine()
-                printer.println(`Observaciones:`)
-                printer.println(`${order.notes}`)
+                    printer.drawLine()
+                    printer.setTextSize(2, 2);
+                    printer.bold(true)
+                    printer.println('No. de Orden:')
+                    printer.setTextSize(7, 7);
+                    printer.println(`${order.id_order} - ${index + 1}`)
+                    printer.setTextSize(2, 2);
+                    printer.println(`Piezas: 6`)
+                    printer.newLine()
+                    printer.println(`Paquete: ${j + 1}`)
+                    printer.newLine()
+                    printer.bold(false)
+                    printer.newLine()
+                    printer.newLine()
+                    printer.setTextQuadArea()
+                    printer.println('Cliente:')
+                    printer.println(`${order.client}`)
+                    printer.newLine()
+                    printer.println('Descripcion:')
+                    printer.println(`${detail.description}`)
+                    printer.newLine()
+                    printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
+                    printer.newLine()
+                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                    printer.newLine()
+                    printer.println(`Observaciones:`)
+                    printer.println(`${order.notes}`)
 
-                printer.cut();
+                    printer.cut();
 
-                console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
-            }
-
-            if (pivot1 != 0) {
-                for(let j = 0 ; j < detail.quantity ; j++){
-
-                
-            
-                // PRINT EXTRAS
-
-                printer.drawLine()
-                printer.setTextSize(2, 2);
-                printer.bold(true)
-                printer.println('No. de Orden:')
-                printer.setTextSize(7, 7);
-                printer.println(`${order.id_order} - ${index + 1}`)
-                printer.setTextSize(2, 2);
-                printer.println(`Piezas: ${pivot1}`)
-                printer.newLine()
-                printer.println(`Paquete: ${j + 1}`)
-                printer.newLine()
-                printer.bold(false)
-                printer.newLine()
-                printer.newLine()
-                printer.setTextQuadArea()
-                printer.println('Cliente:')
-                printer.println(`${order.client}`)
-                printer.newLine()
-                printer.println('Descripcion:')
-                printer.println(`${detail.description}`)
-                printer.newLine()
-                printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
-                printer.newLine()
-                printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                printer.newLine()
-                printer.println(`Observaciones:`)
-                printer.println(`${order.notes}`)
-                
-                printer.cut();
+                    console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
                 }
-                console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
+
+                if (pivot1 != 0) {
+                    for (let j = 0; j < detail.quantity; j++) {
+
+
+
+                        // PRINT EXTRAS
+
+                        printer.drawLine()
+                        printer.setTextSize(2, 2);
+                        printer.bold(true)
+                        printer.println('No. de Orden:')
+                        printer.setTextSize(7, 7);
+                        printer.println(`${order.id_order} - ${index + 1}`)
+                        printer.setTextSize(2, 2);
+                        printer.println(`Piezas: ${pivot1}`)
+                        printer.newLine()
+                        printer.println(`Paquete: ${j + 1}`)
+                        printer.newLine()
+                        printer.bold(false)
+                        printer.newLine()
+                        printer.newLine()
+                        printer.setTextQuadArea()
+                        printer.println('Cliente:')
+                        printer.println(`${order.client}`)
+                        printer.newLine()
+                        printer.println('Descripcion:')
+                        printer.println(`${detail.description}`)
+                        printer.newLine()
+                        printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
+                        printer.newLine()
+                        printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                        printer.newLine()
+                        printer.println(`Observaciones:`)
+                        printer.println(`${order.notes}`)
+
+                        printer.cut();
+                    }
+                    console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
+                }
             }
         })
 

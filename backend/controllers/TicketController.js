@@ -17,6 +17,8 @@ let printer = new ThermalPrinter({
     breakLine: BreakLine.WORD,
 });
 
+// ORDER TICKET ----------------------------------------------------------------------------
+
 export const generateTicket = async (req, res) => {
 
     const { order } = req.body
@@ -216,6 +218,137 @@ export const generateTicket = async (req, res) => {
         res.status(400).json({ msg: err.message });
     }
 }
+
+const printTicketFromBackend = async (orderParameter) => {
+
+    const order = orderParameter
+
+    let payMethod = ''
+    let payStatus = ''
+    let payForm = ''
+
+    if (order.payStatus === 'paid') {
+        payStatus = 'PAGADO'
+        if (order.payMethod === 'cash') {
+            payMethod = 'EFECTIVO'
+        } else {
+            payMethod = 'TARJETA'
+        }
+    } else {
+        payStatus = 'NO PAGADO'
+        payMethod = '---------'
+    }
+    if (order.payForm === 'advance') {
+        payForm = 'ANTICIPADO'
+    } else {
+        payForm = 'A LA ENTREGA'
+    }
+
+    try {
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.drawLine();
+        printer.setTypeFontB();
+
+        printer.setTextDoubleHeight();
+        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
+            { text: payStatus, align: "RIGHT" }
+        ]);
+
+        printer.setTextNormal();
+        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+            { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true },
+            { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
+        ]);
+
+        printer.setTextNormal();
+        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+            { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
+        ]);
+
+        printer.drawLine();
+
+        printer.tableCustom([
+            { text: "Cant.", align: "LEFT" },
+            { text: "Descripción", align: "CENTER", bold: true },
+            { text: "P. U.", align: 'RIGHT' },
+            { text: "Precio", align: "RIGHT" }
+        ]);
+
+        printer.newLine()
+
+        order.cart.map(detail => {
+            printer.tableCustom([
+                { text: detail.quantity + '     X', align: "LEFT", bold: true },
+                { text: detail.description, align: "CENTER" },
+                { text: '$' + detail.price, align: 'RIGHT' },
+                { text: '$' + detail.totalPrice, align: "RIGHT" }
+            ]);
+        }).join('')
+
+        printer.alignCenter()
+
+        printer.drawLine();
+
+        printer.bold(true);                             // Append text with new line
+        printer.println('Total Pagado: $' + order.subtotal)
+        printer.bold(false);
+        printer.println(n2word(order.subtotal))
+
+        printer.alignLeft()
+
+        printer.drawLine();
+
+        printer.bold(true)
+        if (order.pieces === 0 || !order.pieces) {
+            printer.println('Cliente: ' + order.client)
+        } else {
+            printer.tableCustom([
+                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
+                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
+            ]);
+        }
+        printer.bold(false)
+
+        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
+
+        if (order.serviceType != 'productos') {
+            printer.bold(true);
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+            printer.bold(false);
+
+            printer.drawLine();
+
+            printer.bold(true)
+            printer.print('Observaciones Generales: ')
+            printer.bold(false)
+            printer.println(order.notes)
+        }
+
+        printer.drawLine();
+
+        printer.println('PROFECO NO. REGISTRO: 4390/2013')
+        printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
+
+        printer.tableCustom([
+            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
+            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
+        ]);
+
+        printer.cut();
+        let execute = await printer.execute()
+        // console.log(execute)
+        console.log("Print done!");
+    } catch (err) {
+        console.error("Print failed:", err);
+    }
+}
+
+// DETAILS FROM ORDER ----------------------------------------------------------------------------
 
 const printOrderDetailTicket = async (order) => {
     try {
@@ -418,242 +551,7 @@ const printOrderDetailIronTicket = async (order) => {
     }
 }
 
-const printTicketFromBackend = async (orderParameter) => {
-
-    const order = orderParameter
-
-    let payMethod = ''
-    let payStatus = ''
-    let payForm = ''
-
-    if (order.payStatus === 'paid') {
-        payStatus = 'PAGADO'
-        if (order.payMethod === 'cash') {
-            payMethod = 'EFECTIVO'
-        } else {
-            payMethod = 'TARJETA'
-        }
-    } else {
-        payStatus = 'NO PAGADO'
-        payMethod = '---------'
-    }
-    if (order.payForm === 'advance') {
-        payForm = 'ANTICIPADO'
-    } else {
-        payForm = 'A LA ENTREGA'
-    }
-
-    try {
-
-        // LOGO DEL NEGOCIO
-        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
-
-        printer.drawLine();
-        printer.setTypeFontB();
-
-        printer.setTextDoubleHeight();
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
-            { text: payStatus, align: "RIGHT" }
-        ]);
-
-        printer.setTextNormal();
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true },
-            { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
-        ]);
-
-        printer.setTextNormal();
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
-        ]);
-
-        printer.drawLine();
-
-        printer.tableCustom([
-            { text: "Cant.", align: "LEFT" },
-            { text: "Descripción", align: "CENTER", bold: true },
-            { text: "P. U.", align: 'RIGHT' },
-            { text: "Precio", align: "RIGHT" }
-        ]);
-
-        printer.newLine()
-
-        order.cart.map(detail => {
-            printer.tableCustom([
-                { text: detail.quantity + '     X', align: "LEFT", bold: true },
-                { text: detail.description, align: "CENTER" },
-                { text: '$' + detail.price, align: 'RIGHT' },
-                { text: '$' + detail.totalPrice, align: "RIGHT" }
-            ]);
-        }).join('')
-
-        printer.alignCenter()
-
-        printer.drawLine();
-
-        printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $' + order.subtotal)
-        printer.bold(false);
-        printer.println(n2word(order.subtotal))
-
-        printer.alignLeft()
-
-        printer.drawLine();
-
-        printer.bold(true)
-        if (order.pieces === 0 || !order.pieces) {
-            printer.println('Cliente: ' + order.client)
-        } else {
-            printer.tableCustom([
-                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
-                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
-            ]);
-        }
-        printer.bold(false)
-
-        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
-
-        if (order.serviceType != 'productos') {
-            printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
-            printer.bold(false);
-
-            printer.drawLine();
-
-            printer.bold(true)
-            printer.print('Observaciones Generales: ')
-            printer.bold(false)
-            printer.println(order.notes)
-        }
-
-        printer.drawLine();
-
-        printer.println('PROFECO NO. REGISTRO: 4390/2013')
-        printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
-
-        printer.tableCustom([
-            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
-            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
-        ]);
-
-        printer.cut();
-        let execute = await printer.execute()
-        // console.log(execute)
-        console.log("Print done!");
-    } catch (err) {
-        console.error("Print failed:", err);
-    }
-}
-
-export const generatePartialCashCutTicket = async (req, res) => {
-    try {
-
-        const { cashCut, services, products } = req.body
-
-        printer.clear();
-
-        printer.setTypeFontB();
-
-        // LOGO DEL NEGOCIO
-        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
-
-        printer.newLine()
-
-        printer.setTextQuadArea()
-        printer.println('CORTE DE CAJA PARCIAL')
-
-        printer.drawLine();
-
-        if (cashCut) {
-            printer.println(`Cajero: ${cashCut.casher}`)
-            printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
-            printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
-            printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
-
-            printer.drawLine()
-        }
-
-        if (services) {
-            printer.setTextDoubleHeight();
-            printer.println("Detalles de Ingresos por Servicio")
-            printer.newLine()
-
-            printer.setTextNormal()
-            printer.println(`Número de Servicios Pagados: ${services.numberOfItems}`)
-            printer.println(`Total Autoservicio: ${services.selfService}`)
-            printer.println(`Total Lavado por Encargo: ${services.laundry}`)
-            printer.println(`Total Planchado: ${services.iron}`)
-            printer.println(`Total Tintoreria: ${services.dryCleaning}`)
-            printer.println(`Total Encargo Varios: ${services.others}`)
-
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Total (Suma de los Servicios): ${services.totalIncome}`)
-            printer.setTextNormal()
-
-            printer.newLine()
-
-            printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
-            printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
-
-            printer.newLine()
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.total}`)
-            printer.setTextNormal()
-
-            printer.setTextQuadArea()
-            printer.drawLine()
-            printer.setTextNormal()
-
-        }
-
-        if (products) {
-            printer.setTextDoubleHeight();
-            printer.println("Detalles de Ingresos por Productos")
-            printer.newLine()
-
-            printer.setTextNormal()
-            printer.println(`Número de Ventas de Productos Pagados: ${products.numberOfItems}`)
-            printer.println(`Total Jabon: ${products.soap}`)
-            printer.println(`Total Suavitel: ${products.suavitel}`)
-            printer.println(`Total Pinol: ${products.pinol}`)
-            printer.println(`Total Desengrasante: ${products.degreaser}`)
-            printer.println(`Total Cloro: ${products.chlorine}`)
-            printer.println(`Total Sanitizante: ${products.sanitizer}`)
-            printer.println(`Total Bolsa: ${products.bag}`)
-            printer.println(`Total Reforzado: ${products.reinforced}`)
-            printer.println(`Total Ganchos: ${products.hook}`)
-            printer.println(`Total WC: ${products.wc}`)
-            printer.println(`Total Otros: ${products.others}`)
-
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Total (Suma de la Venta de Productos): ${products.totalIncome}`)
-            printer.setTextNormal()
-
-            printer.newLine()
-
-            printer.println(`Ingreso en Efectivo: ${products.totalCash}`)
-            printer.println(`Ingreso en Tarjeta: ${products.totalCredit}`)
-
-        }
-
-        printer.cut();
-
-        let execute = await printer.execute()
-
-        res.status(200).json("Print done!");
-
-    } catch (err) {
-        console.error(err)
-        res.status(400).json({ msg: err.message });
-    }
-}
+// REPRINT ----------------------------------------------------------------------------
 
 export const reprintTicket = async (req, res) => {
     try {
@@ -680,6 +578,8 @@ export const reprintOrder = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+// CASH CUT ----------------------------------------------------------------------------
 
 export const cashCutTicket = async (req, res) => {
     try {
@@ -855,6 +755,116 @@ export const cashWithdrawalTicket = async (req, res) => {
     }
 }
 
+export const generatePartialCashCutTicket = async (req, res) => {
+    try {
+
+        const { cashCut, services, products } = req.body
+
+        printer.clear();
+
+        printer.setTypeFontB();
+
+        // LOGO DEL NEGOCIO
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.newLine()
+
+        printer.setTextQuadArea()
+        printer.println('CORTE DE CAJA PARCIAL')
+
+        printer.drawLine();
+
+        if (cashCut) {
+            printer.println(`Cajero: ${cashCut.casher}`)
+            printer.println(`Turno: ${cashCut.workShift === 'morning' ? 'Matutino' : 'Vespertino'}`)
+            printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
+            printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
+
+            printer.drawLine()
+        }
+
+        if (services) {
+            printer.setTextDoubleHeight();
+            printer.println("Detalles de Ingresos por Servicio")
+            printer.newLine()
+
+            printer.setTextNormal()
+            printer.println(`Número de Servicios Pagados: ${services.numberOfItems}`)
+            printer.println(`Total Autoservicio: ${services.selfService}`)
+            printer.println(`Total Lavado por Encargo: ${services.laundry}`)
+            printer.println(`Total Planchado: ${services.iron}`)
+            printer.println(`Total Tintoreria: ${services.dryCleaning}`)
+            printer.println(`Total Encargo Varios: ${services.others}`)
+
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de los Servicios): ${services.totalIncome}`)
+            printer.setTextNormal()
+
+            printer.newLine()
+
+            printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
+            printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
+
+            printer.newLine()
+            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.setTextNormal()
+
+            printer.setTextQuadArea()
+            printer.drawLine()
+            printer.setTextNormal()
+
+        }
+
+        if (products) {
+            printer.setTextDoubleHeight();
+            printer.println("Detalles de Ingresos por Productos")
+            printer.newLine()
+
+            printer.setTextNormal()
+            printer.println(`Número de Ventas de Productos Pagados: ${products.numberOfItems}`)
+            printer.println(`Total Jabon: ${products.soap}`)
+            printer.println(`Total Suavitel: ${products.suavitel}`)
+            printer.println(`Total Pinol: ${products.pinol}`)
+            printer.println(`Total Desengrasante: ${products.degreaser}`)
+            printer.println(`Total Cloro: ${products.chlorine}`)
+            printer.println(`Total Sanitizante: ${products.sanitizer}`)
+            printer.println(`Total Bolsa: ${products.bag}`)
+            printer.println(`Total Reforzado: ${products.reinforced}`)
+            printer.println(`Total Ganchos: ${products.hook}`)
+            printer.println(`Total WC: ${products.wc}`)
+            printer.println(`Total Otros: ${products.others}`)
+
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de la Venta de Productos): ${products.totalIncome}`)
+            printer.setTextNormal()
+
+            printer.newLine()
+
+            printer.println(`Ingreso en Efectivo: ${products.totalCash}`)
+            printer.println(`Ingreso en Tarjeta: ${products.totalCredit}`)
+
+        }
+
+        printer.cut();
+
+        let execute = await printer.execute()
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message });
+    }
+}
+
+// PETTY CASH CUT ----------------------------------------------------------------------------
+
 export const pettyCashTicket = async (req, res) => {
     try {
         const { pettyCash } = req.body
@@ -918,9 +928,13 @@ export const pettyCashTicket = async (req, res) => {
     }
 }
 
+// IRON CASH CUT ----------------------------------------------------------------------------
+
 export const ironCutTicket = async (req, res) => {
     try {
         const { ironCut } = req.body
+
+        printer.clear();
 
         await printIronCut(ironCut)
         await printIronCut(ironCut)
@@ -934,7 +948,6 @@ export const ironCutTicket = async (req, res) => {
 }
 
 const printIronCut = async (ironCut) => {
-    printer.clear();
 
     printer.setTypeFontB();
 
@@ -984,98 +997,6 @@ const printIronCut = async (ironCut) => {
 
 // PRODUCTS AND SERVICES ----------------------------------------------------------------------------
 
-export const printReportProduct = async (req, res) => {
-    try {
-        const { report } = req.body
-
-        printer.clear();
-
-        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
-
-        printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
-        printer.setTextNormal();
-
-        printer.println("Fechas seleccionadas:");
-        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
-        printer.newLine();
-
-        printer.setTextQuadArea();
-        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
-        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
-        printer.setTextNormal();
-
-        printer.drawLine();
-
-        printer.println(`Detalles de Ingresos por Producto:`);
-        printer.newLine();
-
-        report.suppliesSummary.forEach(item => {
-            printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
-            printer.setTextNormal();
-            printer.println(`ID: ${item.fk_supplyId}`);
-            printer.println(`Subtotal: $${item._sum.subtotal}`);
-            printer.println(`Unidades: ${item._sum.units}`);
-            printer.newLine();
-        })
-
-        let execute = await printer.execute();
-
-        res.status(200).json("Print done!");
-
-    } catch (err) {
-        console.error(err)
-        res.status(400).json({ msg: err.message })
-    }
-}
-
-export const printReportProductId = async (req, res) => {
-    try {
-        const { report } = req.body
-
-        printer.clear();
-
-        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
-
-        printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
-        printer.setTextNormal();
-
-        printer.println("Fechas seleccionadas:");
-        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
-        printer.newLine();
-
-        printer.setTextQuadArea();
-        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
-        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
-        printer.setTextNormal();
-
-        printer.drawLine();
-
-        printer.println(`Detalles de Ingresos por Producto:`);
-        printer.newLine();
-
-        report.suppliesSummary.forEach(item => {
-            printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
-            printer.setTextNormal();
-            printer.println(`ID: ${item.fk_supplyId}`);
-            printer.println(`Subtotal: $${item._sum.subtotal}`);
-            printer.println(`Unidades: ${item._sum.units}`);
-            printer.newLine();
-        })
-
-        let execute = await printer.execute();
-
-        res.status(200).json("Print done!");
-
-    } catch (err) {
-        console.error(err)
-        res.status(400).json({ msg: err.message })
-    }
-}
-
 export const printReportService = async (req, res) => {
     try {
         printer.clear();
@@ -1093,24 +1014,122 @@ export const printReportService = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
-        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
+        printer.println(`No. Total de Servicios: $${report.totalServiceNumberVerification}`);
+        printer.println(`Total de Venta: $${report.totalServiceSalesVerification}`);
         printer.setTextNormal();
 
+
+        // SELF SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Detalles de Ingresos de Autoservicio:`);
         printer.drawLine();
 
-        printer.println(`Detalles de Ingresos por Producto:`);
-        printer.newLine();
-
-        report.suppliesSummary.forEach(item => {
+        report.selfServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
             printer.println(`Descripción: ${item.description}`);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_supplyId}`);
+            printer.println(`ID: ${item.fk_selfService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
         })
+
+        // LAUNDRY SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Detalles de Ingresos de Encargo:`);
+        printer.drawLine();
+
+        report.laundryServiceSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`Descripción: ${item.description}`);
+            printer.setTextNormal();
+            printer.println(`ID: ${item.fk_laundryService}`);
+            printer.println(`Subtotal: $${item._sum.subtotal}`);
+            printer.println(`Unidades: ${item._sum.units}`);
+            printer.newLine();
+        })
+
+        // IRON SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Detalles de Ingresos de Planchado:`);
+        printer.drawLine();
+
+        report.ironServiceSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`Descripción: ${item.description}`);
+            printer.setTextNormal();
+            printer.println(`ID: ${item.fk_ironService}`);
+            printer.println(`Subtotal: $${item._sum.subtotal}`);
+            printer.println(`Unidades: ${item._sum.units}`);
+            printer.newLine();
+        })
+
+        // DRY CLEAN SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Detalles de Ingresos de Tintoreria:`);
+        printer.drawLine();
+
+        report.drycleanServiceSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`Descripción: ${item.description}`);
+            printer.setTextNormal();
+            printer.println(`ID: ${item.fk_drycleanService}`);
+            printer.println(`Subtotal: $${item._sum.subtotal}`);
+            printer.println(`Unidades: ${item._sum.units}`);
+            printer.newLine();
+        })
+
+        // OTHER SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Detalles de Ingresos de Otros:`);
+        printer.drawLine();
+
+        report.otherServiceSumary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`Descripción: ${item.description}`);
+            printer.setTextNormal();
+            printer.println(`ID: ${item.fk_otherService}`);
+            printer.println(`Subtotal: $${item._sum.subtotal}`);
+            printer.println(`Unidades: ${item._sum.units}`);
+            printer.newLine();
+        })
+
+        // STATUS ORDER SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Resumen de Estatus de la Ordenes:`);
+        printer.drawLine();
+
+        report.deliveryStatusOrderSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`);
+            printer.setTextNormal();
+            printer.println(`No. de Servicios: ${item._sum.numberOfItems}`);
+            printer.println(`Total: $${item._sum.totalPrice}`);
+            printer.newLine();
+        })
+
+        // STATUS PAID SERVICE
+        printer.drawLine();
+        printer.setTextSize(3,3);
+        printer.println(`Resumen de Estatus de Pago:`);
+        printer.drawLine();
+
+        report.payStatusOrderSummary.forEach(item => {
+            printer.setTextDoubleHeight();
+            printer.println(`${item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"} ${item._count.id_order}`);
+            printer.setTextNormal();
+            printer.println(`No. de Servicios: ${item._sum.numberOfItems}`);
+            printer.println(`Total: $${item._sum.totalPrice}`);
+            printer.newLine();
+        })
+
+        printer.cut();
 
         let execute = await printer.execute();
 
@@ -1123,6 +1142,51 @@ export const printReportService = async (req, res) => {
 }
 
 export const printReportServiceId = async (req, res) => {
+    try {
+        const { report, categoryId } = req.body
+
+        printer.clear();
+
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.setTextQuadArea();
+        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.setTextNormal();
+
+        printer.println("Fechas seleccionadas:");
+        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
+        printer.newLine();
+
+        printer.drawLine();
+        printer.println(`Detalles de Ingresos por Servicio:`);
+        printer.newLine();
+
+        printer.setTextSize(3,3);
+        printer.println(`Descripción: ${report.description}`);
+        printer.setTextNormal();
+        printer.println(`ID: ${categoryId === 1 ? report.fk_selfService
+            : categoryId === 2 ? report.fk_laundryService
+            : categoryId === 3 ? report.fk_ironService
+            : categoryId === 4 ? report.fk_drycleanService
+            : categoryId === 5 ? report.fk_otherService
+            : report.description}`);
+        printer.println(`Subtotal: $${report._sum.subtotal}`);
+        printer.println(`Unidades: ${report._sum.units}`);
+        printer.newLine();
+
+        printer.cut();
+
+        let execute = await printer.execute();
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
+export const printReportProduct = async (req, res) => {
     try {
         const { report } = req.body
 
@@ -1139,8 +1203,8 @@ export const printReportServiceId = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total para Verificación: $${report.totalSuppliesNumberVerification}`);
-        printer.println(`Total de Venta para Verificación: $${report.totalSuppliesSalesVerification}`);
+        printer.println(`No. Total de Productos: $${report.totalSuppliesNumberVerification}`);
+        printer.println(`Total de Venta: $${report.totalSuppliesSalesVerification}`);
         printer.setTextNormal();
 
         printer.drawLine();
@@ -1158,6 +1222,8 @@ export const printReportServiceId = async (req, res) => {
             printer.newLine();
         })
 
+        printer.cut();
+
         let execute = await printer.execute();
 
         res.status(200).json("Print done!");
@@ -1167,6 +1233,47 @@ export const printReportServiceId = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+export const printReportProductId = async (req, res) => {
+    try {
+        const { report, productId } = req.body
+
+        printer.clear();
+
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+
+        printer.setTextQuadArea();
+        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.setTextNormal();
+
+        printer.println("Fechas seleccionadas:");
+        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
+        printer.newLine();
+
+        printer.drawLine();
+        printer.println(`Detalles de Ingresos por Producto:`);
+        printer.newLine();
+
+        printer.setTextDoubleHeight();
+        printer.println(`Descripción: ${report.description}`);
+        printer.setTextNormal();
+        printer.println(`ID: ${productId}`);
+        printer.println(`Subtotal: $${report._sum.subtotal}`);
+        printer.println(`Unidades: ${report._sum.units}`);
+        printer.newLine();
+
+        printer.cut();
+
+        let execute = await printer.execute();
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
 
 // ORDERS CANCELED ----------------------------------------------------------------------------
 
@@ -1200,6 +1307,21 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(`Motivo: ${canceled.cause}`);
         printer.println(`Cajero: ${canceled.casher}`);
         printer.newLine();
+
+        printer.drawLine()
+
+        printer.newLine()
+
+        printer.alignCenter()
+        printer.setTextNormal()
+        printer.println('Recibio')
+        printer.println('( Nombre y Firma)')
+
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.println('_________________________________')
 
         printer.cut();
 

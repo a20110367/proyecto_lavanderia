@@ -279,7 +279,7 @@ function Reportes() {
 
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
-      img.src = IMAGES.caprelogo;
+      img.src = IMAGES.caprelogoReduced;
       doc.addImage(img, 'PNG', 150, 10, 48, 30)  
 
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
@@ -460,7 +460,7 @@ function Reportes() {
 
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
-      img.src = IMAGES.caprelogo;
+      img.src = IMAGES.caprelogoReduced;
       doc.addImage(img, 'PNG', 125, 10, 48, 30)  
       
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
@@ -496,7 +496,7 @@ function Reportes() {
 
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
-      img.src = IMAGES.caprelogo;
+      img.src = IMAGES.caprelogoReduced;
       doc.addImage(img, 'PNG', 125, 10, 48, 30)  
 
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
@@ -504,8 +504,8 @@ function Reportes() {
       doc.text(`Fechas seleccionadas:`, 10, 30);
       doc.text(`(${formatDate(productReportResponse.startDate)}) - (${formatDate(productReportResponse.endDate)})`, 10, 40);
 
-      doc.text(`No. Total para Verificación: ${productReportResponse.totalSuppliesNumberVerification}`, 10, 60);
-      doc.text(`Total de Venta para Verificación: $${productReportResponse.totalSuppliesSalesVerification}`, 10, 70);
+      doc.text(`No. Total de Productos: ${productReportResponse.totalSuppliesNumberVerification}`, 10, 60);
+      doc.text(`Total de Venta: $${productReportResponse.totalSuppliesSalesVerification}`, 10, 70);
 
       doc.setLineWidth(3)
       doc.line(10, 80, 205, 80, 'S');
@@ -537,7 +537,7 @@ function Reportes() {
 
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
-      img.src = IMAGES.caprelogo;
+      img.src = IMAGES.caprelogoReduced;
       doc.addImage(img, 'PNG', 125, 10, 48, 30)  
       
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
@@ -560,39 +560,37 @@ function Reportes() {
       count += 10;
       doc.text(`Unidades: ${productReportResponseId._sum.units}`, 10, count);
       count += 20;
-      setDocument(doc);
+      await setDocument(doc);
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");
   }
 
   const handleGuardarPDF = async () => {
-    await setDocument(undefined);
     await handleGenerarDocumento()
     if(reportType == 1){
       const formattedStartDate = serviceReportResponse.startDate.split("/").join("-");
       const formattedEndDate = serviceReportResponse.endDate.split("/").join("-");
-      document.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await document.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 2){
       const formattedStartDate = serviceResponseId.startDate.split("/").join("-");
       const formattedEndDate = serviceResponseId.endDate.split("/").join("-");
-      document.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await document.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 3){
       const formattedStartDate = productReportResponse.startDate.split("/").join("-");
       const formattedEndDate = productReportResponse.endDate.split("/").join("-");
-      document.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await document.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 4){
       const formattedStartDate = productReportResponseId.startDate.split("/").join("-");
       const formattedEndDate = productReportResponseId.endDate.split("/").join("-");
-      document.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await document.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");
-    await setDocument(undefined);
   }
 
   const handleEnviarPDF = async () => {
-    await handleGenerarDocumento()
+    handleGenerarDocumento()
     const out = document.output("datauristring");
     await api.post("/sendReport", {
       startDate: formatDate(dateRange[0].toDate()),
@@ -612,6 +610,7 @@ function Reportes() {
       }else if(reportType == 2){
         await api.post("/generate/report/Service/id", {
           report: serviceReportResponse,
+          categoryId: categoryId,
         })
       }else if(reportType == 3){
         await api.post("/generate/report/Product", {
@@ -620,6 +619,7 @@ function Reportes() {
       }else if(reportType == 4){
         await api.post("/generate/report/Product/id", {
           report: productReportResponseId,
+          productId: productId,
         })
       }else Swal.fire("Tipo de reporte no encontrado", "", "error");
     } catch (err) {

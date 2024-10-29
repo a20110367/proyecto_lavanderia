@@ -19,8 +19,6 @@ let printer = new ThermalPrinter({
 
 export const generateTicket = async (req, res) => {
 
-    printer.clear()
-
     const { order } = req.body
 
     let payMethod = ''
@@ -149,6 +147,8 @@ export const generateTicket = async (req, res) => {
         // console.log(execute)
         console.log("Print done!");
 
+        printTicketFromBackend(order)
+
         // if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
         if (order.extraTickets) {
             if (order.serviceType != 'planchado') {
@@ -157,7 +157,6 @@ export const generateTicket = async (req, res) => {
                 printOrderDetailIronTicket(order)
             }
         }
-        printTicketFromBackend(order)
         // }
 
         // printer.bold(true);                                         // Set text bold
@@ -440,8 +439,6 @@ const printTicketFromBackend = async (orderParameter) => {
 
     try {
 
-        printer.clear();
-
         // LOGO DEL NEGOCIO
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
@@ -536,8 +533,8 @@ const printTicketFromBackend = async (orderParameter) => {
         ]);
 
         printer.cut();
-        let execute = await printer.execute()
-        console.log(execute)
+        // let execute = await printer.execute()
+        // console.log(execute)
         console.log("Print done!");
     } catch (err) {
         console.error("Print failed:", err);

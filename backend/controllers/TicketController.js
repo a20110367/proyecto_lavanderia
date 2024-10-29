@@ -145,7 +145,6 @@ export const generateTicket = async (req, res) => {
         ]);
 
         printer.cut();
-        lastOrder = order
         // let execute = await printer.execute()
         // console.log(execute)
         console.log("Print done!");
@@ -537,7 +536,6 @@ const printTicketFromBackend = async (orderParameter) => {
         ]);
 
         printer.cut();
-        lastOrder = order
         let execute = await printer.execute()
         console.log(execute)
         console.log("Print done!");
@@ -1203,12 +1201,6 @@ export const printCanceledOrder = async (req, res) => {
         printer.cut();
 
         let execute = await printer.execute();
-
-        printer.setTextSize(7, 7);
-        printer.println(`CANCELADO`)
-        printer.setTextNormal();
-
-        
 
         // printTicketFromBackend(canceled.order)
 

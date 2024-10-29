@@ -272,7 +272,7 @@ const printOrderDetailIronTicket = async (order) => {
         order.cart.forEach(async (detail, index) => {
             // CUARTO APROACH
             //EXTRAS
-            let pivot1 = parseInt(detail.pieces % 6);
+            let pivot1 = detail.pieces % 6
             //MAIN
             let pivot2 = parseInt(detail.pieces / 6);
 

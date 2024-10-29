@@ -279,7 +279,7 @@ const printOrderDetailIronTicket = async (order) => {
             console.log(" Numero de Piezas Restantes " + pivot1);
             console.log(" Numero de Paquetes completos " + pivot2);
 
-            for (let j = 0; j < detail.quantity; j++) {
+            for (let j = 0; j < pivot2; j++) {
                 // PRINT MAIN
 
                 printer.drawLine()
@@ -331,7 +331,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.setTextSize(2, 2);
                 printer.println(`Piezas: ${pivot1}`)
                 printer.newLine()
-                printer.println(`Paquete: ${pivot2 + 1}`)
+                printer.println(`Paquete: ${j + 1}`)
                 printer.newLine()
                 printer.bold(false)
                 printer.newLine()

@@ -268,7 +268,7 @@ const printOrderDetailTicket = async (order) => {
 
 const printOrderDetailIronTicket = async (order) => {
     try {
-
+        let count = 0;
         order.cart.forEach(async (detail, index) => {
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 
@@ -288,7 +288,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.bold(true)
                     printer.println('No. de Orden:')
                     printer.setTextSize(7, 7);
-                    printer.println(`${order.id_order} - ${index + 1}`)
+                    printer.println(`${order.id_order} - ${count + 1}`)
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
                     printer.newLine()
@@ -304,7 +304,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
                     printer.newLine()
-                    printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
+                    printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                     printer.newLine()
                     printer.println(`Total de Elementos: ${order.numberOfItems}`)
                     printer.newLine()
@@ -318,9 +318,6 @@ const printOrderDetailIronTicket = async (order) => {
 
                 if (pivot1 != 0) {
                     for (let j = 0; j < detail.quantity; j++) {
-
-
-
                         // PRINT EXTRAS
 
                         printer.drawLine()
@@ -328,7 +325,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.bold(true)
                         printer.println('No. de Orden:')
                         printer.setTextSize(7, 7);
-                        printer.println(`${order.id_order} - ${index + 1}`)
+                        printer.println(`${order.id_order} - ${count + 1}`)
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
@@ -344,7 +341,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
                         printer.newLine()
-                        printer.println(`Cantidad: ${index + 1} - ${order.numberOfItems}`)
+                        printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                         printer.newLine()
                         printer.println(`Total de Elementos: ${order.numberOfItems}`)
                         printer.newLine()
@@ -355,6 +352,7 @@ const printOrderDetailIronTicket = async (order) => {
                     }
                     console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
                 }
+                count++;
             }
         })
 

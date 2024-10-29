@@ -323,7 +323,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.bold(true)
                 printer.println('No. de Orden:')
                 printer.setTextSize(7, 7);
-                printer.println(`${order.id_order}`)
+                printer.println(`${order.id_order} - ${index + 1}`)
                 printer.setTextSize(2, 2);
                 printer.println(`Piezas: ${pivot1}`)
                 printer.newLine()

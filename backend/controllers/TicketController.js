@@ -109,21 +109,29 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if (order.pieces === 0 || !order.pieces) {
-            printer.println('Cliente: ' + order.client)
-        } else {
-            printer.tableCustom([
-                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
-                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
-            ]);
-        }
+        printer.println('Cliente: ' + order.client)
         printer.bold(false)
+
+        // printer.bold(true)
+        // if (order.pieces === 0 || !order.pieces) {
+        //     printer.println('Cliente: ' + order.client)
+        // } else {
+        //     printer.tableCustom([
+        //         { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
+        //         { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
+        //     ]);
+        // }
+        // printer.bold(false)
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
             printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+            if (order.pieces > 0) {
+                printer.println(`PIEZAS: ${order.pieces}`)
+            }
+
             printer.bold(false);
 
             printer.drawLine();
@@ -304,21 +312,30 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.bold(true)
-        if (order.pieces === 0 || !order.pieces) {
-            printer.println('Cliente: ' + order.client)
-        } else {
-            printer.tableCustom([
-                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
-                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
-            ]);
-        }
+        printer.println('Cliente: ' + order.client)
         printer.bold(false)
+
+        // printer.bold(true)
+        // if (order.pieces === 0 || !order.pieces) {
+        //     printer.println('Cliente: ' + order.client)
+        // } else {
+        //     printer.tableCustom([
+        //         { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
+        //         { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
+        //     ]);
+        // }
+        // printer.bold(false)
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
             printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+
+            if (order.pieces > 0) {
+                printer.println(`PIEZAS: ${order.pieces}`)
+            }
+
             printer.bold(false);
 
             printer.drawLine();
@@ -614,6 +631,7 @@ export const reprintOrder = async (req, res) => {
             printer.println('Fecha de la Cancelación: ' + formatDate(canceled.created));
             printer.println(`Tipo: ${canceled.CancellationTypes === "cancellation" ? "SIN REMBOLSO" : canceled.CancellationTypes === "refund" ? "CON REMBOLSO" : ''}`)
             printer.println('Causa' + canceled.cause)
+            printer.newLine();
         }
 
         printer.newLine();
@@ -671,14 +689,7 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if ((order.drycleanPieces === 0 || !order.drycleanPieces) && (order.ironPieces === 0 || !order.ironPieces)) {
-            printer.println('Cliente: ' + client)
-        } else {
-            printer.tableCustom([
-                { text: 'Cliente: ' + client, align: "LEFT", bold: true },
-                { text: `PIEZAS: ${order.drycleanPieces > 0 ? order.drycleanPieces : order.ironPieces}`, align: "RIGHT" }
-            ]);
-        }
+        printer.println('Cliente: ' + client)
         printer.bold(false)
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTime(order.receptionTime))
@@ -686,6 +697,10 @@ export const reprintOrder = async (req, res) => {
         if (order.serviceType != 'productos') {
             printer.bold(true);
             printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+
+            if ((order.drycleanPieces > 0 || order.ironPieces > 0)) {
+                printer.println(`PIEZAS: ${order.drycleanPieces > 0 ? order.drycleanPieces : order.ironPieces}`)
+            }
             printer.bold(false);
 
             printer.drawLine();

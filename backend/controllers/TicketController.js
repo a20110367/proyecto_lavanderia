@@ -1148,8 +1148,9 @@ export const printReportService = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DE SERVICIOS GENERAL`)
-        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE SERVICIOS`)
+        printer.println("Fecha de Emisión:")
+        printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1317,8 +1318,9 @@ export const printReportServiceId = async (req, res) => {
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL SERVICIO: ${report.description}`)
-        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE: ${report.description}`)
+        printer.println("Fecha de Emisión:")
+        printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1371,8 +1373,9 @@ export const printReportProduct = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DE PRODUCTOS GENERAL`)
-        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE PRODUCTOS`)
+        printer.println("Fecha de Emisión:")
+        printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1430,8 +1433,9 @@ export const printReportProductId = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL PRODUCTO: ${report.description}`)
-        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE: ${report.description}`)
+        printer.println("Fecha de Emisión:")
+        printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 

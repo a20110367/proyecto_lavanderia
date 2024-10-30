@@ -1159,9 +1159,11 @@ export const printReportService = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total de Servicios: ${report.totalServiceNumberVerification}`);
+        printer.println(`No. Total de Servicios:`);
+        printer.println(report.totalServiceNumberVerification);
         printer.newLine();
-        printer.println(`Total de Venta: $${report.totalServiceSalesVerification}`);
+        printer.println(`Total de Venta:`);
+        printer.println("$" + report.totalServiceSalesVerification);
         printer.setTextNormal();
         printer.newLine();
 
@@ -1387,9 +1389,11 @@ export const printReportProduct = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total de Productos: ${report.totalSuppliesNumberVerification}`);
+        printer.println(`No. Total de Productos:`);
+        printer.println(report.totalSuppliesNumberVerification);
         printer.newLine();
-        printer.println(`Total de Venta: $${report.totalSuppliesSalesVerification}`);
+        printer.println(`Total de Venta:`);
+        printer.println(`$${report.totalSuppliesSalesVerification}`);
         printer.setTextNormal();
         printer.newLine();
 

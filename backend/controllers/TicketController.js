@@ -630,7 +630,7 @@ export const reprintOrder = async (req, res) => {
             printer.setTextNormal();
             printer.println('Fecha de la Cancelación: ' + formatDate(canceled.created));
             printer.println(`Tipo: ${canceled.CancellationTypes === "cancellation" ? "SIN REMBOLSO" : canceled.CancellationTypes === "refund" ? "CON REMBOLSO" : ''}`)
-            printer.println('Causa' + canceled.cause)
+            printer.println('Motivo: ' + canceled.cause)
             printer.newLine();
         }
 

@@ -1319,7 +1319,9 @@ export const printReportServiceId = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DE: ${report.description}`)
+        printer.println(`REPORTE DE:`)
+        printer.println(report.description)
+        printer.newLine();
         printer.println("Fecha de Emisión:")
         printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();
@@ -1434,7 +1436,9 @@ export const printReportProductId = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DE: ${report.description}`)
+        printer.println(`REPORTE DE:`)
+        printer.println(report.description)
+        printer.newLine();
         printer.println("Fecha de Emisión:")
         printer.println(moment().format("DD/MM/YYYY"))
         printer.setTextNormal();

@@ -598,10 +598,9 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
         printer.setTypeFontB();
 
-        printer.newLine();
-
-        printer.setTextQuadArea();
-        printer.println('NO VALIDO COMO COMPROBANTE DE PAGO NI PARA RECOLECCIÓN')
+        // printer.newLine();
+        // printer.setTextQuadArea();
+        // printer.println('NO VALIDO COMO COMPROBANTE DE PAGO NI PARA RECOLECCIÓN')
 
         printer.newLine();
 
@@ -611,8 +610,9 @@ export const reprintOrder = async (req, res) => {
             printer.setTextSize(4,4);
             printer.println(canceled.id_cancelledOrder);
             printer.setTextNormal();
-            printer.println('Fecha de la Cancelación: ' + canceled.created)
-            printer.println(`Tipo: ${canceled.type === "cancellation" ? "SIN REMBOLSO" : canceled.type === "refund" ? "CON REMBOLSO" : ''}`)
+            printer.println('Fecha de la Cancelación: ' + formatDate(canceled.created));
+            printer.println(`Tipo: ${canceled.CancellationTypes === "cancellation" ? "SIN REMBOLSO" : canceled.CancellationTypes === "refund" ? "CON REMBOLSO" : ''}`)
+            printer.println('Causa' + canceled.cause)
         }
 
         printer.newLine();
@@ -706,7 +706,10 @@ export const reprintOrder = async (req, res) => {
         ]);
 
         printer.setTextQuadArea();
-        printer.println('NO VALIDO COMO COMPROBANTE DE PAGO NI PARA RECOLECCIÓN')
+        printer.println('NO VALIDO COMO')
+        printer.println('COMPROBANTE DE PAGO')
+        printer.println('NI PARA RECOLECCIÓN')
+
         printer.setTextNormal();
 
         printer.cut();

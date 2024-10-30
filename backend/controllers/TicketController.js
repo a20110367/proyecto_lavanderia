@@ -127,7 +127,7 @@ export const generateTicket = async (req, res) => {
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
             if (order.pieces > 0) {
                 printer.println(`PIEZAS: ${order.pieces}`)
             }
@@ -330,7 +330,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
 
             if (order.pieces > 0) {
                 printer.println(`PIEZAS: ${order.pieces}`)
@@ -696,7 +696,7 @@ export const reprintOrder = async (req, res) => {
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
-            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate))
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
 
             if ((order.drycleanPieces > 0 || order.ironPieces > 0)) {
                 printer.println(`PIEZAS: ${order.drycleanPieces > 0 ? order.drycleanPieces : order.ironPieces}`)

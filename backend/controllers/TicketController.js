@@ -123,7 +123,7 @@ export const generateTicket = async (req, res) => {
         // }
         // printer.bold(false)
 
-        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTicketTime(order.receptionTime))
+        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
@@ -326,7 +326,7 @@ const printTicketFromBackend = async (orderParameter) => {
         // }
         // printer.bold(false)
 
-        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTicketTime(order.receptionTime))
+        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
             printer.bold(true);
@@ -692,7 +692,7 @@ export const reprintOrder = async (req, res) => {
         printer.println('Cliente: ' + client)
         printer.bold(false)
 
-        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' ' + formatTicketTime(order.receptionTime))
+        printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
             printer.bold(true);

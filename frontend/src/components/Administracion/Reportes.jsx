@@ -609,7 +609,7 @@ function Reportes() {
         })
       }else if(reportType == 2){
         await api.post("/generate/report/Service/id", {
-          report: serviceReportResponse,
+          report: serviceResponseId,
           categoryId: categoryId,
         })
       }else if(reportType == 3){

@@ -210,7 +210,43 @@ export const getOrdersById = async (req, res) => {
                         secondLN: true,
                     },
                 },
-                ServiceOrderDetail: true,
+                ServiceOrderDetail: {
+                    select: {
+                        SelfService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            }
+                        },
+                        LaundryService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            }
+                        },
+                        IronService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            }
+                        },
+                        DrycleanService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            }
+                        },
+                        OtherService: {
+                            select: {
+                                description: true,
+                                price: true,
+                            }
+                        },
+                        subtotal: true,
+                        units: true
+
+                    }
+                },
                 payment: true,
                 deliveryDetail: {
                     select: {
@@ -320,7 +356,43 @@ export const getOrdersByClientName = async (req, res) => {
                             secondLN: true,
                         },
                     },
-                    ServiceOrderDetail: true,
+                    ServiceOrderDetail: {
+                        select: {
+                            SelfService: {
+                                select: {
+                                    description: true,
+                                    price: true,
+                                }
+                            },
+                            LaundryService: {
+                                select: {
+                                    description: true,
+                                    price: true,
+                                }
+                            },
+                            IronService: {
+                                select: {
+                                    description: true,
+                                    price: true,
+                                }
+                            },
+                            DrycleanService: {
+                                select: {
+                                    description: true,
+                                    price: true,
+                                }
+                            },
+                            OtherService: {
+                                select: {
+                                    description: true,
+                                    price: true,
+                                }
+                            },
+                            subtotal: true,
+                            units: true
+
+                        }
+                    },
                     payment: true,
                     deliveryDetail: {
                         select: {

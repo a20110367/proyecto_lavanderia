@@ -572,6 +572,7 @@ export const reprintOrder = async (req, res) => {
         let payStatus = ''
         let payForm = ''
         const casher = order.user.name + " " + order.user.firstLN + " " + order.user.secondLN;
+        const client = order.client.name + " " + order.client.firstLN + " " + order.client.secondLN;
 
         if (order.payStatus === 'paid') {
             payStatus = 'PAGADO'
@@ -670,12 +671,12 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        if (order.pieces === 0 || !order.pieces) {
-            printer.println('Cliente: ' + order.client)
+        if ((order.drycleanPieces === 0 || !order.drycleanPieces) && (order.ironPieces === 0 || !order.ironPieces)) {
+            printer.println('Cliente: ' + client)
         } else {
             printer.tableCustom([
-                { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
-                { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
+                { text: 'Cliente: ' + client, align: "LEFT", bold: true },
+                { text: `PIEZAS: ${order.drycleanPieces > 0 ? order.drycleanPieces : order.ironPieces}`, align: "RIGHT" }
             ]);
         }
         printer.bold(false)

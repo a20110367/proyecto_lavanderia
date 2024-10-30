@@ -1316,6 +1316,7 @@ export const printReportServiceId = async (req, res) => {
         printer.clear();
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+        printer.newLine();
 
         printer.setTextQuadArea();
         printer.println(`REPORTE DE: ${report.description}`)

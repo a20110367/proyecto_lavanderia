@@ -305,7 +305,7 @@ export default function PuntoVenta() {
     const subTotal = calculateSubtotal();
 
     const totalWithDiscount =
-      payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
+      payMethod === "credit" ? subTotal - subTotal * 0 : subTotal;
 
     let ironPieces = null;
     let drycleanPieces = null;

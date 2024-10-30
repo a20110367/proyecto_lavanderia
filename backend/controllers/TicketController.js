@@ -1145,32 +1145,40 @@ export const printReportService = async (req, res) => {
         const { report } = req.body
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+        printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE SERVICIOS GENERAL`)
+        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
+        printer.newLine();
 
         printer.println("Fechas seleccionadas:");
         printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total de Servicios: $${report.totalServiceNumberVerification}`);
+        printer.println(`No. Total de Servicios: ${report.totalServiceNumberVerification}`);
+        printer.newLine();
         printer.println(`Total de Venta: $${report.totalServiceSalesVerification}`);
         printer.setTextNormal();
+        printer.newLine();
 
 
         // SELF SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos de Autoservicio:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.selfServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_selfService}`);
+            // printer.println(`ID: ${item.fk_selfService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
@@ -1178,15 +1186,18 @@ export const printReportService = async (req, res) => {
 
         // LAUNDRY SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos de Encargo:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.laundryServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_laundryService}`);
+            // printer.println(`ID: ${item.fk_laundryService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
@@ -1194,13 +1205,16 @@ export const printReportService = async (req, res) => {
 
         // IRON SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos de Planchado:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.ironServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.println(item.description);
             printer.setTextNormal();
             printer.println(`ID: ${item.fk_ironService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
@@ -1210,15 +1224,18 @@ export const printReportService = async (req, res) => {
 
         // DRY CLEAN SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos de Tintoreria:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.drycleanServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_drycleanService}`);
+            // printer.println(`ID: ${item.fk_drycleanService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
@@ -1226,15 +1243,18 @@ export const printReportService = async (req, res) => {
 
         // OTHER SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos de Otros:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.otherServiceSumary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_otherService}`);
+            // printer.println(`ID: ${item.fk_otherService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
@@ -1242,8 +1262,11 @@ export const printReportService = async (req, res) => {
 
         // STATUS ORDER SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Resumen de Estatus de la Ordenes:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.deliveryStatusOrderSummary.forEach(item => {
@@ -1257,8 +1280,11 @@ export const printReportService = async (req, res) => {
 
         // STATUS PAID SERVICE
         printer.drawLine();
-        printer.setTextSize(3, 3);
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Resumen de Estatus de Pago:`);
+        printer.setTextNormal();
+        printer.bold(false);
         printer.drawLine();
 
         report.payStatusOrderSummary.forEach(item => {
@@ -1291,26 +1317,34 @@ export const printReportServiceId = async (req, res) => {
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DEL SERVICIO: ${report.description}`)
+        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
+        printer.newLine();
 
         printer.println("Fechas seleccionadas:");
         printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
         printer.newLine();
 
         printer.drawLine();
+        printer.newLine();
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos por Servicio:`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.drawLine();
         printer.newLine();
 
-        printer.setTextSize(3, 3);
-        printer.println(`Descripción: ${report.description}`);
+        printer.setTextQuadArea();
+        printer.println(report.description);
         printer.setTextNormal();
-        printer.println(`ID: ${categoryId === 1 ? report.fk_selfService
-            : categoryId === 2 ? report.fk_laundryService
-                : categoryId === 3 ? report.fk_ironService
-                    : categoryId === 4 ? report.fk_drycleanService
-                        : categoryId === 5 ? report.fk_otherService
-                            : report.description}`);
+        // printer.println(`ID: ${categoryId === 1 ? report.fk_selfService
+        //     : categoryId === 2 ? report.fk_laundryService
+        //         : categoryId === 3 ? report.fk_ironService
+        //             : categoryId === 4 ? report.fk_drycleanService
+        //                 : categoryId === 5 ? report.fk_otherService
+        //                     : report.description}`);
         printer.println(`Subtotal: $${report._sum.subtotal}`);
         printer.println(`Unidades: ${report._sum.units}`);
         printer.newLine();
@@ -1334,32 +1368,43 @@ export const printReportProduct = async (req, res) => {
         printer.clear();
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+        printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DE PRODUCTOS GENERAL`)
+        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
+        printer.newLine();
 
         printer.println("Fechas seleccionadas:");
         printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total de Productos: $${report.totalSuppliesNumberVerification}`);
+        printer.println(`No. Total de Servicios: ${report.totalSuppliesNumberVerification}`);
+        printer.newLine();
         printer.println(`Total de Venta: $${report.totalSuppliesSalesVerification}`);
         printer.setTextNormal();
+        printer.newLine();
 
         printer.drawLine();
-
+        printer.newLine();
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos por Producto:`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.drawLine();
         printer.newLine();
 
         report.suppliesSummary.forEach(item => {
-            printer.setTextDoubleHeight();
-            printer.println(`Descripción: ${item.description}`);
+            printer.setTextQuadArea();
+            printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_supplyId}`);
+            // printer.println(`ID: ${item.fk_supplyId}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
+            printer.drawLine();
             printer.newLine();
         })
 
@@ -1382,23 +1427,32 @@ export const printReportProductId = async (req, res) => {
         printer.clear();
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+        printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")}`)
+        printer.println(`REPORTE DEL PRODUCTO: ${report.description}`)
+        printer.println(`Fecha de Emisión: ${moment().format("DD/MM/YYYY")}`)
         printer.setTextNormal();
+        printer.newLine();
 
         printer.println("Fechas seleccionadas:");
         printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
         printer.newLine();
 
         printer.drawLine();
+        printer.newLine();
+        printer.bold(true);
+        printer.setTextQuadArea();
         printer.println(`Detalles de Ingresos por Producto:`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.drawLine();
         printer.newLine();
 
         printer.setTextDoubleHeight();
-        printer.println(`Descripción: ${report.description}`);
+        printer.println(report.description);
         printer.setTextNormal();
-        printer.println(`ID: ${productId}`);
+        // printer.println(`ID: ${productId}`);
         printer.println(`Subtotal: $${report._sum.subtotal}`);
         printer.println(`Unidades: ${report._sum.units}`);
         printer.newLine();

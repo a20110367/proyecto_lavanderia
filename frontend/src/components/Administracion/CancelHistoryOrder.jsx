@@ -232,7 +232,7 @@ function Cancelacion() {
                 footer={[
                     <Button
                         key="print"
-                        onClick={handlePrintOrderCanceledOrder}
+                        onClick={() => handlePrintOrderCanceledOrder()}
                         className="btn-print text-white"
                     >
                         Imprimir Orden

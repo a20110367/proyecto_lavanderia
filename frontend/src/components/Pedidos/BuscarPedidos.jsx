@@ -152,6 +152,20 @@ const BuscarPedidos = () => {
     setVisible(true);
   };
 
+  const handlePrint = async () => {
+    try{
+      if(selectedPedido){
+          await api.post(`/generate/order/reprint`, {
+              order: selectedPedido,
+          })
+          Swal.fire("Ticket Impreso", "", "success");
+      }
+    }catch(err){
+        console.error(err);
+        Swal.fire("Error al imprimir", "", "error")
+    }
+  }
+
   const renderModalContent = () => {
     return (
       <div>
@@ -559,6 +573,13 @@ const BuscarPedidos = () => {
         open={visible}
         onCancel={handleClose}
         footer={[
+          <Button
+            className="btn-print"
+            key="print"
+            onClick={() => handlePrint()}
+          >
+            Imprimir Ticket de la Orden
+          </Button>,
           <Button
             className="btn-cancel-modal"
             key="close"

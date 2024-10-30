@@ -1387,7 +1387,7 @@ export const printReportProduct = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(`No. Total de Servicios: ${report.totalSuppliesNumberVerification}`);
+        printer.println(`No. Total de Productos: ${report.totalSuppliesNumberVerification}`);
         printer.newLine();
         printer.println(`Total de Venta: $${report.totalSuppliesSalesVerification}`);
         printer.setTextNormal();

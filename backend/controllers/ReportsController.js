@@ -402,6 +402,9 @@ export const getServicesReport = async (req, res) => {
             totalPayStatusItemsVerification += item._sum.numberOfItems;
         });
 
+        console.log(totalServiceSalesVerification);
+        console.log(totalServiceNumberVerification);
+
         const response =
         {
             //Totales por servicios y categorias

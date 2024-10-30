@@ -6,6 +6,23 @@ const prisma = new PrismaClient();
 export const getLaundryQueue = async (req, res) => {
     try {
         const response = await prisma.laundryQueue.findMany({
+            where: {
+                OR: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
+
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
+
             include: {
                 LaundryService: true,
                 serviceOrder: {
@@ -227,7 +244,7 @@ export const finishLaundryQueue = async (req, res) => {
             },
         })
 
-        var response;
+        let response;
         if (serviceOrderFinished.length === 0) {
 
             const serviceOrder = await prisma.serviceOrder.update({
@@ -280,7 +297,22 @@ export const deleteLaundryQueue = async (req, res) => {
 export const getSelfServiceQueue = async (req, res) => {
     try {
         const response = await prisma.selfServiceQueue.findMany({
+            where: {
+                OR: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
 
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
 
             include: {
                 SelfService: true,
@@ -492,6 +524,7 @@ export const deleteSelfServiceQueue = async (req, res) => {
     }
 }
 
+//Se maneja sobre la orden por el tema de las piezas
 export const getIronQueue = async (req, res) => { //tomar en cuenta que iron no tiene cola propia, por lo que se gestiona sobre la orden de servicio
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -501,11 +534,15 @@ export const getIronQueue = async (req, res) => { //tomar en cuenta que iron no 
                         fk_categoryId: 3
                     },
                     {
-                        NOT: {
-
-                            orderStatus: "stored"
-
-                        },
+                        OR:
+                            [
+                                {
+                                    orderStatus: "pending"
+                                },
+                                {
+                                    orderStatus: "inProgress"
+                                }
+                            ]
                     }
                 ],
 
@@ -558,6 +595,62 @@ export const getIronQueue = async (req, res) => { //tomar en cuenta que iron no 
         res.status(500).json({ msg: e.message });
     }
 }
+
+// export const getIronQueue = async (req, res) => { 
+//     try {
+//         const response = await prisma.ironQueue.findMany({
+//             where:{
+//                 OR:[
+//                     {
+//                         NOT:{
+//                             serviceStatus:"finished"
+//                         }
+
+//                     },
+//                     {
+//                         NOT:{
+//                             serviceStatus:"cancelled"
+//                         }
+
+//                     },
+//                 ]
+//             },
+
+//             include: {
+//                 ironService: true,
+//                 serviceOrder: {
+//                     select: {
+//                         user: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                             },
+//                         },
+//                         client: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                                 phone: true,
+//                                 email: true,
+//                             },
+//                         },
+
+//                         notes: true,
+//                         scheduledDeliveryDate: true,
+//                         scheduledDeliveryTime: true,
+//                     },
+//                 },
+//             },
+
+//         });
+//         res.status(200).json(response);
+//     } catch (e) {
+//         res.status(500).json({ msg: e.message });
+//     }
+// }
+
 
 export const getIronQueueById = async (req, res) => {
     try {
@@ -690,7 +783,7 @@ export const deleteIronQueue = async (req, res) => {
     }
 }
 
-
+//Se maneja sobre las ordeners por las piezas
 export const getDrycleanQueue = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -700,11 +793,15 @@ export const getDrycleanQueue = async (req, res) => {
                         fk_categoryId: 4
                     },
                     {
-                        NOT: {
-
-                            orderStatus: "stored"
-
-                        },
+                        OR:
+                            [
+                                {
+                                    orderStatus: "pending"
+                                },
+                                {
+                                    orderStatus: "inProgress"
+                                }
+                            ]
                     }
                 ],
 
@@ -756,6 +853,62 @@ export const getDrycleanQueue = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 }
+
+// export const getDrycleanQueue = async (req, res) => {
+//     try {
+//         const response = await prisma.drycleanQueue.findMany({
+//             where:{
+//                 OR:[
+//                     {
+//                         NOT:{
+//                             serviceStatus:"finished"
+//                         }
+
+//                     },
+//                     {
+//                         NOT:{
+//                             serviceStatus:"cancelled"
+//                         }
+
+//                     },
+//                 ]
+//             },
+
+//             include: {
+//                 drycleanService: true,
+//                 serviceOrder: {
+//                     select: {
+//                         user: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                             },
+//                         },
+//                         client: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                                 phone: true,
+//                                 email: true,
+//                             },
+//                         },
+
+//                         notes: true,
+//                         scheduledDeliveryDate: true,
+//                         scheduledDeliveryTime: true,
+//                     },
+//                 },
+//             },
+
+//         });
+//         res.status(200).json(response);
+//     } catch (e) {
+//         res.status(500).json({ msg: e.message });
+//     }
+// }
+
 
 export const getDrycleanQueueById = async (req, res) => {
     try {
@@ -892,7 +1045,22 @@ export const deleteDrycleanQueue = async (req, res) => {
 export const getOtherQueue = async (req, res) => {
     try {
         const response = await prisma.otherQueue.findMany({
+            where: {
+                OR: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
 
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
 
             include: {
                 otherService: true,

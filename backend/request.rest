@@ -1056,7 +1056,7 @@ GET   http://localhost:5000/ironCuts
 ###
 
 #CRUD REPORTES
-GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22
+GET   http://localhost:5000/servicesReport/2024-07-02/2024-10-23
 ###
 
 GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22/1/1
@@ -1092,3 +1092,5 @@ Content-Type: application/json
 PATCH http://localhost:5000/cancelSupplyOrder/53
 
 ###
+
+POST http://localhost:5000/generate/ticket/reprint

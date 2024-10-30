@@ -1217,7 +1217,7 @@ export const printReportService = async (req, res) => {
             printer.setTextDoubleHeight();
             printer.println(item.description);
             printer.setTextNormal();
-            printer.println(`ID: ${item.fk_ironService}`);
+            // printer.println(`ID: ${item.fk_ironService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
             printer.newLine();
@@ -1246,7 +1246,7 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos de Otros:`);
+        printer.println(`Ingresos de Otros Servicios:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
@@ -1265,7 +1265,7 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Resumen de Estatus de la Ordenes:`);
+        printer.println(`Estatus de Ordenes:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
@@ -1283,7 +1283,7 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Resumen de Estatus de Pago:`);
+        printer.println(`Estatus de Pago:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();

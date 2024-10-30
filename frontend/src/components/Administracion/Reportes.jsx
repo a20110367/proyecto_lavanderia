@@ -591,12 +591,12 @@ function Reportes() {
 
   const handleEnviarPDF = async () => {
     handleGenerarDocumento()
-    const out = document.output("datauristring");
+    const out = document.output('datauristring');
     await api.post("/sendReport", {
       startDate: formatDate(dateRange[0].toDate()),
       endDate: formatDate(dateRange[1].toDate())
       ,
-      pdf: out.split("base64,")[1],
+      pdf: await out.split('base64,')[1],
     });
     Swal.fire("Reporte Enviado", "", "success");
   }

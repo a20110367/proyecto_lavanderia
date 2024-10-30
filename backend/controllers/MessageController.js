@@ -93,7 +93,7 @@ export const sendReport = async (req, res) => {
             text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
             attachments: [{
                 filename: `reporte_${startDate}_${endDate}.pdf`,
-                content: pdf,
+                content: await pdf,
                 contentType: 'application/pdf',
                 encoding: 'base64'
             }],

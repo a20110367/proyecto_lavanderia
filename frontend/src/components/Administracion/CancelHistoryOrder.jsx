@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { Modal, Button, Input } from "antd";
+import { Modal, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
@@ -93,9 +93,24 @@ function Cancelacion() {
         // }
         setCanceledOrder(canceled)
         const res = await api.get(`/orders/${canceled.fk_idServiceOrder}`)
-        setOrder(res.data)
+        setOrder(await res.data)
         setVisible(true);
     };
+
+    const handlePrintOrderCanceledOrder = async (canceled) => {
+        try{
+            if(canceledOrder && order){
+                await api.post(`/generate/order/reprint`, {
+                    canceled: canceledOrder,
+                    order: order,
+                })
+                Swal.fire("Ticket Impreso", "", "success");
+            }
+        }catch(err){
+            console.error(err);
+            Swal.fire("Error al imprimir", "", "error")
+        }
+    }
 
     const handleMotivoInput = () => {
         setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
@@ -211,12 +226,19 @@ function Cancelacion() {
             <Modal
                 title="Detalles de la Orden de Cancelación"
                 open={visible}
-                onOk={handleConfirmCancelacion}
+                onOk={handlePrintOrderCanceledOrder}
                 onCancel={handleClose}
                 width={800}
                 footer={[
                     <Button
-                        key="Cerrar"
+                        key="print"
+                        onClick={handlePrintOrderCanceledOrder}
+                        className="btn-print text-white"
+                    >
+                        Imprimir Orden
+                    </Button>,
+                    <Button
+                        key="close"
                         onClick={handleClose}
                         className="btn-cancel-modal text-white"
                     >
@@ -226,7 +248,7 @@ function Cancelacion() {
             >
                 <p className="font-bold mx-5 my-2 text-lg">Datos de la Cancelación</p>
                 <div className="grid grid-cols-2 justify-center gap-4 mb-4">
-                    <p className="font-bold mx-5">No. de Cancelación de Orden: <br/><span className="font-normal">{canceledOrder.id_cancelledOrder}</span></p>
+                    <p className="font-bold mx-5">Folio de Cancelación de Orden: <br/><span className="font-normal">{canceledOrder.id_cancelledOrder}</span></p>
                     <p className="font-bold mx-5">Monto: <br/><span className="font-normal">${canceledOrder.amount}</span></p>
 
                     <p className="font-bold mx-5">Motivo: <br/><span className="font-normal">{canceledOrder.cause}</span></p>
@@ -237,7 +259,7 @@ function Cancelacion() {
 
                 <p className="font-bold mx-5 my-2 text-lg">Datos de la Orden</p>
                 <div className="grid grid-cols-3 justify-center gap-4">
-                    <p className="font-bold mx-5">No. Orden: <br/><span className="font-normal">{order.id_order}</span></p>
+                    <p className="font-bold mx-5">No. Orden Cancelada: <br/><span className="font-normal">{order.id_order}</span></p>
                     <p className="font-bold mx-5">Cliente: <br/><span className="font-normal">{order.client.name + ' ' + order.client.firstLN + ' ' + order.client.secondLN}</span></p>
                     <p className="font-bold mx-5">Cajero: <br/><span className="font-normal">{order.user.name + ' ' + order.user.firstLN + ' ' + order.user.secondLN}</span></p>
 

@@ -656,24 +656,34 @@ export const reprintOrder = async (req, res) => {
 
         printer.drawLine();
 
-        // // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
-        // printer.tableCustom([
-        //     { text: "Cant.", align: "LEFT" },
-        //     { text: "Descripción", align: "CENTER", bold: true },
-        //     { text: "P. U.", align: 'RIGHT' },
-        //     { text: "Precio", align: "RIGHT" }
-        // ]);
+        // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
+        printer.tableCustom([
+            { text: "Cant.", align: "LEFT" },
+            { text: "Descripción", align: "CENTER", bold: true },
+            { text: "P. U.", align: 'RIGHT' },
+            { text: "Precio", align: "RIGHT" }
+        ]);
 
-        // printer.newLine()
+        printer.newLine()
 
-        // order.ServiceOrderDetail.map(detail => {
-        //     printer.tableCustom([
-        //         { text: detail.quantity + '     X', align: "LEFT", bold: true },
-        //         { text: detail.description, align: "CENTER" },
-        //         { text: '$' + detail.price, align: 'RIGHT' },
-        //         { text: '$' + detail.totalPrice, align: "RIGHT" }
-        //     ]);
-        // }).join('')
+        order.ServiceOrderDetail.map(detail => {
+            printer.tableCustom([
+                { text: detail.units + '     X', align: "LEFT", bold: true },
+                { text: order.fk_categoryId === 1 ? ServiceOrderDetail.SelfService.description :
+                    order.fk_categoryId === 2 ? ServiceOrderDetail.LaundryService.description :
+                    order.fk_categoryId === 3 ? ServiceOrderDetail.IronService.description :
+                    order.fk_categoryId === 4 ? ServiceOrderDetail.DrycleanService.description :
+                    order.fk_categoryId === 5 ? ServiceOrderDetail.OtherService.description :
+                    "Servicio de Categoria no Encontrada", align: "CENTER" },
+                { text: '$' + order.fk_categoryId === 1 ? ServiceOrderDetail.SelfService.precio :
+                    order.fk_categoryId === 2 ? ServiceOrderDetail.LaundryService.precio :
+                    order.fk_categoryId === 3 ? ServiceOrderDetail.IronService.precio :
+                    order.fk_categoryId === 4 ? ServiceOrderDetail.DrycleanService.precio :
+                    order.fk_categoryId === 5 ? ServiceOrderDetail.OtherService.precio :
+                    "Precio de Categoria no Encontrada", align: 'RIGHT' },
+                { text: '$' + detail.subtotal, align: "RIGHT" }
+            ]);
+        }).join('')
 
         printer.alignCenter()
 

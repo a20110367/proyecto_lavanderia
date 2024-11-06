@@ -590,13 +590,20 @@ function Reportes() {
   }
 
   const handleEnviarPDF = async () => {
-    handleGenerarDocumento()
-    const out = document.output('datauristring');
+    // handleGenerarDocumento()
+    // const out = document.output('datauristring');
     await api.post("/sendReport", {
+      reportType: reportType,
+      serviceReportResponse: serviceReportResponse,
+      categoryId: categoryId,
+      serviceResponseId: serviceResponseId,
+      productReportResponse: productReportResponse,
+      productId: productId,
+      productReportResponseId: productReportResponseId,
       startDate: formatDate(dateRange[0].toDate()),
       endDate: formatDate(dateRange[1].toDate())
       ,
-      pdf: await out.split('base64,')[1],
+      // pdf: await out.split('base64,')[1],
     });
     Swal.fire("Reporte Enviado", "", "success");
   }

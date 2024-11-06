@@ -1,5 +1,10 @@
 import { transporter } from "./utils/mailer.js";
 import { restAPI } from "./utils/greenapi.js";
+import { jsPDF } from "jspdf";
+import { formatDate } from './utils/format.js';
+import * as fs from 'fs';
+import moment from 'moment'
+moment.locale('es-mx');
 
 export const sendMessage = async (req, res) => {
     const { id_order, name, email, tel, message, subject, text, warning } = req.body
@@ -83,7 +88,278 @@ export const notifyAll = async (req, res) => {
 
 export const sendReport = async (req, res) => {
 
-    const { pdf, startDate, endDate} = req.body
+    const { reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId, startDate, endDate} = req.body
+
+    // const doc = generateDoc(reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId);
+
+    const doc = new jsPDF("p", "mm", "letter");
+    const path_url = './controllers/utils/img/caprelogoThermalPrinter.png';
+    const img = fs.readFileSync(path_url).toString('base64');   
+
+    if (reportType === 1) {
+
+        doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+        doc.text(`Fechas seleccionadas:`, 10, 30);
+        doc.text(`(${formatDate(serviceReportResponse.startDate)}) - (${formatDate(serviceReportResponse.endDate)})`, 10, 40);
+
+        doc.text(`No. Total de Servicios: ${serviceReportResponse.totalServiceNumberVerification}`, 10, 60);
+        doc.text(`Total de Venta: $${serviceReportResponse.totalServiceSalesVerification}`, 10, 70);
+
+        doc.setLineWidth(3)
+        doc.line(10, 80, 205, 80, 'S');
+
+        // Mostrar detalles de ingresos por servicio AUTOSERVICIO
+        doc.text(`Detalles de Ingreso de Autoservicio:`, 10, 90);
+        doc.setLineWidth(1)
+        doc.line(10, 100, 205, 100, 'S');
+        let count = 110;
+
+        serviceReportResponse.selfServiceSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_selfService}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio ENCARGO
+        doc.text(`Detalles de Ingreso de Encargo:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.laundryServiceSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_laundryService}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio PLANCHADO
+        doc.text(`Detalles de Ingreso de Planchado:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.ironServiceSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_ironService}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio TINTORERIA
+        doc.text(`Detalles de Ingreso de Tintoreria:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.drycleanServiceSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_drycleanService}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio OTROS
+        doc.text(`Detalles de Ingreso de Otros:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.otherServiceSumary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_otherService}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio RESUMEN DE ORDENES
+        doc.text(`Resumen de Estatus de la Ordenes:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.deliveryStatusOrderSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`, 10, count);
+            count += 10;
+            doc.text(`No. de Servicios: ${item._sum.numberOfItems}`, 10, count);
+            count += 10;
+            doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
+            count += 10;
+        })
+
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+        // Mostrar detalles de ingresos por servicio RESUMEN DE ESTATUS DE PAGO
+        doc.text(`Resumen de Estatus de Pago:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        serviceReportResponse.payStatusOrderSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                count = 40;
+            }
+            doc.text(`${item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"} ${item._count.id_order}`, 10, count);
+            count += 10;
+            doc.text(`No. de Servicios: ${item._sum.numberOfItems}`, 10, count);
+            count += 10;
+            doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
+            count += 10;
+        })
+    } else if (reportType === 2) {
+
+        doc.addImage(img, 'PNG', 125, 10, 48, 30)
+
+        doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+        doc.text(`Fechas seleccionadas:`, 10, 30);
+        doc.text(`(${formatDate(serviceResponseId.startDate)}) - (${formatDate(serviceResponseId.endDate)})`, 10, 40);
+
+        doc.setLineWidth(3)
+        doc.line(10, 80, 205, 80, 'S');
+
+        // Mostrar detalles de ingresos por servicio
+        doc.text(`Detalles de Ingresos del Servicio:`, 10, 90);
+        doc.setLineWidth(1)
+        doc.line(10, 100, 205, 100, 'S');
+        let count = 110;
+
+        doc.text(`Descripción: ${serviceResponseId.description}`, 10, count);
+        count += 10;
+        doc.text(`ID: ${categoryId === 1 ? serviceResponseId.fk_selfService
+            : categoryId === 2 ? serviceResponseId.fk_laundryService
+                : categoryId === 3 ? serviceResponseId.fk_ironService
+                    : categoryId === 4 ? serviceResponseId.fk_drycleanService
+                        : categoryId === 5 ? serviceResponseId.fk_otherService
+                            : serviceResponseId.description}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${serviceResponseId._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${serviceResponseId._sum.units}`, 10, count);
+        count += 20;
+    } else if (reportType === 3) {
+
+
+        doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+        doc.text(`Fechas seleccionadas:`, 10, 30);
+        doc.text(`(${formatDate(productReportResponse.startDate)}) - (${formatDate(productReportResponse.endDate)})`, 10, 40);
+
+        doc.text(`No. Total de Productos: ${productReportResponse.totalSuppliesNumberVerification}`, 10, 60);
+        doc.text(`Total de Venta: $${productReportResponse.totalSuppliesSalesVerification}`, 10, 70);
+
+        doc.setLineWidth(3)
+        doc.line(10, 80, 205, 80, 'S');
+
+        // Mostrar detalles de ingresos por servicio
+        doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
+        doc.setLineWidth(1)
+        doc.line(10, 100, 205, 100, 'S');
+        let count = 110;
+
+        productReportResponse.suppliesSummary.forEach(item => {
+            if (count >= 250) {
+                doc.addPage();
+                doc.addImage(img, 'PNG', 150, 10, 48, 30)
+                count = 40;
+            }
+            doc.text(`Descripción: ${item.description}`, 10, count);
+            count += 10;
+            doc.text(`ID: ${item.fk_supplyId}`, 10, count);
+            count += 10;
+            doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
+            count += 10;
+            doc.text(`Unidades: ${item._sum.units}`, 10, count);
+            count += 20;
+        })
+
+    } else if (reportType === 4) {
+
+        doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+        doc.text(`Fechas seleccionadas:`, 10, 30);
+        doc.text(`(${formatDate(productReportResponseId.startDate)}) - (${formatDate(productReportResponseId.endDate)})`, 10, 40);
+
+        doc.setLineWidth(3)
+        doc.line(10, 80, 205, 80, 'S');
+
+        // Mostrar detalles de ingresos por servicio
+        doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
+        let count = 110;
+
+        doc.text(`ID: ${productId}`, 10, count);
+        count += 10;
+        doc.text(`Descripción: ${productReportResponseId.description}`, 10, count);
+        count += 10;
+        doc.text(`Subtotal: $${productReportResponseId._sum.subtotal}`, 10, count);
+        count += 10;
+        doc.text(`Unidades: ${productReportResponseId._sum.units}`, 10, count);
+        count += 20;
+
+    } else console.error("Tipo de reporte no encontrado", "", "error");
     
     try{
         const info = await transporter.sendMail({
@@ -93,7 +369,7 @@ export const sendReport = async (req, res) => {
             text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
             attachments: [{
                 filename: `reporte_${startDate}_${endDate}.pdf`,
-                content: await pdf,
+                content: Buffer.from(doc.output('arraybuffer')),
                 contentType: 'application/pdf',
                 encoding: 'base64'
             }],

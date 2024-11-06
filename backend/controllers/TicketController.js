@@ -1,6 +1,8 @@
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
 import { NumerosALetras } from 'numero-a-letras'
+import { formatDate, formatTicketTime } from './utils/format.js'
 import moment from 'moment'
+
 moment.locale('es-mx');
 // import 'moment/locale/es.js'         //IMPORTS PARA MAS IDIOMAS PARA MOMENT
 // import 'moment/min/locales.min.js'   //IMPORTS PARA MAS IDIOMAS PARA MOMENT
@@ -1571,23 +1573,6 @@ export const printCanceledOrder = async (req, res) => {
         console.error(err)
         res.status(400).json({ msg: err.message })
     }
-}
-
-// ----------------------------------------  FORMATS ------------------------------------- //
-
-const formatDate = (dateStr) => {
-    const date = moment.utc(dateStr).format("L")
-    return date;
-};
-
-const formatTime = (dateStr) => {
-    const date = moment(dateStr).format("dddd LT");
-    return date
-}
-
-const formatTicketTime = (dateStr) => {
-    const date = moment(dateStr).format('LT')
-    return date
 }
 
 const n2word = (number) => {

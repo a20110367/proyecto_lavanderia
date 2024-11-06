@@ -5,16 +5,26 @@ const prisma = new PrismaClient();
 
 
 export const getCashCuts = async (req, res) => {
+    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
     try {
         const response = await prisma.cashCut.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
             include: {
                 user: {
                     select: {
                         name: true,
+                        firstLN: true,
                     },
                 },
             },
-            take:730,
+
+
         });
         res.status(200).json(response);
     } catch (e) {
@@ -27,7 +37,16 @@ export const getCashCutsById = async (req, res) => {
         const response = await prisma.cashCut.findUnique({
             where: {
                 id_cashCut: Number(req.params.id)
-            }
+            },
+
+            include: {
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                    },
+                },
+            },
         });
         res.status(200).json(response);
     } catch (e) {
@@ -57,7 +76,7 @@ export const createCashCut = async (req, res) => {
             },
 
         });
-        var cashCut;
+        let cashCut;
         if (cashCutStatus.cashCutStatus === "open") {
 
             console.log(lastCashCut._max.id_cashCut);
@@ -115,17 +134,8 @@ export const deleteCashCut = async (req, res) => {
 export const calculateCashCut = async (req, res) => {
 
     try {
-        const total = await prisma.payment.aggregate({
 
-            where: {
-                fk_cashCut: Number(req.params.id)
-            },
-            _sum: {
-                payTotal: true,
-            }
-        });
-
-        const workShift = await prisma.cashCut.findFirst({
+        const workShift = await prisma.cashCut.findUnique({
 
             where: {
                 id_cashCut: Number(req.params.id)
@@ -136,7 +146,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        const initialCash = await prisma.cashCut.findFirst({
+        const initialCash = await prisma.cashCut.findUnique({
 
             where: {
                 id_cashCut: Number(req.params.id)
@@ -149,9 +159,26 @@ export const calculateCashCut = async (req, res) => {
 
         if (initialCash.initialCash === null) initialCash.initialCash == 0;
 
+        const total = await prisma.payment.aggregate({
 
+            where: {
+                AND: [
+                    {
+                        fk_cashCut: Number(req.params.id)
+                    },
+                    {
+                        cancelled: false,
+                    }
+                ]
 
-        total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
+            },
+            _sum: {
+                payTotal: true,
+            }
+        });
+
+        if (total._sum.payTotal === null) total._sum.payTotal = 0;
+
         const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
             where: {
@@ -161,8 +188,8 @@ export const calculateCashCut = async (req, res) => {
                 amount: true,
             }
         });
-        
-        totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
+
+        if (totalCashWithdrawal._sum.amount === null) totalCashWithdrawal._sum.amount = 0;
 
         const cash = await prisma.payment.aggregate({
             where: {
@@ -175,6 +202,10 @@ export const calculateCashCut = async (req, res) => {
 
                         payMethod: 'cash'
                     }
+                    ,
+                    {
+                        cancelled: false
+                    }
 
                 ],
             },
@@ -183,7 +214,8 @@ export const calculateCashCut = async (req, res) => {
                 payTotal: true
             }
         });
-        cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
+
+        if (cash._sum.payTotal === null) cash._sum.payTotal = 0;
 
         const credit = await prisma.payment.aggregate({
             where: {
@@ -196,6 +228,9 @@ export const calculateCashCut = async (req, res) => {
 
                         payMethod: 'credit',
                     },
+                    {
+                        cancelled: false
+                    },
 
                 ],
             },
@@ -204,14 +239,62 @@ export const calculateCashCut = async (req, res) => {
             }
         });
 
+        if (credit._sum.payTotal === null) credit._sum.payTotal = 0;
 
-        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+        const ordersCancelled = await prisma.payment.findMany({
+
+            where: {
+                AND: [
+                    {
+                        fk_cashCut: Number(req.params.id)
+                    },
+                    {
+                        cancelled: true,
+                    },
+                ]
+            },
+
+            select: {
+                fk_idOrder: true,
+                payTotal: true
+            }
+
+        });
+
+        const totalCancelled = await prisma.payment.aggregate({
+
+            where: {
+                AND: [
+                    {
+                        fk_cashCut: Number(req.params.id)
+                    },
+                    {
+                        cancelled: true,
+                    },
+                ]
+            },
+
+            _sum: {
+                payTotal: true,
+            }
+
+        });
 
         const ordersPayed = await prisma.payment.findMany({
 
             where: {
-                fk_cashCut: Number(req.params.id)
-            }, select: {
+                AND: [
+                    {
+                        fk_cashCut: Number(req.params.id)
+                    },
+                    {
+                        cancelled: false
+                    },
+                ]
+
+            },
+
+            select: {
                 serviceOrder: {
                     select: {
                         id_order: true
@@ -237,6 +320,11 @@ export const calculateCashCut = async (req, res) => {
                         id_order: {
                             in: orders,
                         },
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        }
                     }
 
                 ],
@@ -248,7 +336,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
+        if (totalEncargo._sum.totalPrice === null) totalEncargo._sum.totalPrice = 0;
 
         const totalAutoservicio = await prisma.serviceOrder.aggregate({
 
@@ -264,10 +352,13 @@ export const calculateCashCut = async (req, res) => {
                         id_order: {
                             in: orders,
                         },
-                    }
-
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        }
+                    },
                 ],
-
             },
 
             _sum: {
@@ -276,10 +367,9 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
+        if (totalAutoservicio._sum.totalPrice === null) totalAutoservicio._sum.totalPrice = 0;
 
         const totalPlanchado = await prisma.serviceOrder.aggregate({
-
 
             where: {
                 AND: [
@@ -293,6 +383,11 @@ export const calculateCashCut = async (req, res) => {
                         id_order: {
                             in: orders,
                         },
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        }
                     }
 
                 ],
@@ -304,7 +399,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum + 0;
+        if (totalPlanchado._sum.totalPrice === null) totalPlanchado._sum.totalPrice = 0;
 
         const totalTintoreria = await prisma.serviceOrder.aggregate({
 
@@ -321,6 +416,11 @@ export const calculateCashCut = async (req, res) => {
                         id_order: {
                             in: orders,
                         },
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        }
                     }
 
                 ],
@@ -332,10 +432,9 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+        if (totalTintoreria._sum.totalPrice === null) totalTintoreria._sum.totalPrice = 0;
 
         const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
-
 
             where: {
                 AND: [
@@ -349,6 +448,11 @@ export const calculateCashCut = async (req, res) => {
                         id_order: {
                             in: orders,
                         },
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        }
                     }
 
                 ],
@@ -360,15 +464,13 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
-        totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+        if (totalOtrosEncargo._sum.totalPrice === null) totalOtrosEncargo._sum.totalPrice = 0;
 
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {
                 id_movement: true,
             }
         });
-
-
 
         console.log(lastPettyCash);
 
@@ -381,24 +483,27 @@ export const calculateCashCut = async (req, res) => {
             }
         });
 
-        lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
+        if (lastPettyCash._max === null) { lastPettyCash._max = 0, pettyCashBalance._max = 0 };
 
         console.log(pettyCashBalance.balance);
 
 
-
-        const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
-
-
         if (totalCashWithdrawal._sum.amount === null)
             totalCashWithdrawal._sum.amount = parseFloat(0.00);
-        const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount + initialCash.initialCash;
 
-        console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
-        //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
+        const totalBalance =
+            cash._sum.payTotal + credit._sum.payTotal
+            - totalCashWithdrawal._sum.amount + initialCash.initialCash;
+
+        console.log(
+            totalEncargo._sum.totalPrice,
+            totalAutoservicio._sum.totalPrice,
+            totalPlanchado._sum.totalPrice,
+            totalTintoreria._sum.totalPrice,
+            totalOtrosEncargo._sum.totalPrice);
 
         const today = new Date().toJSON();
-        const time = new Date().toJSON();
+        //const time = new Date().toJSON();
         const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
 
         const response =
@@ -408,24 +513,20 @@ export const calculateCashCut = async (req, res) => {
             "totalIncome": totalIncome,
             "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
             "initialCash": initialCash.initialCash,
-            "total": totalC,
+            "total": totalBalance,
             "totalEncargo": totalEncargo._sum.totalPrice,
             "totalAutoservicio": totalAutoservicio._sum.totalPrice,
             "totalPlanchado": totalPlanchado._sum.totalPrice,
             "totalTintoreria": totalTintoreria._sum.totalPrice,
             "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-            "totalOtros": otherCategorys,
             "ordersPayed": orders.length,
+            "ordersCancelled": ordersCancelled.length,
+            "totalCancelations": totalCancelled,
             "cashCutD": today,
             "pettyCashBalance": pettyCashBalance.balance,
-            "workShift": workShift.workShift
-            //"selfService":selfService
-            //"ordersIds":ordersIds
+            "workShift": workShift.workShifts
         }
 
-        // console.log(total);
-        // console.log(cash);
-        // console.log(credit);
         res.status(200).json(response);
     } catch (e) {
         res.status(404).json({ msg: e.message });
@@ -435,9 +536,9 @@ export const calculateCashCut = async (req, res) => {
 export const closeCashCut = async (req, res) => {
 
     try {
-        var response;
+        let response;
 
-        const cashCutStatus = await prisma.cashCut.findFirst({
+        const cashCutStatus = await prisma.cashCut.findUnique({
             where: {
                 id_cashCut: Number(req.params.id)
             },
@@ -448,7 +549,7 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        const workShift = await prisma.cashCut.findFirst({
+        const workShift = await prisma.cashCut.findUnique({
 
             where: {
                 id_cashCut: Number(req.params.id)
@@ -459,7 +560,7 @@ export const closeCashCut = async (req, res) => {
 
         });
 
-        const initialCash = await prisma.cashCut.findFirst({
+        const initialCash = await prisma.cashCut.findUnique({
 
             where: {
                 id_cashCut: Number(req.params.id)
@@ -473,18 +574,28 @@ export const closeCashCut = async (req, res) => {
         if (initialCash.initialCash === null) initialCash.initialCash == 0;
 
         console.log(cashCutStatus.CashCutStatus);
+
         if (cashCutStatus.cashCutStatus === "open") {
 
             const total = await prisma.payment.aggregate({
 
                 where: {
-                    fk_cashCut: Number(req.params.id)
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id)
+                        },
+                        {
+                            cancelled: false,
+                        }
+                    ]
                 },
                 _sum: {
                     payTotal: true,
                 }
             });
-            total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
+
+            if (total._sum.payTotal === null) total._sum.payTotal = 0;
+
             const totalCashWithdrawal = await prisma.cashWithdrawal.aggregate({
 
                 where: {
@@ -494,7 +605,8 @@ export const closeCashCut = async (req, res) => {
                     amount: true,
                 }
             });
-            totalCashWithdrawal._sum.amount === null ? totalCashWithdrawal._sum.amount = 0 : totalCashWithdrawal._sum.amount + 0;
+
+            if (totalCashWithdrawal._sum.amount === null) totalCashWithdrawal._sum.amount = 0;
 
             const cash = await prisma.payment.aggregate({
                 where: {
@@ -506,6 +618,9 @@ export const closeCashCut = async (req, res) => {
                         {
 
                             payMethod: 'cash'
+                        },
+                        {
+                            cancelled: false
                         }
 
                     ],
@@ -515,7 +630,8 @@ export const closeCashCut = async (req, res) => {
                     payTotal: true
                 }
             });
-            cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
+
+            if (cash._sum.payTotal === null) cash._sum.payTotal = 0;
 
             const credit = await prisma.payment.aggregate({
 
@@ -529,6 +645,9 @@ export const closeCashCut = async (req, res) => {
 
                             payMethod: 'credit',
                         },
+                        {
+                            cancelled: false
+                        },
 
                     ],
                 },
@@ -536,12 +655,62 @@ export const closeCashCut = async (req, res) => {
                     payTotal: true
                 }
             });
-            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+
+            if (credit._sum.payTotal === null) credit._sum.payTotal = 0;
+
+            const ordersCancelled = await prisma.payment.findMany({
+
+                where: {
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id)
+                        },
+                        {
+                            cancelled: true,
+                        },
+                    ]
+                },
+
+                select: {
+                    fk_idOrder: true,
+                    payTotal: true
+                }
+
+            });
+
+            const totalCancelled = await prisma.payment.aggregate({
+
+                where: {
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id)
+                        },
+                        {
+                            cancelled: true,
+                        },
+                    ]
+                },
+
+                _sum: {
+                    payTotal: true,
+                }
+
+            });
+
             const ordersPayed = await prisma.payment.findMany({
 
                 where: {
-                    fk_cashCut: Number(req.params.id)
-                }, select: {
+                    AND: [
+                        {
+                            fk_cashCut: Number(req.params.id)
+                        },
+                        {
+                            cancelled: false
+                        },
+                    ]
+                },
+
+                select: {
                     serviceOrder: {
                         select: {
                             id_order: true
@@ -549,9 +718,6 @@ export const closeCashCut = async (req, res) => {
                     },
                 },
             });
-
-            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-
 
             const orders = Object.values(ordersPayed).map(ord => ord.serviceOrder.id_order);
 
@@ -570,6 +736,11 @@ export const closeCashCut = async (req, res) => {
                             id_order: {
                                 in: orders,
                             },
+                        },
+                        {
+                            NOT: {
+                                orderStatus: "cancelled"
+                            }
                         }
 
                     ],
@@ -581,7 +752,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalEncargo._sum.totalPrice === null ? totalEncargo._sum.totalPrice = 0 : totalEncargo._sum.totalPrice + 0;
+            if (totalEncargo._sum.totalPrice === null) totalEncargo._sum.totalPrice = 0;
 
             const totalAutoservicio = await prisma.serviceOrder.aggregate({
 
@@ -597,7 +768,12 @@ export const closeCashCut = async (req, res) => {
                             id_order: {
                                 in: orders,
                             },
-                        }
+                        },
+                        {
+                            NOT: {
+                                orderStatus: "cancelled"
+                            }
+                        },
 
                     ],
 
@@ -608,10 +784,10 @@ export const closeCashCut = async (req, res) => {
                 },
 
             });
-            totalAutoservicio._sum.totalPrice === null ? totalAutoservicio._sum.totalPrice = 0 : totalAutoservicio._sum.totalPrice + 0;
+
+            if (totalAutoservicio._sum.totalPrice === null) totalAutoservicio._sum.totalPrice = 0;
 
             const totalPlanchado = await prisma.serviceOrder.aggregate({
-
 
                 where: {
                     AND: [
@@ -625,6 +801,11 @@ export const closeCashCut = async (req, res) => {
                             id_order: {
                                 in: orders,
                             },
+                        },
+                        {
+                            NOT: {
+                                orderStatus: "cancelled"
+                            }
                         }
 
                     ],
@@ -636,7 +817,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalPlanchado._sum.totalPrice === null ? totalPlanchado._sum.totalPrice = 0 : totalPlanchado._sum.totalPrice + 0;
+            if (totalPlanchado._sum.totalPrice === null) totalPlanchado._sum.totalPrice = 0;
 
             const totalTintoreria = await prisma.serviceOrder.aggregate({
 
@@ -653,6 +834,11 @@ export const closeCashCut = async (req, res) => {
                             id_order: {
                                 in: orders,
                             },
+                        },
+                        {
+                            NOT: {
+                                orderStatus: "cancelled"
+                            }
                         }
 
                     ],
@@ -664,7 +850,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalTintoreria._sum.totalPrice === null ? totalTintoreria._sum.totalPrice = 0 : totalTintoreria._sum.totalPrice + 0;
+            if (totalTintoreria._sum.totalPrice === null) totalTintoreria._sum.totalPrice = 0;
 
             const totalOtrosEncargo = await prisma.serviceOrder.aggregate({
 
@@ -681,6 +867,11 @@ export const closeCashCut = async (req, res) => {
                             id_order: {
                                 in: orders,
                             },
+                        },
+                        {
+                            NOT: {
+                                orderStatus: "cancelled"
+                            }
                         }
 
                     ],
@@ -692,7 +883,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            totalOtrosEncargo._sum.totalPrice === null ? totalOtrosEncargo._sum.totalPrice = 0 : totalOtrosEncargo._sum.totalPrice + 0;
+            if (totalOtrosEncargo._sum.totalPrice === null) totalOtrosEncargo._sum.totalPrice = 0;
 
             const lastPettyCash = await prisma.pettyCash.aggregate({
                 _max: {
@@ -711,13 +902,21 @@ export const closeCashCut = async (req, res) => {
 
             lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
 
-            const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
+            //const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 
             if (totalCashWithdrawal._sum.amount === null)
                 totalCashWithdrawal._sum.amount = parseFloat(0.00);
-            const totalC = cash._sum.payTotal + credit._sum.payTotal - totalCashWithdrawal._sum.amount + initialCash.initialCash;
 
-            console.log(totalEncargo._sum.totalPrice, totalAutoservicio._sum.totalPrice, totalPlanchado._sum.totalPrice, totalTintoreria._sum.totalPrice, totalOtrosEncargo._sum.totalPrice);
+            const totalBalance =
+                cash._sum.payTotal + credit._sum.payTotal
+                - totalCashWithdrawal._sum.amount + initialCash.initialCash;
+
+            console.log(
+                totalEncargo._sum.totalPrice,
+                totalAutoservicio._sum.totalPrice,
+                totalPlanchado._sum.totalPrice,
+                totalTintoreria._sum.totalPrice,
+                totalOtrosEncargo._sum.totalPrice);
             //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
 
             const today = new Date().toJSON();
@@ -730,22 +929,21 @@ export const closeCashCut = async (req, res) => {
                 "totalIncome": totalIncome,
                 "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
                 "initialCash": initialCash.initialCash,
-                "total": totalC,
+                "total": totalBalance,
                 "totalEncargo": totalEncargo._sum.totalPrice,
                 "totalAutoservicio": totalAutoservicio._sum.totalPrice,
                 "totalPlanchado": totalPlanchado._sum.totalPrice,
                 "totalTintoreria": totalTintoreria._sum.totalPrice,
                 "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-                "totalOtros": otherCategorys,
                 "ordersPayed": orders.length,
+                "ordersCancelled": ordersCancelled.length,
+                "totalCancelations": totalCancelled,
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
                 "pettyCashBalance": pettyCashBalance.balance,
                 "workShift": workShift.workShift
 
-                //"selfService":selfService
-                //"ordersIds":ordersIds
             }
 
             const closeCash = await prisma.cashCut.update({
@@ -766,12 +964,14 @@ export const closeCashCut = async (req, res) => {
                     "totalPlanchado": totalPlanchado._sum.totalPrice,
                     "totalTintoreria": totalTintoreria._sum.totalPrice,
                     "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
-                    "totalOtros": otherCategorys,
                     "ordersPayed": orders.length,
+                    "ordersCancelled": ordersCancelled.length,
+                    "totalCancelations": totalCancelled,
                     "cashCutStatus": "closed",
                     "cashCutD": today,
                     "cashCutT": time,
-                    "pettyCashBalance": pettyCashBalance.balance
+                    "pettyCashBalance": pettyCashBalance.balance,
+
 
                 }
             });

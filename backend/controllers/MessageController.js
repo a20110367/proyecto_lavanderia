@@ -98,6 +98,8 @@ export const sendReport = async (req, res) => {
 
     if (reportType === 1) {
 
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
         doc.text(`Fechas seleccionadas:`, 10, 30);
@@ -302,6 +304,7 @@ export const sendReport = async (req, res) => {
         count += 20;
     } else if (reportType === 3) {
 
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
 
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -337,6 +340,8 @@ export const sendReport = async (req, res) => {
         })
 
     } else if (reportType === 4) {
+
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
 
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 

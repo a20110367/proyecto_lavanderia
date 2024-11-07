@@ -96,7 +96,6 @@ export const getServicesReport = async (req, res) => {
                         cancelled: false
                     },
                 ],
-
             },
 
             _sum: {
@@ -130,8 +129,6 @@ export const getServicesReport = async (req, res) => {
                         cancelled: false
                     },
                 ],
-
-
             },
 
             _sum: {
@@ -165,8 +162,6 @@ export const getServicesReport = async (req, res) => {
                         cancelled: false
                     },
                 ],
-
-
             },
 
             _sum: {
@@ -200,15 +195,12 @@ export const getServicesReport = async (req, res) => {
                         cancelled: false
                     },
                 ],
-
-
             },
 
             _sum: {
                 units: true,
                 subtotal: true,
             },
-
         });
 
         const otherServiceSumary = await prisma.serviceOrderDetail.groupBy({
@@ -235,16 +227,12 @@ export const getServicesReport = async (req, res) => {
                         cancelled: false
                     },
                 ],
-
-
             },
 
             _sum: {
                 units: true,
                 subtotal: true,
             },
-
-
         });
 
         //Ahora hay que recuperar catalogos por categoria, para despues formatear el json final
@@ -254,8 +242,6 @@ export const getServicesReport = async (req, res) => {
                 id_service: true,
                 description: true,
             }
-
-
         });
         const laundryServiceCatalog = await prisma.laundryService.findMany({
 
@@ -263,8 +249,6 @@ export const getServicesReport = async (req, res) => {
                 id_service: true,
                 description: true,
             }
-
-
         });
 
         const ironServiceCatalog = await prisma.ironService.findMany({
@@ -273,8 +257,6 @@ export const getServicesReport = async (req, res) => {
                 id_service: true,
                 description: true,
             }
-
-
         });
 
         const drycleanServiceCatalog = await prisma.drycleanService.findMany({
@@ -283,8 +265,6 @@ export const getServicesReport = async (req, res) => {
                 id_service: true,
                 description: true,
             }
-
-
         });
 
         const otherServiceCatalog = await prisma.otherService.findMany({
@@ -358,8 +338,6 @@ export const getServicesReport = async (req, res) => {
                     },
 
                 ],
-
-
             },
             _count: {
                 id_order: true,
@@ -368,8 +346,6 @@ export const getServicesReport = async (req, res) => {
                 totalPrice: true,
                 numberOfItems: true,
             },
-
-
         });
 
         const deliveryStatusOrderSummary = await prisma.serviceOrder.groupBy({
@@ -396,6 +372,36 @@ export const getServicesReport = async (req, res) => {
 
                 ],
 
+            },
+            _count: {
+                id_order: true,
+            },
+            _sum: {
+                totalPrice: true,
+                numberOfItems: true
+            },
+        });
+
+        const cancelledOrderSummary = await prisma.serviceOrder.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        created: {
+                            lte: endDate
+                        },
+                    },
+                    {
+                        created: {
+                            gte: startDate
+                        },
+                    },
+                    {
+                        orderStatus: "cancelled"
+                    },
+
+                ],
 
             },
             _count: {
@@ -405,8 +411,6 @@ export const getServicesReport = async (req, res) => {
                 totalPrice: true,
                 numberOfItems: true
             },
-
-
         });
 
         let totalDeliveryStatusSalesVerification = 0;
@@ -440,6 +444,7 @@ export const getServicesReport = async (req, res) => {
             "ironServiceSummary": ironServiceSummary,
             "drycleanServiceSummary": drycleanServiceSummary,
             "otherServiceSumary": otherServiceSumary,
+            "cancelledOrderSummary": cancelledOrderSummary,
             //Ordenes por su estado de pago
             "payStatusOrderSummary": payStatusOrderSummary,
             //Ordenes por su estado de entrega
@@ -458,8 +463,6 @@ export const getServicesReport = async (req, res) => {
 
             "startDate": startDate,
             "endDate": endDate
-
-
         }
 
         res.status(200).json(response);
@@ -570,8 +573,6 @@ export const getServicesReportById = async (req, res) => {
                                 cancelled: false
                             },
                         ],
-
-
                     },
 
                     _sum: {
@@ -591,8 +592,6 @@ export const getServicesReportById = async (req, res) => {
                     select: {
                         description: true,
                     }
-
-
                 });
 
                 summary[0].description = descriptionService.description;
@@ -619,9 +618,7 @@ export const getServicesReportById = async (req, res) => {
                             },
 
                             {
-
                                 fk_ironService: serviceId
-
                             },
                             {
                                 cancelled: false
@@ -669,9 +666,7 @@ export const getServicesReportById = async (req, res) => {
                                 },
                             },
                             {
-
                                 fk_drycleanService: serviceId
-
                             },
                             {
                                 cancelled: false
@@ -723,9 +718,7 @@ export const getServicesReportById = async (req, res) => {
                                 },
                             },
                             {
-
                                 fk_otherService: serviceId
-
                             },
                             {
                                 cancelled: false

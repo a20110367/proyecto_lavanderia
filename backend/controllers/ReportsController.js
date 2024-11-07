@@ -92,6 +92,9 @@ export const getServicesReport = async (req, res) => {
                             fk_selfService: null
                         }
                     },
+                    {
+                        cancelled: false
+                    },
                 ],
 
             },
@@ -122,6 +125,9 @@ export const getServicesReport = async (req, res) => {
                         NOT: {
                             fk_laundryService: null
                         }
+                    },
+                    {
+                        cancelled: false
                     },
                 ],
 
@@ -155,6 +161,9 @@ export const getServicesReport = async (req, res) => {
                             fk_ironService: null
                         }
                     },
+                    {
+                        cancelled: false
+                    },
                 ],
 
 
@@ -187,6 +196,9 @@ export const getServicesReport = async (req, res) => {
                             fk_drycleanService: null
                         }
                     },
+                    {
+                        cancelled: false
+                    },
                 ],
 
 
@@ -218,6 +230,9 @@ export const getServicesReport = async (req, res) => {
                         NOT: {
                             fk_otherService: null
                         }
+                    },
+                    {
+                        cancelled: false
                     },
                 ],
 
@@ -335,6 +350,12 @@ export const getServicesReport = async (req, res) => {
                             gte: startDate
                         },
                     },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        },
+
+                    },
 
                 ],
 
@@ -365,6 +386,12 @@ export const getServicesReport = async (req, res) => {
                         created: {
                             gte: startDate
                         },
+                    },
+                    {
+                        NOT: {
+                            orderStatus: "cancelled"
+                        },
+
                     },
 
                 ],
@@ -488,6 +515,9 @@ export const getServicesReportById = async (req, res) => {
                                 fk_selfService: serviceId
 
                             },
+                            {
+                                cancelled: false
+                            },
                         ],
 
                     },
@@ -535,6 +565,9 @@ export const getServicesReportById = async (req, res) => {
                             },
                             {
                                 fk_laundryService: serviceId
+                            },
+                            {
+                                cancelled: false
                             },
                         ],
 
@@ -590,6 +623,9 @@ export const getServicesReportById = async (req, res) => {
                                 fk_ironService: serviceId
 
                             },
+                            {
+                                cancelled: false
+                            },
                         ],
                     },
 
@@ -636,6 +672,9 @@ export const getServicesReportById = async (req, res) => {
 
                                 fk_drycleanService: serviceId
 
+                            },
+                            {
+                                cancelled: false
                             },
 
                         ],
@@ -688,6 +727,9 @@ export const getServicesReportById = async (req, res) => {
                                 fk_otherService: serviceId
 
                             },
+                            {
+                                cancelled: false
+                            },
                         ],
 
 
@@ -720,9 +762,9 @@ export const getServicesReportById = async (req, res) => {
             }
                 break;
         }
-        
-        summary[0].startDate=startDate;
-        summary[0].endDate=endDate;
+
+        summary[0].startDate = startDate;
+        summary[0].endDate = endDate;
         const response = summary;
 
 
@@ -890,8 +932,8 @@ export const getSuppliesReportById = async (req, res) => {
         console.log(supplyDescription)
         suppliesSummary.description = supplyDescription.description;
 
-        suppliesSummary.startDate=startDate;
-        suppliesSummary.endDate=endDate;
+        suppliesSummary.startDate = startDate;
+        suppliesSummary.endDate = endDate;
         const response = suppliesSummary;
 
         res.status(200).json(response);

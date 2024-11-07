@@ -7,58 +7,7 @@ moment.locale('es-mx');
 const prisma = new PrismaClient();
 //Regresa todas las ordenes  nrevisar si se usa en el sistema
 export const getOrders = async (req, res) => {
-    try {
-        const response = await prisma.serviceOrder.findMany({
-
-
-            include: {
-                client: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                        email: true,
-                        phone: true,
-                    },
-                },
-                category: {
-                    select: {
-                        categoryDescription: true,
-                    }
-                },
-                user: {
-                    select: {
-                        name: true,
-                        firstLN: true,
-                        secondLN: true,
-                    },
-                },
-                ServiceOrderDetail: true,
-                payment: true,
-                deliveryDetail: {
-                    select: {
-                        user: {
-                            select: {
-                                name: true,
-                                firstLN: true,
-                                secondLN: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
-
-
-        res.status(200).json(response);
-    } catch (e) {
-        res.status(500).json({ msg: e.message });
-    }
-}
-
-export const getActiveOrders = async (req, res) => {
-    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
-    console.log(lastDate)
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
     try {
         const response = await prisma.serviceOrder.findMany({
 
@@ -114,8 +63,85 @@ export const getActiveOrders = async (req, res) => {
     }
 }
 
+export const getActiveOrders = async (req, res) => {
+    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    console.log(lastDate)
+    try {
+        const response = await prisma.serviceOrder.findMany({
+
+            where: {
+                AND: [
+                    {
+                        created: {
+                            gte: new Date(lastDate)
+                        },
+                    },
+                    {
+                        NOT:
+                        {
+                            OR:
+                                [
+                                    {
+                                        orderStatus: "stored",
+                                    },
+                                    {
+                                        orderStatus: "cancelled",
+                                    }
+                                ]
+                        }
+
+                    }
+                ]
+            },
+
+
+            include: {
+                client: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                        email: true,
+                        phone: true,
+                    },
+                },
+                category: {
+                    select: {
+                        categoryDescription: true,
+                    }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        firstLN: true,
+                        secondLN: true,
+                    },
+                },
+                ServiceOrderDetail: true,
+                payment: true,
+                deliveryDetail: {
+                    select: {
+                        user: {
+                            select: {
+                                name: true,
+                                firstLN: true,
+                                secondLN: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+
 export const getPendingOrders = async (req, res) => {
-    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
     console.log(lastDate)
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -293,6 +319,8 @@ export const getOrdersStatusById = async (req, res) => {
 
 export const getOrdersByClientName = async (req, res) => {
 
+    let lastDate = (moment().subtract(365, 'days').startOf('day').toISOString())
+
     try {
         let clientNameArray = req.body.clientName.split(" ")
         const clienSecondLN = clientNameArray.pop()
@@ -314,6 +342,11 @@ export const getOrdersByClientName = async (req, res) => {
                     },
                     {
                         secondLN: clienSecondLN,
+                    },
+                    {
+                        created: {
+                            gte: new Date(lastDate)
+                        },
                     }
 
                 ],
@@ -327,7 +360,7 @@ export const getOrdersByClientName = async (req, res) => {
 
         console.log(client)
 
-        var response = "";
+        let response = "";
         if (client != null) {
 
             response = await prisma.serviceOrder.findMany({
@@ -472,14 +505,7 @@ export const getStoredOrdersByClientName = async (req, res) => {
                             fk_client: client.id_client
                         },
                         {
-                            OR: [
-                                {
-                                    orderStatus: "finished"
-                                },
-                                {
-                                    orderStatus: "stored"
-                                }
-                            ]
+                            orderStatus: "stored"
                         }
 
                     ]
@@ -630,7 +656,7 @@ export const getOrdersByIdClient = async (req, res) => {
 
 export const getOrdersSelfService = async (req, res) => {
 
-    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
 
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -691,10 +717,23 @@ export const getOrdersSelfService = async (req, res) => {
 }
 
 export const getOrdersLaundry = async (req, res) => {
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
-                fk_categoryId: 2
+                AND:
+                    [
+                        {
+                            fk_categoryId: 2
+                        },
+                        {
+                            created: {
+                                gte: new Date(lastDate)
+                            },
+                        }
+                    ]
+
             },
             include: {
                 client: {
@@ -740,11 +779,23 @@ export const getOrdersLaundry = async (req, res) => {
 }
 
 export const getOrdersIron = async (req, res) => {
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
+                AND:
+                    [
+                        {
+                            fk_categoryId: 3
+                        },
+                        {
+                            created: {
+                                gte: new Date(lastDate)
+                            },
+                        }
+                    ]
 
-                fk_categoryId: 3
             },
             include: {
                 client: {
@@ -790,11 +841,23 @@ export const getOrdersIron = async (req, res) => {
 }
 
 export const getOrdersDryclean = async (req, res) => {
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
+                AND:
+                    [
+                        {
+                            fk_categoryId: 4
+                        },
+                        {
+                            created: {
+                                gte: new Date(lastDate)
+                            },
+                        }
+                    ]
 
-                fk_categoryId: 4
             },
             include: {
                 client: {
@@ -840,11 +903,23 @@ export const getOrdersDryclean = async (req, res) => {
 }
 
 export const getOrderOtherService = async (req, res) => {
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
+                AND:
+                    [
+                        {
+                            fk_categoryId: 5
+                        },
+                        {
+                            created: {
+                                gte: new Date(lastDate)
+                            },
+                        }
+                    ]
 
-                fk_categoryId: 5
             },
             include: {
                 client: {
@@ -1099,7 +1174,7 @@ export const getOrdersOtherServiceFinished = async (req, res) => {
 }
 
 export const getCancelableOrders = async (req, res) => {
-    let lastDate = (moment().subtract(365, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
     console.log(lastDate)
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -1148,7 +1223,7 @@ export const getCancelableOrders = async (req, res) => {
 }
 
 export const getCancelledOrders = async (req, res) => {
-    let lastDate = (moment().subtract(120, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
+    let lastDate = (moment().subtract(90, 'days').startOf('day').toISOString()) //dejar 365 solo temporal
     console.log(lastDate)
     try {
         const response = await prisma.cancelledServiceOrder.findMany({
@@ -1773,8 +1848,7 @@ export const updateCancelledOrder = async (req, res) => {
             },
 
             data: {
-                units: 0,
-                subtotal: 0,
+                cancelled: true,
             }
 
         });
@@ -1856,6 +1930,18 @@ export const updateCancelledOrder = async (req, res) => {
 
         });
 
+        const cancelPayment = prisma.payment.update({
+
+            where: {
+                fk_idOrder: Number(id_order)
+            },
+
+            data: {
+                cancelled: true
+            }
+
+        });
+
 
 
         if (cancelationTypeDefinition === "refund") {
@@ -1863,14 +1949,35 @@ export const updateCancelledOrder = async (req, res) => {
 
             const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue, refound] =
                 await prisma.$transaction
-                    ([createCancelledOrderDetail, createCancelledOrderRecord, updateCancelledOrderDetail, updateCancelledOrderStatus, updateIronControl, cancelLaundryQueue, cancelSelfServiceQueue, cancelIronQueue, cancelDrycleanQueue, cancelOtherQueue, refoundPayment])
+                    ([createCancelledOrderDetail,
+                        createCancelledOrderRecord,
+                        updateCancelledOrderDetail,
+                        updateCancelledOrderStatus,
+                        updateIronControl,
+                        cancelLaundryQueue,
+                        cancelSelfServiceQueue,
+                        cancelIronQueue,
+                        cancelDrycleanQueue,
+                        cancelOtherQueue,
+                        refoundPayment,
+                        cancelPayment])
             cancelledOrder = cancelledOrderRecord;
         }
         if (cancelationTypeDefinition === "cancellation") {
             console.log("que la chingada2")
             const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue] =
                 await prisma.$transaction
-                    ([createCancelledOrderDetail, createCancelledOrderRecord, updateCancelledOrderDetail, updateCancelledOrderStatus, updateIronControl, cancelLaundryQueue, cancelSelfServiceQueue, cancelIronQueue, cancelDrycleanQueue, cancelOtherQueue])
+                    ([createCancelledOrderDetail,
+                        createCancelledOrderRecord,
+                        updateCancelledOrderDetail,
+                        updateCancelledOrderStatus,
+                        updateIronControl,
+                        cancelLaundryQueue,
+                        cancelSelfServiceQueue,
+                        cancelIronQueue,
+                        cancelDrycleanQueue,
+                        cancelOtherQueue
+                    ])
             cancelledOrder = cancelledOrderRecord;
         }
 

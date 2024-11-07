@@ -1,5 +1,7 @@
 import { CashCutStatus, PrismaClient } from "@prisma/client";
 import { response } from "express";
+import moment from "moment";
+moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 

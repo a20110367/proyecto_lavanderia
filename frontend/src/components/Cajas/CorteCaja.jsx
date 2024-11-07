@@ -74,6 +74,17 @@ function CorteCaja() {
     }
   };
 
+  /* ------------------------------ REPRINT ------------------------------------*/
+
+  const handleReprintTicket = async () => {
+    try{
+      await api.post('/generate/ticket/reprint');
+    }catch(err){
+      Swal.fire("No existe ticket en la cola", "Recuerda que solo puedes reimprimir una sola vez", "warning", "#034078");
+      console.error(err);
+    }
+  };
+
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
@@ -720,6 +731,16 @@ function CorteCaja() {
             className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
           >
             Corte de Planchado
+          </button>
+
+          <p className="text-xl mt-4">
+            ¿Desea reimprimir el ultimo ticket?
+          </p>
+          <button
+            onClick={handleReprintTicket}
+            className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
+          >
+            Reimprimir
           </button>
         </div>
       </div>

@@ -668,7 +668,7 @@ export const reprintOrder = async (req, res) => {
 
         printer.newLine()
 
-        order.ServiceOrderDetail.map(detail => {
+        order.ServiceOrderDetail.forEach(detail => {
             printer.tableCustom([
                 { text: detail.units + '     X', align: "LEFT", bold: true },
                 { text: order.fk_categoryId === 1 ? detail.SelfService.description :

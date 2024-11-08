@@ -673,13 +673,13 @@ export const reprintOrder = async (req, res) => {
             console.log(detail)
             printer.tableCustom([
                 { text: detail.units + '     X', align: "LEFT", bold: true },
-                { text: order.fk_categoryId == 1 ? detail.SelfService.description :
+                { text: order.fk_categoryId === 1 ? detail.SelfService.description :
                     order.fk_categoryId === 2 ? detail.LaundryService.description :
                     order.fk_categoryId === 3 ? detail.IronService.description :
                     order.fk_categoryId === 4 ? detail.DrycleanService.description :
                     order.fk_categoryId === 5 ? detail.OtherService.description :
                     "Servicio de Categoria no Encontrada", align: "CENTER" },
-                { text: '$' + order.fk_categoryId === 1 ? detail.SelfService.price :
+                { text: order.fk_categoryId == 1 ? detail.SelfService.price :
                     order.fk_categoryId === 2 ? detail.LaundryService.price :
                     order.fk_categoryId === 3 ? detail.IronService.price :
                     order.fk_categoryId === 4 ? detail.DrycleanService.price :

@@ -669,6 +669,7 @@ export const reprintOrder = async (req, res) => {
         printer.newLine()
 
         order.ServiceOrderDetail.map(detail => {
+            console.log(fk_categoryId)
             console.log(detail)
             printer.tableCustom([
                 { text: detail.units + '     X', align: "LEFT", bold: true },

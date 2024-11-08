@@ -673,7 +673,7 @@ export const reprintOrder = async (req, res) => {
             console.log(detail)
             printer.tableCustom([
                 { text: detail.units + '     X', align: "LEFT", bold: true },
-                { text: order.fk_categoryId === 1 ? detail.SelfService.description :
+                { text: order.fk_categoryId == 1 ? detail.SelfService.description :
                     order.fk_categoryId === 2 ? detail.LaundryService.description :
                     order.fk_categoryId === 3 ? detail.IronService.description :
                     order.fk_categoryId === 4 ? detail.DrycleanService.description :

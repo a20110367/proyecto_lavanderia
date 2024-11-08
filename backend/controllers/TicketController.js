@@ -671,17 +671,17 @@ export const reprintOrder = async (req, res) => {
         order.ServiceOrderDetail.map(detail => {
             printer.tableCustom([
                 { text: detail.units + '     X', align: "LEFT", bold: true },
-                { text: order.fk_categoryId === 1 ? ServiceOrderDetail.SelfService.description :
-                    order.fk_categoryId === 2 ? ServiceOrderDetail.LaundryService.description :
-                    order.fk_categoryId === 3 ? ServiceOrderDetail.IronService.description :
-                    order.fk_categoryId === 4 ? ServiceOrderDetail.DrycleanService.description :
-                    order.fk_categoryId === 5 ? ServiceOrderDetail.OtherService.description :
+                { text: order.fk_categoryId === 1 ? detail.SelfService.description :
+                    order.fk_categoryId === 2 ? detail.LaundryService.description :
+                    order.fk_categoryId === 3 ? detail.IronService.description :
+                    order.fk_categoryId === 4 ? detail.DrycleanService.description :
+                    order.fk_categoryId === 5 ? detail.OtherService.description :
                     "Servicio de Categoria no Encontrada", align: "CENTER" },
-                { text: '$' + order.fk_categoryId === 1 ? ServiceOrderDetail.SelfService.precio :
-                    order.fk_categoryId === 2 ? ServiceOrderDetail.LaundryService.precio :
-                    order.fk_categoryId === 3 ? ServiceOrderDetail.IronService.precio :
-                    order.fk_categoryId === 4 ? ServiceOrderDetail.DrycleanService.precio :
-                    order.fk_categoryId === 5 ? ServiceOrderDetail.OtherService.precio :
+                { text: '$' + order.fk_categoryId === 1 ? detail.SelfService.price :
+                    order.fk_categoryId === 2 ? detail.LaundryService.price :
+                    order.fk_categoryId === 3 ? detail.IronService.price :
+                    order.fk_categoryId === 4 ? detail.DrycleanService.price :
+                    order.fk_categoryId === 5 ? detail.OtherService.price :
                     "Precio de Categoria no Encontrada", align: 'RIGHT' },
                 { text: '$' + detail.subtotal, align: "RIGHT" }
             ]);

@@ -697,6 +697,7 @@ export const getOrdersSelfService = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         SelfService: {
@@ -761,6 +762,7 @@ export const getOrdersLaundry = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         LaundryService: {
@@ -824,6 +826,7 @@ export const getOrdersIron = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         IronService: {
@@ -887,6 +890,7 @@ export const getOrdersDryclean = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         DrycleanService: {
@@ -950,6 +954,7 @@ export const getOrderOtherService = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         OtherService: {
@@ -1004,6 +1009,7 @@ export const getOrdersLaundryFinished = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         LaundryService: {
@@ -1057,6 +1063,7 @@ export const getOrdersIronFinished = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         IronService: {
@@ -1110,6 +1117,7 @@ export const getOrdersDrycleanFinished = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         DrycleanService: {
@@ -1163,6 +1171,7 @@ export const getOrdersOtherServiceFinished = async (req, res) => {
                 },
                 ServiceOrderDetail: {
                     select: {
+                        id_serviceOrderDetail: true,
                         units: true,
                         subtotal: true,
                         OtherService: {

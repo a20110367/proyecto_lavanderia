@@ -294,10 +294,10 @@ function PedidosGeneral() {
                 Fecha de <br />
                 Entregado
               </th>
-              <th>
+              {/* <th>
                 Forma de <br />
                 Pago
-              </th>
+              </th> */}
               <th>Estatus</th>
               <th>Observaciones</th>
               <th></th>
@@ -351,9 +351,9 @@ function PedidosGeneral() {
                   <td className="py-3 px-6">
                     {pedido.deliveryDetail ? formatDate(pedido.deliveryDetail.deliveryDate) : "-"}
                   </td>
-                  <td className="py-3 px-6">
+                  {/* <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
-                  </td>
+                  </td> */}
                   <td className="py-3 px-6 font-bold">
                     {pedido.orderStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">

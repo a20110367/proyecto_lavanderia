@@ -16,6 +16,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 
 function PedidosGeneral() {
   const [pedidos, setPedidos] = useState([]);
@@ -348,7 +349,7 @@ function PedidosGeneral() {
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    {pedido.deliveryDetail ? formatDate(pedido.deliveryDetail.deliveryDate) : "-"}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}

@@ -233,7 +233,7 @@ function PedidosGeneral() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos General</strong>
+          <strong className="title-strong">Pedidos Finalizadas</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">
@@ -286,8 +286,12 @@ function PedidosGeneral() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>
+                Fecha <br />
+                Programada              
+              </th>
+              <th>
                 Fecha de <br />
-                Entrega
+                Entregado
               </th>
               <th>
                 Forma de <br />
@@ -339,6 +343,9 @@ function PedidosGeneral() {
                         ? "Encargo Varios"
                         : "Otro" // Si el texto no coincide con ninguna categoría específica
                       : "Categoría no definida"}
+                  </td>
+                  <td className="py-3 px-6">
+                    {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
                     {formatDate(pedido.scheduledDeliveryDate)}

@@ -87,7 +87,7 @@ const items1 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("Pedidos Finalizados", "/pedidosGeneral"),
+    getItem("Pedidos Finalizados", "/pedidosFinalizados"),
 
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
@@ -225,7 +225,7 @@ const items2 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("Peidos Finalizados", "/pedidosGeneral"),
+    getItem("Peidos Finalizados", "/pedidosFinalizados"),
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
   getItem(

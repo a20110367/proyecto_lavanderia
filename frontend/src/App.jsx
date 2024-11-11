@@ -35,7 +35,7 @@ import SupplyPOS from './components/PuntoVenta/SupplyPOS'
 
 //PEDIDOS
 import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
-import PedidosGeneral from "./components/Pedidos/PedidosGeneral"
+import PedidosFinalizados from "./components/Pedidos/PedidosFinalizados"
 import PedidosAlmacenados from "./components/Pedidos/PedidosAlmacenados"
 
 //SIDEBAR
@@ -185,7 +185,7 @@ function App() {
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
-                    <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
+                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
                     
                     {/**Encargo varios */}
                     <Route path="/pedidosVarios" element={<PedidosVarios/>}/>

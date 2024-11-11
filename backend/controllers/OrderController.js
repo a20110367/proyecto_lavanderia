@@ -128,7 +128,7 @@ export const getActiveOrders = async (req, res) => {
                                 secondLN: true,
                             },
                         },
-                        deliveryDate:true,  
+                        deliveryDate: true,
                     },
                 },
             },
@@ -703,6 +703,7 @@ export const getOrdersSelfService = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                                 machineType: true,
                             },
                         },
@@ -766,6 +767,7 @@ export const getOrdersLaundry = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -828,6 +830,7 @@ export const getOrdersIron = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -890,6 +893,7 @@ export const getOrdersDryclean = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -952,6 +956,7 @@ export const getOrderOtherService = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -1005,6 +1010,7 @@ export const getOrdersLaundryFinished = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -1057,6 +1063,7 @@ export const getOrdersIronFinished = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -1109,6 +1116,7 @@ export const getOrdersDrycleanFinished = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },
@@ -1161,6 +1169,7 @@ export const getOrdersOtherServiceFinished = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             },
                         },
                     },

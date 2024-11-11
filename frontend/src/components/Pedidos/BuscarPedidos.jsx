@@ -26,7 +26,9 @@ const BuscarPedidos = () => {
     "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg",
   ]);
 
-  const [clientSelected, setClientSelected] = useState("");
+  const [nameClient, setNameClient] = useState("");
+  const [firstNameClient, setFirstNameClient] = useState("");
+  const [secondNameClient, setSecondNameClient] = useState("");
   const [id_order, setId_order] = useState("");
   const [searchType, setSearchType] = useState("client");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -51,13 +53,13 @@ const BuscarPedidos = () => {
   });
 
   useEffect(() => {
-    setClientSelected("");
+    setNameClient("");
     setId_order("");
   }, [searchType]);
 
   const handleSearch = async () => {
     if (
-      (searchType === "client" && !clientSelected) ||
+      (searchType === "client" && !nameClient && !firstNameClient && !secondNameClient) ||
       (searchType === "id_order" && !id_order)
     ) {
       Swal.fire({
@@ -69,7 +71,7 @@ const BuscarPedidos = () => {
       return;
     }
 
-    if (searchType === "client" && !isNaN(clientSelected)) {
+    if (searchType === "client" && !isNaN(nameClient) && !isNaN(firstNameClient) && !isNaN(secondNameClient)) {
       Swal.fire({
         icon: "warning",
         title: "Error",
@@ -85,7 +87,9 @@ const BuscarPedidos = () => {
       if (searchType === "client") {
         const res = await api.post("/ordersByClientName", {
           //quitar restriccion de estatus probablemente cambie
-          clientName: clientSelected,
+          clientName: nameClient,
+          firstName: firstNameClient,
+          secondNameClient: secondNameClient,
         });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
@@ -141,7 +145,7 @@ const BuscarPedidos = () => {
   const handleReturn = () => {
     setShowTable(false);
     setSearchType("client");
-    setClientSelected("");
+    setNameClient("");
     setId_order("");
     setFilteredPedidos([]);
     setCurrentPage(0);
@@ -153,16 +157,16 @@ const BuscarPedidos = () => {
   };
 
   const handlePrint = async () => {
-    try{
-      if(selectedPedido){
-          await api.post(`/generate/order/reprint`, {
-              order: selectedPedido,
-          })
-          Swal.fire("Ticket Impreso", "", "success");
+    try {
+      if (selectedPedido) {
+        await api.post(`/generate/order/reprint`, {
+          order: selectedPedido,
+        })
+        Swal.fire("Ticket Impreso", "", "success");
       }
-    }catch(err){
-        console.error(err);
-        Swal.fire("Error al imprimir", "", "error")
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error al imprimir", "", "error")
     }
   }
 
@@ -202,8 +206,8 @@ const BuscarPedidos = () => {
               {selectedPedido?.payForm === "advance"
                 ? "Anticipado"
                 : selectedPedido?.payForm === "delivery"
-                ? "A la entrega"
-                : selectedPedido?.payForm}
+                  ? "A la entrega"
+                  : selectedPedido?.payForm}
             </p>
             <p>
               <strong>Método de pago:</strong>{" "}
@@ -211,63 +215,63 @@ const BuscarPedidos = () => {
                 ? selectedPedido.payment.payMethod === "credit"
                   ? "Tarjeta"
                   : selectedPedido.payment.payMethod === "cash"
-                  ? "Efectivo"
-                  : "No se ha pagado"
+                    ? "Efectivo"
+                    : "No se ha pagado"
                 : "No se ha pagado"}
             </p>
           </div>
           {selectedPedido?.deliveryDetail &&
-        selectedPedido.deliveryDetail.deliveryDate ? (
-          <div>
-            <p>
-              <strong>Entregó:</strong>{" "}
-              {selectedPedido?.deliveryDetail &&
-              selectedPedido.deliveryDetail.user
-                ? `${selectedPedido.deliveryDetail.user.name} ${selectedPedido.deliveryDetail.user.firstLN} ${selectedPedido.deliveryDetail.user.secondLN}`
-                : "No se encontró información de entrega"}
-            </p>
+            selectedPedido.deliveryDetail.deliveryDate ? (
+            <div>
+              <p>
+                <strong>Entregó:</strong>{" "}
+                {selectedPedido?.deliveryDetail &&
+                  selectedPedido.deliveryDetail.user
+                  ? `${selectedPedido.deliveryDetail.user.name} ${selectedPedido.deliveryDetail.user.firstLN} ${selectedPedido.deliveryDetail.user.secondLN}`
+                  : "No se encontró información de entrega"}
+              </p>
 
-            <p>
-              <strong>Fecha de entrega:</strong>{" "}
-              {selectedPedido?.deliveryDetail &&
-              selectedPedido.deliveryDetail.deliveryDate
-                ? formatDate(selectedPedido.deliveryDetail.deliveryDate)
-                : "Fecha de entrega no disponible"}
-            </p>
-            <p>
-              <strong>Hora de entrega:</strong>{" "}
-              {selectedPedido?.deliveryDetail &&
-              selectedPedido.deliveryDetail.deliveryTime
-                ? new Date(
+              <p>
+                <strong>Fecha de entrega:</strong>{" "}
+                {selectedPedido?.deliveryDetail &&
+                  selectedPedido.deliveryDetail.deliveryDate
+                  ? formatDate(selectedPedido.deliveryDetail.deliveryDate)
+                  : "Fecha de entrega no disponible"}
+              </p>
+              <p>
+                <strong>Hora de entrega:</strong>{" "}
+                {selectedPedido?.deliveryDetail &&
+                  selectedPedido.deliveryDetail.deliveryTime
+                  ? new Date(
                     selectedPedido.deliveryDetail.deliveryTime
                   ).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })
-                : "Hora de entrega no disponible"}
-            </p>
-          </div>
-        ) : selectedPedido?.category?.categoryDescription === "autoservicio" ? (
-          <div>
-            <p>
-              <strong></strong>{" "}
-              <span className="text-green-600">
-                Es responsabilidad del cliente
-              </span>
-            </p>
-            {/* Aquí puedes agregar los campos adicionales relacionados con el autoservicio */}
-            {/* Por ejemplo, podrías mostrar el campo de Fecha de Entrega Programada o cualquier otro campo relevante */}
-          </div>
-        ) : (
-          <div>
-            <p>
-              <span className="text-red-600">
-                No se ha entregado el pedido
-              </span>
-            </p>
-          </div>
-        )}
-      </div>
+                  : "Hora de entrega no disponible"}
+              </p>
+            </div>
+          ) : selectedPedido?.category?.categoryDescription === "autoservicio" ? (
+            <div>
+              <p>
+                <strong></strong>{" "}
+                <span className="text-green-600">
+                  Es responsabilidad del cliente
+                </span>
+              </p>
+              {/* Aquí puedes agregar los campos adicionales relacionados con el autoservicio */}
+              {/* Por ejemplo, podrías mostrar el campo de Fecha de Entrega Programada o cualquier otro campo relevante */}
+            </div>
+          ) : (
+            <div>
+              <p>
+                <span className="text-red-600">
+                  No se ha entregado el pedido
+                </span>
+              </p>
+            </div>
+          )}
+        </div>
         {/* Campos en la parte inferior */}
         <div className="text-lg">
           <br />
@@ -279,14 +283,14 @@ const BuscarPedidos = () => {
               ? selectedPedido.category.categoryDescription === "autoservicio"
                 ? "Autoservicio"
                 : selectedPedido.category.categoryDescription === "planchado"
-                ? "Planchado"
-                : selectedPedido.category.categoryDescription === "encargo"
-                ? "Encargo Ropa"
-                : selectedPedido.category.categoryDescription === "tintoreria"
-                ? "Tintoreria"
-                : selectedPedido.category.categoryDescription === "varios"
-                ? "Encargo Varios"
-                : "Otro"
+                  ? "Planchado"
+                  : selectedPedido.category.categoryDescription === "encargo"
+                    ? "Encargo Ropa"
+                    : selectedPedido.category.categoryDescription === "tintoreria"
+                      ? "Tintoreria"
+                      : selectedPedido.category.categoryDescription === "varios"
+                        ? "Encargo Varios"
+                        : "Otro"
               : "Categoría no definida"}
           </p>
           <p>
@@ -302,16 +306,16 @@ const BuscarPedidos = () => {
                 selectedPedido?.orderStatus === "pending"
                   ? "text-gray-600"
                   : selectedPedido?.orderStatus === "stored"
-                  ? "text-fuchsia-600"
-                  : selectedPedido?.orderStatus === "inProgress"
-                  ? "text-yellow-600"
-                  : selectedPedido?.orderStatus === "finished"
-                  ? "text-blue-600"
-                  : selectedPedido?.orderStatus === "delivered"
-                  ? "text-green-600"
-                  : selectedPedido?.orderStatus === "cancelled"
-                  ? "text-red-600"
-                  : "text-gray-600"
+                    ? "text-fuchsia-600"
+                    : selectedPedido?.orderStatus === "inProgress"
+                      ? "text-yellow-600"
+                      : selectedPedido?.orderStatus === "finished"
+                        ? "text-blue-600"
+                        : selectedPedido?.orderStatus === "delivered"
+                          ? "text-green-600"
+                          : selectedPedido?.orderStatus === "cancelled"
+                            ? "text-red-600"
+                            : "text-gray-600"
               }
             >
               {selectedPedido?.orderStatus === "pending" ? (
@@ -427,14 +431,14 @@ const BuscarPedidos = () => {
                       ? pedido.category.categoryDescription === "autoservicio"
                         ? "Autoservicio"
                         : pedido.category.categoryDescription === "planchado"
-                        ? "Planchado"
-                        : pedido.category.categoryDescription === "encargo"
-                        ? "Encargo Ropa"
-                        : pedido.category.categoryDescription === "tintoreria"
-                        ? "Tintoreria"
-                        : pedido.category.categoryDescription === "varios"
-                        ? "Encargo Varios"
-                        : "Otro"
+                          ? "Planchado"
+                          : pedido.category.categoryDescription === "encargo"
+                            ? "Encargo Ropa"
+                            : pedido.category.categoryDescription === "tintoreria"
+                              ? "Tintoreria"
+                              : pedido.category.categoryDescription === "varios"
+                                ? "Encargo Varios"
+                                : "Otro"
                       : "Categoría no definida"}
                   </p>
                   <p>
@@ -548,16 +552,29 @@ const BuscarPedidos = () => {
                   onChange={(e) => setId_order(e.target.value)}
                 />
               ) : (
-                <Input
-                  className="mr-2"
-                  placeholder="Escriba el nombre completo del cliente"
-                  value={clientSelected}
-                  onChange={(e) => setClientSelected(e.target.value)}
-                />
-              )}
+                <div>
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el nombre completo del cliente"
+                    value={nameClient}
+                    onChange={(e) => setNameClient(e.target.value)}
+                  />
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el primer apellido completo del cliente"
+                    value={firstNameClient}
+                    onChange={(e) => setFirstNameClient(e.target.value)}
+                  />
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el segundo apellido completo del cliente"
+                    value={secondNameClient}
+                    onChange={(e) => setSecondNameClient(e.target.value)}
+                  />
+                </div>)}
               <Button
                 type="primary"
-                className="btn-search-stored"
+                className="btn-search-stored ml-4"
                 onClick={handleSearch}
                 htmlType="submit"
               >

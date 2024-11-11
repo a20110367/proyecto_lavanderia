@@ -128,6 +128,7 @@ export const getActiveOrders = async (req, res) => {
                                 secondLN: true,
                             },
                         },
+                        deliveryDate:true,  
                     },
                 },
             },

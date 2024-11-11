@@ -81,11 +81,76 @@ export const createPaymentDelivery = async (req, res) =>{
             data:{
                 payStatus:'paid',
                 orderStatus:'delivered',
+                totalPrice: Number(req.body.payment.payTotal)
             },
 
         });
 
         console.log(orderPayment);
+
+        const orderDetail = await prisma.serviceOrderDetail.findMany({
+            where:{
+                fk_serviceOrder:req.body.payment.fk_idOrder,
+            },
+            
+            select:{
+              id_serviceOrderDetail:true,
+              units:true,
+              LaundryService:{
+                select:{
+                    id_service:true,
+                    description:true,
+                    price:true,
+                    priceCredit:true,
+                }
+              },
+              SelfService:{
+                select:{
+                    id_service:true,
+                    description:true,
+                    price:true,
+                    priceCredit:true,
+                }
+              },
+              IronService:{
+                select:{
+                    id_service:true,
+                    description:true,
+                    price:true,
+                    priceCredit:true,
+                }
+              },
+              DrycleanService:{
+                select:{
+                    id_service:true,
+                    description:true,
+                    price:true,
+                    priceCredit:true,
+                }
+              },
+              OtherService:{
+                select:{
+                    id_service:true,
+                    description:true,
+                    price:true,
+                    priceCredit:true,
+                }
+              }                
+            }
+
+        });
+
+        console.log(orderDetail)
+
+        // const orderCategory = await prisma.serviceOrder.findFirst({
+        //     where:{
+        //         id_order:req.body.deliveryDetail.fk_idOrder,
+        //     },
+        //     select:{
+        //         fk_categoryId:true,
+        //     }
+        // });
+
 
         const result = {
             "payment":payment,
@@ -116,6 +181,7 @@ export const createPaymentAdvance = async (req, res) =>{
             },
             data:{
                 payStatus:'paid',
+                totalPrice: Number(req.body.payment.payTotal)
             },
 
         });

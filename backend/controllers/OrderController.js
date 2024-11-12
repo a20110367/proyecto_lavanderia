@@ -323,13 +323,16 @@ export const getOrdersByClientName = async (req, res) => {
     let lastDate = (moment().subtract(365, 'days').startOf('day').toISOString())
 
     try {
-        let clientNameArray = req.body.clientName.split(" ")
-        const clienSecondLN = clientNameArray.pop()
-        const clientFirstLN = clientNameArray.pop()
-        const clientNewName = clientNameArray.toString()
-        const clientName = clientNewName.replace(/,/g, ' ')
-        console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
+        // let clientNameArray = req.body.clientName.split(" ")
+        // const clienSecondLN = clientNameArray.pop()
+        // const clientFirstLN = clientNameArray.pop()
+        // const clientNewName = clientNameArray.toString()
+        // const clientName = clientNewName.replace(/,/g, ' ')
+        // console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
 
+        const clientName = req.body.clientName
+        const clientFirstLN = req.body.firstName
+        const clienSecondLN = req.body.secondNameClient
 
         const client = await prisma.client.findFirst({
             where: {
@@ -463,13 +466,16 @@ export const getOrdersByClientName = async (req, res) => {
 export const getStoredOrdersByClientName = async (req, res) => {
 
     try {
-        let clientNameArray = req.body.clientName.split(" ")
-        const clienSecondLN = clientNameArray.pop()
-        const clientFirstLN = clientNameArray.pop()
-        const clientNewName = clientNameArray.toString()
-        const clientName = clientNewName.replace(/,/g, ' ')
-        console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
+        // let clientNameArray = req.body.clientName.split(" ")
+        // const clienSecondLN = clientNameArray.pop()
+        // const clientFirstLN = clientNameArray.pop()
+        // const clientNewName = clientNameArray.toString()
+        // const clientName = clientNewName.replace(/,/g, ' ')
+        // console.log(clientNameArray, clientName, clientFirstLN, clienSecondLN)
 
+        const clientName = req.body.clientName
+        const clientFirstLN = req.body.firstName
+        const clienSecondLN = req.body.secondNameClient
 
         const client = await prisma.client.findFirst({
             where: {
@@ -1798,10 +1804,6 @@ export const updateCancelledOrder = async (req, res) => {
                     },
                 },
             },
-
-
-
-
         });
 
         const getPaymentData = prisma.payment.findFirst({
@@ -1825,9 +1827,6 @@ export const updateCancelledOrder = async (req, res) => {
             },
 
         });
-
-
-
 
         const [cashCutData, orderData, orderDetail, paymentData, ironControlData] = await prisma.$transaction([getCurrentCashCut, getOrderData, getOrderDetail, getPaymentData, getIronControl])
 

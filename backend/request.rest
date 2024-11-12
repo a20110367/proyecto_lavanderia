@@ -1094,3 +1094,7 @@ PATCH http://localhost:5000/cancelSupplyOrder/53
 ###
 
 POST http://localhost:5000/generate/ticket/reprint
+
+#VEr que es lo que nos regresa el order detail
+###
+GET  http://localhost:5000/paymentsTest/434

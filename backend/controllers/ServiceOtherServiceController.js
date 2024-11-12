@@ -10,6 +10,7 @@ export const getOtherServices = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 Category: {
                     select: {
                         categoryDescription: true,
@@ -39,6 +40,7 @@ export const getOtherServicesById = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
 
                 Category: {
                     select: {

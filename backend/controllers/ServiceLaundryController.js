@@ -10,6 +10,7 @@ export const getLaundryServices = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 washWeight: true,
                 washCycleTime: true,
                 dryWeight: true,

@@ -240,7 +240,8 @@ Content-Type: application/json
 
 {
     "machineType": "lavadora",
-    "model": "Chingona 3000",
+    "model": "Prueba",
+    "machineNumber": 6,
     "cicleTime": 45,
     "weight": 20,
     "status": "available",

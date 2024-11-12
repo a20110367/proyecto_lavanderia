@@ -10,6 +10,7 @@ export const getIronServices = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 pieces: true,
                 cycleTime: true,
                 Category: {
@@ -39,6 +40,7 @@ export const getIronServicesById = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 pieces: true,
                 cycleTime: true,
                 Category: {

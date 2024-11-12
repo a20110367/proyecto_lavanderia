@@ -10,6 +10,7 @@ export const getDrycleanServices = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 pieces: true,
                 Category: {
                     select: {
@@ -38,6 +39,7 @@ export const getDrycleanServicesById = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit:true,
                 pieces: true,
                 Category: {
                     select: {

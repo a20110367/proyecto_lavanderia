@@ -50,6 +50,7 @@ model Machine {
   id_machine   Int         @id @default(autoincrement())
   machineType  MachineType @default(lavadora)
   model        String
+  machineNumber Int  @default(1) 
   cicleTime    Int
   weight       Int
   status       Status      @default(available)

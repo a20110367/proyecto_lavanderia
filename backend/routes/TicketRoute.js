@@ -27,7 +27,7 @@ router.post('/generateIronCutTicket', ironCutTicket)
 
 router.post('/generate/report/Product', printReportProduct)
 router.post('/generate/report/Product/id', printReportProductId)
-router.post('/generate/report/Service/', printReportService)
+router.post('/generate/report/Service', printReportService)
 router.post('/generate/report/Service/id', printReportServiceId)
 
 router.post('/generate/order/canceled', printCanceledOrder);

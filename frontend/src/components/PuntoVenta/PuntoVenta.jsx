@@ -165,6 +165,8 @@ export default function PuntoVenta() {
 
   const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
+  // console.log(data)
+  console.log(cart)
 
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
@@ -259,6 +261,10 @@ export default function PuntoVenta() {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const calculateSubtotalCredit = () => {
+    return cart.reduce((total, item) => total + item.priceCredit * item.quantity, 0);
+  };
+
   const showModal = () => {
     if (cart.length === 0) {
       Swal.fire({
@@ -294,18 +300,16 @@ export default function PuntoVenta() {
     let noOfItems = 0;
     cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
+    const subTotal = payMethod === 'credit' ? calculateSubtotalCredit() : calculateSubtotal();
+    // console.log(subTotal)
+
     cart.forEach((detail) =>
       arrayService.push({
         units: detail.quantity,
-        subtotal: detail.quantity * detail.price,
+        subtotal: subTotal,
         fk_Service: detail.id_service,
       })
     );
-
-    const subTotal = calculateSubtotal();
-
-    const totalWithDiscount =
-      payMethod === "credit" ? subTotal - subTotal * 0 : subTotal;
 
     let ironPieces = null;
     let drycleanPieces = null;
@@ -323,7 +327,7 @@ export default function PuntoVenta() {
       // GEN ORDER
       const res = await api.post(postUrl, {
         serviceOrder: {
-          totalPrice: totalWithDiscount,
+          totalPrice: subTotal,
           fk_client: parseInt(clientId),
           numberOfItems: noOfItems,
           payForm: payForm,
@@ -354,7 +358,7 @@ export default function PuntoVenta() {
             payDate: purchaseDate,
             payTime: purchaseDate,
             fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-            payTotal: calculateSubtotal(),
+            payTotal: subTotal,
           },
         });
       }
@@ -364,7 +368,7 @@ export default function PuntoVenta() {
         payForm: payForm,
         payStatus: payStatus,
         payMethod: payMethod,
-        subtotal: totalWithDiscount,
+        subtotal: subTotal,
         casher: cookies.username,
         numberOfItems: noOfItems,
         client:
@@ -896,9 +900,13 @@ export default function PuntoVenta() {
                         <p style={{ fontSize: "16px" }}>
                           {service.description}
                         </p>
-                        <p style={{ fontSize: "16px" }}>
+                        {payMethod === 'credit' ? 
+                        (<p style={{ fontSize: "16px" }}>
+                          Costo: ${service.priceCredit * service.quantity}
+                        </p>)
+                        : (<p style={{ fontSize: "16px" }}>
                           Costo: ${service.price * service.quantity}
-                        </p>
+                        </p>)}
                         <hr />
                       </div>
                     ))}
@@ -931,7 +939,7 @@ export default function PuntoVenta() {
                       Subtotal:
                     </p>
                     <p style={{ fontSize: "16px" }}>
-                      ${calculateSubtotal()} {/**+ calculateProductTotal() */}
+                      ${payMethod === 'credit' ? calculateSubtotalCredit() : calculateSubtotal()} {/**+ calculateProductTotal() */}
                     </p>
                   </div>
                   <div>
@@ -982,9 +990,9 @@ export default function PuntoVenta() {
                             style={{ width: "100%", fontSize: "16px" }}
                             onChange={(value) => setPayMethod(value)}
                             value={payMethod}
-                          >
-                            <Option value="credit">Tarjeta</Option>
+                          >        
                             <Option value="cash">Efectivo</Option>
+                            <Option value="credit">Tarjeta</Option>
                           </Select>
                         </div>
                       )}

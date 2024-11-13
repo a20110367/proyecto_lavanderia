@@ -85,37 +85,38 @@ export const createMachineMany = async (req, res) => {
 export const updateMachine = async (req, res) => {
 
     try {
-
-        let response
-
-        const validation = await prisma.machine.findFirst({
+        const machineUpdate = await prisma.machine.updateMany({
             where: {
-
                 AND: [
                     {
-                        machineNumber: Number(req.body.machineNumber)
+                        id_machine: Number(req.params.id)
+                    },
+                    {
+                        machineNumber: req.body.machineNumber
                     },
                     {
                         machineType: req.body.machineType
                     }
+
                 ]
+
+            },
+            data: {
+                cicleTime: req.body.cicleTime,
+                weight: req.body.weight,
+                status: req.body.status,
+                notes: req.body.notes
             }
         });
 
-        response = null;
-        if (validation === null) {
+        const machine = await prisma.machine.findFirst({
+            where: {
+                id_machine: Number(req.params.id)
+            },
+        });
 
-            const machine = await prisma.machine.update({
-                where: {
-                    id_machine: Number(req.params.id)
-                },
-                data: req.body
-            });
 
-            response = machine
-        }
-
-        res.status(200).json(response);
+        res.status(200).json(machine);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

@@ -267,16 +267,17 @@ Content-Type: application/json
 
 
 ###
-PATCH http://localhost:5000/machines/6
+PATCH http://localhost:5000/machines/12
 Content-Type: application/json
 
 {
-    "machineType": "lavadora",
-    "model": "LG",
-    "cicleTime": 35,
-    "weight": 10,
-    "status": "unavailable",
-    "notes": "Se madreo"
+   "machineType": "lavadora",
+    "model": "Prueba",
+    "machineNumber": 7,
+    "cicleTime": 40,
+    "weight": 20,
+    "status": "available",
+    "notes": ""
 }
 ###
 DELETE http://localhost:5000/dryMachines/3

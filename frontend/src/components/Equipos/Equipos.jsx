@@ -84,7 +84,7 @@ function Equipos() {
             </option>
             <option
               value="lavadora"
-              className="text-dodgerBlue font-semibold text-base"
+              className="text-blue-600 font-semibold text-base"
             >
               Lavadoras
             </option>
@@ -122,10 +122,16 @@ function Equipos() {
                 )
                 .map((machine, index) => (
                   <tr key={machine.id_machine}>
-                    <td>{index + 1}</td>
+                    <td className={`font-semibold ${machine.machineType === "lavadora"
+                          ? "text-blue-600"
+                          : machine.machineType === "plancha"
+                            ? "text-yellow-500"
+                            : "text-green-500"
+                        }`}>
+                          {machine.machineNumber}</td>
                     <td
                       className={`font-semibold ${machine.machineType === "lavadora"
-                          ? "text-dodgerBlue"
+                          ? "text-blue-600"
                           : machine.machineType === "plancha"
                             ? "text-yellow-500"
                             : "text-green-500"

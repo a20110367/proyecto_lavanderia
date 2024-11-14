@@ -22,6 +22,7 @@ function EditEquipo() {
   const [modelFocus, setModelFocus] = useState(false);
 
   const [machineType, setMachineType] = useState("lavadora");
+  const [noMachine, setNoMachine] = useState();
   const [cicleTime, setCicleTime] = useState("");
   const [validCicleTime, setValidCicleTime] = useState(false);
   const [cicleTimeFocus, setCicleTimeFocus] = useState(false);
@@ -63,6 +64,7 @@ function EditEquipo() {
     const getMachineById = async () => {
       const response = await api.get(`/machines/${id}`);
       setModel(response.data.model);
+      setNoMachine(response.data.machineNumber)
       setMachineType(response.data.machineType);
       setCicleTime(response.data.cicleTime.toString());
       setWeight(response.data.weight.toString());
@@ -88,6 +90,7 @@ function EditEquipo() {
     try {
       await api.patch(`/machines/${id}`, {
         model: model,
+        machineNumber: noMachine,
         machineType: machineType,
         cicleTime: parseInt(cicleTime),
         weight: parseInt(weight),
@@ -143,15 +146,30 @@ function EditEquipo() {
                 Tipo de Máquina:
               </label>
               <select
-                className="form-input"
+                className="form-input bg-gray-100"
                 value={machineType}
                 onChange={(e) => setMachineType(e.target.value)}
                 name="machineType"
                 id="machineType"
+                disabled
               >
                 <option value="lavadora">Lavadora</option>
                 <option value="secadora">Secadora</option>
               </select>
+
+              {/** Número de Equipo */}
+              <label className="form-lbl" htmlFor="noMachine">
+                No. de Equipo:
+              </label>
+              <input
+                className="form-input bg-gray-100"
+                type="number"
+                id="noMachine"
+                onChange={(e) => setNoMachine(e.target.value)}
+                value={noMachine}
+                required
+                disabled
+              />
 
               {/* Modelo */}
               <label className="form-lbl" htmlFor="model">
@@ -228,7 +246,6 @@ function EditEquipo() {
                 id="ipAddress"
                 onChange={(e) => setIpAddress(e.target.value)}
                 value={ipAddress}
-                required
               />
 
               {/* Estado */}

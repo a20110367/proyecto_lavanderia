@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 const MODEL_REGEX = /^[A-z0-9-_ ]{1,191}$/;
@@ -22,6 +23,7 @@ function AddEquipo() {
   const [modelFocus, setModelFocus] = useState(false);
 
   const [machineType, setMachineType] = useState("lavadora");
+  const [noMachine, setNoMachine] = useState();
   const [cicleTime, setCicleTime] = useState("");
   const [validCicleTime, setValidCicleTime] = useState(false);
   const [cicleTimeFocus, setCicleTimeFocus] = useState(false);
@@ -68,8 +70,9 @@ function AddEquipo() {
     }
 
     try {
-      await api.post("/machines", {
+      const res = await api.post("/machines", {
         machineType: machineType,
+        machineNumber: parseInt(noMachine),
         model: model,
         cicleTime: parseInt(cicleTime),
         weight: parseInt(weight),
@@ -78,20 +81,27 @@ function AddEquipo() {
         notes: notes,
       });
 
-      setSuccess(true);
+      console.log(res.data)
 
-      // Limpiar los campos después de enviar el formulario
-      setModel("");
-      setCicleTime("");
-      setWeight("");
-      setNotes("");
-      navigate("/equipos");
+      if (res.data != null) {
+        setSuccess(true);
+
+        // Limpiar los campos después de enviar el formulario
+        setModel("");
+        setCicleTime("");
+        setWeight("");
+        setNotes("");
+        navigate("/equipos");
+      }else{
+        Swal.fire("El número de equipo ya existe en el Sistema", "Cambia el número de Equipor otro", "warning");
+      }
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor.");
       } else {
         setErrMsg("Error al agregar el equipo.");
       }
+      console.error(err)
       errRef.current.focus();
     }
   };
@@ -134,6 +144,19 @@ function AddEquipo() {
                 <option value="lavadora">Lavadora</option>
                 <option value="secadora">Secadora</option>
               </select>
+
+              {/** Número de Equipo */}
+              <label className="form-lbl" htmlFor="noMachine">
+                No. de Equipo:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="noMachine"
+                onChange={(e) => setNoMachine(e.target.value)}
+                value={noMachine}
+                required
+              />
 
               {/** Modelo */}
               <label className="form-lbl" htmlFor="model">
@@ -218,7 +241,6 @@ function AddEquipo() {
                 id="ipAddress"
                 onChange={(e) => setIpAddress(e.target.value)}
                 value={ipAddress}
-                required
               />
 
               {/** Estado */}

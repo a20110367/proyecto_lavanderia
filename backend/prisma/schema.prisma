@@ -8,17 +8,19 @@ datasource db {
 }
 
 model User {
-  id_user        Int              @id @default(autoincrement())
-  name           String
-  email          String           @unique
-  phone          String           @unique
-  pass           String
-  role           Role             @default(employee)
-  created        DateTime         @default(now())
-  firstLN        String
-  secondLN       String
-  username       String           @unique
-  updatedAt      DateTime         @updatedAt
+  id_user   Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  pass      String
+  role      Role     @default(employee)
+  created   DateTime @default(now())
+  firstLN   String
+  secondLN  String
+  username  String   @unique
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
   CashCut        CashCut[]
   SupplyCashCut  SupplyCashCut[]
   CashWithdrawal CashWithdrawal[]
@@ -32,34 +34,37 @@ model User {
 }
 
 model Client {
-  id_client     Int            @id @default(autoincrement())
-  name          String
-  email         String         @unique
-  phone         String
-  pass          String?
-  created       DateTime       @default(now())
-  firstLN       String
-  secondLN      String?
-  username      String?        @unique
-  updatedAt     DateTime       @updatedAt
+  id_client Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  phone     String
+  pass      String?
+  created   DateTime @default(now())
+  firstLN   String
+  secondLN  String?
+  username  String?  @unique
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
   ServiceOrders ServiceOrder[]
   SupplyOrder   SupplyOrder[]
 }
 
+//machine si se puede borrar siempre y cuando no este en uso
 model Machine {
-  id_machine   Int         @id @default(autoincrement())
-  machineType  MachineType @default(lavadora)
-  model        String
-  machineNumber Int  @default(1) 
-  cicleTime    Int
-  weight       Int
-  status       Status      @default(available)
-  freeForUse   Boolean     @default(true)
-  notes        String
-  created      DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  serialNumber String      @default("N/A")
-  ipAddress    String?     @unique
+  id_machine    Int         @id @default(autoincrement())
+  machineType   MachineType @default(lavadora)
+  model         String
+  machineNumber Int         @default(1)
+  cicleTime     Int
+  weight        Int
+  status        Status      @default(available)
+  freeForUse    Boolean     @default(true)
+  notes         String
+  created       DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  serialNumber  String      @default("N/A")
+  ipAddress     String?     @unique
 
   SelfServiceQueue SelfServiceQueue[]
   WashDetail       WashDetail[]
@@ -67,6 +72,7 @@ model Machine {
   OtherQueue       OtherQueue[]
 }
 
+//ironStation son 5 fijas 
 model IronStation {
   id_ironStation Int         @id @default(autoincrement())
   machineType    MachineType @default(plancha)
@@ -115,6 +121,7 @@ model IronCut {
   updatedAt DateTime @updatedAt
 }
 
+//Category son 5 fijas
 model Category {
   id_category         Int            @id @default(autoincrement())
   categoryDescription String         @unique
@@ -127,16 +134,19 @@ model Category {
   OtherService    OtherService[]
 }
 
+//Todos los servicios tienen softdelete
 model IronService {
-  id_service                  Int                           @id @default(autoincrement())
-  machineType                 MachineType                   @default(plancha)
-  description                 String                        @unique
-  price                       Float
-  priceCredit                 Float                         @default(1.00)
-  pieces                      Int
-  cycleTime                   Int
-  token_id                    Int?
-  category_id                 Int
+  id_service  Int         @id @default(autoincrement())
+  machineType MachineType @default(plancha)
+  description String      @unique
+  price       Float
+  priceCredit Float       @default(1.00)
+  pieces      Int
+  cycleTime   Int
+  token_id    Int?
+  category_id Int
+  deleted     Boolean     @default(false)
+
   Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail          ServiceOrderDetail[]
   CancelledServiceOrderDetail CancelledServiceOrderDetail[]
@@ -144,16 +154,18 @@ model IronService {
 }
 
 model SelfService {
-  id_service                  Int                           @id @default(autoincrement())
-  description                 String                        @unique
-  price                       Float
-  priceCredit                 Float                         @default(1.00)
-  weight                      Int
-  cycleTime                   Int
-  machineType                 MachineType
-  created                     DateTime                      @default(now())
-  updatedAt                   DateTime                      @updatedAt
-  category_id                 Int
+  id_service  Int         @id @default(autoincrement())
+  description String      @unique
+  price       Float
+  priceCredit Float       @default(1.00)
+  weight      Int
+  cycleTime   Int
+  machineType MachineType
+  created     DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  category_id Int
+  deleted     Boolean     @default(false)
+
   Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail          ServiceOrderDetail[]
   CancelledServiceOrderDetail CancelledServiceOrderDetail[]
@@ -161,17 +173,19 @@ model SelfService {
 }
 
 model LaundryService {
-  id_service                  Int                           @id @default(autoincrement())
-  description                 String                        @unique
-  price                       Float
-  priceCredit                 Float                         @default(1.00)
-  washWeight                  Int
-  washCycleTime               Int
-  dryWeight                   Int
-  dryCycleTime                Int
-  created                     DateTime                      @default(now())
-  updatedAt                   DateTime                      @updatedAt
-  category_id                 Int
+  id_service    Int      @id @default(autoincrement())
+  description   String   @unique
+  price         Float
+  priceCredit   Float    @default(1.00)
+  washWeight    Int
+  washCycleTime Int
+  dryWeight     Int
+  dryCycleTime  Int
+  created       DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  category_id   Int
+  deleted       Boolean  @default(false)
+
   Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail          ServiceOrderDetail[]
   CancelledServiceOrderDetail CancelledServiceOrderDetail[]
@@ -188,6 +202,7 @@ model DrycleanService {
   category_id Int
   created     DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deleted     Boolean  @default(false)
 
   Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail          ServiceOrderDetail[]
@@ -204,6 +219,7 @@ model OtherService {
   category_id Int
   created     DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deleted     Boolean  @default(false)
 
   Category                    Category                      @relation(fields: [category_id], references: [id_category], onUpdate: Cascade, onDelete: Cascade)
   ServiceOrderDetail          ServiceOrderDetail[]
@@ -211,6 +227,7 @@ model OtherService {
   OtherQueue                  OtherQueue[]
 }
 
+//ordenes de servicio no se borra
 model ServiceOrder {
   id_order              Int         @id @default(autoincrement())
   receptionDate         DateTime    @db.Date
@@ -436,6 +453,7 @@ model DeliveryDetail {
   serviceOrder   ServiceOrder @relation(fields: [fk_idOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
 }
 
+//StaffMember trabaja junto con user por el momento
 model StaffMember {
   id_staffMember Int      @id @default(autoincrement())
   name           String
@@ -446,6 +464,7 @@ model StaffMember {
   firstLN        String
   id_Token       Int?
   secondLN       String
+  deleted        Boolean  @default(false)
 
   IronQueue     IronQueue[]
   WashDetail    WashDetail[]

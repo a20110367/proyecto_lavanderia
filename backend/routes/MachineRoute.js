@@ -5,7 +5,8 @@ import {
     createMachine,
     createMachineMany,
     updateMachine,
-    deleteMachine
+    deleteMachine,
+    updateMachineConfig
 
 } from "../controllers/MachineController.js";
 
@@ -16,6 +17,7 @@ router.get('/machines/:id', getMachinesById);
 router.post('/machines', createMachine);
 router.post('/machinesMany', createMachineMany);
 router.patch('/machines/:id', updateMachine);
+router.patch('/machines/config', updateMachineConfig);
 router.delete('/machines/:id', deleteMachine);
 
 

@@ -81,15 +81,32 @@ export const createMachineMany = async (req, res) => {
     }
 }
 
-
 export const updateMachine = async (req, res) => {
+
+    try {
+        const machine = await prisma.machine.updateMany({
+            where: {
+                id_machine: Number(req.params.id)
+
+            },
+            data: req.body
+        });
+
+        res.status(200).json(machine);
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
+    }
+}
+
+
+export const updateMachineConfig = async (req, res) => {
 
     try {
         const machineUpdate = await prisma.machine.updateMany({
             where: {
                 AND: [
                     {
-                        id_machine: Number(req.params.id)
+                        id_machine: req.body.machineId
                     },
                     {
                         machineNumber: req.body.machineNumber
@@ -124,12 +141,29 @@ export const updateMachine = async (req, res) => {
 
 
 export const deleteMachine = async (req, res) => {
+
     try {
-        const machine = await prisma.machine.delete({
+        let machine = null
+        const machineStatus = await prisma.machine.findFirst({
             where: {
                 id_machine: Number(req.params.id)
+            },
+
+            select: {
+                freeForUse: true
             }
         });
+
+        if (machineStatus) {
+
+            const machineDelete = await prisma.machine.delete({
+                where: {
+                    id_machine: Number(req.params.id)
+                }
+            });
+            machine = machineDelete;
+        }
+
         res.status(200).json(machine);
     } catch (e) {
         res.status(400).json({ msg: e.message });

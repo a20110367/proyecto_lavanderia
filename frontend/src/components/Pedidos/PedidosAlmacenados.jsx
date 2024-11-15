@@ -21,7 +21,9 @@ import { useAuth } from "../../hooks/auth/auth";
 const PedidosAlmacenados = () => {
   const { cookies } = useAuth();
   const [pedidos, setPedidos] = useState([]);
-  const [clientSelected, setClientSelected] = useState("");
+  const [nameClient, setNameClient] = useState("");
+  const [firstNameClient, setFirstNameClient] = useState("");
+  const [secondNameClient, setSecondNameClient] = useState("");
   const [id_order, setId_order] = useState("");
   const [searchType, setSearchType] = useState("client");
   const [filteredPedidos, setFilteredPedidos] = useState([]);
@@ -46,13 +48,13 @@ const PedidosAlmacenados = () => {
   });
 
   useEffect(() => {
-    setClientSelected("");
+    setNameClient("");
     setId_order("");
   }, [searchType]);
 
   const handleSearch = async () => {
     if (
-      (searchType === "client" && !clientSelected) ||
+      (searchType === "client" && !nameClient && !firstNameClient && !secondNameClient) ||
       (searchType === "id_order" && !id_order)
     ) {
       Swal.fire({
@@ -64,7 +66,7 @@ const PedidosAlmacenados = () => {
       return;
     }
 
-    if (searchType === "client" && !isNaN(clientSelected)) {
+    if (searchType === "client" && !isNaN(nameClient) && !isNaN(firstNameClient) && !isNaN(secondNameClient)) {
       Swal.fire({
         icon: "warning",
         title: "Error",
@@ -79,7 +81,9 @@ const PedidosAlmacenados = () => {
 
       if (searchType === "client") {
         const res = await api.post("/storedOrdersByClientName", { //orderstored 
-          clientName: clientSelected,
+          clientName: nameClient,
+          firstName: firstNameClient,
+          secondNameClient: secondNameClient,
         });
         results = res.data ? res.data : [];
       } else if (searchType === "id_order") {
@@ -115,7 +119,7 @@ const PedidosAlmacenados = () => {
   const handleReturn = () => {
     setShowTable(false);
     setSearchType("client");
-    setClientSelected("");
+    setNameClient("");
     setId_order("");
     setFilteredPedidos([]);
     setCurrentPage(0);
@@ -699,13 +703,26 @@ const PedidosAlmacenados = () => {
                   onChange={(e) => setId_order(e.target.value)}
                 />
               ) : (
-                <Input
-                  className="mr-2"
-                  placeholder="Escriba el nombre completo del cliente"
-                  value={clientSelected}
-                  onChange={(e) => setClientSelected(e.target.value)}
-                />
-              )}
+                <div>
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el nombre completo del cliente"
+                    value={nameClient}
+                    onChange={(e) => setNameClient(e.target.value)}
+                  />
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el primer apellido completo del cliente"
+                    value={firstNameClient}
+                    onChange={(e) => setFirstNameClient(e.target.value)}
+                  />
+                  <Input
+                    className="mr-2"
+                    placeholder="Escriba el segundo apellido completo del cliente"
+                    value={secondNameClient}
+                    onChange={(e) => setSecondNameClient(e.target.value)}
+                  />
+                </div>)}
               <Button
                 type="primary"
                 className="btn-search-stored"

@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
-import { orderTicket } from "../Ticket/Tickets";
+// import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
 import { FaBoltLightning } from "react-icons/fa6";
 import { BsFillLightningFill } from "react-icons/bs";

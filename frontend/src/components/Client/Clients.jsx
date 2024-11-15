@@ -118,7 +118,7 @@ function Clients() {
                       >
                         <AiFillEdit />
                       </button>
-                      <button
+                      {/* <button
                         onClick={() =>
                           handleClickOpen(client.name, client.id_client)
                         }
@@ -152,7 +152,7 @@ function Clients() {
                             Eliminar
                           </Button>
                         </DialogActions>
-                      </Dialog>
+                      </Dialog> */}
                     </td>
                   </tr>
                 ))}

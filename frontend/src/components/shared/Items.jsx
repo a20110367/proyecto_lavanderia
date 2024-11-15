@@ -140,7 +140,7 @@ const items1 = [
   ]),
 
 
-  getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
+  getItem("Empleados", "/users", <HiUsers style={iconStyle} />),
 
   getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />, [
     getItem("Encargo Ropa", "/servicesLavanderia"),

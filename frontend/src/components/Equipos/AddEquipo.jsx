@@ -93,7 +93,7 @@ function AddEquipo() {
         setNotes("");
         navigate("/equipos");
       }else{
-        Swal.fire("El número de equipo ya existe en el Sistema", "Cambia el número de Equipor otro", "warning");
+        Swal.fire("El número de equipo ya existe en el Sistema", "Cambia el número de Equipo otro", "warning");
       }
     } catch (err) {
       if (!err?.response) {

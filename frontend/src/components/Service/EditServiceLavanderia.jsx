@@ -8,6 +8,7 @@ function EditServiceLavanderia() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [priceCredit, setPriceCredit] = useState(0);
   const [washCycleTime, setWashCycleTime] = useState(0);
   const [washWeight, setWashWeight] = useState(0);
   const [dryCycleTime, setDryCycleTime] = useState(0);
@@ -21,15 +22,17 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
 
 
   useEffect(() => {
     const getServiceById = async () => {
       try {
         const response = await api.get(`/servicesLaundry/${id}`);
+        console.log(response.data)
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
+        setPriceCredit(response.data.priceCredit || 0);
         setCategory("Encargo");
         setWashCycleTime(response.data.washCycleTime || 0);
         setWashWeight(response.data.washWeight || 0);
@@ -39,11 +42,11 @@ function EditServiceLavanderia() {
         console.error("Error fetching service:", error);
       }
     };
-  
+
     getServiceById();
   }, [id]);
-  
-  
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,18 +66,19 @@ function EditServiceLavanderia() {
     }
 
     const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
-    description.toLowerCase().includes(keyword)
-  );
+      description.toLowerCase().includes(keyword)
+    );
 
-  if (hasForbiddenKeyword) {
-    setErrMsg("Error, no puedes añadir servicios Varios.");
-    return;
-  }
+    if (hasForbiddenKeyword) {
+      setErrMsg("Error, no puedes añadir servicios Varios.");
+      return;
+    }
 
     try {
       await api.patch(`/servicesUpdateLaundry/${id}`, {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         washWeight: parseInt(washWeight),
         washCycleTime: parseInt(washCycleTime),
         category_id: 2,
@@ -127,7 +131,7 @@ function EditServiceLavanderia() {
               )}
 
               <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
+                Precio Efectivo:
               </label>
               <input
                 className="form-input"
@@ -136,6 +140,19 @@ function EditServiceLavanderia() {
 
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+
+              <label className="form-lbl" htmlFor="priceCredit">
+                Precio de Tarjeta:
+              </label>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 

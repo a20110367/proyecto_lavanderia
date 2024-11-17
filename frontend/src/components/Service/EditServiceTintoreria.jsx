@@ -97,7 +97,7 @@ function EditServiceTintoreria() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 ref={descriptionRef}
@@ -105,6 +105,7 @@ function EditServiceTintoreria() {
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
+                disabled
               />
 
               {errMsg && (

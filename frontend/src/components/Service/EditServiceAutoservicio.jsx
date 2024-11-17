@@ -89,13 +89,14 @@ function EditServiceAutoservicio() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 ref={descriptionRef}
                 autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
+                disabled
                 required
               />
 

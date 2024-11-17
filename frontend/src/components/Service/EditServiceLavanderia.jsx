@@ -113,13 +113,14 @@ function EditServiceLavanderia() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
+                disabled
               />
 
               {errMsg && (

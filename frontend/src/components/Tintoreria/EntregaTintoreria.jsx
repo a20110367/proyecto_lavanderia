@@ -93,15 +93,15 @@ function EntregaTintoreria() {
   const calculateTotal = () => {
     let pivot = 0
     selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot = parseFloat(pivot + (item.LaundryService.price * item.units)))
+      pivot = parseFloat(pivot + (item.DrycleanService.price * item.units)))
       // console.log(pivot)
       // pivot += 0.1;
     setAmount(pivot)
   };
 
   const calculateSubtotal = (service) => {
-    console.log(cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units)
-    return cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units
+    console.log(cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit * service.units : service.DrycleanService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit * service.units : service.DrycleanService.price * service.units
   };
 
   const handleCobrar = (pedido) => {

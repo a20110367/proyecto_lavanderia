@@ -84,7 +84,7 @@ function EntregaPlanchado() {
   const calculateTotalCredit = () => {
     let pivot = 0.0
     selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot =  parseFloat(pivot + (item.LaundryService.priceCredit * item.units)))
+      pivot =  parseFloat(pivot + (item.IronService.priceCredit * item.units)))
       // console.log(pivot)
       // pivot += 0.1;
     setAmount(pivot)
@@ -93,15 +93,15 @@ function EntregaPlanchado() {
   const calculateTotal = () => {
     let pivot = 0
     selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot = parseFloat(pivot + (item.LaundryService.price * item.units)))
+      pivot = parseFloat(pivot + (item.IronService.price * item.units)))
       // console.log(pivot)
       // pivot += 0.1;
     setAmount(pivot)
   };
 
   const calculateSubtotal = (service) => {
-    console.log(cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units)
-    return cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units
+    console.log(cobroInfo.metodoPago === 'credit' ? service.IronService.priceCredit * service.units : service.IronService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.IronService.priceCredit * service.units : service.IronService.price * service.units
   };
 
   const handleCobrar = (pedido) => {
@@ -528,7 +528,7 @@ function EntregaPlanchado() {
             </p>
             <p>
               <strong>Estatus:</strong> Adeudo - <strong>Monto:</strong> $
-              {selectedPedido?.totalPrice}
+              {amount}
             </p>
             <div className="mb-2">
               <strong>Método de Pago:</strong>{" "}

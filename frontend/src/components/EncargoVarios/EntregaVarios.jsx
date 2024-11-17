@@ -82,7 +82,7 @@ function EntregaVarios() {
   const calculateTotalCredit = () => {
     let pivot = 0.0
     selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot =  parseFloat(pivot + (item.LaundryService.priceCredit * item.units)))
+      pivot =  parseFloat(pivot + (item.OtherService.priceCredit * item.units)))
       // console.log(pivot)
       // pivot += 0.1;
     setAmount(pivot)
@@ -91,15 +91,15 @@ function EntregaVarios() {
   const calculateTotal = () => {
     let pivot = 0
     selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot = parseFloat(pivot + (item.LaundryService.price * item.units)))
+      pivot = parseFloat(pivot + (item.OtherService.price * item.units)))
       // console.log(pivot)
       // pivot += 0.1;
     setAmount(pivot)
   };
 
   const calculateSubtotal = (service) => {
-    console.log(cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units)
-    return cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units
+    console.log(cobroInfo.metodoPago === 'credit' ? service.OtherService.priceCredit * service.units : service.OtherService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.OtherService.priceCredit * service.units : service.OtherService.price * service.units
   };
 
   const handleCobrar = (pedido) => {
@@ -183,23 +183,6 @@ function EntregaVarios() {
           quantity: service.units,
         });
       });
-      
-      // const order = {
-      //   id_order: pedido.id_order,
-      //   payForm: pedido.payForm,
-      //   payStatus: "paid",
-      //   payMethod: cobroInfo.metodoPago,
-      //   subtotal: pedido.totalPrice,
-      //   casher: pedido.user.name,
-      //   client: pedido.client.name,
-      //   scheduledDeliveryDate: pedido.scheduledDeliveryDate,
-      //   scheduledDeliveryTime: pedido.scheduledDeliveryTime,
-      //   receptionDate: pedido.receptionDate,
-      //   receptionTime: pedido.receptionTime,
-      //   notes: pedido.notes,
-      //   cart: cart,
-      // };
-      // orderTicket(order);
 
       const order = {
         id_order: pedido.id_order,
@@ -229,38 +212,6 @@ function EntregaVarios() {
     } catch (err) {
       console.log(err);
     }
-
-    // const doc = new jsPDF();
-    // doc.text(`Detalles del Pedido`, 10, 10);
-    // doc.text(`Cliente: ${updatedPedido.client.name} ${updatedPedido.client.firstLN} ${updatedPedido.client.secondLN}`, 10, 20);
-    // doc.text(
-    //   `Pedido: ${
-    //     pedido.ServiceOrderDetail.find(
-    //       (service) => service.id_serviceOrderDetail
-    //     ) != undefined
-    //       ? pedido.ServiceOrderDetail.length
-    //       : 0
-    //   }`,
-    //   10,
-    //   30
-    // );
-    // doc.text(`Estatus: Adeudo`, 10, 40);
-    // doc.text(
-    //   `Método de Pago: ${
-    //     pedido.payment
-    //     ? pedido.payment.payMethod === "cash"
-    //       ? "Efectivo"
-    //       : pedido.payment.payMethod === "credit"
-    //         ? "Tarjeta"
-    //         : "N/A"
-    //         :"N/A"
-    //   }`,
-    //   10,
-    //   50
-    // );
-    // doc.text(`Fecha de Pago: ${formatDate(pedido.receptionTime)}`, 10, 60);
-    // doc.text(`Adeudo: $${updatedPedido.totalPrice}`, 10, 70);
-    // doc.save(`pedido_${updatedPedido.id_order}.pdf`);
   };
 
   const handleClose = () => {
@@ -304,41 +255,6 @@ function EntregaVarios() {
       console.log(pedido);
       setTimeout(() => {
         setEntregando(false);
-      //   const doc = new jsPDF();
-      //   doc.text(`Detalles del Pedido`, 10, 10);
-      //   doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN}`, 10, 20);
-      //   doc.text(
-      //     `Pedido: ${
-      //       pedido.ServiceOrderDetail.find(
-      //         (service) => service.id_serviceOrderDetail
-      //       ) != undefined
-      //         ? pedido.ServiceOrderDetail.length
-      //         : 0
-      //     }`,
-      //     10,
-      //     30
-      //   );
-      //   doc.text(`Estatus: Entregado`, 10, 40);
-      //   doc.text(
-      //     `Método de Pago: ${
-      //       pedido.payment
-      //       ? pedido.payment.payMethod === "cash"
-      //         ? "Efectivo"
-      //         : pedido.payment.payMethod === "credit"
-      //           ? "Tarjeta"
-      //           : "N/A"
-      //           :"N/A"
-      //     }`,
-      //     10,
-      //     50
-      //   );
-      //   doc.text(
-      //     `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
-      //     10,
-      //     60
-      //   );
-      //   doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
-      //   doc.save(`pedido_${pedido.id_order}.pdf`);
       }, 1500);
     }
   };
@@ -520,7 +436,7 @@ function EntregaVarios() {
             </p>
             <p>
               <strong>Estatus:</strong> Adeudo - <strong>Monto:</strong> $
-              {selectedPedido?.totalPrice}
+              {amount}
             </p>
             <div className="mb-2">
               <strong>Método de Pago:</strong>{" "}

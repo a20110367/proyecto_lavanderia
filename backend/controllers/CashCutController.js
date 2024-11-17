@@ -699,6 +699,8 @@ export const closeCashCut = async (req, res) => {
 
             });
 
+            if (totalCancelled._sum.payTotal === null) totalCancelled._sum.payTotal = 0;
+
             const ordersPayed = await prisma.payment.findMany({
 
                 where: {
@@ -939,7 +941,7 @@ export const closeCashCut = async (req, res) => {
                 "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
                 "ordersPayed": orders.length,
                 "ordersCancelled": ordersCancelled.length,
-                "totalCancelations": totalCancelled,
+                "totalCancelations": totalCancelled._sum.payTotal,
                 "cashCutStatus": "closed",
                 "cashCutD": today,
                 "cashCutT": time,
@@ -968,7 +970,7 @@ export const closeCashCut = async (req, res) => {
                     "totalOtrosEncargo": totalOtrosEncargo._sum.totalPrice,
                     "ordersPayed": orders.length,
                     "ordersCancelled": ordersCancelled.length,
-                    "totalCancelations": totalCancelled,
+                    "totalCancelations": totalCancelled._sum.payTotal,
                     "cashCutStatus": "closed",
                     "cashCutD": today,
                     "cashCutT": time,
@@ -987,10 +989,6 @@ export const closeCashCut = async (req, res) => {
                 },
             });
         }
-
-
-
-
 
         res.status(200).json(response);
     } catch (e) {

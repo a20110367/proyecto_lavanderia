@@ -21,11 +21,21 @@ export const getMachines = async (req, res) => {
 
 export const getMachinesById = async (req, res) => {
     try {
-        const response = await prisma.machine.findUnique({
+
+        let response;
+        const machine = await prisma.machine.findUnique({
             where: {
+
                 id_machine: Number(req.params.id)
             }
+
         });
+        console.log(machine)
+        if (machine == null) {
+            response = null;
+            res.status(200).json(response);
+        }
+        response = machine;
         res.status(200).json(response);
     } catch (e) {
         res.status(404).json({ msg: e.message });
@@ -117,7 +127,6 @@ export const updateMachineConfig = async (req, res) => {
                     {
                         machineType: req.body.machineType
                     }
-
                 ]
 
             },

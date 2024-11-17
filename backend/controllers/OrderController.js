@@ -243,34 +243,35 @@ export const getOrdersById = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
-                                priceCredit:true,
+                                priceCredit: true,
                             }
                         },
                         LaundryService: {
                             select: {
                                 description: true,
                                 price: true,
-                                priceCredit:true,
+                                priceCredit: true,
                             }
                         },
                         IronService: {
                             select: {
                                 description: true,
                                 price: true,
-                                priceCredit:true,
+                                priceCredit: true,
                             }
                         },
                         DrycleanService: {
                             select: {
                                 description: true,
                                 price: true,
-                                priceCredit
+                                priceCredit: true,
                             }
                         },
                         OtherService: {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit: true,
                             }
                         },
                         subtotal: true,
@@ -403,30 +404,35 @@ export const getOrdersByClientName = async (req, res) => {
                                 select: {
                                     description: true,
                                     price: true,
+                                    priceCredit: true,
                                 }
                             },
                             LaundryService: {
                                 select: {
                                     description: true,
                                     price: true,
+                                    priceCredit: true,
                                 }
                             },
                             IronService: {
                                 select: {
                                     description: true,
                                     price: true,
+                                    priceCredit: true,
                                 }
                             },
                             DrycleanService: {
                                 select: {
                                     description: true,
                                     price: true,
+                                    priceCredit: true,
                                 }
                             },
                             OtherService: {
                                 select: {
                                     description: true,
                                     price: true,
+                                    priceCredit: true,
                                 }
                             },
                             subtotal: true,

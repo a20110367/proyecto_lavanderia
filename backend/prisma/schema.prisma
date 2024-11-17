@@ -37,11 +37,11 @@ model Client {
   id_client Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  phone     String    //volverlo unico
+  phone     String //volverlo unico
   pass      String?
   created   DateTime @default(now())
   firstLN   String
-  secondLN  String?
+  secondLN  String? //quitar nulable
   username  String?  @unique
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
@@ -278,6 +278,9 @@ model ServiceOrderDetail {
   fk_ironService        Int?
   fk_drycleanService    Int?
   fk_otherService       Int?
+  serviceDescription    String   @default("General") //prefrentemente quitar el default
+  priceCash             Float    @default(1.00) //prefrentemente quitar el default
+  priceCredit           Float    @default(1.00) //prefrentemente quitar el default
   cancelled             Boolean  @default(false)
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
@@ -314,6 +317,9 @@ model CancelledServiceOrderDetail {
   fk_ironService                 Int?
   fk_drycleanService             Int?
   fk_otherService                Int?
+  serviceDescription             String   @default("General") //prefrentemente quitar el default
+  priceCash                      Float    @default(1.00) //prefrentemente quitar el default
+  priceCredit                    Float    @default(1.00) //prefrentemente quitar el default
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
   LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])

@@ -24,6 +24,7 @@ function EntregaPlanchado() {
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
+  const [amount, setAmount] = useState(0.0);
   const [cobroInfo, setCobroInfo] = useState({
     metodoPago: "cash",
     fechaPago: moment(),
@@ -80,6 +81,29 @@ function EntregaPlanchado() {
     setCurrentPage(0);
   };
 
+  const calculateTotalCredit = () => {
+    let pivot = 0.0
+    selectedPedido.ServiceOrderDetail.forEach(item => 
+      pivot =  parseFloat(pivot + (item.LaundryService.priceCredit * item.units)))
+      // console.log(pivot)
+      // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateTotal = () => {
+    let pivot = 0
+    selectedPedido.ServiceOrderDetail.forEach(item => 
+      pivot = parseFloat(pivot + (item.LaundryService.price * item.units)))
+      // console.log(pivot)
+      // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateSubtotal = (service) => {
+    console.log(cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units
+  };
+
   const handleCobrar = (pedido) => {
     if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
@@ -93,6 +117,11 @@ function EntregaPlanchado() {
     }
     console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
+    setAmount(pedido.totalPrice)
+    setCobroInfo({
+      metodoPago: "cash",
+      fechaPago: moment(),
+    });
     setVisible(true);
   };
 
@@ -102,6 +131,7 @@ function EntregaPlanchado() {
       ...cobroInfo,
       [name]: value,
     });
+    value === 'credit' ? calculateTotalCredit() : calculateTotal()
   };
 
   const handleGuardarCobro = async (pedido) => {
@@ -134,7 +164,7 @@ function EntregaPlanchado() {
           payDate: cobroInfo.fechaPago,
           payTime: cobroInfo.fechaPago,
           fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          payTotal: pedido.totalPrice,
+          payTotal: amount,
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
@@ -150,7 +180,7 @@ function EntregaPlanchado() {
           description: service.IronService.description
             ? service.IronService.description
             : "ERROR",          
-          totalPrice: service.subtotal,
+          totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });
       });
@@ -177,7 +207,7 @@ function EntregaPlanchado() {
         payForm: pedido.payForm,
         payStatus: "paid",
         payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
+        subtotal: amount,
         casher: pedido.user.name,
         client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,

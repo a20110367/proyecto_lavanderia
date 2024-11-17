@@ -4,6 +4,8 @@ import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
 
 // Dialogs
@@ -82,7 +84,8 @@ function ServicesAutoservicio() {
               <th>No. servicio</th>
                 <th>Descripción</th>
                 <th>Categoria</th>
-                <th>Precio</th>
+                <th><div className="flex"><BsCashCoin size={25} className="text-green-700 mr-3"/>Precio Efectivo</div></th>
+                <th><div className="flex"><IoCard size={25} className="text-blue-700 mr-3"/>Precio Tarjeta</div></th>
                 <th>Tipo de Servicio</th>
                 <th>Opciones</th>
               </tr>
@@ -98,7 +101,8 @@ function ServicesAutoservicio() {
                     <td>{index + 1}</td>
                     <td>{service.description}</td>
                     <td>{service.Category.categoryDescription}</td>
-                    <td>${service.price}</td>
+                    <td className="text-cash">${service.price}</td>
+                    <td className="text-card">${service.priceCredit}</td>
                     <td>{service.machineType === 'secadora' ? 'Secadora' : 'Lavadora'}</td>
                     <td> 
                       <button

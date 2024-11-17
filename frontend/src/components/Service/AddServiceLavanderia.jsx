@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function AddServiceLavanderia() {
@@ -18,6 +20,7 @@ function AddServiceLavanderia() {
   const [dryCycleTime, setDryCycleTime] = useState(0);
   const [dryWeight, setDryWeight] = useState(0);
   const [category, setCategory] = useState("Encargo");
+  const [priceCredit, setPriceCredit] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -25,7 +28,7 @@ function AddServiceLavanderia() {
   const navigate = useNavigate();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
 
 
   const handleSubmit = async (e) => {
@@ -41,18 +44,19 @@ function AddServiceLavanderia() {
     }
 
     const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
-    description.toLowerCase().includes(keyword)
-  );
+      description.toLowerCase().includes(keyword)
+    );
 
-  if (hasForbiddenKeyword) {
-    setErrMsg("Error, no puedes añadir servicios Varios.");
-    return;
-  }
+    if (hasForbiddenKeyword) {
+      setErrMsg("Error, no puedes añadir servicios Varios.");
+      return;
+    }
 
     try {
       await api.post("/servicesLaundry", {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         washWeight: parseInt(washWeight),
         washCycleTime: parseInt(washCycleTime),
         category_id: 2,
@@ -117,17 +121,34 @@ function AddServiceLavanderia() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex">
+                <BsCashCoin size={32} className="text-green-700 mr-4" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
-                step="0.1"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -185,7 +206,7 @@ function AddServiceLavanderia() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Encargo"

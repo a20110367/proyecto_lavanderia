@@ -1,11 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function EditServiceVarios() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [priceCredit, setPriceCredit] = useState(0);
   const [category, setCategory] = useState("varios");
 
   const [errMsg, setErrMsg] = useState("");
@@ -23,6 +26,7 @@ function EditServiceVarios() {
         const response = await api.get(`/servicesOtherService/${id}`);
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
+        setPriceCredit(response.data.priceCredit || 0);
         setCategory("Varios");
       } catch (error) {
         console.error("Error fetching service:", error);
@@ -58,6 +62,7 @@ function EditServiceVarios() {
       await api.patch(`/servicesUpdateOtherService/${id}`, {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         category_id: 5,
       });
       navigate("/servicesVarios");
@@ -107,9 +112,12 @@ function EditServiceVarios() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex">
+                <BsCashCoin size={32} className="text-green-700 mr-4" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
@@ -118,12 +126,26 @@ function EditServiceVarios() {
                 value={price}
                 required
               />
+              <div className="flex">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
+                required
+              />
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Encargo"

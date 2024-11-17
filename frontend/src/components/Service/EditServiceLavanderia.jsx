@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function EditServiceLavanderia() {
@@ -29,7 +31,7 @@ function EditServiceLavanderia() {
     const getServiceById = async () => {
       try {
         const response = await api.get(`/servicesLaundry/${id}`);
-        console.log(response.data)
+        // console.log(response.data)
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
         setPriceCredit(response.data.priceCredit || 0);
@@ -130,27 +132,30 @@ function EditServiceLavanderia() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Efectivo:
-              </label>
+              <div className="flex">
+              <BsCashCoin size={32} className="text-green-700 mr-4"/>
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
                 id="price"
-
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
               />
-
+              <div className="flex">
+                <IoCard size={32} className="text-blue-700 mr-4"/>
               <label className="form-lbl" htmlFor="priceCredit">
                 Precio de Tarjeta:
               </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
                 id="priceCredit"
-
                 onChange={(e) => setPriceCredit(e.target.value)}
                 value={priceCredit}
                 required
@@ -210,7 +215,7 @@ function EditServiceLavanderia() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Encargo"

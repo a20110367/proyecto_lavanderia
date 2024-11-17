@@ -243,24 +243,28 @@ export const getOrdersById = async (req, res) => {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit:true,
                             }
                         },
                         LaundryService: {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit:true,
                             }
                         },
                         IronService: {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit:true,
                             }
                         },
                         DrycleanService: {
                             select: {
                                 description: true,
                                 price: true,
+                                priceCredit
                             }
                         },
                         OtherService: {

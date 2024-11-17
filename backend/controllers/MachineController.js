@@ -102,6 +102,9 @@ export const updateMachine = async (req, res) => {
 export const updateMachineConfig = async (req, res) => {
 
     try {
+
+        let response;
+
         const machineUpdate = await prisma.machine.updateMany({
             where: {
                 AND: [
@@ -118,20 +121,25 @@ export const updateMachineConfig = async (req, res) => {
                 ]
 
             },
-            data: {
-                cicleTime: req.body.cicleTime,
-                weight: req.body.weight,
-                status: req.body.status,
-                notes: req.body.notes
-            }
+            data: req.body
         });
+
+        if (machineUpdate == 0) {
+
+
+            response = {
+
+                "m": "m",
+            }
+
+            res.status(409).json(response);
+        }
 
         const machine = await prisma.machine.findFirst({
             where: {
                 id_machine: Number(req.params.id)
             },
         });
-
 
         res.status(200).json(machine);
     } catch (e) {

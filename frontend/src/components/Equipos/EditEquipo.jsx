@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   faCheck,
   faTimes,
@@ -88,7 +89,7 @@ function EditEquipo() {
     }
 
     try {
-      await api.patch(`/machines/${id}`, {
+      const res = await api.patch(`/machines/config/${id}`, {
         model: model,
         machineNumber: noMachine,
         machineType: machineType,
@@ -99,6 +100,10 @@ function EditEquipo() {
         notes: notes,
       });
 
+      console.log(res)
+
+      res.status === 200 ? Swal.fire("Equipo Actualizado Correctamente", "", "success") : res.status === 409 ? Swal.fire("Este Número de Equipo ya existe", "", "error") : "";
+
       setSuccess(true);
 
       setModel("");
@@ -107,6 +112,7 @@ function EditEquipo() {
       setNotes("");
       navigate("/equipos");
     } catch (err) {
+      console.log(err)
       if (!err?.response) {
         setErrMsg("Sin respuesta del servidor");
       } else {

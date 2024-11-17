@@ -109,7 +109,7 @@ export const updateMachineConfig = async (req, res) => {
             where: {
                 AND: [
                     {
-                        id_machine: req.body.machineId
+                        id_machine: Number(req.params.id)
                     },
                     {
                         machineNumber: req.body.machineNumber

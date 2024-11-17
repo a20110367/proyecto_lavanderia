@@ -960,7 +960,7 @@ export const closeCashCut = async (req, res) => {
                     "totalIncome": totalIncome,
                     "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
                     "initialCash": initialCash.initialCash,
-                    "total": totalC,
+                    "total": totalBalance,
                     "totalEncargo": totalEncargo._sum.totalPrice,
                     "totalAutoservicio": totalAutoservicio._sum.totalPrice,
                     "totalPlanchado": totalPlanchado._sum.totalPrice,

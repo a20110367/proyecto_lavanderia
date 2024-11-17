@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
 
 function EditServiceTintoreria() {
@@ -11,6 +13,7 @@ function EditServiceTintoreria() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [priceCredit, setPriceCredit] = useState(0);
   const [pieces, setPieces] = useState(0)
   const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Tintoreria");
@@ -29,6 +32,7 @@ function EditServiceTintoreria() {
       const response = await api.get(`/servicesDryclean/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
+      setPriceCredit(response.data.priceCredit || 0);
       setPieces(response.data.pieces)
       //setTime(response.data.cycleTime)
       setCategory("Tintoreria");
@@ -54,14 +58,15 @@ function EditServiceTintoreria() {
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-        setErrMsg("Error, no puedes añadir servicios de 'autoservicio, encargo ó lavanderia'.");
-        return;
+      setErrMsg("Error, no puedes añadir servicios de 'autoservicio, encargo ó lavanderia'.");
+      return;
     }
 
     try {
       await api.patch(`/servicesUpdateDryclean/${id}`, {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         pieces: parseInt(pieces),
         //cycleTime: parseInt(time),
         category_id: 4,
@@ -122,26 +127,43 @@ function EditServiceTintoreria() {
                 onChange={(e) => setPieces(e.target.value)}
                 value={pieces}
                 required
-              />s
-
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              />
+              
+              <div className="flex">
+                <BsCashCoin size={32} className="text-green-700 mr-4" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
                 id="price"
-                ref={priceRef}
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
                 required
               />
+              <div className="flex">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
+                required
+              />
+
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Tintoreria"

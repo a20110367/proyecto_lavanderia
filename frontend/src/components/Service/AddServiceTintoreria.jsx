@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
 
 function AddServiceTintoreria() {
@@ -14,6 +16,7 @@ function AddServiceTintoreria() {
   const [pieces, setPieces] = useState(0);
   const [time, setTime] = useState(0)
   const [category, setCategory] = useState("Tintoreria");
+  const [priceCredit, setPriceCredit] = useState(0);
 
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
@@ -45,6 +48,7 @@ function AddServiceTintoreria() {
         description: description,
         price: parseFloat(price),
         // cycleTime: parseInt(time),
+        priceCredit: parseFloat(priceCredit),
         pieces: parseInt(pieces),
         category_id: 4,
       });
@@ -114,17 +118,34 @@ function AddServiceTintoreria() {
                 value={pieces}
               />
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+<div className="flex">
+                <BsCashCoin size={32} className="text-green-700 mr-4" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
-                step="0.1"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -132,7 +153,7 @@ function AddServiceTintoreria() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Tintoreria"

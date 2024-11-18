@@ -384,12 +384,12 @@ const printOrderDetailTicket = async (order) => {
                 printer.bold(true)
                 printer.println('No. de Orden:')
                 printer.setTextSize(7, 7);
-                printer.println(`${order.id_order} - ${count + 1}`)
+                printer.println(`${order.id_order}-${count + 1}`)
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()
                 printer.newLine()
-                printer.setTextQuadArea()
+                // printer.setTextQuadArea()
                 printer.println('Cliente:')
                 printer.println(`${order.client}`)
                 printer.newLine()
@@ -451,7 +451,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.bold(false)
                     printer.newLine()
                     printer.newLine()
-                    printer.setTextDoubleHeight();
+                    // printer.setTextDoubleHeight();
                     printer.println('Cliente:')
                     printer.println(`${order.client}`)
                     printer.newLine()

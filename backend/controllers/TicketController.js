@@ -389,7 +389,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.bold(false)
                 printer.newLine()
                 printer.newLine()
-                printer.setTextNormal();
+                // printer.setTextNormal();
+                printer.setTextDoubleHeight();
                 // printer.setTextQuadArea()
                 printer.println('Cliente:')
                 printer.println(`${order.client}`)
@@ -452,8 +453,8 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.bold(false)
                     printer.newLine()
                     printer.newLine()
-                    printer.setTextNormal();
-                    // printer.setTextDoubleHeight();
+                    // printer.setTextNormal();
+                    printer.setTextDoubleHeight();
                     printer.println('Cliente:')
                     printer.println(`${order.client}`)
                     printer.newLine()

@@ -388,7 +388,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()
-                printer.newLine()
+                // printer.newLine()
                 // printer.setTextNormal();
                 printer.setTextDoubleHeight();
                 // printer.setTextQuadArea()
@@ -401,10 +401,11 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                printer.newLine()
-                printer.println(`Observaciones:`)
-                printer.println(`${order.notes}`)
-
+                if(order.notes){
+                    printer.newLine()
+                    printer.println(`Observaciones:`)
+                    printer.println(`${order.notes}`)
+                }
                 printer.cut();
                 count++;
                 console.log('Order Detail Printed!')
@@ -452,7 +453,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.newLine()
                     printer.bold(false)
                     printer.newLine()
-                    printer.newLine()
+                    // printer.newLine()
                     // printer.setTextNormal();
                     printer.setTextDoubleHeight();
                     printer.println('Cliente:')
@@ -464,9 +465,11 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                     printer.newLine()
                     printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                    printer.newLine()
-                    printer.println(`Observaciones:`)
-                    printer.println(`${order.notes}`)
+                    if(order.notes){
+                        printer.newLine()
+                        printer.println(`Observaciones:`)
+                        printer.println(`${order.notes}`)
+                    }
 
                     printer.cut();
 

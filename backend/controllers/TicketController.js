@@ -442,7 +442,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.bold(true)
                     printer.println('No. de Orden:')
                     printer.setTextSize(7, 7);
-                    printer.println(`${order.id_order} - ${count + 1}`)
+                    printer.println(`${order.id_order}-${count + 1}`)
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
                     printer.newLine()
@@ -451,7 +451,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.bold(false)
                     printer.newLine()
                     printer.newLine()
-                    printer.setTextQuadArea()
+                    printer.setTextDoubleHeight();
                     printer.println('Cliente:')
                     printer.println(`${order.client}`)
                     printer.newLine()
@@ -694,9 +694,9 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
     
         printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $' + order.payment.payTotal)
+        printer.println('Total Pagado: $' + canceled.amount)
         printer.bold(false);
-        printer.println(n2word(order.payment.payTotal))
+        printer.println(n2word(canceled.amount))
 
         printer.alignLeft()
 
@@ -1521,6 +1521,8 @@ export const printReportProductId = async (req, res) => {
 export const printCanceledOrder = async (req, res) => {
     try {
         const { canceled } = req.body
+
+        printer.clear();
 
         await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
 

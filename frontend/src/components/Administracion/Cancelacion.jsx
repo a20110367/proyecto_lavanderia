@@ -127,7 +127,6 @@ function Cancelacion() {
         }else{
           localStorage.setItem("numberOfPieces", 0)
         }
-        setVisible(false);
 
         Swal.fire({
           title: "Orden Cancelada con Exito!",
@@ -140,7 +139,15 @@ function Cancelacion() {
           cause: cause,
         })
 
-        console.log(cancelRes)
+        setVisible(false);
+        const updatedCanceled = cancelaciones.map((item) => {
+          if (item.id_service != cancelRes.data.id_cancelledOrder) {
+            return item;
+          }
+        })
+        setCancelaciones(updatedCanceled)
+
+        // console.log(cancelRes)
 
         const res = await api.get(`/orders/${orderId}`);
 
@@ -163,6 +170,7 @@ function Cancelacion() {
           cause: cause
         })
         setCause("");
+
       }
     }
     catch (err) {

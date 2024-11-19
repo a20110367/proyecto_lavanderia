@@ -66,6 +66,7 @@ function Cancelacion() {
       navigate("/inicioCaja");
       return;
     }
+    console.log(cancelacion)
     setOrderId(cancelacion.id_order);
     if(cancelacion.payStatus === "paid"){
       setAmount(cancelacion.amount)
@@ -118,7 +119,14 @@ function Cancelacion() {
         setMotivoError("");
       }
 
+      
+
       if (isValid) {
+        if((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0){
+          localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
+        }else{
+          localStorage.setItem("numberOfPieces", 0)
+        }
         setVisible(false);
 
         Swal.fire({

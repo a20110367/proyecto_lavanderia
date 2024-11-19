@@ -1233,6 +1233,8 @@ export const getCancelableOrders = async (req, res) => {
                 totalPrice: true,
                 orderStatus: true,
                 payStatus: true,
+                express:true,
+                ironPieces:true,
                 client: {
                     select: {
                         name: true,
@@ -1895,7 +1897,7 @@ export const updateCancelledOrder = async (req, res) => {
 
         const updateIronControl = prisma.ironControl.updateMany({
             where: {
-                id_ironControl: ironControlData.id_ironControl
+                id_ironControl:Number(ironControlData.id_ironControl)
             },
 
             data: {

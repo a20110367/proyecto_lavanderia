@@ -267,21 +267,22 @@ model ServiceOrder {
 }
 
 model ServiceOrderDetail {
-  id_serviceOrderDetail Int      @id @default(autoincrement())
-  units                 Int      @default(1)
-  subtotal              Float    @default(0.00)
-  created               DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id_serviceOrderDetail Int       @id @default(autoincrement())
+  units                 Int       @default(1)
+  subtotal              Float     @default(0.00)
+  created               DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
   fk_serviceOrder       Int
   fk_laundryService     Int?
   fk_selfService        Int?
   fk_ironService        Int?
   fk_drycleanService    Int?
   fk_otherService       Int?
-  serviceDescription    String   @default("General") //prefrentemente quitar el default
-  priceCash             Float    @default(1.00) //prefrentemente quitar el default
-  priceCredit           Float    @default(1.00) //prefrentemente quitar el default
-  cancelled             Boolean  @default(false)
+  payMethod             PayMethod @default(cash)
+  serviceDescription    String    @default("General") //prefrentemente quitar el default
+  priceCash             Float     @default(1.00) //prefrentemente quitar el default
+  priceCredit           Float     @default(1.00) //prefrentemente quitar el default
+  cancelled             Boolean   @default(false)
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
   LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])

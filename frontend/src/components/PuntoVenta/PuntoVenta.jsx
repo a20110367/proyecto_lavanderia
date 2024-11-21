@@ -295,6 +295,8 @@ export default function PuntoVenta() {
     window.history.back();
   };
 
+  console.log(cart)
+
   const saveOrderAndGenerateTicket = async (ironDate) => {
     const arrayService = [];
     let noOfItems = 0;
@@ -308,6 +310,10 @@ export default function PuntoVenta() {
         units: detail.quantity,
         subtotal: subTotal,
         fk_Service: detail.id_service,
+        serviceDescription: detail.description,
+        priceCash: detail.price,
+        priceCredit: detail.priceCredit,
+        categoryDescription: detail.Category.categoryDescription,
       })
     );
 

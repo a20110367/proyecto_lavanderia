@@ -1233,8 +1233,8 @@ export const getCancelableOrders = async (req, res) => {
                 totalPrice: true,
                 orderStatus: true,
                 payStatus: true,
-                express:true,
-                ironPieces:true,
+                express: true,
+                ironPieces: true,
                 client: {
                     select: {
                         name: true,
@@ -1323,18 +1323,33 @@ export const createLaudryServiceOrder = async (req, res) => {
                         firstLN: true,
                         secondLN: true
                     },
-                },
+                }
             }
 
         });
         console.log(serviceOrder.id_order);
         console.log(serviceOrder.client);
+        console.log("SERVICES")
+        console.log(req.body.services)
+        console.log("SERVICES FINAL")
 
-        const serviceDetail = req.body.services.map(item => ({ fk_laundryService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+
+        const serviceDetail = req.body.services.map(item => ({
+            fk_laundryService: item.fk_Service,
+            units: item.units,
+            subtotal: item.subtotal,
+            serviceDescription: item.serviceDescription,
+            priceCash: item.price,
+            priceCredit: item.priceCredit,
+            fk_serviceOrder: serviceOrder.id_order
+        }))
         console.log(serviceDetail);
 
         const serviceQueue = serviceDetail.map((item, index) => ({
-            fk_laundryService: item.fk_laundryService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+            fk_laundryService: item.fk_laundryService,
+            units: item.units,
+            subtotal: item.subtotal,
+            fk_idServiceOrder: serviceOrder.id_order
         }));
 
         console.log(serviceQueue);
@@ -1424,11 +1439,22 @@ export const createOtherServiceOrder = async (req, res) => {
         });
         console.log(serviceOrder.id_order);
 
-        const serviceDetail = req.body.services.map(item => ({ fk_otherService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        const serviceDetail = req.body.services.map(item => ({
+            fk_otherService: item.fk_Service,
+            units: item.units,
+            subtotal: item.subtotal,
+            serviceDescription: item.serviceDescription,
+            priceCash: item.price,
+            priceCredit: item.priceCredit,
+            fk_serviceOrder: serviceOrder.id_order
+        }))
         console.log(serviceDetail);
 
         const serviceQueue = serviceDetail.map((item, index) => ({
-            fk_otherService: item.fk_otherService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+            fk_otherService: item.fk_otherService,
+            units: item.units,
+            subtotal: item.subtotal,
+            fk_idServiceOrder: serviceOrder.id_order
         }));
 
         console.log(serviceQueue);
@@ -1506,11 +1532,22 @@ export const createSelfServiceOrder = async (req, res) => {
         });
         console.log(serviceOrder.id_order);
 
-        const serviceDetail = req.body.services.map(item => ({ fk_selfService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        const serviceDetail = req.body.services.map(item => ({
+            fk_selfService: item.fk_Service,
+            units: item.units,
+            subtotal: item.subtotal,
+            serviceDescription: item.serviceDescription,
+            priceCash: item.price,
+            priceCredit: item.priceCredit,
+            fk_serviceOrder: serviceOrder.id_order
+        }))
         console.log(serviceDetail);
 
         const serviceQueue = serviceDetail.map((item, index) => ({
-            fk_selfService: item.fk_selfService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+            fk_selfService: item.fk_selfService,
+            units: item.units,
+            subtotal: item.subtotal,
+            fk_idServiceOrder: serviceOrder.id_order
         }));
 
         console.log(serviceQueue);
@@ -1587,11 +1624,22 @@ export const createIronServiceOrder = async (req, res) => {
         });
         console.log(serviceOrder.id_order);
 
-        const serviceDetail = req.body.services.map(item => ({ fk_ironService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        const serviceDetail = req.body.services.map(item => ({
+            fk_ironService: item.fk_Service,
+            units: item.units,
+            subtotal: item.subtotal,
+            serviceDescription: item.serviceDescription,
+            priceCash: item.price,
+            priceCredit: item.priceCredit,
+            fk_serviceOrder: serviceOrder.id_order
+        }))
         console.log(serviceDetail);
 
         const serviceQueue = serviceDetail.map((item, index) => ({
-            fk_ironService: item.fk_ironService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+            fk_ironService: item.fk_ironService,
+            units: item.units,
+            subtotal: item.subtotal,
+            fk_idServiceOrder: serviceOrder.id_order
         }));
 
         console.log(serviceQueue);
@@ -1669,11 +1717,22 @@ export const createDrycleanServiceOrder = async (req, res) => {
         });
         console.log(serviceOrder.id_order);
 
-        const serviceDetail = req.body.services.map(item => ({ fk_drycleanService: item.fk_Service, units: item.units, subtotal: item.subtotal, fk_serviceOrder: serviceOrder.id_order }))
+        const serviceDetail = req.body.services.map(item => ({
+            fk_drycleanService: item.fk_Service,
+            units: item.units,
+            subtotal: item.subtotal,
+            serviceDescription: item.serviceDescription,
+            priceCash: item.price,
+            priceCredit: item.priceCredit,
+            fk_serviceOrder: serviceOrder.id_order
+        }))
         console.log(serviceDetail);
 
         const serviceQueue = serviceDetail.map((item, index) => ({
-            fk_drycleanService: item.fk_drycleanService, units: item.units, subtotal: item.subtotal, fk_idServiceOrder: serviceOrder.id_order
+            fk_drycleanService: item.fk_drycleanService,
+            units: item.units,
+            subtotal: item.subtotal,
+            fk_idServiceOrder: serviceOrder.id_order
         }));
 
         console.log(serviceQueue);
@@ -1786,6 +1845,9 @@ export const updateCancelledOrder = async (req, res) => {
         });
 
         const getCurrentCashCut = prisma.cashCut.findFirst({
+            where: {
+                cashCutStatus: "open",
+            },
 
             select: {
                 fk_user: true,
@@ -1834,9 +1896,7 @@ export const updateCancelledOrder = async (req, res) => {
 
         const getIronControl = prisma.ironControl.findFirst({
 
-            select: {
-                id_ironControl: true
-            },
+            take: -1
 
         });
 
@@ -1850,12 +1910,12 @@ export const updateCancelledOrder = async (req, res) => {
         let cancelledOrder;
 
         if (orderData.express)
-            expressIronPieces = orderData.ironPieces + 0;
+            expressIronPieces = Number(orderData.ironPieces);
         else
-            regularIronPieces = orderData.ironPieces + 0;
+            regularIronPieces = Number(orderData.ironPieces);
 
         if (drycleanPieces != null)
-            drycleanPieces = orderData.drycleanPieces + 0;
+            drycleanPieces = Number(orderData.drycleanPieces);
 
         const createCancelledOrderDetail = prisma.cancelledServiceOrderDetail.createMany({
             data: orderDetail
@@ -1897,7 +1957,7 @@ export const updateCancelledOrder = async (req, res) => {
 
         const updateIronControl = prisma.ironControl.updateMany({
             where: {
-                id_ironControl:Number(ironControlData.id_ironControl)
+                id_ironControl: Number(ironControlData.id_ironControl)
             },
 
             data: {
@@ -1906,6 +1966,10 @@ export const updateCancelledOrder = async (req, res) => {
                 },
                 piecesExpress: {
                     decrement: Number(expressIronPieces),
+                }
+                ,
+                piecesToday: {
+                    decrement: Number(regularIronPieces),
                 }
             }
 

@@ -492,6 +492,7 @@ model CashCut {
   initialCash         Float?        @default(0)
   ordersPayed         Int?
   ordersCancelled     Int?
+  ironPiecesDone      Int           @default(0)
   totalAutoservicio   Float?
   totalCash           Float?
   totalCashWithdrawal Float?

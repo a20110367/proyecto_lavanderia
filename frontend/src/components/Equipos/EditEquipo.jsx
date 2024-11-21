@@ -27,6 +27,7 @@ function EditEquipo() {
   const [cicleTime, setCicleTime] = useState("");
   const [validCicleTime, setValidCicleTime] = useState(false);
   const [cicleTimeFocus, setCicleTimeFocus] = useState(false);
+  const [freeForUse, setFreeForUse] = useState();
 
   const [weight, setWeight] = useState("");
   const [validWeight, setValidWeight] = useState(false);
@@ -68,6 +69,7 @@ function EditEquipo() {
       setNoMachine(response.data.machineNumber)
       setMachineType(response.data.machineType);
       setCicleTime(response.data.cicleTime.toString());
+      setFreeForUse(response.data.freeForUse)
       setWeight(response.data.weight.toString());
       setIpAddress(response.data.ipAddress)
       setStatus(response.data.status);
@@ -88,37 +90,41 @@ function EditEquipo() {
       return;
     }
 
-    try {
-      const res = await api.patch(`/machines/config/${id}`, {
-        model: model,
-        machineNumber: noMachine,
-        machineType: machineType,
-        cicleTime: parseInt(cicleTime),
-        weight: parseInt(weight),
-        status: status,
-        ipAddress: ipAddress ? ipAddress : null,
-        notes: notes,
-      });
+    if(freeForUse){
+      try {
+        const res = await api.patch(`/machines/config/${id}`, {
+          model: model,
+          machineNumber: noMachine,
+          machineType: machineType,
+          cicleTime: parseInt(cicleTime),
+          weight: parseInt(weight),
+          status: status,
+          ipAddress: ipAddress ? ipAddress : null,
+          notes: notes,
+        });
 
-      console.log(res)
+        // console.log(res)
 
-      res.status === 200 ? Swal.fire("Equipo Actualizado Correctamente", "", "success") : res.status === 409 ? Swal.fire("Este Número de Equipo ya existe", "", "error") : "";
+        res.status === 200 ? Swal.fire("Equipo Actualizado Correctamente", "", "success") : res.status === 409 ? Swal.fire("Este Número de Equipo ya existe", "", "error") : "";
 
-      setSuccess(true);
+        setSuccess(true);
 
-      setModel("");
-      setCicleTime("");
-      setWeight("");
-      setNotes("");
-      navigate("/equipos");
-    } catch (err) {
-      console.log(err)
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del servidor");
-      } else {
-        setErrMsg("Fallo al actualizar el equipo");
+        setModel("");
+        setCicleTime("");
+        setWeight("");
+        setNotes("");
+        navigate("/equipos");
+      } catch (err) {
+        console.log(err)
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del servidor");
+        } else {
+          setErrMsg("Fallo al actualizar el equipo");
+        }
+        errRef.current.focus();
       }
-      errRef.current.focus();
+    }else{
+      Swal.fire("No se puede modificar el equipo mientras este en uso", "", "warning")
     }
   };
 

@@ -103,17 +103,17 @@ export const createIronControl = async (req, res) => {
 
     try {
 
-        const lastIronControl = await prisma.ironControl.findMany({
-            orderBy: {
-                id_ironControl: 'desc',
-            },
-            take: 1,
+        const lastIronControl = await prisma.ironControl.findFirst({
+            take: -1
         });
 
-        let date1 = moment(lastIronControl[0].created).startOf('day')
+        console.log("Ultimo corte")
+        console.log(lastIronControl)
+
+        let date1 = moment(lastIronControl.created).startOf('day')
         let date2 = moment().startOf('day')
-        let piecesLeft = lastIronControl[0].piecesLeft + lastIronControl[0].piecesTomorrow
-        let piecesExpressLeft = lastIronControl[0].piecesExpress
+        let piecesLeft = lastIronControl.piecesLeft + lastIronControl.piecesTomorrow
+        let piecesExpressLeft = lastIronControl.piecesExpress
         let piecesTomorrow, piecesToday;
         var response;
         //console.log(date1)
@@ -179,7 +179,7 @@ export const createIronControl = async (req, res) => {
             });
             response = {
                 "ironingCapacity": ironingCapacity._sum,
-                "ironControl": lastIronControl[0]
+                "ironControl": lastIronControl
             }
 
 
@@ -236,10 +236,10 @@ export const updateIronRegularOrderDone = async (req, res) => {
             },
             data: {
                 piecesCashcut: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 },
                 piecesLeft: {
-                    decrement: req.body.pieces
+                    decrement: Number(req.body.pieces)
                 }
             }
 
@@ -259,10 +259,10 @@ export const updateIronRegularOrderNew = async (req, res) => {
             },
             data: {
                 piecesToday: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 },
                 piecesLeft: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 }
             }
 
@@ -283,7 +283,7 @@ export const updateIronRegularOrderForTomorrow = async (req, res) => {
             },
             data: {
                 piecesTomorrow: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 },
             }
 
@@ -304,7 +304,7 @@ export const updateIronExpressOrderNew = async (req, res) => {
             },
             data: {
                 piecesExpress: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 },
             }
 
@@ -325,10 +325,10 @@ export const updateIronExpressOrderDone = async (req, res) => {
             },
             data: {
                 piecesCashcut: {
-                    increment: req.body.pieces
+                    increment: Number(req.body.pieces)
                 },
                 piecesExpress: {
-                    decrement: req.body.pieces
+                    decrement: Number(req.body.pieces)
                 }
             }
 

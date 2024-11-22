@@ -210,8 +210,11 @@ export const createPaymentDelivery = async (req, res) => {
                     where: {
                         id_serviceOrderDetail: Number(element.id)
                     },
+                    data: {
+                        subtotal: element.subtotal,
+                        payMethod: "credit"
+                    }
 
-                    subtotal: element.subtotal
 
                 });
 
@@ -386,7 +389,11 @@ export const createPaymentAdvance = async (req, res) => {
                         id_serviceOrderDetail: Number(element.id)
                     },
 
-                    subtotal: element.subtotal
+                    data: {
+                        subtotal: element.subtotal,
+                        payMethod: "credit"
+                    }
+
 
                 });
 

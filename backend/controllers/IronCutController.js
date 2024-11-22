@@ -450,40 +450,40 @@ export const calculateIronCut = async (req, res) => {
     }
 }
 
-//Actualiza los contadores al inicio de un dia de trabajo
-export const updateDiaryIron = async (req, res) => {
+// //Actualiza los contadores al inicio de un dia de trabajo
+// export const updateDiaryIron = async (req, res) => {
 
-    try {
-        const ironCutBefore = await prisma.ironCut.findMany({
-            orderBy: {
-                id_ironCut: 'desc',
-            },
-            skip: 1,
-            take: 1,
-        });
+//     try {
+//         const ironCutBefore = await prisma.ironCut.findMany({
+//             orderBy: {
+//                 id_ironCut: 'desc',
+//             },
+//             skip: 1,
+//             take: 1,
+//         });
 
-        const piecesToday = ironCutBefore[0].piecesTomorrow + ironCutBefore[0].piecesLeft;
+//         const piecesToday = ironCutBefore[0].piecesTomorrow + ironCutBefore[0].piecesLeft;
 
-        const ironCutCurrent = await prisma.ironCut.update({
+//         const ironCutCurrent = await prisma.ironCut.update({
 
-            where: {
-                id_ironCut: Number(req.params.id),
-            },
+//             where: {
+//                 id_ironCut: Number(req.params.id),
+//             },
 
-            data: {
-                piecesToday: piecesToday,
-                piecesLeft: piecesToday
-            }
+//             data: {
+//                 piecesToday: piecesToday,
+//                 piecesLeft: piecesToday
+//             }
 
-        });
+//         });
 
 
 
-        res.status(200).json(ironCutCurrent);
-    } catch (e) {
-        res.status(400).json({ msg: e.message });
-    }
-}
+//         res.status(200).json(ironCutCurrent);
+//     } catch (e) {
+//         res.status(400).json({ msg: e.message });
+//     }
+// }
 //Actualiza las piezas hechas en el dia, y por lo tanto las quita de backlog de planchado
 //REVISAR POR FALLAS DE DISEÑO LOGICO
 export const updateCashCutIron = async (req, res) => {

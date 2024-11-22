@@ -394,7 +394,9 @@ function PedidosAutoservicio() {
                   </td>
 
                   <td className="py-3 px-7 text-black">{
-                  pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress"  && pedido.machine ?
+                    pedido.machine ?
+                    <div>
+                  {pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress"  && pedido.machine ?
                     <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
                       <div className="grid-flow-col">
                         <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.machine.machineNumber}</span></p>
@@ -419,7 +421,7 @@ function PedidosAutoservicio() {
                         </div>
                         : ""} */}
                       </div>
-                    </div> : "-"}
+                    </div> : "-" } </div> : "-"}
                   </td>
 
                   <td className="py-3 px-6 font-bold ">

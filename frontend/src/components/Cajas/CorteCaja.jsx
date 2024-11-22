@@ -24,6 +24,7 @@ function CorteCaja() {
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [corteActivo, setCorteActivo] = useState(false);
   const navigate = useNavigate();
+  const [blockButton, setBlockButton] = useState(false);
 
   const { cookies } = useAuth();
 
@@ -110,6 +111,8 @@ function CorteCaja() {
     }
 
     try {
+      setBlockButton(true);
+
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
@@ -273,12 +276,6 @@ function CorteCaja() {
 
       // pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-      await api.post("/generateCashCutTicket", {
-        cashCut: cashCut,
-        services: services,
-        products: products,
-      });
-
       setLastCashCut(nuevoCorte);
       setCortes([nuevoCorte]);
 
@@ -290,6 +287,12 @@ function CorteCaja() {
 
       setDialogVisible(false);
 
+      await api.post("/generateCashCutTicket", {
+        cashCut: cashCut,
+        services: services,
+        products: products,
+      });
+      
       const out = pdf.output("datauristring");
       await api.post("/sendCashCut", {
         date: moment().format("DD-MM-YYYY"),
@@ -821,12 +824,14 @@ function CorteCaja() {
         open={dialogVisible}
         onOk={handleConfirmCorteCaja}
         onCancel={() => setDialogVisible(false)}
+        maskClosable={!blockButton}
         width={400}
         footer={[
           <Button
             key="confirmar"
             onClick={handleConfirmCorteCaja}
             className="btn-print text-white"
+            disabled={blockButton}
           >
             Confirmar
           </Button>,
@@ -834,6 +839,7 @@ function CorteCaja() {
             key="cancelar"
             onClick={() => setDialogVisible(false)}
             className="btn-cancel-modal text-white"
+            disabled={blockButton}
           >
             Cancelar
           </Button>,

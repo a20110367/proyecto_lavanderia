@@ -180,6 +180,7 @@ function EntregaPlanchado() {
           description: service.IronService.description
             ? service.IronService.description
             : "ERROR",          
+          price: cobroInfo.metodoPago === 'credit' ? service.IronService.priceCredit : service.IronService.price,
           totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });

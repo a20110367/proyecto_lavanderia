@@ -180,6 +180,7 @@ function EntregaTintoreria() {
           description: service.DrycleanService.description
             ? service.DrycleanService.description
             : "ERROR",          
+          price: cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit : service.DrycleanService.price,
           totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });

@@ -179,6 +179,7 @@ function EntregaVarios() {
           description: service.OtherService.description
             ? service.OtherService.description
             : "ERROR",          
+          price: cobroInfo.metodoPago === 'credit' ? service.OtherService.priceCredit : service.OtherService.price,
           totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });

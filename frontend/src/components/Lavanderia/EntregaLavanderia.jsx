@@ -174,12 +174,14 @@ function EntregaLavanderia() {
       });
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
+      
       pedido.ServiceOrderDetail.forEach(service => {
         cart.push({
           description: service.LaundryService.description
             ? service.LaundryService.description
             : "ERROR",          
           totalPrice: calculateSubtotal(service),
+          price: cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit : service.LaundryService.price,
           quantity: service.units,
         });
       });

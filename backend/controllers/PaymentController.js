@@ -55,13 +55,17 @@ export const createPayment = async (req, res) => {
 export const createPaymentDelivery = async (req, res) => {
 
     try {
-        console.log(req.body);
+
+        console.log("BODY_Payment");
+        console.log(req.body.payment)
+
         const payment = await prisma.payment.create({
             data: req.body.payment
 
         });
-        console.log(payment);
+
         const delivery = await prisma.deliveryDetail.create({
+            
             data: {
                 fk_userCashier: req.body.deliveryDetail.fk_userCashier,
                 deliveryDate: req.body.deliveryDetail.deliveryDate,
@@ -71,30 +75,40 @@ export const createPaymentDelivery = async (req, res) => {
             }
 
         });
-        console.log(delivery);
-
 
         const orderPayment = await prisma.serviceOrder.update({
             where: {
-                id_order: req.body.deliveryDetail.fk_idOrder,
+                id_order: Number(req.body.payment.fk_idOrder),
             },
             data: {
-                payStatus: 'paid',
-                orderStatus: 'delivered',
-                totalPrice: Number(req.body.payment.payTotal)
-            },
+                payStatus: "paid",
+                orderStatus: "delivered",
+                totalPrice: req.body.payment.payTotal
+            }
 
         });
 
+        console.log("BODY");
+        console.log(req.body);
+        console.log("Payment");
+        console.log(payment);
+        console.log("Delivery");
+        console.log(delivery);
+        console.log("OrderPayment");
         console.log(orderPayment);
-        if (req.body.payMethod == "credit") {
+
+        console.log(req.body.payment.payMethod)
+
+        if (req.body.payment.payMethod.toString() == 'credit' ) {
+
+            console.log(req.body.payment.payMethod)
 
             let dataUpdate;
 
             const orderCategory = await prisma.serviceOrder.findFirst({
 
                 where: {
-                    id_order: Number(req.params.id)
+                    id_order: Number(req.body.payment.fk_idOrder)
                 },
 
                 select: {
@@ -107,10 +121,8 @@ export const createPaymentDelivery = async (req, res) => {
             const orderDetail = await prisma.serviceOrderDetail.findMany({
 
                 where: {
-                    fk_serviceOrder: Number(req.params.id)
+                    fk_serviceOrder: Number(req.body.payment.fk_idOrder)
                 },
-
-
 
                 select: {
                     id_serviceOrderDetail: true,
@@ -161,45 +173,55 @@ export const createPaymentDelivery = async (req, res) => {
 
             console.log(orderDetail)
 
-            if (orderCategory.fk_categoryId == 1) {
+            if (Number(orderCategory.fk_categoryId) == 1) {
                 dataUpdate = orderDetail.map(item => ({
                     id: item.id_serviceOrderDetail,
                     subtotal: Number(item.units * item.SelfService.priceCredit)
                 }))
+                console.log("xxxxxxxxxxxxxxx")
                 console.log(dataUpdate)
+                console.log("xxxxxxxxxxxxxxx")
             }
 
 
-            if (orderCategory.fk_categoryId == 2) {
+            if (Number(orderCategory.fk_categoryId) == 2) {
                 dataUpdate = orderDetail.map(item => ({
                     id: item.id_serviceOrderDetail,
                     subtotal: Number(item.units * item.LaundryService.priceCredit)
                 }))
+                console.log("xxxxxxxxxxxxxxx")
                 console.log(dataUpdate)
+                console.log("xxxxxxxxxxxxxxx")
             }
 
-            if (orderCategory.fk_categoryId == 3) {
+            if (Number(orderCategory.fk_categoryId) == 3) {
                 dataUpdate = orderDetail.map(item => ({
                     id: item.id_serviceOrderDetail,
                     subtotal: Number(item.units * item.IronService.priceCredit)
                 }))
+                console.log("xxxxxxxxxxxxxxx")
                 console.log(dataUpdate)
+                console.log("xxxxxxxxxxxxxxx")
             }
 
-            if (orderCategory.fk_categoryId == 4) {
+            if (Number(orderCategory.fk_categoryId) == 4) {
                 dataUpdate = orderDetail.map(item => ({
                     id: item.id_serviceOrderDetail,
                     subtotal: Number(item.units * item.DrycleanService.priceCredit)
                 }))
+                console.log("xxxxxxxxxxxxxxx")
                 console.log(dataUpdate)
+                console.log("xxxxxxxxxxxxxxx")
             }
 
-            if (orderCategory.fk_categoryId == 5) {
+            if (Number(orderCategory.fk_categoryId) == 5) {
                 dataUpdate = orderDetail.map(item => ({
                     id: item.id_serviceOrderDetail,
                     subtotal: Number(item.units * item.OtherService.priceCredit)
                 }))
+                console.log("xxxxxxxxxxxxxxx")
                 console.log(dataUpdate)
+                console.log("xxxxxxxxxxxxxxx")
 
             }
 
@@ -248,6 +270,7 @@ export const createPaymentAdvance = async (req, res) => {
 
     try {
         const payment = prisma.payment.create({
+
             data: req.body.payment
 
         });
@@ -265,14 +288,19 @@ export const createPaymentAdvance = async (req, res) => {
         });
 
         const result = await prisma.$transaction([payment, orderPayment]);
-        if (req.body.payMethod == "credit") {
+
+        console.log("Se actualizo el pedido en pagos")
+
+        if (req.body.payment.payMethod.toString() == "credit") {
+
+            console.log("Entro al if credit")
 
             let dataUpdate;
 
             const orderCategory = await prisma.serviceOrder.findFirst({
 
                 where: {
-                    id_order: Number(req.params.id)
+                    id_order: Number(req.params.payment.fk_idOrder)
                 },
 
                 select: {
@@ -285,7 +313,7 @@ export const createPaymentAdvance = async (req, res) => {
             const orderDetail = await prisma.serviceOrderDetail.findMany({
 
                 where: {
-                    fk_serviceOrder: Number(req.params.id)
+                    fk_serviceOrder: Number(req.params.payment.fk_idOrder)
                 },
 
 

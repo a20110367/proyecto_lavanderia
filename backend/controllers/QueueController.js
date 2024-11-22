@@ -59,6 +59,8 @@ export const getLaundryQueue = async (req, res) => {
                                 ipAddress: true,
                                 id_machine: true,
                                 model: true,
+                                machineNumber: true,
+                                machineType: true
                             }
                         },
                     },
@@ -73,6 +75,8 @@ export const getLaundryQueue = async (req, res) => {
                                 ipAddress: true,
                                 id_machine: true,
                                 model: true,
+                                machineNumber: true,
+                                machineType: true
                             }
                         },
                     },
@@ -346,6 +350,8 @@ export const getSelfServiceQueue = async (req, res) => {
                         ipAddress: true,
                         id_machine: true,
                         model: true,
+                        machineNumber: true,
+                        machineType: true,
                     }
                 },
             },
@@ -369,6 +375,8 @@ export const getSelfServiceQueueById = async (req, res) => {
                         ipAddress: true,
                         id_machine: true,
                         model: true,
+                        machineNumber: true,
+                        machineType: true,
                     }
                 },
             }

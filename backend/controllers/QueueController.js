@@ -7,7 +7,7 @@ export const getLaundryQueue = async (req, res) => {
     try {
         const response = await prisma.laundryQueue.findMany({
             where: {
-                OR: [
+                AND: [
                     {
                         NOT: {
                             serviceStatus: "finished"
@@ -302,7 +302,7 @@ export const getSelfServiceQueue = async (req, res) => {
     try {
         const response = await prisma.selfServiceQueue.findMany({
             where: {
-                OR: [
+                AND: [
                     {
                         NOT: {
                             serviceStatus: "finished"
@@ -1054,7 +1054,7 @@ export const getOtherQueue = async (req, res) => {
     try {
         const response = await prisma.otherQueue.findMany({
             where: {
-                OR: [
+                AND: [
                     {
                         NOT: {
                             serviceStatus: "finished"

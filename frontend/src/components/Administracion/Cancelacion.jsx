@@ -34,6 +34,7 @@ function Cancelacion() {
     return response.data;
   };
   const { data } = useSWR("orderCancelable", fetcher);
+  console.log(data)
 
   useEffect(() => {
     if (data) {
@@ -122,11 +123,22 @@ function Cancelacion() {
       
 
       if (isValid) {
-        if((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0){
-          localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
-        }else{
-          localStorage.setItem("numberOfPieces", 0)
+        if(!canceledOrder.express){
+          if((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0){
+            localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
+          }else{
+            localStorage.setItem("numberOfPieces", 0)
+          }
         }
+
+        setVisible(false);
+        await fetcher()
+        // const updatedCanceled = cancelaciones.map((item) => {
+        //   item.id_order === orderId
+        //   ? { ...item, deleted: true }
+        //   : {item}
+        // })
+        // setCancelaciones(updatedCanceled)
 
         Swal.fire({
           title: "Orden Cancelada con Exito!",
@@ -139,29 +151,21 @@ function Cancelacion() {
           cause: cause,
         })
 
-        setVisible(false);
-        const updatedCanceled = cancelaciones.map((item) => {
-          if (item.id_service != cancelRes.data.id_cancelledOrder) {
-            return item;
-          }
-        })
-        setCancelaciones(updatedCanceled)
-
-        // console.log(cancelRes)
+        console.log(cancelRes)
 
         const res = await api.get(`/orders/${orderId}`);
 
-        await api.post('/generate/order/canceled', {
-          canceled: {
-            id_canceled: cancelRes.data.id_cancelledOrder,
-            type: cancelRes.data.CancellationTypes,
-            id_order: orderId,
-            cause: cause,
-            casher: cookies.username,
-            amount: canceledOrder.totalPrice,
-            order: await res.data,
-          }
-        })
+        // await api.post('/generate/order/canceled', {
+        //   canceled: {
+        //     id_canceled: cancelRes.data.id_cancelledOrder,
+        //     type: cancelRes.data.CancellationTypes,
+        //     id_order: orderId,
+        //     cause: cause,
+        //     casher: cookies.username,
+        //     amount: canceledOrder.totalPrice,
+        //     order: await res.data,
+        //   }
+        // })
 
         await api.post('/sendWarning',{
           canceledOrder: canceledOrder,
@@ -222,7 +226,7 @@ function Cancelacion() {
             .slice()
             .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((cancelacion) => (
+            .map((cancelacion) => ( 
               <tr
                 className="bg-white border-b"
                 key={cancelacion.id_order}
@@ -247,7 +251,7 @@ function Cancelacion() {
                   >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
                   </button></td>
               </tr>
-            ))}
+          ))}
         </tbody>
       </table>
       <Modal

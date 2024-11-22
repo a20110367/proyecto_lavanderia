@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
+import { GiWashingMachine } from "react-icons/gi";
+import { BiSolidDryer } from "react-icons/bi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
@@ -49,6 +51,7 @@ function PedidosLavanderia() {
   };
 
   const { data } = useSWR("laundryQueue", fetcher);
+  console.log(data)
 
   useEffect(() => {
     if (data) {
@@ -408,7 +411,7 @@ function PedidosLavanderia() {
           >
             En Proceso de Secado
           </option>
-         
+
         </select>
       </div>
       <div className="overflow-x-auto">
@@ -420,6 +423,7 @@ function PedidosLavanderia() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
+              <th>Equipo</th>
               <th>Estatus</th>
               <th>Observaciones</th>
               <th></th>
@@ -453,6 +457,23 @@ function PedidosLavanderia() {
                     <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
                     <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
                   </td>
+              
+                  <td className="py-3 px-7 text-black">{pedido.serviceStatus === "inProgressWash" && pedido.WashDetail.Machine ?
+                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.WashDetail.Machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.WashDetail.Machine.model}</span></p>
+                      </div>
+                    </div>  :
+                    pedido.serviceStatus === "inProgressDry" && pedido.DryDetail.Machine ?
+                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.DryDetail.Machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.DryDetail.Machine.model}</span></p>
+                      </div>
+                    </div> : "-"}
+                  </td>
+
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">

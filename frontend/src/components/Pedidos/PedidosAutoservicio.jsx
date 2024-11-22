@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
+import { GiWashingMachine } from "react-icons/gi";
+import { BiSolidDryer } from "react-icons/bi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
@@ -106,6 +108,8 @@ function PedidosAutoservicio() {
         return pedido.serviceStatus === filtroEstatus;
       }
     });
+
+    console.log(data)
 
     const textFiltered = filtered.filter((pedido) => {
       const searchTerm = filtro.toLowerCase();
@@ -358,6 +362,7 @@ function PedidosAutoservicio() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
+              <th>Equipo</th>
               <th>Estatus</th>
               {/* <th>Tiempo Restante</th> */}
               <th>Observaciones</th>
@@ -387,6 +392,36 @@ function PedidosAutoservicio() {
                   <td className="py-3 px-6">
                     {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
                   </td>
+
+                  <td className="py-3 px-7 text-black">{
+                  pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress"  && pedido.machine ?
+                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                        {/* {pedido.machine.ipAddress ? 
+                        <div>
+                          <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
+                          <p className="font-semibold">Restante: <span className="font-normal">{}20min</span></p> 
+                        </div>
+                        : ""} */}
+                        </div>
+                    </div>  :
+                    pedido.machine.machineType === "secadora" && pedido.serviceStatus === "inProgress" && pedido.machine ?
+                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                        {/* {pedido.machine.ipAddress ? 
+                        <div>
+                          <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
+                          <p className="font-semibold">Restante: <span className="font-normal">{}15min</span></p> 
+                        </div>
+                        : ""} */}
+                      </div>
+                    </div> : "-"}
+                  </td>
+
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">

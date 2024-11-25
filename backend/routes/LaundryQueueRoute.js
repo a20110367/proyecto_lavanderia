@@ -22,6 +22,8 @@ import {
     deleteIronQueue
 } from "../controllers/LaundryQueueController.js";
 
+//Este archivo tampoco se usa, hay que ver si se elimina
+
 const router = express.Router();
 
 router.get('/laundryWashQueue', getLaundryWashQueue);

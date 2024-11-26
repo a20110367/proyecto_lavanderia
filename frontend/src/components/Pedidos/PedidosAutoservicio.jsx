@@ -533,7 +533,7 @@ function PedidosAutoservicio() {
             Cancelar
           </button>,
         ]}
-        width={800}
+        width={1000}
         style={{ padding: "20px" }}
       >
         <div>
@@ -541,6 +541,7 @@ function PedidosAutoservicio() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
@@ -570,7 +571,8 @@ function PedidosAutoservicio() {
                 })
                 .map((machine) => (
                   <tr key={machine.id_machine}>
-                    <td>{machine.machineType}</td>
+                    <td className={machine.machineType === "lavadora" ? "font-bold text-blue-600" : "font-bold text-green-500"}>{machine.machineNumber}</td>
+                    <td className={machine.machineType === "lavadora" ? "text-blue-600" : "text-green-500"}>{machine.machineType}</td>
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>

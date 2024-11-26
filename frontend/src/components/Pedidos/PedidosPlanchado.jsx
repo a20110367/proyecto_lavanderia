@@ -454,6 +454,7 @@ function PedidosPlanchado() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Estación</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>piezas</th>
@@ -466,7 +467,8 @@ function PedidosPlanchado() {
                 .filter((machine) => machine.status === "available")
                 .map((machine) => (
                   <tr key={machine.id_ironStation}>
-                    <td>
+                    <td className="font-bold text-yellow-500">{machine.id_ironStation}</td>
+                    <td className="text-yellow-500">
                       {machine.machineType === "plancha"
                         ? "Plancha"
                         : machine.machineType}

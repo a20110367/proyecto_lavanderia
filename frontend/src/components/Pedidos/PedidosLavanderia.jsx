@@ -592,7 +592,7 @@ function PedidosLavanderia() {
             Cancelar
           </button>,
         ]}
-        width={800}
+        width={1000}
         style={{ padding: "20px" }}
       >
         <div>
@@ -600,6 +600,7 @@ function PedidosLavanderia() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
@@ -617,7 +618,8 @@ function PedidosLavanderia() {
                 )
                 .map((machine) => (
                   <tr key={machine.id_machine}>
-                    <td>{machine.machineType}</td>
+                    <td className="font-bold text-blue-600">{machine.machineNumber}</td>
+                    <td className="text-blue-600">{machine.machineType}</td>
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
@@ -668,7 +670,7 @@ function PedidosLavanderia() {
             Cancelar
           </button>,
         ]}
-        width={800}
+        width={1000}
         style={{ padding: "20px" }}
       >
         <div>
@@ -676,6 +678,7 @@ function PedidosLavanderia() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
@@ -693,7 +696,8 @@ function PedidosLavanderia() {
                 )
                 .map((machine) => (
                   <tr key={machine.id_machine}>
-                    <td>{machine.machineType}</td>
+                    <td className="font-bold text-green-500">{machine.machineNumber}</td>
+                    <td className="text-green-500">{machine.machineType}</td>
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>

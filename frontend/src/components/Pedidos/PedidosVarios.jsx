@@ -4,7 +4,7 @@ import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatTime } from "../../utils/format";
 import { useAuth } from "../../hooks/auth/auth";
 
 import {
@@ -258,7 +258,8 @@ function PedidosVarios() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
+                  <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
+                  <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (

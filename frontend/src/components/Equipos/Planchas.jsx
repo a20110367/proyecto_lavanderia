@@ -95,7 +95,7 @@ function Planchas() {
                 )
                 .map((iron, index) => (
                   <tr key={iron.id_ironStation}> 
-                    <td>{index + 1}</td>
+                    <td className="font-bold text-yellow-500">{iron.id_ironStation}</td>
                     <td
                       className={`font-semibold ${iron.machineType === "lavadora"
                           ? "text-dodgerBlue"

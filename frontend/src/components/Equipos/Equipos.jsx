@@ -179,7 +179,7 @@ function Equipos() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(machine.model, machine.id_machine)
+                          machine.freeForUse ? handleClickOpen(machine.model, machine.id_machine) :  Swal.fire("No se puede eliminar el equipo mientras este en uso", "", "warning")
                         }
                         className="btn-cancel"
                       >

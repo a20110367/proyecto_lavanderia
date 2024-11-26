@@ -27,7 +27,7 @@ function AddServiceLavanderia() {
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
+  const lavanderiaKeywords = ["lavado", "lavados", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
 
 
@@ -121,8 +121,8 @@ function AddServiceLavanderia() {
                 </div>
               )}
 
-              <div className="flex">
-                <BsCashCoin size={32} className="text-green-700 mr-4" />
+              <div className="flex items-center">
+                <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
                 <label className="form-lbl" htmlFor="price">
                   Precio Efectivo:
                 </label>
@@ -136,7 +136,7 @@ function AddServiceLavanderia() {
                 value={price}
                 required
               />
-              <div className="flex">
+              <div className="flex items-center">
                 <IoCard size={32} className="text-blue-700 mr-4" />
                 <label className="form-lbl" htmlFor="priceCredit">
                   Precio de Tarjeta:

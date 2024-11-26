@@ -117,12 +117,12 @@ function Users() {
                       >
                         <AiFillEdit/>
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => handleClickOpen(user.name, user.id_user)}
                         className="btn-cancel"
                       >
                         <BsFillTrashFill/>
-                      </button>
+                      </button> */}
                       <Dialog
                         open={open}
                         onClose={handleClose}

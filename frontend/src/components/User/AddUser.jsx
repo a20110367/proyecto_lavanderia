@@ -167,31 +167,6 @@ function Signup() {
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
               />
-              <label className="form-lbl" htmlFor="username">
-                Nombre de usuario:
-                {validUserName ? (
-                  <FontAwesomeIcon
-                    icon={faCheck}
-                    className="ml-3 text-green-500"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
-                )}
-              </label>
-              <input
-                className="form-input"
-                type="text"
-                id="username"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => setUserName(e.target.value)}
-                value={userName}
-                required
-                aria-invalid={validUserName ? "false" : "true"}
-                aria-describedby="uidnote"
-                onFocus={() => setUserNameFocus(true)}
-                onBlur={() => setUserNameFocus(false)}
-              />
 
               <div className="group">
                 <p
@@ -264,6 +239,33 @@ function Signup() {
                 onFocus={() => setSecondNameFocus(true)}
                 onBlur={() => setSecondNameFocus(false)}
               />
+
+              <label className="form-lbl" htmlFor="username">
+                Nombre de usuario:
+                {validUserName ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon={faTimes} className="err-icon" />
+                )}
+              </label>
+              <input
+                className="form-input"
+                type="text"
+                id="username"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setUserName(e.target.value)}
+                value={userName}
+                required
+                aria-invalid={validUserName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={() => setUserNameFocus(true)}
+                onBlur={() => setUserNameFocus(false)}
+              />
+
               <label className="form-lbl" htmlFor="password">
                 Contraseña:
                 {validPwd ? (

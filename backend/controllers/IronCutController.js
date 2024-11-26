@@ -4,7 +4,7 @@ import moment from 'moment'
 const prisma = new PrismaClient();
 
 export const getIronCuts = async (req, res) => {
-    
+
     let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
 
 
@@ -17,7 +17,7 @@ export const getIronCuts = async (req, res) => {
                 },
             },
 
-            
+
         });
         res.status(200).json(response);
     } catch (e) {
@@ -421,10 +421,10 @@ export const calculateIronCut = async (req, res) => {
 
 
         console.log(startDate)
-        if(startDate){
+        if (startDate) {
             const ironCutCreate = await prisma.ironCut.create({
                 data: {
-    
+
                     "station1R": ironCutE1R._sum.ironPieces,
                     "station1E": ironCutE1E._sum.ironPieces,
                     "station2R": ironCutE2R._sum.ironPieces,
@@ -435,16 +435,16 @@ export const calculateIronCut = async (req, res) => {
                     "station4E": ironCutE4E._sum.ironPieces,
                     "startingDay": startDate.created,
                     "endDay": today
-    
+
                 },
-    
+
             });
-    
+
             res.status(200).json(ironCutCreate);
-        }else{
+        } else {
             res.status(200).json(false);
         }
-        
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

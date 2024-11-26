@@ -77,6 +77,18 @@ function ServicesVarios() {
     deleteService(serviceId);
   };
 
+  const checkIfCashCutIsOpen = (service, p) => {
+    if(p === 'm'){
+      !localStorage.getItem('cashCutId') 
+      ? navigate(`/editServiceVarios/${service.id_service}`)
+      : Swal.fire("No se puede modificar el servicio mientras la caja este abierta", "", "warning")
+    }else{
+      !localStorage.getItem('cashCutId') 
+      ? handleClickOpen( service.description, service.id_service)
+      : Swal.fire("No se puede eliminar el servicio mientras la caja este abierta", "", "warning")
+    }
+  }
+
   return (
     <div>
       <div className="title-container">
@@ -119,9 +131,7 @@ function ServicesVarios() {
                     <td>
                       <button
                         onClick={() =>
-                          navigate(
-                            `/editServiceVarios/${service.id_service}`
-                          )
+                          checkIfCashCutIsOpen(service, 'm')
                         }
                         className=" btn-edit"
                       >
@@ -129,10 +139,7 @@ function ServicesVarios() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(
-                            service.description,
-                            service.id_service
-                          )
+                          checkIfCashCutIsOpen(service, 'd')
                         }
                         className="btn-cancel"
                       >

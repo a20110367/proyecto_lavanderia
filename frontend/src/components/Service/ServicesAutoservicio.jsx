@@ -6,6 +6,7 @@ import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 // Dialogs
@@ -63,6 +64,18 @@ function ServicesAutoservicio() {
     deleteService(serviceId);
   };
 
+  const checkIfCashCutIsOpen = (service, p) => {
+    if(p === 'm'){
+      !localStorage.getItem('cashCutId') 
+      ? navigate(`/editServiceAutoservicio/${service.id_service}`)
+      : Swal.fire("No se puede modificar el servicio mientras la caja este abierta", "", "warning")
+    }else{
+      !localStorage.getItem('cashCutId') 
+      ? handleClickOpen( service.description, service.id_service)
+      : Swal.fire("No se puede eliminar el servicio mientras la caja este abierta", "", "warning")
+    }
+  }
+
   return (
     <div>
       <div className="title-container">
@@ -107,9 +120,7 @@ function ServicesAutoservicio() {
                     <td> 
                       <button
                         onClick={() =>
-                          navigate(
-                            `/editServiceAutoservicio/${service.id_service}`
-                          )
+                          checkIfCashCutIsOpen(service, 'm')
                         }
                         className="btn-edit btn-edit"
                       >
@@ -117,10 +128,7 @@ function ServicesAutoservicio() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(
-                            service.description,
-                            service.id_service
-                          )
+                          checkIfCashCutIsOpen(service, 'd')
                         }
                         className="btn-cancel"
                       >

@@ -6,6 +6,7 @@ import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 // Dialogs

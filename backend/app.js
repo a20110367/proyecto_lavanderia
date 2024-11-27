@@ -38,6 +38,7 @@ import SupplyPaymentRoute from "./routes/SupplyPaymentRoute.js";
 
 import Ticket from './routes/TicketRoute.js'
 import Reports from './routes/ReportsRoute.js'
+import LogRoute from './routes/LogRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -46,6 +47,8 @@ app.use(cors());
 app.use(express.json());
 
 //Uso de rutas de por la aplicación
+app.use(LogRoute)
+
 app.use(UserRoute)
 app.use(ClientRoute)
 app.use(QueueRoute)

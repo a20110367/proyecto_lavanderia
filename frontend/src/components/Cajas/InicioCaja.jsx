@@ -77,6 +77,11 @@ function InicioCaja() {
       localStorage.removeItem("lastCashCut");
       setCajaIniciada(true);
       setVisible(false);
+    
+      
+      await api.post('/log/write', {
+        logEntry: `INFO InicioCaja.jsx : ${cookies.username} has opened the cash register with an initial cash of ${dineroInicio}`
+      });
     } catch (err) {
       console.log(err);
       if (!err?.response) {
@@ -102,6 +107,10 @@ function InicioCaja() {
         localStorage.setItem("id_supplyCashCut", supplyRes.data.id_supplyCashCut)
         setCajaIniciada(true);
         setVisible(false);
+
+        await api.post('/log/write', {
+          logEntry: `INFO InicioCaja.jsx : ${cookies.username} has opened the cash register again`
+        });
       } else {
         setVisible(false);
       }

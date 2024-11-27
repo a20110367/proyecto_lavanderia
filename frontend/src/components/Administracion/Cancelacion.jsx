@@ -153,7 +153,7 @@ function Cancelacion() {
 
         console.log(cancelRes)
 
-        const res = await api.get(`/orders/${orderId}`);
+        // const res = await api.get(`/orders/${orderId}`);
 
         // await api.post('/generate/order/canceled', {
         //   canceled: {
@@ -166,6 +166,10 @@ function Cancelacion() {
         //     order: await res.data,
         //   }
         // })
+
+        await api.post('/log/write', {
+          logEntry: `WARNING Cancelacion.jsx : ${cookies.username} has canceled an order of $${canceledOrder.totalPrice} with id: ${cancelRes.data.id_cancelledOrder}`
+        });
 
         await api.post('/sendWarning',{
           canceledOrder: canceledOrder,

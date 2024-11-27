@@ -6,3 +6,4 @@ backend/.gitignore
 *.env
 backend/controllers/utils/mailer.js
 backend/.env
+backend/logs

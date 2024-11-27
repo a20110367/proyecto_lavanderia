@@ -1100,3 +1100,14 @@ POST http://localhost:5000/generate/ticket/reprint
 #VEr que es lo que nos regresa el order detail
 ###
 GET  http://localhost:5000/paymentsTest/434
+
+
+### 
+POST http://localhost:5000/log/write
+Content-Type: application/json
+
+{
+  "logEntry":"ERROR console 20  : Errors stick out"
+}
+
+###

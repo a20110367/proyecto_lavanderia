@@ -130,6 +130,10 @@ function Retiro() {
         date: date,
       }
 
+      await api.post('/log/write', {
+        logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
+      });
+
       await api.post('/generateCashWithdrawalTicket', {
         cashWithdrawal: cashWithdrawal,
       })

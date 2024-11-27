@@ -79,6 +79,9 @@ function CorteCaja() {
 
   const handleReprintTicket = async () => {
     try{
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has reprinted a receipt`
+      });
       await api.post('/generate/ticket/reprint');
     }catch(err){
       Swal.fire("No existe ticket en la cola", "Recuerda que solo puedes reimprimir una sola vez", "warning", "#034078");
@@ -286,6 +289,10 @@ function CorteCaja() {
       setMostrarTabla(true); // Muestra la tabla después de hacer el corte
 
       setDialogVisible(false);
+    
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made a cash cut`
+      });
 
       await api.post("/generateCashCutTicket", {
         cashCut: cashCut,
@@ -299,6 +306,7 @@ function CorteCaja() {
         hour: moment().format("LT"),
         pdf: out.split("base64,")[1],
       });
+
     } catch (err) {
       console.log(err);
     }
@@ -519,11 +527,16 @@ function CorteCaja() {
         totalCredit: corteSupply.totalCreditSupply,
       };
 
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made an partial cash cut`
+      });
+
       await api.post("/generatePartialCashCutTicket", {
         cashCut: cashCut,
         services: services,
         products: products,
       });
+
     } catch (err) {
       console.error(err);
     }
@@ -683,6 +696,9 @@ function CorteCaja() {
     try{
       const res = await api.get('/calculateIronCut')
       if(res){
+        await api.post('/log/write', {
+          logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made an iron cash cut`
+        });
         const ironCut = { ...res.data, casher: cookies.username}
         await api.post('/generateIronCutTicket',{
           ironCut: ironCut

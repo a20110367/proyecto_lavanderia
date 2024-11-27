@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
+moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 

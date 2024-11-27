@@ -1509,6 +1509,21 @@ export const printReportProductId = async (req, res) => {
         printer.println(`Unidades: ${report._sum.units}`);
         printer.newLine();
 
+        printer.drawLine()
+
+        printer.newLine()
+
+        printer.alignCenter()
+        printer.setTextNormal()
+        printer.println('Recibio')
+        printer.println('( Nombre y Firma)')
+
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.println('_________________________________')
+
         printer.cut();
 
         let execute = await printer.execute();

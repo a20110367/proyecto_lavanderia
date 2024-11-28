@@ -3,105 +3,164 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getClients = async (req, res) =>{
+export const getClients = async (req, res) => {
     try {
         const response = await prisma.client.findMany();
         res.status(200).json(response);
-    }catch(e){
-        res.status(500).json({msg:e.message});
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
     }
 }
 
-export const getClientsById = async (req, res) =>{
+export const getClientsById = async (req, res) => {
     try {
         const response = await prisma.client.findUnique({
-            where:{
+            where: {
                 id_client: Number(req.params.id)
             }
         });
         res.status(200).json(response);
-    }catch(e){
-        res.status(404).json({msg:e.message});
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
     }
 }
 
-export const getClientsByEmail = async (req, res) =>{
+export const getClientsByEmail = async (req, res) => {
     try {
         const response = await prisma.client.findUnique({
-            where:{
+            where: {
                 email: req.params.email
             }
         });
         res.status(200).json(response);
-    }catch(e){
-        res.status(404).json({msg:e.message});
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
     }
 }
 
-export const getClientsByPhone = async (req, res) =>{
+export const getClientsByPhone = async (req, res) => {
     try {
         const response = await prisma.client.findFirst({
-            where:{
+            where: {
                 phone: req.params.phone
             }
         });
         res.status(200).json(response);
-    }catch(e){
-        res.status(404).json({msg:e.message});
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
     }
 }
 
-export const createClient = async (req, res) =>{
+export const createClient = async (req, res) => {
+    const { username, name, firstLN, secondLN, email, phone, pass, role } = req.body;
 
     try {
-        const client = await prisma.client.create({
-            data:req.body
-          
+
+        let client;
+
+        const phoneValidation = await prisma.user.findFirst({
+            where: {
+                phone: phone
+            },
+
+            select: {
+                id_client: true
+            }
         });
-        res.status(201).json(client);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+
+        const mailValidation = await prisma.user.findFirst({
+            where: {
+                email: email
+            },
+            select: {
+                id_client: true
+            }
+        });
+
+        if (phoneValidation == null && mailValidation == null) {
+            client = {
+
+                "m": "m",
+                "p": "p"
+            }
+
+            res.status(409).json(response);
+        }
+
+        if (phoneValidation == null) {
+            client = {
+
+                "p": "p"
+            }
+
+            res.status(409).json(response);
+        }
+
+        if (mailValidation == null) {
+            client = {
+
+                "m": "m",
+            }
+
+            res.status(409).json(response);
+        }
+
+        if (phoneValidation != null && mailValidation != null) {
+
+            const clientNew = await prisma.client.create({
+                data: req.body
+
+            });
+
+            client = clientNew;
+
+            res.status(201).json(client);
+
+        }
+
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 
-export const createClientMany = async (req, res) =>{
+export const createClientMany = async (req, res) => {
 
     try {
         const clientMany = await prisma.client.createMany({
-            data:req.body
-          
+            data: req.body
+
         });
         res.status(201).json(clientMany);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 
-export const updateClient =  async (req, res) =>{
-    const {username, name, firstLN, secondLN, email, phone, pass} = req.body;
+export const updateClient = async (req, res) => {
+    const { username, name, firstLN, secondLN, email, phone, pass } = req.body;
 
     try {
         const client = await prisma.client.update({
-            where:{
+            where: {
                 id_client: Number(req.params.id)
             },
-            data:req.body
+            data: req.body
         });
         res.status(200).json(client);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 
-export const deleteClient =  async (req, res) =>{
+export const deleteClient = async (req, res) => {
     try {
         const client = await prisma.client.delete({
-            where:{
+            where: {
                 id_client: Number(req.params.id)
             }
         });
         res.status(200).json(client);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }

@@ -92,11 +92,7 @@ export const createUser = async (req, res) => {
             }
         });
 
-        const user = await prisma.user.create({
-            data: req.body
-           
-        });
-
+       
         if (phoneValidation == null && mailValidation == null) {
             response = {
 
@@ -136,6 +132,11 @@ export const createUser = async (req, res) => {
                     phone: phone
                 }
 
+            });
+
+            const user = await prisma.user.create({
+                data: req.body
+               
             });
 
             response = {

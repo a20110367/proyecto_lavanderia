@@ -123,6 +123,8 @@ function CorteCaja() {
         `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
       );
 
+      console.log(response)
+
       const corte = response.data;
       const corteSupply = supplyResponse.data;
 
@@ -142,6 +144,8 @@ function CorteCaja() {
         total: nuevoCorte.total,
         cashCutD: nuevoCorte.cashCutD,
         cashCutT: nuevoCorte.cashCutT,
+        ordersCancelled: nuevoCorte.ordersCancelled.length,
+        totalCancelations: nuevoCorte.totalCancelled._sum.payTotal,
       };
 
       const services = {

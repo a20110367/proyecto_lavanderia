@@ -92,41 +92,26 @@ export const createUser = async (req, res) => {
             }
         });
 
-        const user = await prisma.user.create({
-            data: req.body
-           
-        });
-
-        if (phoneValidation == null && mailValidation == null) {
+        if (phoneValidation && mailValidation) {
             response = {
-
-                "m": "m",
-                "p": "p"
+                m: "m",
+                p: "p"
             }
-
             res.status(409).json(response);
-        }
-
-        if (phoneValidation == null) {
+        } else if (phoneValidation) {
             response = {
-
-                "p": "p"
+                p: "p"
             }
-
             res.status(409).json(response);
-        }
-
-        if (mailValidation == null) {
+        } else if (mailValidation) {
             response = {
-
-                "m": "m",
+                m: "m",
             }
-
             res.status(409).json(response);
-        }
-
-        if (phoneValidation != null && mailValidation != null) {
-
+        } else {
+            const user = await prisma.user.create({
+                data: req.body         
+            });
             const staffMember = await prisma.staffMember.create({
                 data: {
                     name: name,
@@ -137,13 +122,10 @@ export const createUser = async (req, res) => {
                 }
 
             });
-
             response = {
-
                 "user": user,
                 "staffMember": staffMember
             }
-
             res.status(201).json(response);
         }
 
@@ -168,16 +150,62 @@ export const createUserMany = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
-    //const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    const {email, phone} = req.body;
     try {
-        const user = await prisma.user.update({
+
+        let response
+        const phoneValidation = await prisma.user.findFirst({
             where: {
-                id_user: Number(req.params.id)
+                NOT:{
+                    id_user: Number(req.params.id)
+                },
+                phone: phone,                
             },
 
-            data: req.body
+            select: {
+                id_user: true
+            }
         });
-        res.status(200).json(user);
+
+        const mailValidation = await prisma.user.findFirst({
+            where: {
+                NOT:{
+                    id_user: Number(req.params.id)
+                },
+                email: email
+            },
+            select: {
+                id_user: true
+            }
+        });
+
+        if (phoneValidation && mailValidation) {
+            response = {
+                m: "m",
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (phoneValidation) {
+            response = {
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (mailValidation) {
+            response = {
+                m: "m",
+            }
+            res.status(409).json(response);
+        } else {
+            const user = await prisma.user.update({
+                where: {
+                    id_user: Number(req.params.id)
+                },
+    
+                data: req.body
+            });
+            res.status(200).json(user);
+        }
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

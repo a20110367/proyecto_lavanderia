@@ -6,6 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import Axios from "axios";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -87,7 +88,7 @@ function Signup() {
       return;
     }
     try {
-      await Axios.post("http://localhost:5000/users", {
+      const res = await Axios.post("http://localhost:5000/users", {
         name: name,
         username: userName,
         firstLN: firstLN,
@@ -97,19 +98,26 @@ function Signup() {
         role: rol,
         pass: pwd,
       });
-      //console.log(JSON.stringify(response))
-      setSuccess(true);
-      //clear state and controlled inputs
-      setUserName("");
-      setPwd("");
-      setMatchPwd("");
-      navigate("/users");
+      if(res.status === 201){
+        setSuccess(true);
+        setUserName("");
+        setPwd("");
+        setMatchPwd("");
+        Swal.fire("Usuario Creado con Exito", "", "success")
+        navigate("/users");
+      }
     } catch (err) {
       console.log(err)
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
-        setErrMsg("Username Taken");
+        err.response.data.p && err.response.data.m 
+        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.p
+        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.m
+        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+        : console.log("Como llego aqui")
       } else {
         setErrMsg("Registration Failed");
       }

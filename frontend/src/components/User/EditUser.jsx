@@ -6,6 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -104,7 +105,7 @@ function EditUser() {
       return;
     }
     try {
-      await api.patch(`/users/${id}`, {
+      const res = await api.patch(`/users/${id}`, {
         name: name,
         username: userName,
         firstLN: firstLN,
@@ -114,20 +115,28 @@ function EditUser() {
         role: rol,
         pass: pwd,
       });
-
-      setSuccess(true);
-
-      setUserName("");
-      setPwd("");
-      setMatchPwd("");
-      navigate("/users");
+      if(res.status === 200){
+        setSuccess(true);
+        setUserName("");
+        setPwd("");
+        setMatchPwd("");
+        navigate("/users");
+      }      
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
+        console.error(err);
       } else if (err.response?.status === 409) {
-        setErrMsg("Username Taken");
+        err.response.data.p && err.response.data.m 
+        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.p
+        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.m
+        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+        : console.log("Como llego aqui")
       } else {
         setErrMsg("Registration Failed");
+        console.error(err);
       }
       errRef.current.focus();
     }

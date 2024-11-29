@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import api from "../../api/api";
 
 function AddClient() {
@@ -69,7 +70,7 @@ function AddClient() {
     }
 
     try {
-      await api.post("/clients", {
+      const res = await api.post("/clients", {
         name: name,
         firstLN: firstLN,
         secondLN: secondLN,
@@ -77,13 +78,14 @@ function AddClient() {
         phone: phone,
         pass: "",
       });
-
-      setSuccess(true);
-      setName("");
-      setFirstLN("");
-      setSecondLN("");
-      setEmail("");
-      setPhone("");
+      if(res.status === 201){
+        setSuccess(true);
+        setName("");
+        setFirstLN("");
+        setSecondLN("");
+        setEmail("");
+        setPhone("");
+      }
 
       const source = new URLSearchParams(location.search).get("source");
 
@@ -107,7 +109,13 @@ function AddClient() {
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
-        setErrMsg("Email Address Already Exists");
+        err.response.data.p && err.response.data.m 
+        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.p
+        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.m
+        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+        : console.log("Como llego aqui")
       } else {
         setErrMsg("Registration Failed");
       }

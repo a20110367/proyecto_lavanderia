@@ -6,6 +6,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 
@@ -88,15 +89,27 @@ function EditClient() {
         pass: "",
       });
 
-      setSuccess(true);
-      setName("");
-
-      navigate("/clients");
+      if(res.status === 200){
+        setSuccess(true);
+        setName("");
+        setFirstLN("");
+        setSecondLN("");
+        setEmail("");
+        setPhone("");
+        navigate("/clients");
+      }
+      
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor");
       } else if (err.response?.status === 409) {
-        setErrMsg("Nombre de usuario ya existente");
+        err.response.data.p && err.response.data.m 
+        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.p
+        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.m
+        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+        : console.log("Como llego aqui")
       } else {
         setErrMsg("Fallo en la actualización");
       }

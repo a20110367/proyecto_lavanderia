@@ -52,13 +52,13 @@ export const getClientsByPhone = async (req, res) => {
 }
 
 export const createClient = async (req, res) => {
-    const { username, name, firstLN, secondLN, email, phone, pass, role } = req.body;
+    const { email, phone } = req.body;
 
     try {
 
-        let client;
+        let response;
 
-        const phoneValidation = await prisma.user.findFirst({
+        const phoneValidation = await prisma.client.findFirst({
             where: {
                 phone: phone
             },
@@ -68,7 +68,7 @@ export const createClient = async (req, res) => {
             }
         });
 
-        const mailValidation = await prisma.user.findFirst({
+        const mailValidation = await prisma.client.findFirst({
             where: {
                 email: email
             },
@@ -77,44 +77,31 @@ export const createClient = async (req, res) => {
             }
         });
 
-        if (phoneValidation == null && mailValidation == null) {
-            client = {
-
+        if (phoneValidation && mailValidation) {
+            response = {
                 "m": "m",
                 "p": "p"
             }
 
             res.status(409).json(response);
-        }
-
-        if (phoneValidation == null) {
-            client = {
-
+        } else if (phoneValidation) {
+            response = {
                 "p": "p"
             }
-
             res.status(409).json(response);
-        }
-
-        if (mailValidation == null) {
-            client = {
-
+        } else if (mailValidation) {
+            response = {
                 "m": "m",
             }
-
             res.status(409).json(response);
-        }
-
-        if (phoneValidation != null && mailValidation != null) {
+        } else {
 
             const clientNew = await prisma.client.create({
                 data: req.body
 
             });
 
-            client = clientNew;
-
-            res.status(201).json(client);
+            res.status(201).json(clientNew);
 
         }
 
@@ -137,16 +124,62 @@ export const createClientMany = async (req, res) => {
 }
 
 export const updateClient = async (req, res) => {
-    const { username, name, firstLN, secondLN, email, phone, pass } = req.body;
+    const { email, phone } = req.body;
 
     try {
-        const client = await prisma.client.update({
+        let response;
+
+        const phoneValidation = await prisma.client.findFirst({
             where: {
-                id_client: Number(req.params.id)
+                NOT: {
+                    id_client: Number(req.params.id)
+                },
+                phone: phone
             },
-            data: req.body
+
+            select: {
+                id_client: true
+            }
         });
-        res.status(200).json(client);
+
+        const mailValidation = await prisma.client.findFirst({
+            where: {
+                NOT: {
+                    id_client: Number(req.params.id)
+                },
+                email: email
+            },
+            select: {
+                id_client: true
+            }
+        });
+
+        if (phoneValidation && mailValidation) {
+            response = {
+                "m": "m",
+                "p": "p"
+            }
+
+            res.status(409).json(response);
+        } else if (phoneValidation) {
+            response = {
+                "p": "p"
+            }
+            res.status(409).json(response);
+        } else if (mailValidation) {
+            response = {
+                "m": "m",
+            }
+            res.status(409).json(response);
+        } else {
+            const client = await prisma.client.update({
+                where: {
+                    id_client: Number(req.params.id)
+                },
+                data: req.body
+            });
+            res.status(200).json(client);
+        }
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

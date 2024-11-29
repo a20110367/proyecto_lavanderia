@@ -144,8 +144,8 @@ function CorteCaja() {
         total: nuevoCorte.total,
         cashCutD: nuevoCorte.cashCutD,
         cashCutT: nuevoCorte.cashCutT,
-        ordersCancelled: nuevoCorte.ordersCancelled.length,
-        totalCancelations: nuevoCorte.totalCancelled._sum.payTotal,
+        ordersCancelled: nuevoCorte.ordersCancelled,
+        totalCancelations: nuevoCorte.totalCancelations,
       };
 
       const services = {

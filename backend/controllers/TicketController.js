@@ -821,7 +821,12 @@ export const cashCutTicket = async (req, res) => {
             printer.println(`Final Total en Caja: ${cashCut.total}`)
             printer.setTextNormal()
 
-            printer.setTextQuadArea()
+            // printer.setTextQuadArea()
+            printer.drawLine()
+            if(cashCut.ordersCancelled){
+                printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? '-' + cashCut.ordersCancelled : '0'}`)
+                printer.println(`Monto Total de Ordenes Canceladas: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
+            }   
             printer.drawLine()
             printer.setTextNormal()
         }

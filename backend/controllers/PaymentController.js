@@ -266,6 +266,7 @@ export const createPaymentDelivery = async (req, res) => {
 
 export const createPaymentAdvance = async (req, res) => {
 
+    console.log("Inicio Pago")
     console.log(req.body)
 
     try {
@@ -300,20 +301,22 @@ export const createPaymentAdvance = async (req, res) => {
             const orderCategory = await prisma.serviceOrder.findFirst({
 
                 where: {
-                    id_order: Number(req.params.payment.fk_idOrder)
+                    id_order: Number(req.body.payment.fk_idOrder)
                 },
 
                 select: {
-                    fk_categoryId: true,
+                    fk_categoryId: true
 
                 }
 
             });
 
+            console.log("Order Category")
+
             const orderDetail = await prisma.serviceOrderDetail.findMany({
 
                 where: {
-                    fk_serviceOrder: Number(req.params.payment.fk_idOrder)
+                    fk_serviceOrder: Number(req.body.payment.fk_idOrder)
                 },
 
 
@@ -365,6 +368,8 @@ export const createPaymentAdvance = async (req, res) => {
 
             });
 
+            
+            console.log("Order Category")
             console.log(orderDetail)
 
             if (orderCategory.fk_categoryId == 1) {
@@ -428,6 +433,9 @@ export const createPaymentAdvance = async (req, res) => {
             });
 
         }
+
+        console.log("Final")
+            
 
 
         res.status(201).json(result);

@@ -826,7 +826,7 @@ export const cashCutTicket = async (req, res) => {
             printer.drawLine()
             printer.setTextNormal()
             if(cashCut.ordersCancelled){
-                printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? '-' + cashCut.ordersCancelled : '0'}`)
+                printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? cashCut.ordersCancelled : '0'}`)
                 printer.println(`Monto Total de Ordenes Canceladas: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
             }   
             printer.setTextDoubleHeight();

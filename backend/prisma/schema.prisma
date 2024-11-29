@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  seed     = "prisma/seed.js"
 }
 
 datasource db {
@@ -37,12 +38,12 @@ model Client {
   id_client Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  phone     String //volverlo unico
+  phone     String   @unique
   pass      String?
   created   DateTime @default(now())
   firstLN   String
-  secondLN  String? //quitar nulable
-  username  String?  @unique
+  secondLN  String
+  username  String?   @unique
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
 
@@ -78,7 +79,7 @@ model IronStation {
   machineType    MachineType @default(plancha)
   freeForUse     Boolean     @default(true)
   status         Status      @default(available)
-  pieces         Int? //es el numero diario de piezas que plancha esta estacion
+  pieces         Int         @default(0) //es el numero diario de piezas que plancha esta estacion
   description    String?
   notes          String
   serialNumber   String      @default("N/A")
@@ -142,7 +143,7 @@ model IronService {
   price       Float
   priceCredit Float       @default(1.00)
   pieces      Int
-  cycleTime   Int   //este elemento se podria eliminar
+  cycleTime   Int? //este elemento se podria eliminar
   token_id    Int?
   category_id Int
   deleted     Boolean     @default(false)
@@ -159,7 +160,7 @@ model SelfService {
   price       Float
   priceCredit Float       @default(1.00)
   weight      Int
-  cycleTime   Int
+  cycleTime   Int?
   machineType MachineType
   created     DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
@@ -178,9 +179,9 @@ model LaundryService {
   price         Float
   priceCredit   Float    @default(1.00)
   washWeight    Int
-  washCycleTime Int
+  washCycleTime Int?
   dryWeight     Int
-  dryCycleTime  Int
+  dryCycleTime  Int?
   created       DateTime @default(now())
   updatedAt     DateTime @updatedAt
   category_id   Int
@@ -520,7 +521,7 @@ model CashWithdrawal {
   amount             Float
   cause              String
   serviceOrder       Int?
-  supplyOrder        Int?               //quitar este campo, ya que no hay reembolsos en productos
+  supplyOrder        Int? //quitar este campo, ya que no hay reembolsos en productos
   date               DateTime?          @db.Date
   created            DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -555,9 +556,9 @@ model SupplyCashCut {
   totalJabon         Float?
   totalSuavitel      Float?
   totalPinol         Float?
-  totalDesengrasante Float? //typo
+  totalDesengrasante Float?
   totalCloro         Float?
-  totalSanitizante   Float? //typo
+  totalSanitizante   Float?
   totalBolsa         Float?
   totalReforzado     Float?
   totalGanchos       Float?

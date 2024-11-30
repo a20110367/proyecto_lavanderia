@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 
 export const getCashCuts = async (req, res) => {
-    let lastDate = (moment().subtract(60, 'days').startOf('day').toISOString())
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
     try {
         const response = await prisma.cashCut.findMany({
 
@@ -60,17 +60,14 @@ export const createCashCut = async (req, res) => {
 
     try {
 
-        const lastCashCut = await prisma.cashCut.aggregate({
+        const lastCashCut = await prisma.cashCut.findFirst({
 
-            _max: {
-                id_cashCut: true,
-            }
-
+            take: -1
         });
 
         const cashCutStatus = await prisma.cashCut.findFirst({
             where: {
-                id_cashCut: lastCashCut._max.id_cashCut,
+                id_cashCut: lastCashCut.id_cashCut,
             },
 
             select: {
@@ -81,10 +78,10 @@ export const createCashCut = async (req, res) => {
         let cashCut;
         if (cashCutStatus.cashCutStatus === "open") {
 
-            console.log(lastCashCut._max.id_cashCut);
+            console.log(lastCashCut.id_cashCut);
             cashCut = await prisma.cashCut.findFirst({
                 where: {
-                    id_cashCut: lastCashCut._max.id_cashCut
+                    id_cashCut: lastCashCut.id_cashCut
                 },
                 select: {
                     initialCash: true,
@@ -263,6 +260,7 @@ export const calculateCashCut = async (req, res) => {
 
         });
 
+
         const totalCancelled = await prisma.payment.aggregate({
 
             where: {
@@ -281,6 +279,8 @@ export const calculateCashCut = async (req, res) => {
             }
 
         });
+
+        if (totalCancelled._sum.payTotal === null) totalCancelled._sum.payTotal = 0;
 
         const ordersPayed = await prisma.payment.findMany({
 
@@ -468,24 +468,23 @@ export const calculateCashCut = async (req, res) => {
 
         if (totalOtrosEncargo._sum.totalPrice === null) totalOtrosEncargo._sum.totalPrice = 0;
 
-        const lastPettyCash = await prisma.pettyCash.aggregate({
-            _max: {
-                id_movement: true,
-            }
-        });
+        // const lastPettyCash = await prisma.pettyCash.aggregate({
+        //     _max: {
+        //         id_movement: true,
+        //     }
+        // });
 
-        console.log(lastPettyCash);
+        // console.log(lastPettyCash);
 
         const pettyCashBalance = await prisma.pettyCash.findFirst({
-            where: {
-                id_movement: lastPettyCash._max.id_movement,
-            },
             select: {
                 balance: true,
-            }
+            },
+
+            take: -1,
         });
 
-        if (lastPettyCash._max === null) { lastPettyCash._max = 0, pettyCashBalance._max = 0 };
+        if (pettyCashBalance === null) { pettyCashBalance.balance = 0 };
 
         console.log(pettyCashBalance.balance);
 
@@ -496,6 +495,7 @@ export const calculateCashCut = async (req, res) => {
         const totalBalance =
             cash._sum.payTotal + credit._sum.payTotal
             - totalCashWithdrawal._sum.amount + initialCash.initialCash;
+        if (totalBalance == null) totalBalance = 0;
 
         console.log(
             totalEncargo._sum.totalPrice,
@@ -505,7 +505,7 @@ export const calculateCashCut = async (req, res) => {
             totalOtrosEncargo._sum.totalPrice);
 
         const today = new Date().toJSON();
-        //const time = new Date().toJSON();
+        const time = new Date().toJSON();
         const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
 
         const response =
@@ -525,8 +525,9 @@ export const calculateCashCut = async (req, res) => {
             "ordersCancelled": ordersCancelled.length,
             "totalCancelations": totalCancelled,
             "cashCutD": today,
+            "cashCutT": time,
             "pettyCashBalance": pettyCashBalance.balance,
-            "workShift": workShift.workShifts
+            "workShift": workShift.workShift
         }
 
         res.status(200).json(response);
@@ -699,7 +700,7 @@ export const closeCashCut = async (req, res) => {
 
             });
 
-            if (totalCancelled._sum.payTotal === null) totalCancelled._sum.payTotal = 0;
+            if (totalCancelled._sum.payTotal == null) totalCancelled._sum.payTotal = 0;
 
             const ordersPayed = await prisma.payment.findMany({
 
@@ -889,22 +890,22 @@ export const closeCashCut = async (req, res) => {
 
             if (totalOtrosEncargo._sum.totalPrice === null) totalOtrosEncargo._sum.totalPrice = 0;
 
-            const lastPettyCash = await prisma.pettyCash.aggregate({
-                _max: {
-                    id_movement: true,
-                }
-            });
+            // const lastPettyCash = await prisma.pettyCash.aggregate({
+            //     _max: {
+            //         id_movement: true,
+            //     }
+            // });
 
             const pettyCashBalance = await prisma.pettyCash.findFirst({
-                where: {
-                    id_movement: lastPettyCash._max.id_movement,
-                },
+
                 select: {
                     balance: true,
-                }
+                },
+
+                take: -1,
             });
 
-            lastPettyCash._max === null ? (lastPettyCash._max = 0, pettyCashBalance._max = 0) : lastPettyCash._max + 0;
+            if (pettyCashBalance === null) { pettyCashBalance.balance = 0 };
 
             //const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 

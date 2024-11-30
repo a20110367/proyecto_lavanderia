@@ -763,31 +763,35 @@ async function seed() {
     });
 
     await prisma.supplyCashCut.create({
-        "fk_user": 1,
-        "total": 0,
-        "created": "2024-11-29T02:15:19.814Z",
-        "updatedAt": "2024-11-29T02:15:19.814Z",
-        "cashCutD": "2024-11-29T00:00:00.000Z",
-        "cashCutT": "1970-01-01T02:15:20.000Z",
-        "id_supplyCashCut": 1,
-        "cashCutStatus": "closed",
-        "initialCash": 0,
-        "ordersPayed": 0,
-        "totalJabon": 0,
-        "totalSuavitel": 0,
-        "totalPinol": 0,
-        "totalDesengrasante": 0,
-        "totalCloro": 0,
-        "totalSanitizante": 0,
-        "totalBolsa": 0,
-        "totalReforzado": 0,
-        "totalGanchos": 0,
-        "totalWC": 0,
-        "totalOtros": 0,
-        "totalCredit": 0,
-        "totalCash": 0,
-        "totalIncome": 0,
-        "workShift": "morning"
+
+        data: {
+            "fk_user": 1,
+            "total": 0,
+            "created": "2024-11-29T02:15:19.814Z",
+            "updatedAt": "2024-11-29T02:15:19.814Z",
+            "cashCutD": "2024-11-29T00:00:00.000Z",
+            "cashCutT": "1970-01-01T02:15:20.000Z",
+            "id_supplyCashCut": 1,
+            "cashCutStatus": "closed",
+            "initialCash": 0,
+            "ordersPayed": 0,
+            "totalJabon": 0,
+            "totalSuavitel": 0,
+            "totalPinol": 0,
+            "totalDesengrasante": 0,
+            "totalCloro": 0,
+            "totalSanitizante": 0,
+            "totalBolsa": 0,
+            "totalReforzado": 0,
+            "totalGanchos": 0,
+            "totalWC": 0,
+            "totalOtros": 0,
+            "totalCredit": 0,
+            "totalCash": 0,
+            "totalIncome": 0,
+            "workShift": "morning"
+        }
+
     });
 
     await prisma.pettyCash.create({

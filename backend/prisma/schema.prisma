@@ -31,19 +31,19 @@ model User {
   SupplyOrder    SupplyOrder[]
 
   CancelledServiceOrder CancelledServiceOrder[]
-  CancelledSupplyOrder  CancelledSupplyOrder[]
+  // CancelledSupplyOrder  CancelledSupplyOrder[]
 }
 
 model Client {
   id_client Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  phone     String   @unique
+  phone     String   //volver unico antes de meter a produccion
   pass      String?
   created   DateTime @default(now())
   firstLN   String
   secondLN  String
-  username  String?   @unique
+  username  String?  @unique
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
 
@@ -520,8 +520,7 @@ model CashWithdrawal {
   cashWithdrawalType CashWithdrawalType @default(withdrawal)
   amount             Float
   cause              String
-  serviceOrder       Int?
-  supplyOrder        Int? //quitar este campo, ya que no hay reembolsos en productos
+  serviceOrder       Int
   date               DateTime?          @db.Date
   created            DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -594,25 +593,26 @@ model SupplyOrder {
   totalPrice        Float
   fk_client         Int
   created           DateTime          @default(now())
-  numberOfItems     Int               @default(1)
-  payForm           PayForm           @default(advance) //eliminar en la proxima revision
-  payStatus         PayStatus         @default(paid)
+  numberOfItems     Int               
+  payForm           PayForm           
+  payStatus         PayStatus         
   updatedAt         DateTime          @updatedAt
   fk_user           Int
   supplyOrderStatus SupplyOrderStatus @default(active)
 
-  client                     Client                       @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
-  user                       User                         @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  SupplyPayment              SupplyPayment?
-  SupplyOrderDetail          SupplyOrderDetail[]
-  CancelledSupplyOrder       CancelledSupplyOrder?
-  CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
+  client            Client              @relation(fields: [fk_client], references: [id_client], onDelete: Cascade, onUpdate: Cascade)
+  user              User                @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+  SupplyPayment     SupplyPayment?
+  SupplyOrderDetail SupplyOrderDetail[]
+  // CancelledSupplyOrder       CancelledSupplyOrder?
+  // CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
 }
 
 model SupplyOrderDetail {
   id_supplyOrderDetail Int      @id @default(autoincrement())
   units                Int      @default(1)
   subtotal             Float    @default(0.00)
+  price                Float    @default(0.00)
   created              DateTime @default(now())
   updatedAt            DateTime @updatedAt
   fk_supplyOrder       Int
@@ -622,44 +622,44 @@ model SupplyOrderDetail {
   Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
 }
 
-model CancelledSupplyOrder {
-  id_cancelledSupplyOrder Int               @id @default(autoincrement())
-  fk_idSupplyOrder        Int               @unique
-  fk_user                 Int
-  CancellationTypes       CancellationTypes @default(refund)
-  amount                  Float
-  cause                   String
-  created                 DateTime          @default(now())
-  updatedAt               DateTime          @updatedAt
+// model CancelledSupplyOrder {
+//   id_cancelledSupplyOrder Int               @id @default(autoincrement())
+//   fk_idSupplyOrder        Int               @unique
+//   fk_user                 Int
+//   CancellationTypes       CancellationTypes @default(refund)
+//   amount                  Float
+//   cause                   String
+//   created                 DateTime          @default(now())
+//   updatedAt               DateTime          @updatedAt
 
-  user        User        @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
-  supplyOrder SupplyOrder @relation(fields: [fk_idSupplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
-}
+//   user        User        @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
+//   supplyOrder SupplyOrder @relation(fields: [fk_idSupplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+// }
 
-model CancelledSupplyOrderDetail {
-  id_cancelledSupplyOrderDetail Int      @id @default(autoincrement())
-  units                         Int      @default(1)
-  subtotal                      Float    @default(0.00)
-  created                       DateTime @default(now())
-  updatedAt                     DateTime @updatedAt
-  fk_supplyOrder                Int
-  fk_supplyId                   Int
+// model CancelledSupplyOrderDetail {
+//   id_cancelledSupplyOrderDetail Int      @id @default(autoincrement())
+//   units                         Int      @default(1)
+//   subtotal                      Float    @default(0.00)
+//   created                       DateTime @default(now())
+//   updatedAt                     DateTime @updatedAt
+//   fk_supplyOrder                Int
+//   fk_supplyId                   Int
 
-  SupplyOrder SupplyOrder @relation(fields: [fk_supplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
-  Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
-}
+//   SupplyOrder SupplyOrder @relation(fields: [fk_supplyOrder], references: [id_supplyOrder], onDelete: Cascade, onUpdate: Cascade)
+//   Supply      Supply      @relation(fields: [fk_supplyId], references: [id_supply], onDelete: Cascade, onUpdate: Cascade)
+// }
 
 model Supply {
-  id_supply                  Int                          @id @default(autoincrement())
-  description                String                       @unique
-  price                      Float                        @default(1.00)
-  category                   SupplyCategory
-  unit                       Unit
-  value                      Int
-  created                    DateTime                     @default(now())
-  updatedAt                  DateTime                     @updatedAt
-  SupplyOrderDetail          SupplyOrderDetail[]
-  CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
+  id_supply         Int                 @id @default(autoincrement())
+  description       String              @unique
+  price             Float               @default(1.00)
+  category          SupplyCategory
+  unit              Unit
+  value             Int
+  created           DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  SupplyOrderDetail SupplyOrderDetail[]
+  //   CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
 }
 
 enum Unit {

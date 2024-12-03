@@ -38,7 +38,7 @@ model Client {
   id_client Int      @id @default(autoincrement())
   name      String
   email     String   @unique
-  phone     String   //volver unico antes de meter a produccion
+  phone     String //volver unico antes de meter a produccion
   pass      String?
   created   DateTime @default(now())
   firstLN   String
@@ -593,9 +593,9 @@ model SupplyOrder {
   totalPrice        Float
   fk_client         Int
   created           DateTime          @default(now())
-  numberOfItems     Int               
-  payForm           PayForm           
-  payStatus         PayStatus         
+  numberOfItems     Int
+  payForm           PayForm
+  payStatus         PayStatus
   updatedAt         DateTime          @updatedAt
   fk_user           Int
   supplyOrderStatus SupplyOrderStatus @default(active)
@@ -613,6 +613,7 @@ model SupplyOrderDetail {
   units                Int      @default(1)
   subtotal             Float    @default(0.00)
   price                Float    @default(0.00)
+  supplyDescription    String   @default("General") //prefrentemente quitar el default
   created              DateTime @default(now())
   updatedAt            DateTime @updatedAt
   fk_supplyOrder       Int
@@ -656,6 +657,7 @@ model Supply {
   category          SupplyCategory
   unit              Unit
   value             Int
+  deleted           Boolean             @default(false)
   created           DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   SupplyOrderDetail SupplyOrderDetail[]

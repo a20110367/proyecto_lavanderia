@@ -739,7 +739,7 @@ GET http://localhost:5000/lastCashCut
 
 ###
 
-GET http://localhost:5000/cashCuts/4
+GET http://localhost:5000/cashCuts/
 
 ###
 GET  http://localhost:5000/calculateCashCut/48
@@ -749,7 +749,6 @@ GET  http://localhost:5000/calculateCashCut/48
 GET  http://localhost:5000/closeCashCut/8
 
 ###
-
 POST http://localhost:5000/cashCuts
 Content-Type: application/json
 
@@ -1111,6 +1110,9 @@ PATCH http://localhost:5000/cancelSupplyOrder/53
 ###
 
 POST http://localhost:5000/generate/ticket/reprint
+
+###
+GET http://localhost:5000/supplies
 
 #VEr que es lo que nos regresa el order detail
 ###

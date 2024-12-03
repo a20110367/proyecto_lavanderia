@@ -807,6 +807,125 @@ async function seed() {
         }
     });
 
+    await prisma.supply.createMany({
+        data:
+            [
+                {
+                    "id_supply": 1,
+                    "description": "Jabon Liquido",
+                    "price": 10,
+                    "category": "jabon",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 2,
+                    "description": "Suavitel",
+                    "price": 10,
+                    "category": "suavitel",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 3,
+                    "description": "Pinol",
+                    "price": 10,
+                    "category": "pinol",
+                    "unit": "piezas",
+                    "value": 100
+                },
+                {
+                    "id_supply": 4,
+                    "description": "Desengrasante",
+                    "price": 10,
+                    "category": "desengrasante",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 5,
+                    "description": "Cloro",
+                    "price": 10,
+                    "category": "cloro",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 6,
+                    "description": "Sanitizante",
+                    "price": 10,
+                    "category": "sanitizante",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 7,
+                    "description": "Bolsa",
+                    "price": 10,
+                    "category": "bolsa",
+                    "unit": "piezas",
+                    "value": 1
+                },
+                {
+                    "id_supply": 8,
+                    "description": "Reforzado",
+                    "price": 10,
+                    "category": "reforzado",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 9,
+                    "description": "Ganchos",
+                    "price": 10,
+                    "category": "ganchos",
+                    "unit": "piezas",
+                    "value": 1
+                },
+                {
+                    "id_supply": 10,
+                    "description": "WC",
+                    "price": 10,
+                    "category": "wc",
+                    "unit": "piezas",
+                    "value": 1
+                },
+                {
+                    "id_supply": 11,
+                    "description": "Varios",
+                    "price": 10,
+                    "category": "otros",
+                    "unit": "piezas",
+                    "value": 1
+                },
+                {
+                    "id_supply": 12,
+                    "description": "Otros",
+                    "price": 10,
+                    "category": "otros",
+                    "unit": "piezas",
+                    "value": 1
+                },
+                {
+                    "id_supply": 13,
+                    "description": "Jabon Grande",
+                    "price": 20,
+                    "category": "jabon",
+                    "unit": "mililitros",
+                    "value": 200
+                },
+                {
+                    "id_supply": 14,
+                    "description": "Jabon Jumbo",
+                    "price": 30,
+                    "category": "jabon",
+                    "unit": "mililitros",
+                    "value": 300
+                }
+            ]
+
+    });
+
 }
 
 seed()

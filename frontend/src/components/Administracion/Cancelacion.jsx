@@ -132,13 +132,12 @@ function Cancelacion() {
         }
 
         setVisible(false);
-        await fetcher()
-        // const updatedCanceled = cancelaciones.map((item) => {
-        //   item.id_order === orderId
-        //   ? { ...item, deleted: true }
-        //   : {item}
-        // })
-        // setCancelaciones(updatedCanceled)
+        const updatedCanceled = cancelaciones.map((item) => {
+          item.id_order === orderId
+          ? { ...item, deleted: true }
+          : item
+        })
+        setCancelaciones(updatedCanceled)
 
         Swal.fire({
           title: "Orden Cancelada con Exito!",

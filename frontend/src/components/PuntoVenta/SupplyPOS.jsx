@@ -200,13 +200,15 @@ export default function PuntoVenta() {
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_supplyId: detail.id_supply,
+        price: detail.quantity,
+        description: detail.description,
       })
     );
 
     const subTotal = calculateSubtotal();
 
     const totalWithDiscount =
-      payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
+      payMethod === "credit" ? subTotal - (subTotal * 0) : subTotal;
 
     try {
       const res = await api.post(postUrl, {

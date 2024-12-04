@@ -401,13 +401,15 @@ export default function PuntoVenta() {
 
       localStorage.setItem("lastSelectedClient", clientName);
       localStorage.setItem("returningFromPuntoVenta", "true");
-      localStorage.setItem(
-        "numberOfPieces",
-        pieces +
-        (localStorage.getItem("numberOfPieces")
-          ? parseInt(localStorage.getItem("numberOfPieces"))
-          : 0)
-      );
+      if(!isExpress){
+        localStorage.setItem(
+          "numberOfPieces",
+          pieces +
+          (localStorage.getItem("numberOfPieces")
+            ? parseInt(localStorage.getItem("numberOfPieces"))
+            : 0)
+        );
+      }     
 
       // Regresar a la página anterior
       window.history.back();
@@ -1014,7 +1016,7 @@ export default function PuntoVenta() {
               <p className="text-2xl font-semibold text-center ">
                 No. Maximo de Piezas:{" "}
                 <span className="text-RedPantone">
-                  {pieces + parseInt(numberOfPieces)} / {maxIronCapacity}
+                  { isExpress ? numberOfPieces : pieces + parseInt(numberOfPieces)} / {maxIronCapacity}
                 </span>
               </p>
             ) : (

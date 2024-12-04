@@ -303,6 +303,8 @@ export const createOrder = async (req, res) => {
 
         });
 
+        console.log(req.body);
+
         const orderDetail = req.body.products.map(item => ({ fk_supplyId: item.fk_supplyId, units: item.units, subtotal: item.subtotal, fk_supplyOrder: supplyOrder.id_supplyOrder }))
 
         const supplyOrderDetail = await prisma.supplyOrderDetail.createMany({

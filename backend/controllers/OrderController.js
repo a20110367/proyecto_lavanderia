@@ -1339,7 +1339,7 @@ export const createLaudryServiceOrder = async (req, res) => {
             units: item.units,
             subtotal: item.subtotal,
             serviceDescription: item.serviceDescription,
-            priceCash: item.price,
+            priceCash: item.priceCash,
             priceCredit: item.priceCredit,
             fk_serviceOrder: serviceOrder.id_order
         }))
@@ -1444,7 +1444,7 @@ export const createOtherServiceOrder = async (req, res) => {
             units: item.units,
             subtotal: item.subtotal,
             serviceDescription: item.serviceDescription,
-            priceCash: item.price,
+            priceCash: item.priceCash,
             priceCredit: item.priceCredit,
             fk_serviceOrder: serviceOrder.id_order
         }))
@@ -1537,7 +1537,7 @@ export const createSelfServiceOrder = async (req, res) => {
             units: item.units,
             subtotal: item.subtotal,
             serviceDescription: item.serviceDescription,
-            priceCash: item.price,
+            priceCash: item.priceCash,
             priceCredit: item.priceCredit,
             fk_serviceOrder: serviceOrder.id_order
         }))
@@ -1629,7 +1629,7 @@ export const createIronServiceOrder = async (req, res) => {
             units: item.units,
             subtotal: item.subtotal,
             serviceDescription: item.serviceDescription,
-            priceCash: item.price,
+            priceCash: item.priceCash,
             priceCredit: item.priceCredit,
             fk_serviceOrder: serviceOrder.id_order
         }))
@@ -1722,7 +1722,7 @@ export const createDrycleanServiceOrder = async (req, res) => {
             units: item.units,
             subtotal: item.subtotal,
             serviceDescription: item.serviceDescription,
-            priceCash: item.price,
+            priceCash: item.priceCash,
             priceCredit: item.priceCredit,
             fk_serviceOrder: serviceOrder.id_order
         }))

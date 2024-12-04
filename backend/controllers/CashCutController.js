@@ -488,7 +488,6 @@ export const calculateCashCut = async (req, res) => {
 
         console.log(pettyCashBalance.balance);
 
-
         if (totalCashWithdrawal._sum.amount === null)
             totalCashWithdrawal._sum.amount = parseFloat(0.00);
 
@@ -496,6 +495,17 @@ export const calculateCashCut = async (req, res) => {
             cash._sum.payTotal + credit._sum.payTotal
             - totalCashWithdrawal._sum.amount + initialCash.initialCash;
         if (totalBalance == null) totalBalance = 0;
+
+        const ironPiecesDoneCashCut = await prisma.ironControl.findFirst({
+
+            select: {
+                piecesCashcut: true
+            },
+
+            take: -1
+        })
+
+        if (ironPiecesDoneCashCut == null) ironPiecesDoneCashCut.piecesCashcut = 0;
 
         console.log(
             totalEncargo._sum.totalPrice,
@@ -527,7 +537,8 @@ export const calculateCashCut = async (req, res) => {
             "cashCutD": today,
             "cashCutT": time,
             "pettyCashBalance": pettyCashBalance.balance,
-            "workShift": workShift.workShift
+            "workShift": workShift.workShift,
+            "ironPiecesDone": ironPiecesDoneCashCut.piecesCashcut
         }
 
         res.status(200).json(response);
@@ -907,6 +918,28 @@ export const closeCashCut = async (req, res) => {
 
             if (pettyCashBalance === null) { pettyCashBalance.balance = 0 };
 
+            const ironPiecesDoneCashCut = await prisma.ironControl.findFirst({
+
+                select: {
+                    piecesCashcut: true,
+                    id_ironControl: true,
+                },
+
+                take: -1
+            })
+
+            if (ironPiecesDoneCashCut.piecesCashcut == null) ironPiecesDoneCashCut.piecesCashcut = 0;
+
+            const resetIronPiecesCashCut = await prisma.ironControl.update({
+                where: {
+                    id_ironControl: ironPiecesDoneCashCut.id_ironControl
+                },
+
+                data: {
+                    piecesCashcut: 0,
+                }
+            });
+
             //const otherCategorys = (parseFloat(total._sum.payTotal.toFixed(2)) - totalAutoservicio._sum.totalPrice - totalPlanchado._sum.totalPrice - totalEncargo._sum.totalPrice - totalTintoreria._sum.totalPrice - totalOtrosEncargo._sum.totalPrice);
 
             if (totalCashWithdrawal._sum.amount === null)
@@ -947,7 +980,8 @@ export const closeCashCut = async (req, res) => {
                 "cashCutD": today,
                 "cashCutT": time,
                 "pettyCashBalance": pettyCashBalance.balance,
-                "workShift": workShift.workShift
+                "workShift": workShift.workShift,
+                "ironPiecesDone": ironPiecesDoneCashCut.piecesCashcut
 
             }
 
@@ -976,7 +1010,7 @@ export const closeCashCut = async (req, res) => {
                     "cashCutD": today,
                     "cashCutT": time,
                     "pettyCashBalance": pettyCashBalance.balance,
-
+                    "ironPiecesDone": ironPiecesDoneCashCut.piecesCashcut
 
                 }
             });

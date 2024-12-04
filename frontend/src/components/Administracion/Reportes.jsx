@@ -648,10 +648,10 @@ function Reportes() {
         // console.log(res)
         if (reportType === 1) {
           if (res.data.selfServiceSummary.length == 0
-            || res.data.laundryServiceSummary.length == 0
-            || res.data.ironServiceSummary.length == 0
-            || res.data.drycleanServiceSummary.length == 0
-            || res.data.otherServiceSumary.length == 0
+            && res.data.laundryServiceSummary.length == 0
+            && res.data.ironServiceSummary.length == 0
+            && res.data.drycleanServiceSummary.length == 0
+            && res.data.otherServiceSumary.length == 0
           ) {
             Swal.fire('No hay reportes en esas fechas', "", "error")
           } else {

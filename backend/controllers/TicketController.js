@@ -1219,7 +1219,7 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos de Autoservicio:`);
+        printer.println(`Detalles de Autoservicio:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
@@ -1238,15 +1238,17 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos de Encargo:`);
+        printer.println(`Detalles de Encargo:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
 
         report.laundryServiceSummary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(item.description);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_laundryService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
@@ -1257,15 +1259,16 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos de Planchado:`);
+        printer.println(`Detalles de Planchado:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
 
         report.ironServiceSummary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(item.description);
-            printer.setTextNormal();
+            printer.bold(false);            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_ironService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
@@ -1276,15 +1279,17 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos de Tintoreria:`);
+        printer.println(`Detalles de Tintoreria:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
 
         report.drycleanServiceSummary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(item.description);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_drycleanService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
@@ -1295,15 +1300,17 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Ingresos de Otros Servicios:`);
+        printer.println(`Detalles Otros Servicios:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
 
         report.otherServiceSumary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(item.description);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_otherService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
@@ -1320,9 +1327,11 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
 
         report.deliveryStatusOrderSummary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             printer.println(`No. de Servicios: ${item._sum.numberOfItems}`);
             printer.println(`Total: $${item._sum.totalPrice}`);
             printer.newLine();
@@ -1338,9 +1347,11 @@ export const printReportService = async (req, res) => {
         printer.drawLine();
 
         report.payStatusOrderSummary.forEach(item => {
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
+            printer.bold(true);
             printer.println(`${item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"} ${item._count.id_order}`);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             printer.println(`No. de Servicios: ${item._sum.numberOfItems}`);
             printer.println(`Total: $${item._sum.totalPrice}`);
             printer.newLine();
@@ -1384,7 +1395,7 @@ export const printReportServiceId = async (req, res) => {
         printer.newLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos por Servicio:`);
+        printer.println(`Detalles de Servicio:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
@@ -1448,16 +1459,18 @@ export const printReportProduct = async (req, res) => {
         printer.newLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos por Producto:`);
+        printer.println(`Detalles por Producto:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
         printer.newLine();
 
         report.suppliesSummary.forEach(item => {
-            printer.setTextQuadArea();
+            // printer.setTextQuadArea();
+            printer.bold(true);
             printer.println(item.description);
-            printer.setTextNormal();
+            printer.bold(false);
+            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_supplyId}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
             printer.println(`Unidades: ${item._sum.units}`);
@@ -1503,7 +1516,7 @@ export const printReportProductId = async (req, res) => {
         printer.newLine();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Detalles de Ingresos por Producto:`);
+        printer.println(`Detalles por Producto:`);
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
@@ -1517,20 +1530,20 @@ export const printReportProductId = async (req, res) => {
         printer.println(`Unidades: ${report._sum.units}`);
         printer.newLine();
 
-        printer.drawLine()
+        // printer.drawLine()
 
-        printer.newLine()
+        // printer.newLine()
 
-        printer.alignCenter()
-        printer.setTextNormal()
-        printer.println('Recibio')
-        printer.println('( Nombre y Firma)')
+        // printer.alignCenter()
+        // printer.setTextNormal()
+        // printer.println('Recibio')
+        // printer.println('( Nombre y Firma)')
 
-        printer.newLine()
-        printer.newLine()
-        printer.newLine()
-        printer.newLine()
-        printer.println('_________________________________')
+        // printer.newLine()
+        // printer.newLine()
+        // printer.newLine()
+        // printer.newLine()
+        // printer.println('_________________________________')
 
         printer.cut();
 

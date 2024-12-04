@@ -200,7 +200,7 @@ export default function PuntoVenta() {
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_supplyId: detail.id_supply,
-        price: detail.quantity,
+        price: detail.price,
         description: detail.description,
       })
     );

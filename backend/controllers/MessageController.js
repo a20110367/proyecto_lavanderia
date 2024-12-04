@@ -436,3 +436,24 @@ export const sendWarningCanceledOrder = async (req, res) => {
         res.status(400).json({ message: 'Algo salio mal!' })
     }
 }
+
+export const sendWarningReceiptReprinted = async (req, res) => {
+    
+    const {casher} = req.body;
+    const message = `// ${moment().format("DD-MM-YYYY")} //
+    El usuario ${casher} ha reimpreso un recibo en corte de caja.`
+
+    try{
+
+        //OWNER
+        restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
+            console.log("Whatsapp Message sent:  %s", data);
+        });
+        res.status(200).json('Warning Sent!')
+
+        //CLIENTe
+    }catch(err) {
+        console.error(err)
+        res.status(400).json({ message: 'Algo salio mal!' })
+    }
+}

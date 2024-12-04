@@ -82,6 +82,9 @@ function CorteCaja() {
       await api.post('/log/write', {
         logEntry: `INFO CorteCaja.jsx : ${cookies.username} has reprinted a receipt`
       });
+      await api.post('/warning/reprint', {
+        casher: cookies.username,
+      });
       await api.post('/generate/ticket/reprint');
     }catch(err){
       Swal.fire("No existe ticket en la cola", "Recuerda que solo puedes reimprimir una sola vez", "warning", "#034078");

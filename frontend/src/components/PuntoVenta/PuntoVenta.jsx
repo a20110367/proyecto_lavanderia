@@ -308,7 +308,7 @@ export default function PuntoVenta() {
     cart.forEach((detail) =>
       arrayService.push({
         units: detail.quantity,
-        subtotal: subTotal,
+        subtotal: payMethod === 'credit' ? detail.quantity * detail.priceCredit : detail.quantity * detail.price,
         fk_Service: detail.id_service,
         serviceDescription: detail.description,
         priceCash: detail.price,

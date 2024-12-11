@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import IMAGES from "../../images/images";
 import locale from "antd/es/date-picker/locale/es_ES";
-import { Modal, Button, DatePicker } from "antd";
+import { Modal, Button, DatePicker, Result } from "antd";
 import jsPDF from "jspdf";
 import { Select } from "antd";
 import { formatDate } from "../../utils/format";
@@ -470,6 +470,7 @@ function Reportes() {
       count += 10;
 
       setDocument(doc);
+      return doc;
 
     } else if (reportType === 2) {
       const doc = new jsPDF("p", "mm", "letter");
@@ -507,6 +508,7 @@ function Reportes() {
       doc.text(`Unidades: ${serviceResponseId._sum.units}`, 10, count);
       count += 20;
       setDocument(doc);
+      return doc;
     } else if (reportType === 3) {
       const doc = new jsPDF("p", "mm", "letter");
 
@@ -548,6 +550,7 @@ function Reportes() {
         count += 20;
       })
       setDocument(doc);
+      return doc;
     } else if (reportType === 4) {
       const doc = new jsPDF("p", "mm", "letter");
 
@@ -577,30 +580,30 @@ function Reportes() {
       doc.text(`Unidades: ${productReportResponseId._sum.units}`, 10, count);
       count += 20;
       await setDocument(doc);
+      return doc;
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");
   }
 
-  const handleGuardarPDF = async () => {
-    await handleGenerarDocumento()
+  const handleGuardarPDF = async (doc) => {
     if(reportType == 1){
       const formattedStartDate = serviceReportResponse.startDate.split("/").join("-");
       const formattedEndDate = serviceReportResponse.endDate.split("/").join("-");
-      await document.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await doc.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 2){
       const formattedStartDate = serviceResponseId.startDate.split("/").join("-");
       const formattedEndDate = serviceResponseId.endDate.split("/").join("-");
-      await document.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await doc.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 3){
       const formattedStartDate = productReportResponse.startDate.split("/").join("-");
       const formattedEndDate = productReportResponse.endDate.split("/").join("-");
-      await document.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await doc.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     }else if(reportType == 4){
       const formattedStartDate = productReportResponseId.startDate.split("/").join("-");
       const formattedEndDate = productReportResponseId.endDate.split("/").join("-");
-      await document.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      await doc.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");
   }
@@ -772,7 +775,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGuardarPDF())}
+          onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1030,7 +1033,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGuardarPDF())}
+            onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1100,7 +1103,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGuardarPDF())}
+            onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1211,7 +1214,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGuardarPDF())}
+          onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >

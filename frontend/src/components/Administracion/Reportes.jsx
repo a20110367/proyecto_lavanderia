@@ -453,6 +453,22 @@ function Reportes() {
         doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
         count += 10;
       })
+
+      doc.addPage();
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      // Mostrar detalles de ingresos por servicio TINTORERIA
+      doc.text(`Ordenes Canceladas:`, 10, 10);
+      doc.setLineWidth(1)
+      doc.line(10, 25, 205, 25, 'S');
+      count = 40;
+
+      doc.text(`"No. de Ordenes Canceladas: ${serviceReportResponse.cancelledOrderSummary._count.id_order}`, 10, count);
+      count += 10;
+      doc.text(`No. de Servicios: ${serviceReportResponse.cancelledOrderSummary._sum.numberOfItems ? serviceReportResponse.cancelledOrderSummary._sum.numberOfItems : 0}`, 10, count);
+      count += 10;
+      doc.text(`Total: $${serviceReportResponse.cancelledOrderSummary._sum.totalPrice ? serviceReportResponse.cancelledOrderSummary._sum.totalPrice : 0}`, 10, count);
+      count += 10;
+
       setDocument(doc);
 
     } else if (reportType === 2) {
@@ -655,6 +671,7 @@ function Reportes() {
           ) {
             Swal.fire('No hay reportes en esas fechas', "", "error")
           } else {
+            // console.log(res.data)
             setServiceReportResponse(res.data)
             showGeneralServicesModal()
           }
@@ -790,10 +807,13 @@ function Reportes() {
             <p className="font-bold text-2xl">Detalles:</p>
             <br />
 
-            <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">AutoServicio</p>
-            <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2 mb-1"} ></p>
-            {serviceReportResponse ?
+            <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">AutoServicio</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse.selfServiceSummary ?
               serviceReportResponse.selfServiceSummary.map(item => (
                 <div key={item.fk_selfService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
@@ -803,12 +823,16 @@ function Reportes() {
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
                 </div>
-              )) : <p className="text-lg" > Cargando Información...</p>}
+              )) 
+            : <p className="text-lg" > Cargando Información...</p>}
 
-            <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">Encargo</p>
-            <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2 mb-1"} ></p>
-            {serviceReportResponse ?
+            <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Encargo</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse.laundryServiceSummary ?
               serviceReportResponse.laundryServiceSummary.map(item => (
                 <div key={item.fk_laundryService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
@@ -820,9 +844,12 @@ function Reportes() {
                 </div>
               )) : <p className="text-lg" > Cargando Información...</p>}
 
-            <p className={"text-white font-bold rounded-md bg-yellow-500 text-center py-2"} ></p>
-            <p className="text-2xl font-bold text-center">Planchado</p>
-            <p className={"text-white font-bold rounded-md bg-yellow-500 text-center py-2 mb-1"} ></p>
+            {/* <p className={"py-2"} ></p>
+            <p className="bg-yellow-500 rounded-md  text-2xl font-bold text-center">Planchado</p>
+            <p className={"py-2"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Planchado</p>
+            <p className={"py-2 mb-1"} ></p>
             {serviceReportResponse ?
               serviceReportResponse.ironServiceSummary.map(item => (
                 <div key={item.fk_ironService}>
@@ -835,9 +862,12 @@ function Reportes() {
                 </div>
               )) : <p className="text-lg" > Cargando Información...</p>}
 
-            <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">Tintoreria</p>
-            <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2 mb-1"} ></p>
+            <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Tintoreria</p>
+            <p className={"py-2 mb-1"} ></p>
             {serviceReportResponse ?
               serviceReportResponse.drycleanServiceSummary.map(item => (
                 <div key={item.fk_drycleanService}>
@@ -850,9 +880,12 @@ function Reportes() {
                 </div>
               )) : <p className="text-lg" > Cargando Información...</p>}
 
-            <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">Otros</p>
-            <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2 mb-1"} ></p>
+            <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Otros Servicios</p>
+            <p className={"py-2 mb-1"} ></p>
             {serviceReportResponse ?
               serviceReportResponse.otherServiceSumary.map(item => (
                 <div key={item.fk_otherService}>
@@ -899,6 +932,21 @@ function Reportes() {
                 <br />
               </div>
             ))}
+            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2"} ></p>
+            <p className="font-bold text-2xl">Resumen de Ordenes Canceladas:</p>
+            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2 mb-1"} ></p>
+            {serviceReportResponse.cancelledOrderSummary ?
+              <div key={serviceReportResponse.cancelledOrderSummary._count.id_order}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                <p className="font-bold">No. de Ordenes Canceladas:</p>
+                <p className="text-lg">{serviceReportResponse.cancelledOrderSummary._count.id_order}</p>
+                <p className="font-bold">No. de Servicios:</p>
+                <p className="text-lg">{serviceReportResponse.cancelledOrderSummary._sum.numberOfItems ? serviceReportResponse.cancelledOrderSummary._sum.numberOfItems : 0}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${serviceReportResponse.cancelledOrderSummary._sum.totalPrice ? serviceReportResponse.cancelledOrderSummary._sum.totalPrice : 0}</p>
+                <br />
+              </div>
+            : <p className="text-lg" > No hay Información...</p>}
           </div>
           {/* Cuarta Columna */}
           <div className="w-1/4 text-lg sticky top-0 ml-20">

@@ -271,6 +271,22 @@ export const sendReport = async (req, res) => {
             doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
             count += 10;
         })
+        
+        doc.addPage();
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+        // Mostrar detalles de ingresos por servicio TINTORERIA
+        doc.text(`Ordenes Canceladas:`, 10, 10);
+        doc.setLineWidth(1)
+        doc.line(10, 25, 205, 25, 'S');
+        count = 40;
+
+        doc.text(`"No. de Ordenes Canceladas: ${serviceReportResponse.cancelledOrderSummary._count.id_order}`, 10, count);
+        count += 10;
+        doc.text(`No. de Servicios: ${serviceReportResponse.cancelledOrderSummary._sum.numberOfItems ? serviceReportResponse.cancelledOrderSummary._sum.numberOfItems : 0}`, 10, count);
+        count += 10;
+        doc.text(`Total: $${serviceReportResponse.cancelledOrderSummary._sum.totalPrice ? serviceReportResponse.cancelledOrderSummary._sum.totalPrice : 0}`, 10, count);
+        count += 10;
+
     } else if (reportType === 2) {
 
         doc.addImage(img, 'PNG', 125, 10, 48, 30)

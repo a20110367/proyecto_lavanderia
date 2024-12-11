@@ -1357,6 +1357,24 @@ export const printReportService = async (req, res) => {
             printer.newLine();
         })
 
+        // CANCELED ORDERS
+        printer.drawLine();
+        printer.bold(true);
+        printer.setTextQuadArea();
+        printer.println(`Ordenes Canceladas:`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.drawLine();
+        
+        // printer.setTextDoubleHeight();
+        printer.bold(true);
+        printer.println(`No. de Ordenes Canceladas: ${report.cancelledOrderSummary._count.id_order}`);
+        printer.bold(false);
+            // printer.setTextNormal();
+        printer.println(`No. de Servicios: ${report.cancelledOrderSummary._sum.numberOfItems ? report.cancelledOrderSummary._sum.numberOfItems : 0}`);
+        printer.println(`Total: $${report.cancelledOrderSummary._sum.totalPrice ? report.cancelledOrderSummary._sum.totalPrice : 0}`);
+        printer.newLine();
+
         printer.cut();
 
         let execute = await printer.execute();

@@ -698,11 +698,17 @@ export const reprintOrder = async (req, res) => {
         printer.alignCenter()
 
         printer.drawLine();
-    
-        printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $' + canceled.amount)
-        printer.bold(false);
-        printer.println(n2word(canceled.amount))
+        if(canceled){
+            printer.bold(true);                             // Append text with new line
+            printer.println('Total Pagado: $' + canceled.amount)
+            printer.bold(false);
+            printer.println(n2word(canceled.amount))
+        }else{
+            printer.bold(true);                             // Append text with new line
+            printer.println('Total Pagado: $' + order.totalPrice)
+            printer.bold(false);
+            printer.println(n2word(order.totalPrice))
+        }
 
         printer.alignLeft()
 

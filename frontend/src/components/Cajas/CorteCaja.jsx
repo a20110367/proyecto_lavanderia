@@ -245,7 +245,7 @@ function CorteCaja() {
         ? pdf.text(
             `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
             10,
-            220
+            210
           )
         : pdf.text("Retiros Totales: $0", 10, 210);
       nuevoCorte.total

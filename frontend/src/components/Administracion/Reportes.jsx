@@ -903,11 +903,15 @@ function Reportes() {
           </div>
           {/* Tercera Columna */}
           <div className="w-1/3 text-lg sticky overflow-scroll top-0 ml-20 ">
-            <p className="font-bold text-xl">Resumen de Ordenes:</p>
+            <p className="font-bold text-2xl">Resumen de Ordenes:</p>
             <br />
-            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2"} ></p>
+
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Estatus de la Ordenes:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2"} ></p>
             <p className="font-bold text-2xl">Resumen de Estatus de la Ordenes:</p>
-            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p>
+            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p> */}
             {serviceReportResponse.deliveryStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
@@ -920,9 +924,12 @@ function Reportes() {
                 <br />
               </div>
             ))}
-            <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2"} ></p>
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Estatus de Pago:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2"} ></p>
             <p className="font-bold text-2xl">Resumen de Estatus de Pago:</p>
-            <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2 mb-1"} ></p>
+            <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2 mb-1"} ></p> */}
             {serviceReportResponse.payStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
@@ -935,9 +942,12 @@ function Reportes() {
                 <br />
               </div>
             ))}
-            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2"} ></p>
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Ordenes Canceladas:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2"} ></p>
             <p className="font-bold text-2xl">Resumen de Ordenes Canceladas:</p>
-            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2 mb-1"} ></p>
+            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2 mb-1"} ></p> */}
             {serviceReportResponse.cancelledOrderSummary ?
               <div key={serviceReportResponse.cancelledOrderSummary._count.id_order}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>

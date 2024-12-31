@@ -73,7 +73,8 @@ export const getServicesReport = async (req, res) => {
         //como los subtotales, pero prisma no permite recuperar las descripciones.
 
         const selfServiceSummary = await prisma.serviceOrderDetail.groupBy({
-            by: ['fk_selfService'],
+           //by: ['fk_selfService'],
+             by: ["serviceDescription"],
             where: {
                 AND: [
 
@@ -104,9 +105,12 @@ export const getServicesReport = async (req, res) => {
             },
 
         });
+        console.log("selfServiceSummary")
+        console.log(selfServiceSummary)
 
         const laundryServiceSummary = await prisma.serviceOrderDetail.groupBy({
-            by: ["fk_laundryService"],
+            //by: ["fk_laundryService"],
+            by: ["serviceDescription"],
             where: {
                 AND: [
 
@@ -138,8 +142,12 @@ export const getServicesReport = async (req, res) => {
 
         });
 
+        console.log("laundryServiceSummary")
+        console.log(laundryServiceSummary)
+
         const ironServiceSummary = await prisma.serviceOrderDetail.groupBy({
-            by: ["fk_ironService"],
+            //by: ["fk_ironService"],
+            by: ["serviceDescription"],
             where: {
                 AND: [
 
@@ -171,8 +179,12 @@ export const getServicesReport = async (req, res) => {
 
         });
 
+        console.log("ironServiceSummary")
+        console.log(ironServiceSummary)
+
         const drycleanServiceSummary = await prisma.serviceOrderDetail.groupBy({
-            by: ["fk_drycleanService"],
+            //by: ["fk_drycleanService"],
+            by: ["serviceDescription"],
             where: {
                 AND: [
 
@@ -203,8 +215,12 @@ export const getServicesReport = async (req, res) => {
             },
         });
 
+        console.log("drycleanServiceSummary")
+        console.log(drycleanServiceSummary)
+
         const otherServiceSumary = await prisma.serviceOrderDetail.groupBy({
-            by: ["fk_otherService"],
+            //by: ["fk_otherService"],
+            by: ["serviceDescription"],
             where: {
                 AND: [
 
@@ -235,82 +251,85 @@ export const getServicesReport = async (req, res) => {
             },
         });
 
+        console.log("otherServiceSumary")
+        console.log(otherServiceSumary)
+
         //Ahora hay que recuperar catalogos por categoria, para despues formatear el json final
-        const selfServiceCatalog = await prisma.selfService.findMany({
+        // const selfServiceCatalog = await prisma.selfService.findMany({
 
-            select: {
-                id_service: true,
-                description: true,
-            }
-        });
-        const laundryServiceCatalog = await prisma.laundryService.findMany({
+        //     select: {
+        //         id_service: true,
+        //         description: true,
+        //     }
+        // });
+        // const laundryServiceCatalog = await prisma.laundryService.findMany({
 
-            select: {
-                id_service: true,
-                description: true,
-            }
-        });
+        //     select: {
+        //         id_service: true,
+        //         description: true,
+        //     }
+        // });
 
-        const ironServiceCatalog = await prisma.ironService.findMany({
+        // const ironServiceCatalog = await prisma.ironService.findMany({
 
-            select: {
-                id_service: true,
-                description: true,
-            }
-        });
+        //     select: {
+        //         id_service: true,
+        //         description: true,
+        //     }
+        // });
 
-        const drycleanServiceCatalog = await prisma.drycleanService.findMany({
+        // const drycleanServiceCatalog = await prisma.drycleanService.findMany({
 
-            select: {
-                id_service: true,
-                description: true,
-            }
-        });
+        //     select: {
+        //         id_service: true,
+        //         description: true,
+        //     }
+        // });
 
-        const otherServiceCatalog = await prisma.otherService.findMany({
+        // const otherServiceCatalog = await prisma.otherService.findMany({
 
-            select: {
-                id_service: true,
-                description: true,
-            }
+        //     select: {
+        //         id_service: true,
+        //         description: true,
+        //     }
 
 
-        });
+        // });
         ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
         let totalServiceSalesVerification = 0;
         let totalServiceNumberVerification = 0;
 
         selfServiceSummary.forEach(service => {
-            let serviceDescription = selfServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_selfService);
-            service.description = serviceDescription.description
+            // let serviceDescription = selfServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_selfService);
+            service.description = service.serviceDescription
             totalServiceSalesVerification += service._sum.subtotal;
             totalServiceNumberVerification += service._sum.units;
         });
 
         laundryServiceSummary.forEach(service => {
-            let serviceDescription = laundryServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_laundryService);
-            service.description = serviceDescription.description
+            // let serviceDescription = laundryServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_laundryService);
+            service.description = service.serviceDescription
             totalServiceSalesVerification += service._sum.subtotal;
             totalServiceNumberVerification += service._sum.units;
         });
 
         ironServiceSummary.forEach(service => {
-            let serviceDescription = ironServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_ironService);
-            service.description = serviceDescription.description
+            // let serviceDescription = ironServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_ironService);
+            service.description = service.serviceDescription
             totalServiceSalesVerification += service._sum.subtotal;
             totalServiceNumberVerification += service._sum.units;
         });
 
         drycleanServiceSummary.forEach(service => {
-            let serviceDescription = drycleanServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_drycleanService);
-            service.description = serviceDescription.description
+            // let serviceDescription = drycleanServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_drycleanService);
+            service.description = service.serviceDescription
             totalServiceSalesVerification += service._sum.subtotal;
             totalServiceNumberVerification += service._sum.units;
         });
 
         otherServiceSumary.forEach(service => {
-            let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
-            service.description = serviceDescription.description
+            // let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
+            service.description = service.serviceDescription
             totalServiceSalesVerification += service._sum.subtotal;
             totalServiceNumberVerification += service._sum.units;
         });

@@ -494,7 +494,8 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.newLine()
                     printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                     printer.newLine()
-                    printer.setTextSize(2, 2);
+                    printer.setTypeFontB();
+                    printer.setTextSize(3, 3);
                     printer.println(`Total de Piezas: ${order.pieces}`)
                     printer.setTextDoubleHeight();
                     if (order.notes) {
@@ -537,7 +538,8 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.newLine()
                         printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
-                        printer.setTextSize(2, 2);
+                        printer.setTypeFontB();
+                        printer.setTextSize(3, 3);
                         printer.println(`Total de Piezas: ${order.pieces}`)
                         printer.setTextDoubleHeight();
                         if (order.notes) {

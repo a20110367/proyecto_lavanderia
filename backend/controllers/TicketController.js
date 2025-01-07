@@ -425,8 +425,10 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
-                printer.setTextSize(2, 2);
-                printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                printer.setTypeFontB();
+                printer.setTextSize(3, 2);
+                printer.println(`Total de Elementos:`)
+                printer.println(order.numberOfItems)
                 printer.setTextDoubleHeight();
                 if (order.notes) {
                     printer.newLine()

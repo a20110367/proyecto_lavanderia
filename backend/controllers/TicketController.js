@@ -63,7 +63,9 @@ export const generateTicket = async (req, res) => {
         //     { text: payStatus, align: "RIGHT" }
         // ]);
         printer.println("Folio: " + order.id_order)
+        printer.newLine()
         printer.println(payStatus)
+        printer.newLine()
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
@@ -272,7 +274,9 @@ const printTicketFromBackend = async (orderParameter) => {
         //     { text: payStatus, align: "RIGHT" }
         // ]);
         printer.println("Folio: " + order.id_order)
+        printer.newLine()
         printer.println(payStatus)
+        printer.newLine()
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
@@ -658,7 +662,9 @@ export const reprintOrder = async (req, res) => {
         //     { text: payStatus, align: "RIGHT" }
         // ]);
         printer.println("Folio: " + order.id_order)
+        printer.newLine()
         printer.println(payStatus)
+        printer.newLine()
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)

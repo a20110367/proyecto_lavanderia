@@ -56,7 +56,8 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
         printer.setTypeFontB();
 
-        printer.setTextDoubleHeight();
+        // printer.setTextDoubleHeight();
+        printer.setTextSize(3, 3);
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
             { text: payStatus, align: "RIGHT" }
@@ -88,7 +89,7 @@ export const generateTicket = async (req, res) => {
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity + '     X', align: "LEFT", bold: true },
+                { text: detail.quantity, align: "LEFT", bold: true },
                 { text: detail.description, align: "CENTER" },
                 { text: '$' + detail.price, align: 'RIGHT' },
                 { text: '$' + detail.totalPrice, align: "RIGHT" }
@@ -102,7 +103,7 @@ export const generateTicket = async (req, res) => {
         // printer.println("Hello World");  
 
         printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $' + order.subtotal)
+        printer.println('Total: $' + order.subtotal)
         printer.bold(false);
         printer.println(n2word(order.subtotal))
 
@@ -262,7 +263,8 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
         printer.setTypeFontB();
 
-        printer.setTextDoubleHeight();
+        // printer.setTextDoubleHeight();
+        printer.setTextSize(3, 3);
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
             { text: payStatus, align: "RIGHT" }
@@ -293,7 +295,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity + '     X', align: "LEFT", bold: true },
+                { text: detail.quantity, align: "LEFT", bold: true },
                 { text: detail.description, align: "CENTER" },
                 { text: '$' + detail.price, align: 'RIGHT' },
                 { text: '$' + detail.totalPrice, align: "RIGHT" }
@@ -305,7 +307,7 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.bold(true);                             // Append text with new line
-        printer.println('Total Pagado: $' + order.subtotal)
+        printer.println('Total: $' + order.subtotal)
         printer.bold(false);
         printer.println(n2word(order.subtotal))
 
@@ -645,7 +647,8 @@ export const reprintOrder = async (req, res) => {
         printer.newLine();
         printer.drawLine();
 
-        printer.setTextDoubleHeight();
+        // printer.setTextDoubleHeight();
+        printer.setTextSize(3, 3);
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
             { text: payStatus, align: "RIGHT" }
@@ -700,12 +703,12 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
         if(canceled){
             printer.bold(true);                             // Append text with new line
-            printer.println('Total Pagado: $' + canceled.amount)
+            printer.println('Total: $' + canceled.amount)
             printer.bold(false);
             printer.println(n2word(canceled.amount))
         }else{
             printer.bold(true);                             // Append text with new line
-            printer.println('Total Pagado: $' + order.totalPrice)
+            printer.println('Total: $' + order.totalPrice)
             printer.bold(false);
             printer.println(n2word(order.totalPrice))
         }

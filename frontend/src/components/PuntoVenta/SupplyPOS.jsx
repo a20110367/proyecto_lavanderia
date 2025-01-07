@@ -502,7 +502,7 @@ export default function PuntoVenta() {
                           style={{ width: "100%", fontSize: "16px" }}
                           onChange={(value) => setPayMethod(value)}
                           value={serviceType === "productos" ? "cash" : payMethod}
-                          disabled = { serviceType === 'productos'}
+                          // disabled = { serviceType === 'productos'}
                         >
                           <Option value="credit">Tarjeta</Option>
                           <Option value="cash">Efectivo</Option>

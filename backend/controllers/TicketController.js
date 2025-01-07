@@ -425,7 +425,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
-                printer.setTextSize(3, 3);
+                printer.setTextSize(2, 2);
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
                 printer.setTextDoubleHeight();
                 if (order.notes) {
@@ -494,7 +494,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.newLine()
                     printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                     printer.newLine()
-                    printer.setTextSize(3, 3);
+                    printer.setTextSize(2, 2);
                     printer.println(`Total de Piezas: ${order.pieces}`)
                     printer.setTextDoubleHeight();
                     if (order.notes) {
@@ -537,7 +537,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.newLine()
                         printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
-                        printer.setTextSize(3, 3);
+                        printer.setTextSize(2, 2);
                         printer.println(`Total de Piezas: ${order.pieces}`)
                         printer.setTextDoubleHeight();
                         if (order.notes) {

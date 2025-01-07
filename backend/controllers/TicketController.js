@@ -89,10 +89,10 @@ export const generateTicket = async (req, res) => {
         //     { text: "Precio", align: "RIGHT" }
         // ]);
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT" },
-            { text: "Descripción", align: "CENTER", bold: true },
-            { text: "P. U.", align: 'RIGHT' },
-            { text: "Precio", align: "RIGHT" , cols: 4}
+            { text: "Cant.", align: "LEFT", width:0.1},
+            { text: "Descripción", align: "CENTER", bold: true,  width:0.5},
+            { text: "P. U.", align: 'RIGHT',  width:0.2},
+            { text: "Precio", align: "RIGHT", width:0.2}
         ]);
 
         printer.newLine()

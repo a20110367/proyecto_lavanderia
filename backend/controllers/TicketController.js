@@ -453,7 +453,7 @@ const printOrderDetailIronTicket = async (order) => {
         let count = 0;
         let quant = 0;
 
-        const totalPackages = order.pieces / 6 + order.pieces % 6 != 0 ? 1 : 0;
+        const totalPackages = (order.pieces / 6) + (order.pieces % 6 != 0 ? 1 : 0);
         order.cart.forEach(async (detail, index) => {
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 

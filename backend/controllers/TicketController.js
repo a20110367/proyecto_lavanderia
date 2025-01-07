@@ -109,7 +109,7 @@ export const generateTicket = async (req, res) => {
         order.cart.map(detail => {
             printer.tableCustom([
                 { text: detail.quantity, align: "LEFT", bold: true, width:0.1},
-                { text: detail.description, align: "CENTER", width:0.4},
+                { text: detail.description, align: "CENTER", width:0.45},
                 { text: '$' + detail.price, align: 'RIGHT', width:0.15},
                 { text: '$' + detail.totalPrice, align: "RIGHT", width:0.15}
             ]);

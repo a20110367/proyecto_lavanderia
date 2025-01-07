@@ -428,6 +428,9 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTypeFontB();
                 printer.setTextSize(3, 2);
                 printer.println(`Total de Elementos:`)
+                printer.setTextNormal();
+                printer.newLine()
+                printer.setTextSize(3, 2);
                 printer.println(order.numberOfItems)
                 printer.setTextDoubleHeight();
                 if (order.notes) {
@@ -499,6 +502,9 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTypeFontB();
                     printer.setTextSize(3, 2);
                     printer.println(`Total de Piezas:`)
+                    printer.setTextNormal();
+                    printer.newLine()
+                    printer.setTextSize(3, 2);
                     printer.println(order.pieces)
                     printer.setTextDoubleHeight();
                     if (order.notes) {
@@ -544,6 +550,9 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTypeFontB();
                         printer.setTextSize(3, 2);
                         printer.println(`Total de Piezas:`)
+                        printer.setTextNormal();
+                        printer.newLine()
+                        printer.setTextSize(3, 2);
                         printer.println(order.pieces)
                         printer.setTextDoubleHeight();
                         if (order.notes) {

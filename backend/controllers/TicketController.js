@@ -58,10 +58,12 @@ export const generateTicket = async (req, res) => {
 
         // printer.setTextDoubleHeight();
         printer.setTextSize(3, 3);
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
-            { text: payStatus, align: "RIGHT" }
-        ]);
+        // printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+        //     { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
+        //     { text: payStatus, align: "RIGHT" }
+        // ]);
+        printer.println("Folio: " + order.id_order)
+        printer.println(payStatus)
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
@@ -265,10 +267,12 @@ const printTicketFromBackend = async (orderParameter) => {
 
         // printer.setTextDoubleHeight();
         printer.setTextSize(3, 3);
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
-            { text: payStatus, align: "RIGHT" }
-        ]);
+        // printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+        //     { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
+        //     { text: payStatus, align: "RIGHT" }
+        // ]);
+        printer.println("Folio: " + order.id_order)
+        printer.println(payStatus)
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
@@ -649,10 +653,12 @@ export const reprintOrder = async (req, res) => {
 
         // printer.setTextDoubleHeight();
         printer.setTextSize(3, 3);
-        printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
-            { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
-            { text: payStatus, align: "RIGHT" }
-        ]);
+        // printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
+        //     { text: "Folio: " + order.id_order, align: "LEFT", bold: true },
+        //     { text: payStatus, align: "RIGHT" }
+        // ]);
+        printer.println("Folio: " + order.id_order)
+        printer.println(payStatus)
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)

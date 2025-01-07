@@ -308,20 +308,20 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT" },
-            { text: "Descripción", align: "CENTER", bold: true },
-            { text: "P. U.", align: 'RIGHT' },
-            { text: "Precio", align: "RIGHT" }
+            { text: "Cant.", align: "LEFT", width:0.2},
+            { text: "Descripción", align: "CENTER", bold: true,  width:0.4},
+            { text: "P. U.", align: 'CENTER',  width:0.15},
+            { text: "Precio", align: "RIGHT", width:0.2}
         ]);
 
         printer.newLine()
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity, align: "LEFT", bold: true },
-                { text: detail.description, align: "CENTER" },
-                { text: '$' + detail.price, align: 'RIGHT' },
-                { text: '$' + detail.totalPrice, align: "RIGHT" }
+                { text: detail.quantity, align: "LEFT", bold: true, width:0.1},
+                { text: detail.description, align: "CENTER", width:0.5},
+                { text: '$' + detail.price, align: 'RIGHT', width:0.15},
+                { text: '$' + detail.totalPrice, align: "RIGHT", width:0.15}
             ]);
         }).join('')
 
@@ -451,6 +451,7 @@ const printOrderDetailTicket = async (order) => {
 const printOrderDetailIronTicket = async (order) => {
     try {
         let count = 0;
+        let quant = 0;
         order.cart.forEach(async (detail, index) => {
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 
@@ -474,7 +475,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
                     printer.newLine()
-                    printer.println(`Paquete: ${j + 1}`)
+                    printer.println(`Paquete: ${quant + 1}`)
                     printer.newLine()
                     printer.bold(false)
                     printer.newLine()
@@ -487,9 +488,9 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
                     printer.newLine()
-                    printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
+                    printer.println(`Cantidad: ${quant + 1} - ${pivot2 + (pivot1 != 0 ? 1 : 0)}`)
                     printer.newLine()
-                    printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                    printer.println(`Total de Piezas: ${order.pieces}`)
                     if(order.notes){
                         printer.newLine()
                         printer.println(`Observaciones:`)
@@ -499,6 +500,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.cut();
 
                     console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
+                    quant++;
                 }
 
                 if (pivot1 != 0) {
@@ -514,7 +516,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
-                        printer.println(`Paquete: ${j + 1}`)
+                        printer.println(`Paquete: ${quant + 1}`)
                         printer.newLine()
                         printer.bold(false)
                         printer.newLine()
@@ -526,9 +528,9 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
                         printer.newLine()
-                        printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
+                        printer.println(`Cantidad: ${quant + 1} - ${pivot2 + 1}`)
                         printer.newLine()
-                        printer.println(`Total de Elementos: ${order.numberOfItems}`)
+                        printer.println(`Total de Piezas: ${order.pieces}`)
                         printer.newLine()
                         printer.println(`Observaciones:`)
                         printer.println(`${order.notes}`)
@@ -536,6 +538,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.cut();
                     }
                     console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
+                    quant++;
                 }
                 count++;
             }
@@ -696,10 +699,10 @@ export const reprintOrder = async (req, res) => {
 
         // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT" },
-            { text: "Descripción", align: "CENTER", bold: true },
-            { text: "P. U.", align: 'RIGHT' },
-            { text: "Precio", align: "RIGHT" }
+            { text: "Cant.", align: "LEFT", width:0.2},
+            { text: "Descripción", align: "CENTER", bold: true,  width:0.4},
+            { text: "P. U.", align: 'CENTER',  width:0.15},
+            { text: "Precio", align: "RIGHT", width:0.2}
         ]);
 
         printer.newLine()
@@ -708,20 +711,20 @@ export const reprintOrder = async (req, res) => {
             console.log(order.fk_categoryId)
             console.log(detail)
             printer.tableCustom([
-                { text: detail.units + '     X', align: "LEFT", bold: true },
+                { text: detail.units, align: "LEFT", bold: true, width:0.1 },
                 { text: order.fk_categoryId === 1 ? detail.SelfService.description :
                     order.fk_categoryId === 2 ? detail.LaundryService.description :
                     order.fk_categoryId === 3 ? detail.IronService.description :
                     order.fk_categoryId === 4 ? detail.DrycleanService.description :
                     order.fk_categoryId === 5 ? detail.OtherService.description :
-                    "Servicio de Categoria no Encontrada", align: "CENTER" },
+                    "Servicio de Categoria no Encontrada", align: "CENTER", width:0.5 },
                 { text: '$' + (order.fk_categoryId === 1 ? detail.SelfService.price :
                     order.fk_categoryId === 2 ? detail.LaundryService.price :
                     order.fk_categoryId === 3 ? detail.IronService.price :
                     order.fk_categoryId === 4 ? detail.DrycleanService.price :
                     order.fk_categoryId === 5 ? detail.OtherService.price :
-                    "Precio de Categoria no Encontrada"), align: 'RIGHT' },
-                { text: '$' + detail.subtotal, align: "RIGHT" }
+                    "Precio de Categoria no Encontrada"),  align: 'RIGHT',  width:0.15},
+                { text: '$' + detail.subtotal, align: "RIGHT", width:0.15 }
             ]);
         }).join('')
 

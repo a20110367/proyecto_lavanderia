@@ -452,6 +452,8 @@ const printOrderDetailIronTicket = async (order) => {
     try {
         let count = 0;
         let quant = 0;
+
+        const totalPackages = order.pieces / 6 + order.pieces % 6 != 0 ? 1 : 0;
         order.cart.forEach(async (detail, index) => {
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 
@@ -488,11 +490,11 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
                     printer.newLine()
-                    printer.println(`Cantidad: ${quant + 1} - ${pivot2 + (pivot1 != 0 ? 1 : 0)}`)
+                    printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                     printer.newLine()
                     printer.println(`Total de Piezas: ${order.pieces}`)
                     if(order.notes){
-                        printer.newLine()
+                        printer.newLine() 
                         printer.println(`Observaciones:`)
                         printer.println(`${order.notes}`)
                     }
@@ -520,20 +522,23 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.newLine()
                         printer.bold(false)
                         printer.newLine()
-                        printer.newLine()
-                        printer.setTextQuadArea()
+                        // printer.newLine()
+                        // printer.setTextNormal();
+                        printer.setTextDoubleHeight();
                         printer.println('Cliente:')
                         printer.println(`${order.client}`)
                         printer.newLine()
                         printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
                         printer.newLine()
-                        printer.println(`Cantidad: ${quant + 1} - ${pivot2 + 1}`)
+                        printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
                         printer.println(`Total de Piezas: ${order.pieces}`)
-                        printer.newLine()
-                        printer.println(`Observaciones:`)
-                        printer.println(`${order.notes}`)
+                        if(order.notes){
+                            printer.newLine() 
+                            printer.println(`Observaciones:`)
+                            printer.println(`${order.notes}`)
+                        }
 
                         printer.cut();
                     }

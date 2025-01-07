@@ -89,10 +89,10 @@ export const generateTicket = async (req, res) => {
         //     { text: "Precio", align: "RIGHT" }
         // ]);
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT", width:0.2},
-            { text: "Descripción", align: "CENTER", bold: true,  width:0.4},
-            { text: "P. U.", align: 'CENTER',  width:0.15},
-            { text: "Precio", align: "RIGHT", width:0.2}
+            { text: "Cant.", align: "LEFT", width: 0.2 },
+            { text: "Descripción", align: "CENTER", bold: true, width: 0.4 },
+            { text: "P. U.", align: 'CENTER', width: 0.15 },
+            { text: "Precio", align: "RIGHT", width: 0.2 }
         ]);
 
         printer.newLine()
@@ -108,10 +108,10 @@ export const generateTicket = async (req, res) => {
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity, align: "LEFT", bold: true, width:0.1},
-                { text: detail.description, align: "CENTER", width:0.5},
-                { text: '$' + detail.price, align: 'RIGHT', width:0.15},
-                { text: '$' + detail.totalPrice, align: "RIGHT", width:0.15}
+                { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
+                { text: detail.description, align: "CENTER", width: 0.5 },
+                { text: '$' + detail.price, align: 'RIGHT', width: 0.15 },
+                { text: '$' + detail.totalPrice, align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
@@ -308,20 +308,20 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT", width:0.2},
-            { text: "Descripción", align: "CENTER", bold: true,  width:0.4},
-            { text: "P. U.", align: 'CENTER',  width:0.15},
-            { text: "Precio", align: "RIGHT", width:0.2}
+            { text: "Cant.", align: "LEFT", width: 0.2 },
+            { text: "Descripción", align: "CENTER", bold: true, width: 0.4 },
+            { text: "P. U.", align: 'CENTER', width: 0.15 },
+            { text: "Precio", align: "RIGHT", width: 0.2 }
         ]);
 
         printer.newLine()
 
         order.cart.map(detail => {
             printer.tableCustom([
-                { text: detail.quantity, align: "LEFT", bold: true, width:0.1},
-                { text: detail.description, align: "CENTER", width:0.5},
-                { text: '$' + detail.price, align: 'RIGHT', width:0.15},
-                { text: '$' + detail.totalPrice, align: "RIGHT", width:0.15}
+                { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
+                { text: detail.description, align: "CENTER", width: 0.5 },
+                { text: '$' + detail.price, align: 'RIGHT', width: 0.15 },
+                { text: '$' + detail.totalPrice, align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
@@ -425,8 +425,10 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
+                printer.setTextSize(3, 3);
                 printer.println(`Total de Elementos: ${order.numberOfItems}`)
-                if(order.notes){
+                printer.setTextDoubleHeight();
+                if (order.notes) {
                     printer.newLine()
                     printer.println(`Observaciones:`)
                     printer.println(`${order.notes}`)
@@ -492,9 +494,11 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.newLine()
                     printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                     printer.newLine()
+                    printer.setTextSize(3, 3);
                     printer.println(`Total de Piezas: ${order.pieces}`)
-                    if(order.notes){
-                        printer.newLine() 
+                    printer.setTextDoubleHeight();
+                    if (order.notes) {
+                        printer.newLine()
                         printer.println(`Observaciones:`)
                         printer.println(`${order.notes}`)
                     }
@@ -533,9 +537,11 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.newLine()
                         printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
+                        printer.setTextSize(3, 3);
                         printer.println(`Total de Piezas: ${order.pieces}`)
-                        if(order.notes){
-                            printer.newLine() 
+                        printer.setTextDoubleHeight();
+                        if (order.notes) {
+                            printer.newLine()
                             printer.println(`Observaciones:`)
                             printer.println(`${order.notes}`)
                         }
@@ -624,7 +630,7 @@ export const reprintTicket = async (req, res) => {
 
 export const reprintOrder = async (req, res) => {
     try {
-        const { order, canceled} = req.body;
+        const { order, canceled } = req.body;
 
         let payMethod = ''
         let payStatus = ''
@@ -663,10 +669,10 @@ export const reprintOrder = async (req, res) => {
 
         printer.newLine();
 
-        if(canceled){
+        if (canceled) {
             printer.setTextDoubleHeight();
             printer.println('Folio de Cancelación');
-            printer.setTextSize(4,4);
+            printer.setTextSize(4, 4);
             printer.println(canceled.id_cancelledOrder);
             printer.setTextNormal();
             printer.println('Fecha de la Cancelación: ' + formatDate(canceled.created));
@@ -704,10 +710,10 @@ export const reprintOrder = async (req, res) => {
 
         // printer.table(['Zero',"One", "Two", "Three", 'Four', 'Five']);  
         printer.tableCustom([
-            { text: "Cant.", align: "LEFT", width:0.2},
-            { text: "Descripción", align: "CENTER", bold: true,  width:0.4},
-            { text: "P. U.", align: 'CENTER',  width:0.15},
-            { text: "Precio", align: "RIGHT", width:0.2}
+            { text: "Cant.", align: "LEFT", width: 0.2 },
+            { text: "Descripción", align: "CENTER", bold: true, width: 0.4 },
+            { text: "P. U.", align: 'CENTER', width: 0.15 },
+            { text: "Precio", align: "RIGHT", width: 0.2 }
         ]);
 
         printer.newLine()
@@ -716,32 +722,36 @@ export const reprintOrder = async (req, res) => {
             console.log(order.fk_categoryId)
             console.log(detail)
             printer.tableCustom([
-                { text: detail.units, align: "LEFT", bold: true, width:0.1 },
-                { text: order.fk_categoryId === 1 ? detail.SelfService.description :
-                    order.fk_categoryId === 2 ? detail.LaundryService.description :
-                    order.fk_categoryId === 3 ? detail.IronService.description :
-                    order.fk_categoryId === 4 ? detail.DrycleanService.description :
-                    order.fk_categoryId === 5 ? detail.OtherService.description :
-                    "Servicio de Categoria no Encontrada", align: "CENTER", width:0.5 },
-                { text: '$' + (order.fk_categoryId === 1 ? detail.SelfService.price :
-                    order.fk_categoryId === 2 ? detail.LaundryService.price :
-                    order.fk_categoryId === 3 ? detail.IronService.price :
-                    order.fk_categoryId === 4 ? detail.DrycleanService.price :
-                    order.fk_categoryId === 5 ? detail.OtherService.price :
-                    "Precio de Categoria no Encontrada"),  align: 'RIGHT',  width:0.15},
-                { text: '$' + detail.subtotal, align: "RIGHT", width:0.15 }
+                { text: detail.units, align: "LEFT", bold: true, width: 0.1 },
+                {
+                    text: order.fk_categoryId === 1 ? detail.SelfService.description :
+                        order.fk_categoryId === 2 ? detail.LaundryService.description :
+                            order.fk_categoryId === 3 ? detail.IronService.description :
+                                order.fk_categoryId === 4 ? detail.DrycleanService.description :
+                                    order.fk_categoryId === 5 ? detail.OtherService.description :
+                                        "Servicio de Categoria no Encontrada", align: "CENTER", width: 0.5
+                },
+                {
+                    text: '$' + (order.fk_categoryId === 1 ? detail.SelfService.price :
+                        order.fk_categoryId === 2 ? detail.LaundryService.price :
+                            order.fk_categoryId === 3 ? detail.IronService.price :
+                                order.fk_categoryId === 4 ? detail.DrycleanService.price :
+                                    order.fk_categoryId === 5 ? detail.OtherService.price :
+                                        "Precio de Categoria no Encontrada"), align: 'RIGHT', width: 0.15
+                },
+                { text: '$' + detail.subtotal, align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
         printer.alignCenter()
 
         printer.drawLine();
-        if(canceled){
+        if (canceled) {
             printer.bold(true);                             // Append text with new line
             printer.println('Total: $' + canceled.amount)
             printer.bold(false);
             printer.println(n2word(canceled.amount))
-        }else{
+        } else {
             printer.bold(true);                             // Append text with new line
             printer.println('Total: $' + order.totalPrice)
             printer.bold(false);
@@ -869,10 +879,10 @@ export const cashCutTicket = async (req, res) => {
             printer.setTextDoubleHeight();
             printer.drawLine()
             printer.setTextNormal()
-            if(cashCut.ordersCancelled){
+            if (cashCut.ordersCancelled) {
                 printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? cashCut.ordersCancelled : '0'}`)
                 printer.println(`Monto Total de Ordenes Canceladas: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
-            }   
+            }
             printer.setTextDoubleHeight();
             printer.drawLine()
             printer.setTextNormal()
@@ -1409,12 +1419,12 @@ export const printReportService = async (req, res) => {
         printer.setTextNormal();
         printer.bold(false);
         printer.drawLine();
-        
+
         // printer.setTextDoubleHeight();
         printer.bold(true);
         printer.println(`No. de Ordenes Canceladas: ${report.cancelledOrderSummary._count.id_order}`);
         printer.bold(false);
-            // printer.setTextNormal();
+        // printer.setTextNormal();
         printer.println(`No. de Servicios: ${report.cancelledOrderSummary._sum.numberOfItems ? report.cancelledOrderSummary._sum.numberOfItems : 0}`);
         printer.println(`Total: $${report.cancelledOrderSummary._sum.totalPrice ? report.cancelledOrderSummary._sum.totalPrice : 0}`);
         printer.newLine();

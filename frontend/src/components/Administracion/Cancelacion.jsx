@@ -154,8 +154,6 @@ function Cancelacion() {
 
         const res = await api.get(`/orders/${orderId}`);
 
-        console.log(res.data)
-
         await api.post('/generate/order/canceled', {
           canceled: {
             id_canceled: cancelRes.data.id_cancelledOrder,

@@ -134,9 +134,9 @@ function Retiro() {
         logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
       });
 
-      await api.post('/generateCashWithdrawalTicket', {
-        cashWithdrawal: cashWithdrawal,
-      })
+      // await api.post('/generateCashWithdrawalTicket', {
+      //   cashWithdrawal: cashWithdrawal,
+      // })
 
       const nuevoRetiro = {
         id_cashWithdrawal: res.data.id_cashWithdrawal,

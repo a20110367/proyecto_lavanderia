@@ -154,17 +154,17 @@ function Cancelacion() {
 
         const res = await api.get(`/orders/${orderId}`);
 
-        // await api.post('/generate/order/canceled', {
-        //   canceled: {
-        //     id_canceled: cancelRes.data.id_cancelledOrder,
-        //     type: cancelRes.data.CancellationTypes,
-        //     id_order: orderId,
-        //     cause: cause,
-        //     casher: cookies.username,
-        //     amount: canceledOrder.totalPrice,
-        //     order: await res.data,
-        //   }
-        // })
+        await api.post('/generate/order/canceled', {
+          canceled: {
+            id_canceled: cancelRes.data.id_cancelledOrder,
+            type: cancelRes.data.CancellationTypes,
+            id_order: orderId,
+            cause: cause,
+            casher: cookies.username,
+            amount: canceledOrder.totalPrice,
+            order: await res.data,
+          }
+        })
 
         await api.post('/sendWarning',{
           canceledOrder: canceledOrder,

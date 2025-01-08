@@ -134,7 +134,7 @@ function Cancelacion() {
         setVisible(false);
         // FILTER THE DELETED ELEMENT
         const updatedCanceled = cancelaciones.filter((item) => item.id_order != orderId)
-        console.log(updatedCanceled)
+        // console.log(updatedCanceled)
         setCancelaciones(updatedCanceled)
 
         Swal.fire({
@@ -153,6 +153,8 @@ function Cancelacion() {
         });
 
         const res = await api.get(`/orders/${orderId}`);
+
+        console.log(res.data)
 
         await api.post('/generate/order/canceled', {
           canceled: {

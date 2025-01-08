@@ -1662,7 +1662,7 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(canceled.id_canceled);
         printer.newLine();
         printer.println(`FECHA DE CANCELACIÓN`)
-        printer.println(moment().format("DD/MM/YYYY"));
+        printer.println(moment().format("DD/MM/YYYY - HH:MM"));
         printer.newLine();
         printer.println(`No. de Orden CANCELADA:`);
         printer.setTextSize(7, 7);
@@ -1675,9 +1675,14 @@ export const printCanceledOrder = async (req, res) => {
 
         printer.setTextDoubleHeight();
         printer.println(`Tipo: ${canceled.type === "cancellation" ? "SIN REMBOLSO" : canceled.type === "refund" ? "CON REMBOLSO" : ''}`)
-        printer.println(`Monto: ${canceled.amount}`);
+        printer.println(`Monto: $${canceled.amount}`);
         printer.println(`Motivo: ${canceled.cause}`);
         printer.println(`Cajero: ${canceled.casher}`);
+
+        printer.drawLine()
+
+        printer.println(`Cliente: ${canceled.order.client.name + canceled.order.client.firstLN + canceled.order.client.secondLN}`);
+
         printer.newLine();
 
         printer.drawLine()
@@ -1686,7 +1691,7 @@ export const printCanceledOrder = async (req, res) => {
 
         printer.alignCenter()
         printer.setTextNormal()
-        printer.println('Recibio')
+        printer.println('Autorizó')
         printer.println('( Nombre y Firma)')
 
         printer.newLine()

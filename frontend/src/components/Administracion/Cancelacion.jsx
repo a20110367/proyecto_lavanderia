@@ -16,7 +16,7 @@ function Cancelacion() {
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
   const [canceledOrder, setCanceledOrder] = useState()
-  const [orderId, setOrderId] = useState("");
+  const [orderId, setOrderId] = useState(0);
   const [cause, setCause] = useState("");
   const [amount, setAmount] = useState(0);
   const { cookies } = useAuth();
@@ -34,7 +34,7 @@ function Cancelacion() {
     return response.data;
   };
   const { data } = useSWR("orderCancelable", fetcher);
-  console.log(data)
+  // console.log(data)
 
   useEffect(() => {
     if (data) {
@@ -132,11 +132,9 @@ function Cancelacion() {
         }
 
         setVisible(false);
-        const updatedCanceled = cancelaciones.map((item) => {
-          item.id_order === orderId
-          ? { ...item, deleted: true }
-          : item
-        })
+        // FILTER THE DELETED ELEMENT
+        const updatedCanceled = cancelaciones.filter((item) => item.id_order != orderId)
+        console.log(updatedCanceled)
         setCancelaciones(updatedCanceled)
 
         Swal.fire({
@@ -156,17 +154,17 @@ function Cancelacion() {
 
         const res = await api.get(`/orders/${orderId}`);
 
-        await api.post('/generate/order/canceled', {
-          canceled: {
-            id_canceled: cancelRes.data.id_cancelledOrder,
-            type: cancelRes.data.CancellationTypes,
-            id_order: orderId,
-            cause: cause,
-            casher: cookies.username,
-            amount: canceledOrder.totalPrice,
-            order: await res.data,
-          }
-        })
+        // await api.post('/generate/order/canceled', {
+        //   canceled: {
+        //     id_canceled: cancelRes.data.id_cancelledOrder,
+        //     type: cancelRes.data.CancellationTypes,
+        //     id_order: orderId,
+        //     cause: cause,
+        //     casher: cookies.username,
+        //     amount: canceledOrder.totalPrice,
+        //     order: await res.data,
+        //   }
+        // })
 
         await api.post('/sendWarning',{
           canceledOrder: canceledOrder,

@@ -1681,7 +1681,7 @@ export const printCanceledOrder = async (req, res) => {
 
         printer.drawLine()
 
-        printer.println(`Cliente: ${canceled.order.client.name + canceled.order.client.firstLN + canceled.order.client.secondLN}`);
+        printer.println(`Cliente: ${canceled.order.client.name + " " + canceled.order.client.firstLN + " " + canceled.order.client.secondLN}`);
 
         printer.newLine();
 

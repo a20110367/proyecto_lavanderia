@@ -1128,3 +1128,13 @@ Content-Type: application/json
 }
 
 ###
+
+//REFUND CRUD
+GET  http://localhost:5000/validationRefunds/34
+### 
+
+GET  http://localhost:5000/activeRefunds
+###
+
+GET  http://localhost:5000/refunds
+###

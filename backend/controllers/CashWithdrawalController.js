@@ -73,33 +73,38 @@ export const createCashWithdrawal = async (req, res) => {
 
     try {
 
-        let cashWithdrawal;
-
-        const findOrder = await prisma.serviceOrder.findFirst({
-            where: {
-                id_order: Number(req.body.serviceOrder)
-            }
+        const cashWithdrawal=await prisma.cashWithdrawal.create({
+            data: req.body
         });
 
-        const validationExistCashWithdrawal = await prisma.cashWithdrawal.findFirst({
-            where: {
-                serviceOrder: Number(req.body.serviceOrder)
-            }
-        });
-
-
-        if (validationExistCashWithdrawal == null && findOrder.orderStatus.toString() == "finished") {
-
-            const createCashWithdrawal = await prisma.cashWithdrawal.create({
-                data: req.body
-            });
-
-            cashWithdrawal = createCashWithdrawal;
-
-            res.status(201).json(cashWithdrawal);
-        }
-        cashWithdrawal = null;
         res.status(200).json(cashWithdrawal);
+
+        // let cashWithdrawal;
+
+        // const findOrder = await prisma.serviceOrder.findFirst({
+        //     where: {
+        //         id_order: Number(req.body.serviceOrder)
+        //     }
+        // });
+
+        // const validationExistCashWithdrawal = await prisma.cashWithdrawal.findFirst({
+        //     where: {
+        //         serviceOrder: Number(req.body.serviceOrder)
+        //     }
+        // });
+
+
+        // if (validationExistCashWithdrawal == null && findOrder.orderStatus.toString() == "finished") {
+
+        //     const createCashWithdrawal = await prisma.cashWithdrawal.create({
+        //         data: req.body
+        //     });
+
+        //     cashWithdrawal = createCashWithdrawal;
+
+            
+        // cashWithdrawal = null;
+        // res.status(200).json(cashWithdrawal);
 
     } catch (e) {
         res.status(400).json({ msg: e.message });

@@ -32,6 +32,8 @@ model User {
 
   CancelledServiceOrder CancelledServiceOrder[]
   // CancelledSupplyOrder  CancelledSupplyOrder[]
+
+  Refunds Refund[]
 }
 
 model Client {
@@ -511,6 +513,22 @@ model CashCut {
   user           User             @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
   cashWithdrawal CashWithdrawal[]
   payment        Payment[]
+  Refunds        Refund[]
+}
+
+model Refund {
+  id_refund    Int        @id @default(autoincrement())
+  fk_cashCut   Int
+  fk_user      Int
+  refundType   RefundType @default(service_cancelled)
+  amount       Float
+  cause        String
+  serviceOrder Int
+  date         DateTime?  @db.Date
+  created      DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  cashCut      CashCut    @relation(fields: [fk_cashCut], references: [id_cashCut], onDelete: Cascade, onUpdate: Cascade)
+  user         User       @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model CashWithdrawal {
@@ -520,7 +538,6 @@ model CashWithdrawal {
   cashWithdrawalType CashWithdrawalType @default(withdrawal)
   amount             Float
   cause              String
-  serviceOrder       Int
   date               DateTime?          @db.Date
   created            DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -730,10 +747,13 @@ enum CashCutStatus {
   closed
 }
 
+enum RefundType {
+  refund
+  service_cancelled
+}
+
 enum CashWithdrawalType {
   withdrawal
-  refound
-  service_cancelled
   supply_cancelled
 }
 

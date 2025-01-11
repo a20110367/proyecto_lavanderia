@@ -49,9 +49,9 @@ export const notifyAll = async (req, res) => {
     const { filteredOrder } = req.body
     for (const order of filteredOrder) {
         console.log(order.id_order)
-        const message =  `Tu pedido con el folio: ${order.id_order} está listo, Ya puedes pasar a recogerlo.`
-        const subject =  `Tu Ropa esta Lista ${order.client.name}`
-        const text =  `Tu ropa esta lista, esperamos que la recojas a su brevedad`
+        const message = `Tu pedido con el folio: ${order.id_order} está listo, Ya puedes pasar a recogerlo.`
+        const subject = `Tu Ropa esta Lista ${order.client.name}`
+        const text = `Tu ropa esta lista, esperamos que la recojas a su brevedad`
 
         const output = `
         <h3>Detalles del Pedido:</h3>
@@ -88,17 +88,17 @@ export const notifyAll = async (req, res) => {
 
 export const sendReport = async (req, res) => {
 
-    const { reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId, startDate, endDate} = req.body
+    const { reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId, startDate, endDate } = req.body
 
     // const doc = generateDoc(reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId);
 
     const doc = new jsPDF("p", "mm", "letter");
     const path_url = './controllers/utils/img/caprelogoThermalPrinter.png';
-    const img = fs.readFileSync(path_url).toString('base64');   
+    const img = fs.readFileSync(path_url).toString('base64');
 
     if (reportType === 1) {
 
-        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
 
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -271,9 +271,9 @@ export const sendReport = async (req, res) => {
             doc.text(`Total: $${item._sum.totalPrice}`, 10, count);
             count += 10;
         })
-        
+
         doc.addPage();
-        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
         // Mostrar detalles de ingresos por servicio TINTORERIA
         doc.text(`Ordenes Canceladas:`, 10, 10);
         doc.setLineWidth(1)
@@ -320,7 +320,7 @@ export const sendReport = async (req, res) => {
         count += 20;
     } else if (reportType === 3) {
 
-        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
 
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -357,7 +357,7 @@ export const sendReport = async (req, res) => {
 
     } else if (reportType === 4) {
 
-        doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
 
         doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -381,8 +381,8 @@ export const sendReport = async (req, res) => {
         count += 20;
 
     } else console.error("Tipo de reporte no encontrado", "", "error");
-    
-    try{
+
+    try {
         const info = await transporter.sendMail({
             from: `"Reporte del ${startDate} al ${endDate}." <pyrop59@gmail.com>`, // sender address
             to: 'proveedores.tyc@gmail.com', // list of receivers
@@ -397,7 +397,7 @@ export const sendReport = async (req, res) => {
         });
         console.log("Report Mail Message sent:  %s", info.messageId);
         res.status(200).json('Report Sent!')
-    }catch(err){
+    } catch (err) {
         console.error(err)
         res.status(400).json({ message: 'Algo salio mal!' })
     }
@@ -405,9 +405,9 @@ export const sendReport = async (req, res) => {
 
 export const sendCashCut = async (req, res) => {
 
-    const { pdf, date, hour} = req.body
-    
-    try{
+    const { pdf, date, hour } = req.body
+
+    try {
         const info = await transporter.sendMail({
             from: `"Corte de caja realizado el dia de ${date} a las ${hour}" <pyrop59@gmail.com>`, // sender address
             to: 'proveedores.tyc@gmail.com', // list of receivers
@@ -422,15 +422,15 @@ export const sendCashCut = async (req, res) => {
         });
         console.log("Cash Cut Mail Message sent:  %s", info.messageId);
         res.status(200).json('Report Sent!')
-    }catch(err){
+    } catch (err) {
         console.error(err)
         res.status(400).json({ message: 'Algo salio mal!' })
     }
 }
 
 export const sendWarningCanceledOrder = async (req, res) => {
-    
-    const {canceledOrder, casher, date, cause} = req.body;
+
+    const { canceledOrder, casher, date, cause } = req.body;
     const message = `// ${date} //
     La orden No. ${canceledOrder.id_order} | ${canceledOrder.payStatus === "paid" ? "PAGADA" : "NO PAGADA"} | 
     Pertenenciente al cliente:  ${canceledOrder.client.name} ${canceledOrder.client.firstLN} ${canceledOrder.client.secondLN}
@@ -438,7 +438,7 @@ export const sendWarningCanceledOrder = async (req, res) => {
     Cancelada por el cajero:  ${casher}
     Por el motivo de:  ${cause}`;
 
-    try{
+    try {
 
         //OWNER
         restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
@@ -447,19 +447,19 @@ export const sendWarningCanceledOrder = async (req, res) => {
         res.status(200).json('Warning Sent!')
 
         //CLIENTe
-    }catch(err) {
+    } catch (err) {
         console.error(err)
         res.status(400).json({ message: 'Algo salio mal!' })
     }
 }
 
 export const sendWarningReceiptReprinted = async (req, res) => {
-    
-    const {casher} = req.body;
+
+    const { casher } = req.body;
     const message = `// ${moment().format("DD-MM-YYYY")} //
     El usuario ${casher} ha reimpreso un recibo en corte de caja.`
 
-    try{
+    try {
 
         //OWNER
         restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
@@ -468,8 +468,31 @@ export const sendWarningReceiptReprinted = async (req, res) => {
         res.status(200).json('Warning Sent!')
 
         //CLIENTe
-    }catch(err) {
+    } catch (err) {
         console.error(err)
         res.status(400).json({ message: 'Algo salio mal!' })
+    }
+}
+
+export const sendRecoveredPwd = async (res) => {
+
+    const date = moment().format("DD-MM-YYYY");
+    const messageUser = `// ${date} //
+    Caprel: *${res.pass}*`
+    
+    const messageOwner = `// ${date} //
+    El usuario *${res.username}* ha recuperado su contraseña`
+
+    try {
+        restAPI.message.sendMessage('521' + res.phone + "@c.us", null, messageUser).then((data) => {
+            console.log("Whatsapp Message sent:  %s", data);
+        });
+
+        restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, messageOwner).then((data) => {
+            console.log("Whatsapp Message sent:  %s", data);
+        });
+        res.status(200).json('Warning Sent!')
+    } catch (err) {
+        console.error(err)
     }
 }

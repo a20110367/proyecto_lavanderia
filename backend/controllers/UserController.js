@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { sendRecoveredPwd } from './MessageController.js'
 
 const prisma = new PrismaClient();
 
@@ -31,6 +32,36 @@ export const authUser = async (req, res) => {
             res.status(200).json(response)
         } else {
             res.status(401).json({ msg: 'INVALID CREDENTIALS' })
+        }
+    } catch (e) {
+        res.status(500).json({ msg: e.message })
+    }
+}
+
+export const recoverPwd = async (req, res) => {
+
+    const { username, email, phone } = req.body;
+    try {
+        const check = await prisma.user.findFirst({
+            select: {
+                username: true,
+                pass: true,
+                phone: true,
+            },
+            where: {
+                username: username,
+                email: email,
+                phone: phone,
+            }
+
+        });
+
+        if (check != null) {
+            const response = { ...check, userExist: true };
+            sendRecoveredPwd(response);
+            res.status(200).json(response)
+        } else {
+            res.status(401).json(false)
         }
     } catch (e) {
         res.status(500).json({ msg: e.message })

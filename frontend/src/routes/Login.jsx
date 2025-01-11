@@ -47,6 +47,10 @@ export default function Login() {
           phone: phone,
         })
 
+        await api.post('/log/write', {
+          logEntry: `INFO Login.jsx : ${user} has recovered his password`
+        });
+
         if (res.data) {
           Swal.fire('La contraseña ha sido recuperada con exito', 'Revisa tu telefono celular, ya que la contraseña fue enviada atraves de la aplicación Whatsapp', 'success')
           setIsModalOpen(false);

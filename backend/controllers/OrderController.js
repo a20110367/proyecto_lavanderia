@@ -2010,12 +2010,12 @@ export const updateCancelledOrder = async (req, res) => {
 
         })
 
-        const refoundPayment = prisma.cashWithdrawal.create({
+        const refoundPayment = prisma.refund.create({
 
             data: {
                 fk_cashCut: cashCutData.id_cashCut,
                 fk_user: cashCutData.fk_user,
-                cashWithdrawalType: "service_cancelled",
+                refundType: "service_cancelled",
                 amount: payTotal,
                 cause: "Orden Cancelada",
                 serviceOrder: orderData.id_order,

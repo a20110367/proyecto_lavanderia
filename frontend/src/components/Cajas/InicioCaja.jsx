@@ -5,6 +5,7 @@ import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import { DisabledContextProvider } from "antd/es/config-provider/DisabledContext";
 import api from "../../api/api";
+import Swal from "sweetalert2";
 
 function InicioCaja() {
   const [visible, setVisible] = useState(false);
@@ -77,8 +78,8 @@ function InicioCaja() {
       localStorage.removeItem("lastCashCut");
       setCajaIniciada(true);
       setVisible(false);
-    
-      
+
+
       await api.post('/log/write', {
         logEntry: `INFO InicioCaja.jsx : ${cookies.username} has opened the cash register with an initial cash of ${dineroInicio}`
       });
@@ -96,27 +97,31 @@ function InicioCaja() {
   };
 
   const handleAbrirFormulario = async () => {
-    try {
-      const res = await api.get("/cashCutStatus");
-      const supplyRes = await api.get('/getSupplyCashCutStatus')
-      if (res.data.cashCutStatus === "closed" && supplyRes.data.cashCutStatus === 'closed') {
-        setVisible(true);
-      } else if (res.data.cashCutStatus === "open" && supplyRes.data.cashCutStatus === 'open') {
-        localStorage.removeItem("lastCashCut");
-        localStorage.setItem("cashCutId", res.data.id_cashCut);
-        localStorage.setItem("id_supplyCashCut", supplyRes.data.id_supplyCashCut)
-        setCajaIniciada(true);
-        setVisible(false);
+    if (!localStorage.getItem('lastCashCut')) {
+      try {
+        const res = await api.get("/cashCutStatus");
+        const supplyRes = await api.get('/getSupplyCashCutStatus')
+        if (res.data.cashCutStatus === "closed" && supplyRes.data.cashCutStatus === 'closed') {
+          setVisible(true);
+        } else if (res.data.cashCutStatus === "open" && supplyRes.data.cashCutStatus === 'open') {
+          localStorage.removeItem("lastCashCut");
+          localStorage.setItem("cashCutId", res.data.id_cashCut);
+          localStorage.setItem("id_supplyCashCut", supplyRes.data.id_supplyCashCut)
+          setCajaIniciada(true);
+          setVisible(false);
 
-        await api.post('/log/write', {
-          logEntry: `INFO InicioCaja.jsx : ${cookies.username} has opened the cash register again`
-        });
-      } else {
-        setVisible(false);
+          await api.post('/log/write', {
+            logEntry: `INFO InicioCaja.jsx : ${cookies.username} has opened the cash register again`
+          });
+        } else {
+          setVisible(false);
+        }
+      } catch (err) {
+        console.log(err);
+        console.error("No entiendo como sucedio esto");
       }
-    } catch (err) {
-      console.log(err);
-      console.error("No entiendo como sucedio esto");
+    }else{
+      Swal.fire('Ya se cerro caja', "Para volver a iniciar sesión ocupas cerrar sesión y volver a iniciarla", 'warning')
     }
   };
 

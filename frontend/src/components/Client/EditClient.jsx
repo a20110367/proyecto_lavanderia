@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { FaAsterisk } from "react-icons/fa";
 import {
   faCheck,
   faTimes,
@@ -166,6 +167,7 @@ function EditClient() {
                 aria-describedby="namenote"
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el nombre del cliente"
               />
 
               <label className="form-lbl" htmlFor="firstName">
@@ -183,6 +185,7 @@ function EditClient() {
                 aria-describedby="firstNamenote"
                 onFocus={() => setFirstNameFocus(true)}
                 onBlur={() => setFirstNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 1er Apellido del cliente"
               />
 
               <label className="form-lbl" htmlFor="secondName">
@@ -201,6 +204,7 @@ function EditClient() {
                 aria-describedby="secondNamenote"
                 onFocus={() => setSecondNameFocus(true)}
                 onBlur={() => setSecondNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 2do Apellido del cliente"
               />
 
               {/* Email */}
@@ -218,12 +222,13 @@ function EditClient() {
                 aria-invalid={validEmail ? "false" : "true"}
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
+                placeholder="OPCIONAL | Ingrese el Correo del cliente"
               />
 
 
               {/* Teléfono */}
-              <label className="form-lbl" htmlFor="phone">
-                Teléfono:
+              <label className="form-lbl flex place-items-center" htmlFor="phone">
+                Teléfono: <FaAsterisk size={10} className="ml-3 text-red-500"/>
               </label>
               <input
                 className="form-input"
@@ -233,6 +238,7 @@ function EditClient() {
                 value={phone}
                 required
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                placeholder="REQUERIDO | Ingrese el telefono del cliente"
               />
               <div className="float-right">
                 {/* Botón para actualizar */}

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { IoIosArrowBack } from "react-icons/io";
+import { FaAsterisk } from "react-icons/fa";
 import {
   faCheck,
   faTimes,
@@ -197,6 +197,7 @@ function AddClient() {
                 aria-invalid={validName ? "false" : "true"}
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el nombre del cliente"
               />
 
               {/* First Name */}
@@ -225,6 +226,7 @@ function AddClient() {
                 aria-invalid={validFirstName ? "false" : "true"}
                 onFocus={() => setFirstNameFocus(true)}
                 onBlur={() => setFirstNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 1er Apellido del cliente"
               />
               {/* Second Name */}
               <label className="form-lbl" htmlFor="secondName">
@@ -239,7 +241,7 @@ function AddClient() {
                     icon={faTimes}
                     className="ml-3 text-red-500"
                   />
-                )}
+                )} 
               </label>
               <input
                 className="form-input"
@@ -252,6 +254,7 @@ function AddClient() {
                 aria-invalid={validSecondName ? "false" : "true"}
                 onFocus={() => setSecondNameFocus(true)}
                 onBlur={() => setSecondNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 2do Apellido del cliente"
               />
               {/* Email */}
               <label className="form-lbl" htmlFor="email">
@@ -264,15 +267,15 @@ function AddClient() {
                 autoComplete="off"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                required
                 aria-invalid={validEmail ? "false" : "true"}
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
+                placeholder="OPCIONAL | Ingrese el Correo del cliente"
               />
 
               {/* Phone */}
-              <label className="form-lbl" htmlFor="phone">
-                Telefono:
+              <label className="form-lbl flex place-items-center" htmlFor="phone">
+                Telefono: <FaAsterisk size={10} className="ml-3 text-red-500"/>
               </label>
               <input
                 className="form-input"
@@ -282,6 +285,7 @@ function AddClient() {
                 value={phone}
                 required
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                placeholder="REQUERIDO | Ingrese el telefono del cliente"
               />
               <div className="float-right">
                 <button

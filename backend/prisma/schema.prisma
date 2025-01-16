@@ -690,7 +690,7 @@ model WorkshiftBalance {
   withdrawal         Float
   initialCash        Float
   totalCashBalace    Float
-  totalncome         Float
+  totalIncome        Float
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt

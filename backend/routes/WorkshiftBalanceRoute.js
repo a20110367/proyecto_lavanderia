@@ -14,7 +14,7 @@ router.get('/workshiftBalances', getWorkshiftBalances);
 router.get('/activeWorkshiftBalances', getActiveWorkshiftBalances);
 router.get('/workshiftBalances/:id', getWorkshiftBalanceById);
 
-router.post('/workshiftBalances', createWorkshiftBalance);
+router.get('/newWorkshiftBalances', createWorkshiftBalance);
 
 router.patch('/workshiftBalances/:id', updateWorkshiftBalance);
 

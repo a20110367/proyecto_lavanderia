@@ -1138,3 +1138,17 @@ GET  http://localhost:5000/activeRefunds
 
 GET  http://localhost:5000/refunds
 ###
+
+//WORKSHIFTBALANCE CRUD
+
+GET  http://localhost:5000/workshiftBalances
+### 
+
+GET  http://localhost:5000/workshiftBalances/1
+### 
+
+GET  http://localhost:5000/activeWorkshiftBalances
+###
+
+GET    http://localhost:5000/newWorkshiftBalances
+###

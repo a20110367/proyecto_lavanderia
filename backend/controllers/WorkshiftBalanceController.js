@@ -54,12 +54,12 @@ export const createWorkshiftBalance = async (req, res) => {
 
     try {
 
-        let workshiftBalance;
+        let workshiftBalance = new Object();
 
         const lastServiceCashcutInfo = await prisma.cashCut.findFirst({
             select: {
                 id_cashCut: true,
-                cashWithdrawal: true,
+                totalCashWithdrawal: true,
                 initialCash: true,
                 totalCash: true,
                 totalCredit: true,
@@ -78,12 +78,12 @@ export const createWorkshiftBalance = async (req, res) => {
 
         workshiftBalance.cashIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash;
         workshiftBalance.creditIncome = lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit;
-        workshiftBalance.withdrawal = lastServiceCashcutInfo.withdrawal;
+        workshiftBalance.withdrawal = lastServiceCashcutInfo.totalCashWithdrawal;
         workshiftBalance.initialCash = lastServiceCashcutInfo.initialCash;
-        workshiftBalance.totalCashBalace = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.withdrawal;
-        workshiftBalance.totalncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.withdrawal - lastServiceCashcutInfo.withdrawal;
+        workshiftBalance.totalCashBalace = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.totalCashWithdrawal;
+        workshiftBalance.totalIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit - lastServiceCashcutInfo.totalCashWithdrawal;
 
-        const response = lastSupplyCashcutInfo = await prisma.workshiftBalance.create({
+        const response = await prisma.workshiftBalance.create({
 
             data: {
                 id_cashCut: lastServiceCashcutInfo.id_cashCut,
@@ -93,7 +93,7 @@ export const createWorkshiftBalance = async (req, res) => {
                 withdrawal: workshiftBalance.withdrawal,
                 initialCash: workshiftBalance.initialCash,
                 totalCashBalace: workshiftBalance.totalCashBalace,
-                totalncome: workshiftBalance.totalncome
+                totalIncome: workshiftBalance.totalIncome
             }
         });
 

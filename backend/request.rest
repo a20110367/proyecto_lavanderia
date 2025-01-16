@@ -1152,3 +1152,6 @@ GET  http://localhost:5000/activeWorkshiftBalances
 
 GET    http://localhost:5000/newWorkshiftBalances
 ###
+
+GET    http://localhost:5000/lastWorkshiftBalances
+###

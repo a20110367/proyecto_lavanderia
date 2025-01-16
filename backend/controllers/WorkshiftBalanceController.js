@@ -50,6 +50,19 @@ export const getWorkshiftBalanceById = async (req, res) => {
     }
 }
 
+export const getLastWorkshiftBalance = async (req, res) => {
+    try {
+        const response = await prisma.workshiftBalance.findFirst({
+
+         take:-1
+
+        });
+        res.status(200).json(response);
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
+    }
+}
+
 export const createWorkshiftBalance = async (req, res) => {
 
     try {

@@ -3,6 +3,7 @@ import {
     getWorkshiftBalances,
     getActiveWorkshiftBalances,
     getWorkshiftBalanceById,
+    getLastWorkshiftBalance,
     createWorkshiftBalance,
     updateWorkshiftBalance,
     deleteWorkshiftBalance,
@@ -13,6 +14,7 @@ const router = express.Router();
 router.get('/workshiftBalances', getWorkshiftBalances);
 router.get('/activeWorkshiftBalances', getActiveWorkshiftBalances);
 router.get('/workshiftBalances/:id', getWorkshiftBalanceById);
+router.get('/lastWorkshiftBalances/', getLastWorkshiftBalance);
 
 router.get('/newWorkshiftBalances', createWorkshiftBalance);
 

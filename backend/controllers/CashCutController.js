@@ -243,51 +243,37 @@ export const calculateCashCut = async (req, res) => {
             }
         });
 
-        if (creditIncome._sum.payTotal === null) credit._sum.payTotal = parseFloat(0.00);
+        if (creditIncome._sum.payTotal === null) creditIncome._sum.payTotal = parseFloat(0.00);
 
         //Ordenes canceladas durante el turno, revisar importancia
-        const ordersCancelled = await prisma.payment.findMany({
+        const ordersCancelled = await prisma.refund.findMany({
 
             where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id)
-                    },
-                    {
-                        cancelled: true,
-                    },
-                ]
+                fk_cashCut: Number(req.params.id)
             },
 
             select: {
-                fk_idOrder: true,
-                payTotal: true
+                serviceOrder: true,
+                amount: true
             }
 
         });
 
 
         //Todal de las ordenes canceladas durante el turno
-        const totalIncomeOrdesCancelled = await prisma.payment.aggregate({
+        const totalIncomeOrdesCancelled = await prisma.refund.aggregate({
 
             where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id)
-                    },
-                    {
-                        cancelled: true,
-                    },
-                ]
+                fk_cashCut: Number(req.params.id)
             },
 
             _sum: {
-                payTotal: true,
+                amount: true,
             }
 
         });
 
-        if (totalIncomeOrdesCancelled._sum.payTotal === null) totalIncomeOrdesCancelled._sum.payTotal = parseFloat(0.00);
+        if (totalIncomeOrdesCancelled._sum.amount === null) totalIncomeOrdesCancelled._sum.amount = parseFloat(0.00);
 
         //Ordenes pagadas durante el turno
         const ordersPayed = await prisma.payment.findMany({
@@ -503,7 +489,10 @@ export const calculateCashCut = async (req, res) => {
 
         const totalBalance =
             cashIncome._sum.payTotal + creditIncome._sum.payTotal
-            - totalCashWithdrawal._sum.amount + cashCutInitialData.initialCash;
+            - totalCashWithdrawal._sum.amount - totalIncomeOrdesCancelled._sum.amount
+            + cashCutInitialData.initialCash;
+            console.log("totalBalance")
+            console.log(totalBalance)
         if (totalBalance == null) totalBalance = parseFloat(0.00);
 
         //Revisar si esta funcion funciona
@@ -529,22 +518,24 @@ export const calculateCashCut = async (req, res) => {
         const time = new Date().toJSON();
         const totalIncome = parseFloat(totalPayedIncome._sum.payTotal.toFixed(2));
 
+        console.log("totalIncome")
+        console.log(totalIncome)
         const response =
         {
-            "totalCash": cashIncome._sum.payTotal,
-            "totalCredit": creditIncome._sum.payTotal,
-            "totalIncome": totalIncome,
-            "totalCashWithdrawal": totalCashWithdrawal._sum.amount,
-            "initialCash": cashCutInitialData.initialCash,
-            "total": totalBalance,
+            "totalCash": cashIncome._sum.payTotal,//se pasa a totales
+            "totalCredit": creditIncome._sum.payTotal,//se pasa a totales
+            "totalIncome": totalIncome,//se pasa a totales
+            "totalCashWithdrawal": totalCashWithdrawal._sum.amount,//se pasa a totales
+            "initialCash": cashCutInitialData.initialCash,//se pasa a totales
+            "total": totalBalance,//se pasa a totales
             "totalEncargo": totalEncargo._sum.totalPrice,
             "totalAutoservicio": totalAutoservicio._sum.totalPrice,
             "totalPlanchado": totalPlanchado._sum.totalPrice,
             "totalTintoreria": totalTintoreria._sum.totalPrice,
             "totalOtrosEncargo": totalEncargoVarios._sum.totalPrice,
             "ordersPayed": orders.length,
-            "ordersCancelled": ordersCancelled.length,
-            "totalCancelations": totalIncomeOrdesCancelled._sum.payTotal,
+            "ordersCancelled": ordersCancelled.length,//revisar
+            "totalCancelations": totalIncomeOrdesCancelled._sum.amount,//revisar
             "cashCutD": today,
             "cashCutT": time,
             "pettyCashBalance": pettyCashBalance.balance,
@@ -684,46 +675,38 @@ export const closeCashCut = async (req, res) => {
 
             if (creditIncome._sum.payTotal === null) creditIncome._sum.payTotal = parseFloat(0.00);
 
-            const ordersCancelled = await prisma.payment.findMany({
+            const ordersCancelled = await prisma.refund.findMany({
 
                 where: {
-                    AND: [
-                        {
-                            fk_cashCut: Number(req.params.id)
-                        },
-                        {
-                            cancelled: true,
-                        },
-                    ]
+                    fk_cashCut: Number(req.params.id)
                 },
 
                 select: {
-                    fk_idOrder: true,
-                    payTotal: true
+                    serviceOrder: true,
+                    amount: true
                 }
 
             });
 
-            const totalIncomeOrdesCancelled = await prisma.payment.aggregate({
+            console.log("ordersCancelled") 
+            console.log(ordersCancelled)
+
+            const totalIncomeOrdesCancelled = await prisma.refund.aggregate({
 
                 where: {
-                    AND: [
-                        {
-                            fk_cashCut: Number(req.params.id)
-                        },
-                        {
-                            cancelled: true,
-                        },
-                    ]
+                    fk_cashCut: Number(req.params.id)
                 },
 
                 _sum: {
-                    payTotal: true,
+                    amount: true,
                 }
 
             });
+            console.log("totalIncomeOrdesCancelled") 
+            console.log(totalIncomeOrdesCancelled._sum.amount == null)
+            
 
-            if (totalIncomeOrdesCancelled._sum.payTotal == null) totalCancelled._sum.payTotal = parseFloat(0.00);
+            if (totalIncomeOrdesCancelled._sum.amount == null) totalIncomeOrdesCancelled._sum.amount = parseFloat(0.00);
 
             const ordersPayed = await prisma.payment.findMany({
 
@@ -956,7 +939,8 @@ export const closeCashCut = async (req, res) => {
 
             const totalBalance =
                 cashIncome._sum.payTotal + creditIncome._sum.payTotal
-                - totalCashWithdrawal._sum.amount + cashCutInitialData.initialCash;
+                - totalCashWithdrawal._sum.amount - totalIncomeOrdesCancelled._sum.amount
+                + cashCutInitialData.initialCash;
 
             console.log(
                 totalEncargo._sum.totalPrice,
@@ -968,7 +952,7 @@ export const closeCashCut = async (req, res) => {
 
             const today = new Date().toJSON();
             const time = new Date().toJSON();
-            const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
+            const totalIncome = parseFloat(totalPayedIncome._sum.payTotal.toFixed(2));
 
             response = {
                 "totalCash": cashIncome._sum.payTotal,
@@ -1014,7 +998,7 @@ export const closeCashCut = async (req, res) => {
                     "totalOtrosEncargo": totalEncargoVarios._sum.totalPrice,
                     "ordersPayed": orders.length,
                     "ordersCancelled": ordersCancelled.length,
-                    "totalCancelations": totalIncomeOrdesCancelled._sum.payTotal,
+                    "totalCancelations": totalIncomeOrdesCancelled._sum.amount,
                     "cashCutStatus": "closed",
                     "cashCutD": today,
                     "cashCutT": time,
@@ -1077,8 +1061,6 @@ export const getCashCutStatus = async (req, res) => {
             })
 
         }
-
-
         console.log(lastCashCut);
 
         res.status(200).json(lastCashCutStatus);

@@ -54,7 +54,7 @@ export const getLastWorkshiftBalance = async (req, res) => {
     try {
         const response = await prisma.workshiftBalance.findFirst({
 
-         take:-1
+            take: -1
 
         });
         res.status(200).json(response);
@@ -73,6 +73,7 @@ export const createWorkshiftBalance = async (req, res) => {
             select: {
                 id_cashCut: true,
                 totalCashWithdrawal: true,
+                totalCancelations: true,
                 initialCash: true,
                 totalCash: true,
                 totalCredit: true,
@@ -92,9 +93,16 @@ export const createWorkshiftBalance = async (req, res) => {
         workshiftBalance.cashIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash;
         workshiftBalance.creditIncome = lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit;
         workshiftBalance.withdrawal = lastServiceCashcutInfo.totalCashWithdrawal;
+        workshiftBalance.cancellations = lastServiceCashcutInfo.totalCancelations;
         workshiftBalance.initialCash = lastServiceCashcutInfo.initialCash;
-        workshiftBalance.totalCashBalace = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.totalCashWithdrawal;
-        workshiftBalance.totalIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash + lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit - lastServiceCashcutInfo.totalCashWithdrawal;
+        workshiftBalance.totalCashBalace =
+            lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash
+            + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.totalCashWithdrawal
+            - lastServiceCashcutInfo.totalCancelations;
+        workshiftBalance.totalIncome =
+            lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash
+            + lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit
+            - lastServiceCashcutInfo.totalCashWithdrawal - lastServiceCashcutInfo.totalCancelations;
 
         const response = await prisma.workshiftBalance.create({
 
@@ -104,6 +112,7 @@ export const createWorkshiftBalance = async (req, res) => {
                 cashIncome: workshiftBalance.cashIncome,
                 creditIncome: workshiftBalance.creditIncome,
                 withdrawal: workshiftBalance.withdrawal,
+                cancellations: workshiftBalance.cancellations,
                 initialCash: workshiftBalance.initialCash,
                 totalCashBalace: workshiftBalance.totalCashBalace,
                 totalIncome: workshiftBalance.totalIncome

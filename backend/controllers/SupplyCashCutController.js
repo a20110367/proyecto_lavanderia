@@ -530,7 +530,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         });
 
-        if (totalWC._sum.subtotal === null) totalWC._sum.subtotal = parseFloat(0.00);
+        if (totalOtros._sum.subtotal === null) totalOtros._sum.subtotal = parseFloat(0.00);
 
 
         console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
@@ -539,7 +539,7 @@ export const calculateSupplyCashCut = async (req, res) => {
 
         const today = new Date().toJSON();
         const time = new Date().toJSON();
-        const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
+        const totalIncome = parseFloat(totalSupplyIncome._sum.subtotal.toFixed(2));
 
         const response =
         {
@@ -604,7 +604,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
         if (cashCutStatus.cashCutStatus === "open") {
 
-            const total = await prisma.supplyPayment.aggregate({
+            const totalSupplyIncome = await prisma.supplyPayment.aggregate({
 
                 where: {
                     fk_cashCut: Number(req.params.id)
@@ -625,9 +625,9 @@ export const closeSupplyCashCut = async (req, res) => {
 
             // });
 
-            total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
+            if (totalSupplyIncome._sum.payTotal === null) totalSupplyIncome._sum.payTotal = 0;
 
-            const cash = await prisma.supplyPayment.aggregate({
+            const cashSupplyIncome = await prisma.supplyPayment.aggregate({
                 where: {
                     AND: [
                         {
@@ -646,9 +646,9 @@ export const closeSupplyCashCut = async (req, res) => {
                     payTotal: true
                 }
             });
-            cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
+            if (cashSupplyIncome._sum.payTotal === null) cashSupplyIncome._sum.payTotal = 0;
 
-            const credit = await prisma.supplyPayment.aggregate({
+            const creditSupplyIncome = await prisma.supplyPayment.aggregate({
                 where: {
                     AND: [
                         {
@@ -668,7 +668,7 @@ export const closeSupplyCashCut = async (req, res) => {
             });
 
 
-            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
+            if (creditSupplyIncome._sum.payTotal === null) creditSupplyIncome._sum.payTotal = 0;
 
             const ordersPayed = await prisma.supplyPayment.findMany({
 
@@ -713,7 +713,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalJabon._sum.subtotal === null ? totalJabon._sum.subtotal = 0 : totalJabon._sum.subtotal + 0;
+            if (totalJabon._sum.subtotal === null) totalJabon._sum.subtotal = 0;
 
 
             const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
@@ -743,7 +743,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalSuavitel._sum.subtotal === null ? totalSuavitel._sum.subtotal = 0 : totalSuavitel._sum.subtotal + 0;
+            if (totalSuavitel._sum.subtotal === null) totalSuavitel._sum.subtotal = 0;
 
             const totalPinol = await prisma.supplyOrderDetail.aggregate({
 
@@ -772,7 +772,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalPinol._sum.subtotal === null ? totalPinol._sum.subtotal = 0 : totalPinol._sum.subtotal + 0;
+            if (totalPinol._sum.subtotal === null) totalPinol._sum.subtotal = 0;
 
             const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
 
@@ -801,7 +801,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalDesengrasante._sum.subtotal === null ? totalDesengrasante._sum.subtotal = 0 : totalDesengrasante._sum.subtotal + 0;
+            if (totalDesengrasante._sum.subtotal === null) totalDesengrasante._sum.subtotal = 0;
 
             const totalCloro = await prisma.supplyOrderDetail.aggregate({
 
@@ -830,7 +830,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalCloro._sum.subtotal === null ? totalCloro._sum.subtotal = 0 : totalCloro._sum.subtotal + 0;
+            if (totalCloro._sum.subtotal === null) totalCloro._sum.subtotal = 0;
 
             const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
 
@@ -859,7 +859,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalSanitizante._sum.subtotal === null ? totalSanitizante._sum.subtotal = 0 : totalSanitizante._sum.subtotal + 0;
+            if (totalSanitizante._sum.subtotal === null) totalSanitizante._sum.subtotal = 0;
 
             const totalBolsa = await prisma.supplyOrderDetail.aggregate({
 
@@ -888,7 +888,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalBolsa._sum.subtotal === null ? totalBolsa._sum.subtotal = 0 : totalBolsa._sum.subtotal + 0;
+            if (totalBolsa._sum.subtotal === null) totalBolsa._sum.subtotal = 0;
 
             const totalReforzado = await prisma.supplyOrderDetail.aggregate({
 
@@ -917,7 +917,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalReforzado._sum.subtotal === null ? totalReforzado._sum.subtotal = 0 : totalReforzado._sum.subtotal + 0;
+            if (totalReforzado._sum.subtotal === null) totalReforzado._sum.subtotal = 0;
 
             const totalGanchos = await prisma.supplyOrderDetail.aggregate({
 
@@ -946,7 +946,7 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalGanchos._sum.subtotal === null ? totalGanchos._sum.subtotal = 0 : totalGanchos._sum.subtotal + 0;
+            if (totalGanchos._sum.subtotal === null) totalGanchos._sum.subtotal = 0;
 
             const totalWC = await prisma.supplyOrderDetail.aggregate({
 
@@ -975,12 +975,39 @@ export const closeSupplyCashCut = async (req, res) => {
 
             });
 
-            totalWC._sum.subtotal === null ? totalWC._sum.subtotal = 0 : totalWC._sum.subtotal + 0;
+            if (totalWC._sum.subtotal === null) totalWC._sum.subtotal = 0;
 
+            const totalOtros = await prisma.supplyOrderDetail.aggregate({
 
+                where: {
+                    AND: [
 
-            const totalOtros = (parseFloat(total._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
-                totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
+                        {
+                            Supply: {
+                                category: "otros"
+                            }
+                        },
+                        {
+                            SupplyOrder: {
+                                id_supplyOrder: {
+                                    in: orders,
+                                },
+                            },
+                        }
+
+                    ],
+                },
+
+                _sum: {
+                    subtotal: true,
+                },
+
+            });
+
+            if (totalOtros._sum.subtotal === null) totalOtros._sum.subtotal = 0;
+
+            // const totalOtros = (parseFloat(totalSupplyIncome._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
+            //     totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
 
 
 
@@ -990,12 +1017,12 @@ export const closeSupplyCashCut = async (req, res) => {
 
             const today = new Date().toJSON();
             const time = new Date().toJSON();
-            const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
+            const totalIncome = parseFloat(totalSupplyIncome._sum.payTotal.toFixed(2));
 
             response =
             {
-                "totalCashSupply": cash._sum.payTotal,
-                "totalCreditSupply": credit._sum.payTotal,
+                "totalCashSupply": cashSupplyIncome._sum.payTotal,
+                "totalCreditSupply": creditSupplyIncome._sum.payTotal,
                 "totalIncomeSupply": totalIncome,
                 "totalJabon": totalJabon._sum.subtotal,
                 "totalSuavitel": totalSuavitel._sum.subtotal,
@@ -1007,7 +1034,7 @@ export const closeSupplyCashCut = async (req, res) => {
                 "totalReforzado": totalReforzado._sum.subtotal,
                 "totalGanchos": totalGanchos._sum.subtotal,
                 "totalWC": totalWC._sum.subtotal,
-                "totalOtros": totalOtros,
+                "totalOtros": totalOtros._sum.subtotal,
                 "ordersPayedSupply": orders.length,
                 "cashCutD": today,
                 "workShift": workShift.workShift
@@ -1024,8 +1051,8 @@ export const closeSupplyCashCut = async (req, res) => {
                     id_supplyCashCut: Number(req.params.id)
                 },
                 data: {
-                    "totalCash": cash._sum.payTotal,
-                    "totalCredit": credit._sum.payTotal,
+                    "totalCash": cashSupplyIncome._sum.payTotal,
+                    "totalCredit": creditSupplyIncome._sum.payTotal,
                     "totalIncome": totalIncome,
                     "totalJabon": totalJabon._sum.subtotal,
                     "totalSuavitel": totalSuavitel._sum.subtotal,
@@ -1037,7 +1064,7 @@ export const closeSupplyCashCut = async (req, res) => {
                     "totalReforzado": totalReforzado._sum.subtotal,
                     "totalGanchos": totalGanchos._sum.subtotal,
                     "totalWC": totalWC._sum.subtotal,
-                    "totalOtros": totalOtros,
+                    "totalOtros": totalOtros._sum.subtotal,
                     "ordersPayed": orders.length,
                     "cashCutD": today,
                     "workShift": workShift.workShift,
@@ -1075,15 +1102,12 @@ export const getSupplyCashCutStatus = async (req, res) => {
 
         });
 
-        let lastCashCutStatus;
+        let lastCashCutStatus = new Object();
 
-        if (lastCashCut._max.id_cashCut === null) {
+        if (lastCashCut === null) {
 
-            lastCashCutStatus = {
-                cashCutStatus: "closed",
-                id_cashCut: 0,
-            }
-
+            lastCashCutStatus.cashCutStatus = "closed"
+            lastCashCutStatus.id_cashCu = 0
         }
         else {
 

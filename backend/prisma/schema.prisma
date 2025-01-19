@@ -688,6 +688,7 @@ model WorkshiftBalance {
   cashIncome         Float
   creditIncome       Float
   withdrawal         Float
+  cancellations      Float
   initialCash        Float
   totalCashBalace    Float
   totalIncome        Float

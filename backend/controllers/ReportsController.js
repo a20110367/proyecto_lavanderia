@@ -254,85 +254,45 @@ export const getServicesReport = async (req, res) => {
         console.log("otherServiceSumary")
         console.log(otherServiceSumary)
 
-        //Ahora hay que recuperar catalogos por categoria, para despues formatear el json final
-        // const selfServiceCatalog = await prisma.selfService.findMany({
+        
+        // ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
+        // let totalServiceSalesVerification = 0;
+        // let totalServiceNumberVerification = 0;
 
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-        // });
-        // const laundryServiceCatalog = await prisma.laundryService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
+        // selfServiceSummary.forEach(service => {
+        //     // let serviceDescription = selfServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_selfService);
+        //     service.description = service.serviceDescription
+        //     totalServiceSalesVerification += service._sum.subtotal;
+        //     totalServiceNumberVerification += service._sum.units;
         // });
 
-        // const ironServiceCatalog = await prisma.ironService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
+        // laundryServiceSummary.forEach(service => {
+        //     // let serviceDescription = laundryServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_laundryService);
+        //     service.description = service.serviceDescription
+        //     totalServiceSalesVerification += service._sum.subtotal;
+        //     totalServiceNumberVerification += service._sum.units;
         // });
 
-        // const drycleanServiceCatalog = await prisma.drycleanService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
+        // ironServiceSummary.forEach(service => {
+        //     // let serviceDescription = ironServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_ironService);
+        //     service.description = service.serviceDescription
+        //     totalServiceSalesVerification += service._sum.subtotal;
+        //     totalServiceNumberVerification += service._sum.units;
         // });
 
-        // const otherServiceCatalog = await prisma.otherService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-
-
+        // drycleanServiceSummary.forEach(service => {
+        //     // let serviceDescription = drycleanServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_drycleanService);
+        //     service.description = service.serviceDescription
+        //     totalServiceSalesVerification += service._sum.subtotal;
+        //     totalServiceNumberVerification += service._sum.units;
         // });
-        ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
-        let totalServiceSalesVerification = 0;
-        let totalServiceNumberVerification = 0;
 
-        selfServiceSummary.forEach(service => {
-            // let serviceDescription = selfServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_selfService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
-        });
-
-        laundryServiceSummary.forEach(service => {
-            // let serviceDescription = laundryServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_laundryService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
-        });
-
-        ironServiceSummary.forEach(service => {
-            // let serviceDescription = ironServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_ironService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
-        });
-
-        drycleanServiceSummary.forEach(service => {
-            // let serviceDescription = drycleanServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_drycleanService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
-        });
-
-        otherServiceSumary.forEach(service => {
-            // let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
-        });
+        // otherServiceSumary.forEach(service => {
+        //     // let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
+        //     service.description = service.serviceDescription
+        //     totalServiceSalesVerification += service._sum.subtotal;
+        //     totalServiceNumberVerification += service._sum.units;
+        // });
 
         const payStatusOrderSummary = await prisma.serviceOrder.groupBy({
             by: ["payStatus"],
@@ -340,12 +300,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
+                        updatedAt: {
                             lte: endDate
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -373,12 +333,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
+                        updatedAt: {
                             lte: endDate
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -407,12 +367,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
+                        updatedAt: {
                             lte: endDate
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -432,28 +392,28 @@ export const getServicesReport = async (req, res) => {
             },
         });
 
-        let totalDeliveryStatusSalesVerification = 0;
-        let totalDeliveryStatusOrdersVerification = 0;
-        let totalDeliveryStatusItemsVerification = 0;
+        // let totalDeliveryStatusSalesVerification = 0;
+        // let totalDeliveryStatusOrdersVerification = 0;
+        // let totalDeliveryStatusItemsVerification = 0;
 
-        deliveryStatusOrderSummary.forEach(item => {
-            totalDeliveryStatusSalesVerification += item._sum.totalPrice;
-            totalDeliveryStatusOrdersVerification += item._count.id_order;
-            totalDeliveryStatusItemsVerification += item._sum.numberOfItems;
-        });
+        // deliveryStatusOrderSummary.forEach(item => {
+        //     totalDeliveryStatusSalesVerification += item._sum.totalPrice;
+        //     totalDeliveryStatusOrdersVerification += item._count.id_order;
+        //     totalDeliveryStatusItemsVerification += item._sum.numberOfItems;
+        // });
 
-        let totalPayStatusSalesVerification = 0;
-        let totalPayStatusNumberVerification = 0;
-        let totalPayStatusItemsVerification = 0;
+        // let totalPayStatusSalesVerification = 0;
+        // let totalPayStatusNumberVerification = 0;
+        // let totalPayStatusItemsVerification = 0;
 
-        payStatusOrderSummary.forEach(item => {
-            totalPayStatusSalesVerification += item._sum.totalPrice;
-            totalPayStatusNumberVerification += item._count.id_order;
-            totalPayStatusItemsVerification += item._sum.numberOfItems;
-        });
+        // payStatusOrderSummary.forEach(item => {
+        //     totalPayStatusSalesVerification += item._sum.totalPrice;
+        //     totalPayStatusNumberVerification += item._count.id_order;
+        //     totalPayStatusItemsVerification += item._sum.numberOfItems;
+        // });
 
-        console.log(totalServiceSalesVerification);
-        console.log(totalServiceNumberVerification);
+        // console.log(totalServiceSalesVerification);
+        // console.log(totalServiceNumberVerification);
 
         const response =
         {
@@ -469,16 +429,16 @@ export const getServicesReport = async (req, res) => {
             //Ordenes por su estado de entrega
             "deliveryStatusOrderSummary": deliveryStatusOrderSummary,
             //Sumario Basado en Ordenes de Servicio
-            "totalServiceSalesVerification": totalServiceSalesVerification,
-            "totalServiceNumberVerification": totalServiceNumberVerification,
+            // "totalServiceSalesVerification": totalServiceSalesVerification,
+            // "totalServiceNumberVerification": totalServiceNumberVerification,
             //Suamario Basaso en Estatus de Entregas
-            "totalDeliveryStatusSalesVerification": totalDeliveryStatusSalesVerification,
-            "totalDeliveryStatusOrdersVerification": totalDeliveryStatusOrdersVerification,
-            "totalDeliveryStatusItemsVerification": totalDeliveryStatusItemsVerification,
+            // "totalDeliveryStatusSalesVerification": totalDeliveryStatusSalesVerification,
+            // "totalDeliveryStatusOrdersVerification": totalDeliveryStatusOrdersVerification,
+            // "totalDeliveryStatusItemsVerification": totalDeliveryStatusItemsVerification,
             //Sumario basado en Estatus de Pago
-            "totalPayStatusSalesVerification": totalPayStatusSalesVerification,
-            "totalPayStatusNumberVerification": totalPayStatusNumberVerification,
-            "totalPayStatusItemsVerification": totalPayStatusItemsVerification,
+            // "totalPayStatusSalesVerification": totalPayStatusSalesVerification,
+            // "totalPayStatusNumberVerification": totalPayStatusNumberVerification,
+            // "totalPayStatusItemsVerification": totalPayStatusItemsVerification,
 
             "startDate": startDate,
             "endDate": endDate
@@ -955,3 +915,58 @@ export const getSuppliesReportById = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 }
+
+export const getIncomeReport = async (req, res) => {
+
+    const startDate = new Date(req.params.startDate);
+    const endDate = new Date(req.params.endDate);
+
+    const difDays = moment(endDate).diff(moment(startDate), 'days');
+
+    console.log(startDate.toISOString());
+    console.log(endDate.toISOString());
+    console.log(difDays);
+
+
+    try {
+
+        //Buscamos los registros de supplyOrderDetail, los sumarizamos, tanto las unidades,
+        //como los subtotales, pero prisma no permite recuperar las descripciones.
+
+        const incomeSummary = await prisma.workshiftBalance.aggregate({
+
+            where: {
+                AND: [
+
+                    {
+                        updatedAt: {
+                            lte: endDate
+                        },
+                    },
+                    {
+                        updatedAt: {
+                            gte: startDate
+                        },
+                    },
+                ],
+
+            },
+            _count: {
+                id_order: true,
+            },
+            _sum: {
+                cashIncome: true,
+                creditIncome: true,
+                withdrawal:true,
+                cancellations:true,
+                totalIncome:true
+            },
+        });
+
+        res.status(200).json(incomeSummary);
+
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+

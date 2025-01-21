@@ -172,9 +172,6 @@ export default function Login() {
                   Recordarme por 12 Horas
                 </label>
               </div> */}
-              <button className="link" onClick={() => setIsModalOpen(true)}>
-                Olvidaste tu Contraseña
-              </button>
               <img
                 src={IMAGES.caprelogo}
                 alt={`LOGO DE LA LAVANDERIA`}
@@ -184,6 +181,9 @@ export default function Login() {
                 <button type="submit" className="btn-login w-3/4 text-base " >
                   Iniciar sesion
                 </button>
+                <button className="link" onClick={() => setIsModalOpen(true)}>
+                Olvidaste tu Contraseña
+              </button>
               </div>
             </div>
           </form>

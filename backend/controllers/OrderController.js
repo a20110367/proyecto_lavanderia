@@ -1914,7 +1914,7 @@ export const updateCancelledOrder = async (req, res) => {
         else
             regularIronPieces = Number(orderData.ironPieces);
 
-        if (drycleanPieces != null)
+        if (orderData.ironPieces != null)
             drycleanPieces = Number(orderData.drycleanPieces);
 
         const createCancelledOrderDetail = prisma.cancelledServiceOrderDetail.createMany({
@@ -2024,20 +2024,6 @@ export const updateCancelledOrder = async (req, res) => {
 
         });
 
-        const cancelPayment = prisma.payment.update({
-
-            where: {
-                fk_idOrder: Number(id_order)
-            },
-
-            data: {
-                cancelled: true
-            }
-
-        });
-
-
-
         if (cancelationTypeDefinition === "refund") {
             console.log("que la chingada")
 
@@ -2053,8 +2039,7 @@ export const updateCancelledOrder = async (req, res) => {
                         cancelIronQueue,
                         cancelDrycleanQueue,
                         cancelOtherQueue,
-                        refoundPayment,
-                        cancelPayment])
+                        refoundPayment])
             cancelledOrder = cancelledOrderRecord;
         }
         if (cancelationTypeDefinition === "cancellation") {

@@ -6,59 +6,10 @@ moment.locale('es-mx');
 const prisma = new PrismaClient();
 
 
-// export const getGeneralReport = async (req, res) => {
-//     try {
-//         const response = await prisma.serviceOrder.findMany({
-
-
-//             include: {
-//                 client: {
-//                     select: {
-//                         name: true,
-//                         firstLN: true,
-//                         secondLN: true,
-//                         email: true,
-//                         phone: true,
-//                     },
-//                 },
-//                 category: {
-//                     select: {
-//                         categoryDescription: true,
-//                     }
-//                 },
-//                 user: {
-//                     select: {
-//                         name: true,
-//                         firstLN: true,
-//                         secondLN: true,
-//                     },
-//                 },
-//                 ServiceOrderDetail: true,
-//                 payment: true,
-//                 deliveryDetail: {
-//                     select: {
-//                         user: {
-//                             select: {
-//                                 name: true,
-//                                 firstLN: true,
-//                                 secondLN: true,
-//                             },
-//                         },
-//                     },
-//                 },
-//             },
-//         });
-
-
-//         res.status(200).json(response);
-//     } catch (e) {
-//         res.status(500).json({ msg: e.message });
-//     }
-// }
-
 export const getServicesReport = async (req, res) => {
     const startDate = new Date(req.params.startDate);
     const endDate = new Date(req.params.endDate);
+    const upperLimite = (moment(endDate).add(1, "days").toISOString());
     //const id = Number(req.params.id);
 
     const difDays = moment(endDate).diff(moment(startDate), 'days');
@@ -73,14 +24,14 @@ export const getServicesReport = async (req, res) => {
         //como los subtotales, pero prisma no permite recuperar las descripciones.
 
         const selfServiceSummary = await prisma.serviceOrderDetail.groupBy({
-           //by: ['fk_selfService'],
-             by: ["serviceDescription"],
+            //by: ['fk_selfService'],
+            by: ["serviceDescription"],
             where: {
                 AND: [
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -116,7 +67,7 @@ export const getServicesReport = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -153,7 +104,7 @@ export const getServicesReport = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -190,7 +141,7 @@ export const getServicesReport = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -226,7 +177,7 @@ export const getServicesReport = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -254,84 +205,44 @@ export const getServicesReport = async (req, res) => {
         console.log("otherServiceSumary")
         console.log(otherServiceSumary)
 
-        //Ahora hay que recuperar catalogos por categoria, para despues formatear el json final
-        // const selfServiceCatalog = await prisma.selfService.findMany({
 
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-        // });
-        // const laundryServiceCatalog = await prisma.laundryService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-        // });
-
-        // const ironServiceCatalog = await prisma.ironService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-        // });
-
-        // const drycleanServiceCatalog = await prisma.drycleanService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-        // });
-
-        // const otherServiceCatalog = await prisma.otherService.findMany({
-
-        //     select: {
-        //         id_service: true,
-        //         description: true,
-        //     }
-
-
-        // });
-        ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
-        let totalServiceSalesVerification = 0;
-        let totalServiceNumberVerification = 0;
+        // ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
+        let totalServiceSales = 0;
+        let totalServiceNumber = 0;
 
         selfServiceSummary.forEach(service => {
             // let serviceDescription = selfServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_selfService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
+            // service.description = service.serviceDescription
+            totalServiceSales += service._sum.subtotal;
+            totalServiceNumber += service._sum.units;
         });
 
         laundryServiceSummary.forEach(service => {
             // let serviceDescription = laundryServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_laundryService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
+            // service.description = service.serviceDescription
+            totalServiceSales += service._sum.subtotal;
+            totalServiceNumber += service._sum.units;
         });
 
         ironServiceSummary.forEach(service => {
             // let serviceDescription = ironServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_ironService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
+            // service.description = service.serviceDescription
+            totalServiceSales += service._sum.subtotal;
+            totalServiceNumber += service._sum.units;
         });
 
         drycleanServiceSummary.forEach(service => {
             // let serviceDescription = drycleanServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_drycleanService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
+            // service.description = service.serviceDescription
+            totalServiceSales += service._sum.subtotal;
+            totalServiceNumber += service._sum.units;
         });
 
         otherServiceSumary.forEach(service => {
             // let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
-            service.description = service.serviceDescription
-            totalServiceSalesVerification += service._sum.subtotal;
-            totalServiceNumberVerification += service._sum.units;
+            // service.description = service.serviceDescription
+            totalServiceSales += service._sum.subtotal;
+            totalServiceNumber += service._sum.units; s;
         });
 
         const payStatusOrderSummary = await prisma.serviceOrder.groupBy({
@@ -340,12 +251,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
-                            lte: endDate
+                        updatedAt: {
+                            lte: upperLimite
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -373,12 +284,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
-                            lte: endDate
+                        updatedAt: {
+                            lte: upperLimite
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -407,12 +318,12 @@ export const getServicesReport = async (req, res) => {
                 AND: [
 
                     {
-                        created: {
-                            lte: endDate
+                        updatedAt: {
+                            lte: upperLimite
                         },
                     },
                     {
-                        created: {
+                        updatedAt: {
                             gte: startDate
                         },
                     },
@@ -432,28 +343,28 @@ export const getServicesReport = async (req, res) => {
             },
         });
 
-        let totalDeliveryStatusSalesVerification = 0;
-        let totalDeliveryStatusOrdersVerification = 0;
-        let totalDeliveryStatusItemsVerification = 0;
+        // let totalDeliveryStatusSalesVerification = 0;
+        // let totalDeliveryStatusOrdersVerification = 0;
+        // let totalDeliveryStatusItemsVerification = 0;
 
-        deliveryStatusOrderSummary.forEach(item => {
-            totalDeliveryStatusSalesVerification += item._sum.totalPrice;
-            totalDeliveryStatusOrdersVerification += item._count.id_order;
-            totalDeliveryStatusItemsVerification += item._sum.numberOfItems;
-        });
+        // deliveryStatusOrderSummary.forEach(item => {
+        //     totalDeliveryStatusSalesVerification += item._sum.totalPrice;
+        //     totalDeliveryStatusOrdersVerification += item._count.id_order;
+        //     totalDeliveryStatusItemsVerification += item._sum.numberOfItems;
+        // });
 
-        let totalPayStatusSalesVerification = 0;
-        let totalPayStatusNumberVerification = 0;
-        let totalPayStatusItemsVerification = 0;
+        // let totalPayStatusSalesVerification = 0;
+        // let totalPayStatusNumberVerification = 0;
+        // let totalPayStatusItemsVerification = 0;
 
-        payStatusOrderSummary.forEach(item => {
-            totalPayStatusSalesVerification += item._sum.totalPrice;
-            totalPayStatusNumberVerification += item._count.id_order;
-            totalPayStatusItemsVerification += item._sum.numberOfItems;
-        });
+        // payStatusOrderSummary.forEach(item => {
+        //     totalPayStatusSalesVerification += item._sum.totalPrice;
+        //     totalPayStatusNumberVerification += item._count.id_order;
+        //     totalPayStatusItemsVerification += item._sum.numberOfItems;
+        // });
 
-        console.log(totalServiceSalesVerification);
-        console.log(totalServiceNumberVerification);
+        // console.log(totalServiceSalesVerification);
+        // console.log(totalServiceNumberVerification);
 
         const response =
         {
@@ -469,16 +380,16 @@ export const getServicesReport = async (req, res) => {
             //Ordenes por su estado de entrega
             "deliveryStatusOrderSummary": deliveryStatusOrderSummary,
             //Sumario Basado en Ordenes de Servicio
-            "totalServiceSalesVerification": totalServiceSalesVerification,
-            "totalServiceNumberVerification": totalServiceNumberVerification,
+            "totalServiceSalesVerification": totalServiceSales,
+            "totalServiceNumberVerification": totalServiceNumber,
             //Suamario Basaso en Estatus de Entregas
-            "totalDeliveryStatusSalesVerification": totalDeliveryStatusSalesVerification,
-            "totalDeliveryStatusOrdersVerification": totalDeliveryStatusOrdersVerification,
-            "totalDeliveryStatusItemsVerification": totalDeliveryStatusItemsVerification,
+            // "totalDeliveryStatusSalesVerification": totalDeliveryStatusSalesVerification,
+            // "totalDeliveryStatusOrdersVerification": totalDeliveryStatusOrdersVerification,
+            // "totalDeliveryStatusItemsVerification": totalDeliveryStatusItemsVerification,
             //Sumario basado en Estatus de Pago
-            "totalPayStatusSalesVerification": totalPayStatusSalesVerification,
-            "totalPayStatusNumberVerification": totalPayStatusNumberVerification,
-            "totalPayStatusItemsVerification": totalPayStatusItemsVerification,
+            // "totalPayStatusSalesVerification": totalPayStatusSalesVerification,
+            // "totalPayStatusNumberVerification": totalPayStatusNumberVerification,
+            // "totalPayStatusItemsVerification": totalPayStatusItemsVerification,
 
             "startDate": startDate,
             "endDate": endDate
@@ -496,6 +407,7 @@ export const getServicesReport = async (req, res) => {
 export const getServicesReportById = async (req, res) => {
     const startDate = new Date(req.params.startDate);
     const endDate = new Date(req.params.endDate);
+    const upperLimite = (moment(endDate).add(1, "days").toISOString());
     const categoryId = Number(req.params.categoryId);
     const serviceId = Number(req.params.serviceId);
 
@@ -524,7 +436,7 @@ export const getServicesReportById = async (req, res) => {
 
                             {
                                 created: {
-                                    lte: endDate
+                                    lte: upperLimite
                                 },
                             },
                             {
@@ -577,7 +489,7 @@ export const getServicesReportById = async (req, res) => {
 
                             {
                                 created: {
-                                    lte: endDate
+                                    lte: upperLimite
                                 },
                             },
                             {
@@ -627,7 +539,7 @@ export const getServicesReportById = async (req, res) => {
 
                             {
                                 created: {
-                                    lte: endDate
+                                    lte: upperLimite
                                 },
                             },
                             {
@@ -676,7 +588,7 @@ export const getServicesReportById = async (req, res) => {
 
                             {
                                 created: {
-                                    lte: endDate
+                                    lte: upperLimite
                                 },
                             },
                             {
@@ -728,7 +640,7 @@ export const getServicesReportById = async (req, res) => {
 
                             {
                                 created: {
-                                    lte: endDate
+                                    lte: upperLimite
                                 },
                             },
                             {
@@ -775,10 +687,13 @@ export const getServicesReportById = async (req, res) => {
                 break;
         }
 
-        summary[0].startDate = startDate;
-        summary[0].endDate = endDate;
-        const response = summary;
-
+        // summary[0].startDate = startDate;
+        // summary[0].endDate = endDate;
+        const response = {
+            "summary": summary,
+            "startDate": startDate,
+            "endDate": endDate
+        };
 
         res.status(200).json(response);
 
@@ -792,6 +707,8 @@ export const getSuppliesReport = async (req, res) => {
 
     const startDate = new Date(req.params.startDate);
     const endDate = new Date(req.params.endDate);
+    const upperLimite = (moment(endDate).add(1, "days").toISOString());
+
     //const id = Number(req.params.id);
 
     const difDays = moment(endDate).diff(moment(startDate), 'days');
@@ -813,7 +730,7 @@ export const getSuppliesReport = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -846,14 +763,14 @@ export const getSuppliesReport = async (req, res) => {
         });
 
         ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
-        let totalSuppliesSalesVerification = 0;
-        let totalSuppliesNumberVerification = 0;
+        let totalSuppliesSales = 0;
+        let totalSuppliesNumber = 0;
 
         suppliesSummary.forEach(supply => {
             let supplyDescription = suppliesCatalog.find(supplyItem => supplyItem.id_supply === supply.fk_supplyId);
             supply.description = supplyDescription.description
-            totalSuppliesSalesVerification += supply._sum.subtotal;
-            totalSuppliesNumberVerification += supply._sum.units;
+            totalSuppliesSales += supply._sum.subtotal;
+            totalSuppliesNumber += supply._sum.units;
         });
 
 
@@ -863,14 +780,12 @@ export const getSuppliesReport = async (req, res) => {
             //Totales por servicios y categorias
             "suppliesSummary": suppliesSummary,
 
-            //Sumario Basado en Ordenes de Servicio
-            "totalSuppliesSalesVerification": totalSuppliesSalesVerification,
-            "totalSuppliesNumberVerification": totalSuppliesNumberVerification,
+            //Sumario Basado en Ordenes de productos
+            "totalSuppliesSalesVerification": totalSuppliesSales,
+            "totalSuppliesNumberVerification": totalSuppliesNumber,
 
             "startDate": startDate,
             "endDate": endDate
-
-
         }
 
         res.status(200).json(response);
@@ -885,6 +800,7 @@ export const getSuppliesReportById = async (req, res) => {
 
     const startDate = new Date(req.params.startDate);
     const endDate = new Date(req.params.endDate);
+    const upperLimite = (moment(endDate).add(1, "days").toISOString());
     const supplyId = Number(req.params.supplyId);
 
     const difDays = moment(endDate).diff(moment(startDate), 'days');
@@ -910,7 +826,7 @@ export const getSuppliesReportById = async (req, res) => {
 
                     {
                         created: {
-                            lte: endDate
+                            lte: upperLimite
                         },
                     },
                     {
@@ -936,17 +852,22 @@ export const getSuppliesReportById = async (req, res) => {
             select: {
                 description: true,
             }
-
-
         });
 
         console.log(suppliesSummary)
         console.log(supplyDescription)
         suppliesSummary.description = supplyDescription.description;
 
-        suppliesSummary.startDate = startDate;
-        suppliesSummary.endDate = endDate;
-        const response = suppliesSummary;
+        // suppliesSummary.startDate = startDate;
+        // suppliesSummary.endDate = endDate;
+        // const response = suppliesSummary;
+
+        const response =
+        {
+            "suppliesSummary": suppliesSummary,
+            "startDate": startDate,
+            "endDate": endDate
+        }
 
         res.status(200).json(response);
 
@@ -955,3 +876,66 @@ export const getSuppliesReportById = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 }
+
+export const getIncomeReport = async (req, res) => {
+
+    const startDate = new Date(req.params.startDate);
+    const endDate = new Date(req.params.endDate);
+    const upperLimite = (moment(endDate).add(1, "days").toISOString())
+
+    const difDays = moment(endDate).diff(moment(startDate), 'days');
+
+    console.log(startDate.toISOString());
+    console.log(endDate.toISOString());
+    console.log(upperLimite);
+    console.log(difDays);
+
+
+    try {
+
+        const incomeSummary = await prisma.workshiftBalance.aggregate({
+
+
+            _sum: {
+                cashIncome: true,
+                totalIncome: true,
+                creditIncome: true,
+                withdrawal: true,
+                cancellations: true,
+                totalIncome: true
+            },
+            where: {
+                AND: [
+
+                    {
+                        created: {
+                            lte: upperLimite
+                        }
+                    },
+                    {
+                        created: {
+                            gte: startDate
+                        }
+                    },
+                ],
+
+            },
+          
+        });
+
+
+        const response =
+        {
+
+            "incomeSummary": incomeSummary,
+            "startDate": startDate,
+            "endDate": endDate
+        }
+
+        res.status(200).json(response);
+
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
+    }
+}
+

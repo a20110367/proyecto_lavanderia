@@ -11,7 +11,7 @@ datasource db {
 model User {
   id_user   Int      @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String?
   phone     String   @unique
   pass      String
   role      Role     @default(employee)
@@ -679,6 +679,22 @@ model Supply {
   updatedAt         DateTime            @updatedAt
   SupplyOrderDetail SupplyOrderDetail[]
   //   CancelledSupplyOrderDetail CancelledSupplyOrderDetail[]
+}
+
+model WorkshiftBalance {
+  id_workshifBalance Int   @id @default(autoincrement())
+  id_supplyCashCut   Int
+  id_cashCut         Int
+  cashIncome         Float
+  creditIncome       Float
+  withdrawal         Float
+  cancellations      Float
+  initialCash        Float
+  totalCashBalace    Float
+  totalIncome        Float
+
+  created   DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Unit {

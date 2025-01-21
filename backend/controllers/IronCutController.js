@@ -42,11 +42,10 @@ export const getIronCutById = async (req, res) => {
 
 export const getLastIronCut = async (req, res) => {
     try {
-        const response = await prisma.ironCut.findMany({
-            orderBy: {
-                id_ironCut: 'desc',
-            },
-            take: 1,
+        const response = await prisma.ironCut.findFirst({
+
+            take: -1,
+        
         });
         res.status(200).json(response);
     } catch (e) {

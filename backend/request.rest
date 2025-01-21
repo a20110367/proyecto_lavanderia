@@ -1065,6 +1065,8 @@ Content-Type: application/json
 ###
 GET  http://localhost:5000/supplyCashCuts
 ###
+GET  http://localhost:5000/getSupplyCashCutStatus
+###
 
 GET   http://localhost:5000/calculateIronCut
 ###
@@ -1072,16 +1074,20 @@ GET   http://localhost:5000/ironCuts
 ###
 
 #CRUD REPORTES
-GET   http://localhost:5000/servicesReport/2024-07-02/2024-10-23
+GET   http://localhost:5000/servicesReport/2024-12-02/2025-01-19
 ###
 
-GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22/1/1
+GET   http://localhost:5000/servicesReport/2024-12-01/2025-01-19/1/1
 ###
 
-GET   http://localhost:5000/suppliesReport/2024-03-01/2024-03-28
+GET   http://localhost:5000/suppliesReport/2024-12-02/2025-01-19
 ###
 
-GET   http://localhost:5000/suppliesReport/2023-05-15/2024-12-22/2
+GET   http://localhost:5000/suppliesReport/2024-12-02/2025-01-19/2
+###
+
+GET   http://localhost:5000/incomeReport/2025-01-10/2025-01-19
+
 ###
 
 GET http://localhost:5000/orderCancelable
@@ -1137,4 +1143,21 @@ GET  http://localhost:5000/activeRefunds
 ###
 
 GET  http://localhost:5000/refunds
+###
+
+//WORKSHIFTBALANCE CRUD
+
+GET  http://localhost:5000/workshiftBalances
+### 
+
+GET  http://localhost:5000/workshiftBalances/2
+### 
+
+GET  http://localhost:5000/activeWorkshiftBalances
+###
+
+GET    http://localhost:5000/createWorkshiftBalances
+###
+
+GET    http://localhost:5000/lastWorkshiftBalances
 ###

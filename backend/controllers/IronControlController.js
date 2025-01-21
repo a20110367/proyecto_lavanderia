@@ -33,11 +33,9 @@ export const getIronControlById = async (req, res) => {
 
 export const getLastIronControl = async (req, res) => {
     try {
-        const response = await prisma.ironControl.findMany({
-            orderBy: {
-                id_ironControl: 'desc',
-            },
-            take: 1,
+        const response = await prisma.ironControl.findFirst({
+
+            take: -1,
         });
         res.status(200).json(response);
     } catch (e) {
@@ -181,11 +179,7 @@ export const createIronControl = async (req, res) => {
                 "ironingCapacity": ironingCapacity._sum,
                 "ironControl": lastIronControl
             }
-
-
         }
-
-
         res.status(201).json(response);
     } catch (e) {
         res.status(400).json({ msg: e.message });
@@ -193,39 +187,7 @@ export const createIronControl = async (req, res) => {
 }
 
 
-//Actualiza los contadores al inicio de un dia de trabajo
-//ELIMINAR ESTA FUNCION
-// export const updateDiaryIron = async (req, res) => {
 
-//     try {
-//         const ironControlBefore = await prisma.ironControl.findMany({
-//             orderBy: {
-//                 id_ironControl: 'desc',
-//             },
-//             skip: 1,
-//             take: 1,
-//         });
-
-//         const piecesToday = ironControlBefore[0].piecesTomorrow + ironControlBefore[0].piecesLeft;
-
-//         const ironControlCurrent = await prisma.ironControl.update({
-
-//             where: {
-//                 id_ironControl: Number(req.params.id),
-//             },
-
-//             data: {
-//                 "piecesToday": piecesToday,
-//                 "piecesLeft": piecesToday
-//             }
-
-//         });
-
-//         res.status(200).json(ironControlCurrent);
-//     } catch (e) {
-//         res.status(400).json({ msg: e.message });
-//     }
-// }
 //Actualiza las piezas hechas en el dia, y por lo tanto las quita de backlog de planchado
 export const updateIronRegularOrderDone = async (req, res) => {
 

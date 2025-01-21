@@ -90,7 +90,7 @@ export const createRefund = async (req, res) => {
         });
 
 
-        if (validationExistRefund == null && findOrder.orderStatus.toString() == "finished" && findOrder.payStatus.toString == "paid") {
+        if (validationExistRefund == null && findOrder.payStatus.toString == "paid") {
 
             const createRefund = await prisma.refund.create({
                 data: req.body
@@ -105,17 +105,6 @@ export const createRefund = async (req, res) => {
                     orderStatus: "cancelled"
                 }
 
-            });
-
-            const cancelPayment = prisma.payment.update({
-
-                where: {
-                    fk_idOrder: Number(findOrder.id_order)
-                },
-    
-                data: {
-                    cancelled: true
-                }
             });
 
             refund = createRefund;

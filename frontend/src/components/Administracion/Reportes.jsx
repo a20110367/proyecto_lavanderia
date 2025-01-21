@@ -187,6 +187,7 @@ function Reportes() {
   const [isDatePickerModal, setIsDatePickerModal] = useState(false);
   const [isIdProductResultModal, setIsIdProductResultModal] = useState(false);
   const [isIdServiceResultModal, setIsIdServiceResultModal] = useState(false);
+  const [isMoneyModalOpen, setIsMoneyModalOpen] = useState(false);
 
   //-------------------------- REQUESTS --------------------------
   const fetcherProducts = async () => {
@@ -280,7 +281,7 @@ function Reportes() {
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
       img.src = IMAGES.caprelogoReduced;
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
 
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -302,7 +303,7 @@ function Reportes() {
       serviceReportResponse.selfServiceSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -316,7 +317,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio ENCARGO
       doc.text(`Detalles de Ingreso de Encargo:`, 10, 10);
       doc.setLineWidth(1)
@@ -326,7 +327,7 @@ function Reportes() {
       serviceReportResponse.laundryServiceSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -340,7 +341,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio PLANCHADO
       doc.text(`Detalles de Ingreso de Planchado:`, 10, 10);
       doc.setLineWidth(1)
@@ -350,7 +351,7 @@ function Reportes() {
       serviceReportResponse.ironServiceSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -364,7 +365,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio TINTORERIA
       doc.text(`Detalles de Ingreso de Tintoreria:`, 10, 10);
       doc.setLineWidth(1)
@@ -374,7 +375,7 @@ function Reportes() {
       serviceReportResponse.drycleanServiceSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -388,7 +389,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio OTROS
       doc.text(`Detalles de Ingreso de Otros:`, 10, 10);
       doc.setLineWidth(1)
@@ -398,7 +399,7 @@ function Reportes() {
       serviceReportResponse.otherServiceSumary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -412,7 +413,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio RESUMEN DE ORDENES
       doc.text(`Resumen de Estatus de la Ordenes:`, 10, 10);
       doc.setLineWidth(1)
@@ -422,7 +423,7 @@ function Reportes() {
       serviceReportResponse.deliveryStatusOrderSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`, 10, count);
@@ -434,7 +435,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio RESUMEN DE ESTATUS DE PAGO
       doc.text(`Resumen de Estatus de Pago:`, 10, 10);
       doc.setLineWidth(1)
@@ -455,7 +456,7 @@ function Reportes() {
       })
 
       doc.addPage();
-      doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 150, 10, 48, 30)
       // Mostrar detalles de ingresos por servicio TINTORERIA
       doc.text(`Ordenes Canceladas:`, 10, 10);
       doc.setLineWidth(1)
@@ -478,8 +479,8 @@ function Reportes() {
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
       img.src = IMAGES.caprelogoReduced;
-      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
-      
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)
+
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
       doc.text(`Fechas seleccionadas:`, 10, 30);
@@ -515,7 +516,7 @@ function Reportes() {
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
       img.src = IMAGES.caprelogoReduced;
-      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)
 
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
@@ -537,7 +538,7 @@ function Reportes() {
       productReportResponse.suppliesSummary.forEach(item => {
         if (count >= 250) {
           doc.addPage();
-          doc.addImage(img, 'PNG', 150, 10, 48, 30)  
+          doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
@@ -557,8 +558,8 @@ function Reportes() {
       var img = new Image();
       // img.src = 'images/img/caprelogo.png';
       img.src = IMAGES.caprelogoReduced;
-      doc.addImage(img, 'PNG', 125, 10, 48, 30)  
-      
+      doc.addImage(img, 'PNG', 125, 10, 48, 30)
+
       doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
 
       doc.text(`Fechas seleccionadas:`, 10, 30);
@@ -585,22 +586,22 @@ function Reportes() {
   }
 
   const handleGuardarPDF = async (doc) => {
-    if(reportType == 1){
+    if (reportType == 1) {
       const formattedStartDate = serviceReportResponse.startDate.split("/").join("-");
       const formattedEndDate = serviceReportResponse.endDate.split("/").join("-");
       await doc.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
-    }else if(reportType == 2){
+    } else if (reportType == 2) {
       const formattedStartDate = serviceResponseId.startDate.split("/").join("-");
       const formattedEndDate = serviceResponseId.endDate.split("/").join("-");
       await doc.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
-    }else if(reportType == 3){
+    } else if (reportType == 3) {
       const formattedStartDate = productReportResponse.startDate.split("/").join("-");
       const formattedEndDate = productReportResponse.endDate.split("/").join("-");
       await doc.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
-    }else if(reportType == 4){
+    } else if (reportType == 4) {
       const formattedStartDate = productReportResponseId.startDate.split("/").join("-");
       const formattedEndDate = productReportResponseId.endDate.split("/").join("-");
       await doc.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
@@ -629,25 +630,25 @@ function Reportes() {
 
   const handlePrint = async () => {
     try {
-      if(reportType == 1){
+      if (reportType == 1) {
         await api.post("/generate/report/Service", {
           report: serviceReportResponse,
         })
-      }else if(reportType == 2){
+      } else if (reportType == 2) {
         await api.post("/generate/report/Service/id", {
           report: serviceResponseId,
           categoryId: categoryId,
         })
-      }else if(reportType == 3){
+      } else if (reportType == 3) {
         await api.post("/generate/report/Product", {
           report: productReportResponse,
         })
-      }else if(reportType == 4){
+      } else if (reportType == 4) {
         await api.post("/generate/report/Product/id", {
           report: productReportResponseId,
           productId: productId,
         })
-      }else Swal.fire("Tipo de reporte no encontrado", "", "error");
+      } else Swal.fire("Tipo de reporte no encontrado", "", "error");
     } catch (err) {
       Swal.fire("Error al imprimir", "", "error");
       console.error(err);
@@ -752,13 +753,16 @@ function Reportes() {
             <h1 className="text-center m-0 text-3xl font-bold">Reportes</h1>
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+            <div className="w-1/3 h-1/2 flex flex-col items-center justify-center">
               <button onClick={() => datePickerModal(1)} className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-2 text-xl mr-0">Reportes Generales de Servicios</button>
               <button onClick={() => datePickerModal(2)} className="btn-print w-3/4 h-1/3 font-semibold p-2 rounded-md px-4 ml-2 mt-2 text-xl mr-0">Reportes por Servicio en Especifico</button>
             </div>
-            <div className="w-1/2 h-1/2 flex flex-col items-center justify-center">
+            <div className="w-1/3 h-1/2 flex flex-col items-center justify-center">
               <button onClick={() => datePickerModal(3)} className="btn-back w-3/4 h-1/3 text-xl">Reportes Generales de Productos</button>
               <button onClick={() => datePickerModal(4)} className="btn-back w-3/4 h-1/3 text-xl">Reportes por Producto en Especifico</button>
+            </div>
+            <div className="w-1/3 h-1/2 flex flex-col items-center justify-center">
+              <button onClick={() => datePickerModal(5)} className="btn-back bg-green-600 w-3/4 h-1/3 text-xl">Reporte de Ingresos</button>
             </div>
           </div>
         </div>
@@ -775,7 +779,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-          onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
+            onClick={() => (handleGenerarDocumento().then((results) => { handleGuardarPDF(results) }))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -826,8 +830,8 @@ function Reportes() {
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
                 </div>
-              )) 
-            : <p className="text-lg" > Cargando Información...</p>}
+              ))
+              : <p className="text-lg" > Cargando Información...</p>}
 
             {/* <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">Encargo</p>
@@ -959,7 +963,7 @@ function Reportes() {
                 <p className="text-lg">${serviceReportResponse.cancelledOrderSummary._sum.totalPrice ? serviceReportResponse.cancelledOrderSummary._sum.totalPrice : 0}</p>
                 <br />
               </div>
-            : <p className="text-lg" > No hay Información...</p>}
+              : <p className="text-lg" > No hay Información...</p>}
           </div>
           {/* Cuarta Columna */}
           <div className="w-1/4 text-lg sticky top-0 ml-20">
@@ -1043,7 +1047,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
+            onClick={() => (handleGenerarDocumento().then((results) => { handleGuardarPDF(results) }))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1113,7 +1117,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-            onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
+            onClick={() => (handleGenerarDocumento().then((results) => { handleGuardarPDF(results) }))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1224,7 +1228,7 @@ function Reportes() {
             Imprimir
           </Button>,
           <Button
-          onClick={() => (handleGenerarDocumento().then((results) => {handleGuardarPDF(results)}))}
+            onClick={() => (handleGenerarDocumento().then((results) => { handleGuardarPDF(results) }))}
             className="btn-generate text-white ml-4 text-center font-bold align-middle"
             key="save"
           >
@@ -1323,6 +1327,217 @@ function Reportes() {
             <p className="text-3xl font-semibold mt-16">{dateRange[0] ? `${formatDate(dateRange[0].toDate())}` : "Esperando que seleccione una Fecha de Inicio"}</p>
             <p className="text-3xl font-semibold mt-8">-</p>
             <p className="text-3xl font-semibold mt-16">{dateRange[1] ? `${formatDate(dateRange[1].toDate())}` : "Esperando que seleccione una Fecha de Termino"}</p>
+          </div>
+        </div>
+      </Modal>
+
+      {/* MONEY */} 
+      <Modal title={`Reporte de Ingresos`} open={isMoneyModalOpen} width={1300} onCancel={() => { setIsMoneyModalOpen(false) }} maskClosable={false}
+        footer={[
+          <Button
+            onClick={() => (handlePrint())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="print"
+          >
+            Imprimir
+          </Button>,
+          <Button
+            onClick={() => (handleGenerarDocumento().then((results) => { handleGuardarPDF(results) }))}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="save"
+          >
+            Guardar
+          </Button>,
+          <Button
+            onClick={() => (handleEnviarPDF())}
+            className="btn-generate text-white ml-4 text-center font-bold align-middle"
+            key="generate"
+          >
+            Enviar al Correo
+          </Button>,
+          <Button
+            onClick={() => setIsGServiceOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,
+        ]}>
+        <div className="flex" style={{ height: "700px" }}>
+          {/* Primera Columna */}
+          <div className="w-1/6 text-lg sticky top-10">
+            <p className="text-lg font-bold">Fecha Inicial:</p>
+            <p>{formatDate(serviceReportResponse.startDate)}</p>
+
+            <p className="text-lg font-bold">Fecha de Termino:</p>
+            <p>{formatDate(serviceReportResponse.endDate)}</p>
+          </div>
+          {/* Segunda Columna */}
+          <div className="w-1/3 text-lg overflow-scroll">
+            <p className="font-bold text-2xl">Detalles:</p>
+            <br />
+
+            {/* <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2"} ></p>
+            <p className="text-2xl font-bold text-center">AutoServicio</p>
+            <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">AutoServicio</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse.selfServiceSummary ?
+              serviceReportResponse.selfServiceSummary.map(item => (
+                <div key={item.fk_selfService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_selfService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              ))
+              : <p className="text-lg" > Cargando Información...</p>}
+
+            {/* <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2"} ></p>
+            <p className="text-2xl font-bold text-center">Encargo</p>
+            <p className={"text-white font-bold rounded-md bg-rose-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Encargo</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse.laundryServiceSummary ?
+              serviceReportResponse.laundryServiceSummary.map(item => (
+                <div key={item.fk_laundryService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_laundryService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            {/* <p className={"py-2"} ></p>
+            <p className="bg-yellow-500 rounded-md  text-2xl font-bold text-center">Planchado</p>
+            <p className={"py-2"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Planchado</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse ?
+              serviceReportResponse.ironServiceSummary.map(item => (
+                <div key={item.fk_ironService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_ironService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            {/* <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2"} ></p>
+            <p className="text-2xl font-bold text-center">Tintoreria</p>
+            <p className={"text-white font-bold rounded-md bg-lime-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Tintoreria</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse ?
+              serviceReportResponse.drycleanServiceSummary.map(item => (
+                <div key={item.fk_drycleanService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_drycleanService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+
+            {/* <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2"} ></p>
+            <p className="text-2xl font-bold text-center">Otros</p>
+            <p className={"text-white font-bold rounded-md bg-orange-500 text-center py-2 mb-1"} ></p> */}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Otros Servicios</p>
+            <p className={"py-2 mb-1"} ></p>
+            {serviceReportResponse ?
+              serviceReportResponse.otherServiceSumary.map(item => (
+                <div key={item.fk_otherService}>
+                  <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                  <p className="text-xl font-bold text-center">{item.description}</p>
+                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_otherService}</span></p>
+                  <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
+                  <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
+                  <br />
+                </div>
+              )) : <p className="text-lg" > Cargando Información...</p>}
+          </div>
+          {/* Tercera Columna */}
+          <div className="w-1/3 text-lg sticky overflow-scroll top-0 ml-20 ">
+            <p className="font-bold text-2xl">Resumen de Ordenes:</p>
+            <br />
+
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Estatus de la Ordenes:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2"} ></p>
+            <p className="font-bold text-2xl">Resumen de Estatus de la Ordenes:</p>
+            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p> */}
+            {serviceReportResponse.deliveryStatusOrderSummary.map(item => (
+              <div key={item.fk_otherService}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
+                <p className="text-lg">{item._count.id_order}</p>
+                <p className="font-bold">No. de Servicios:</p>
+                <p className="text-lg">{item._sum.numberOfItems}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${item._sum.totalPrice}</p>
+                <br />
+              </div>
+            ))}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Estatus de Pago:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2"} ></p>
+            <p className="font-bold text-2xl">Resumen de Estatus de Pago:</p>
+            <p className={"text-white font-bold rounded-md bg-blue-900 text-center py-2 mb-1"} ></p> */}
+            {serviceReportResponse.payStatusOrderSummary.map(item => (
+              <div key={item.fk_otherService}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                <p className="font-bold">{item.payStatus === "paid" ? "No. de Ordenes Pagadas:" : "No. de Ordenes NO Pagadas:"}</p>
+                <p className="text-lg">{item._count.id_order}</p>
+                <p className="font-bold">No. de Servicios:</p>
+                <p className="text-lg">{item._sum.numberOfItems}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${item._sum.totalPrice}</p>
+                <br />
+              </div>
+            ))}
+            <p className={"py-2 mb-1"} ></p>
+            <p className="text-2xl rounded-md text-white bg-gray-800 font-bold text-center">Resumen de Ordenes Canceladas:</p>
+            <p className={"py-2 mb-1"} ></p>
+            {/* <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2"} ></p>
+            <p className="font-bold text-2xl">Resumen de Ordenes Canceladas:</p>
+            <p className={"text-white font-bold rounded-md bg-green-900 text-center py-2 mb-1"} ></p> */}
+            {serviceReportResponse.cancelledOrderSummary ?
+              <div key={serviceReportResponse.cancelledOrderSummary._count.id_order}>
+                <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
+                <p className="font-bold">No. de Ordenes Canceladas:</p>
+                <p className="text-lg">{serviceReportResponse.cancelledOrderSummary._count.id_order}</p>
+                <p className="font-bold">No. de Servicios:</p>
+                <p className="text-lg">{serviceReportResponse.cancelledOrderSummary._sum.numberOfItems ? serviceReportResponse.cancelledOrderSummary._sum.numberOfItems : 0}</p>
+                <p className="font-bold">Total:</p>
+                <p className="text-lg">${serviceReportResponse.cancelledOrderSummary._sum.totalPrice ? serviceReportResponse.cancelledOrderSummary._sum.totalPrice : 0}</p>
+                <br />
+              </div>
+              : <p className="text-lg" > No hay Información...</p>}
+          </div>
+          {/* Cuarta Columna */}
+          <div className="w-1/4 text-lg sticky top-0 ml-20">
+            <p className="font-bold text-xl">Resumen de Ordenes:</p>
+            <p className="font-bold text-xl">Resumen General:</p>
+            <p className="font-bold">No. Total de Ordenes:</p>
+            <p className="text-2xl">{serviceReportResponse.totalServiceNumberVerification}</p>
+
+            <p className="font-bold">Venta Total:</p>
+            <p className="text-2xl">${serviceReportResponse.totalServiceSalesVerification}</p>
+
           </div>
         </div>
       </Modal>

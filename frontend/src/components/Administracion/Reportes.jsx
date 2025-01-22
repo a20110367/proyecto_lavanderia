@@ -603,15 +603,15 @@ function Reportes() {
       doc.text(`Detalles de Ingresos:`, 10, 90);
       let count = 110;
 
-      doc.text(`Ingresos por Efectivo: ${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
+      doc.text(`Ingresos por Efectivo: + $${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
       count += 10;
-      doc.text(`Ingresos por Tarjeta: $${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}`, 10, count);
+      doc.text(`Ingresos por Tarjeta: + $${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}`, 10, count);
       count += 10;
-      doc.text(`Retiros: $${incomeReport.incomeSummary._sum.withdrawal ? incomeReport.incomeSummary._sum.withdrawal : 0}`, 10, count);
+      doc.text(`Retiros: - $${incomeReport.incomeSummary._sum.withdrawal ? incomeReport.incomeSummary._sum.withdrawal : 0}`, 10, count);
       count += 10;
-      doc.text(`Cancelaciones: ${incomeReport.incomeSummary._sum.cancellations ? incomeReport.incomeSummary._sum.cancellations : 0}`, 10, count);
+      doc.text(`Cancelaciones: - $${incomeReport.incomeSummary._sum.cancellations ? incomeReport.incomeSummary._sum.cancellations : 0}`, 10, count);
       count += 20;
-      doc.text(`Ingresos Totales: ${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}`, 10, count);
+      doc.text(`Ingresos Totales: $${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}`, 10, count);
       count += 20;
       await setDocument(doc);
       return doc;
@@ -640,8 +640,8 @@ function Reportes() {
       await doc.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else if (reportType == 5) {
-      const formattedStartDate = IncomeResponseId.startDate.split("/").join("-");
-      const formattedEndDate = IncomeResponseId.endDate.split("/").join("-");
+      const formattedStartDate = incomeReport.startDate.split("/").join("-");
+      const formattedEndDate = incomeReport.endDate.split("/").join("-");
       await doc.save(`Reporte de INGRESOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");

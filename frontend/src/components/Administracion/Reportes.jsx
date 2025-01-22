@@ -6,7 +6,7 @@ import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import jsPDF from "jspdf";
 import { Select } from "antd";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatDateReport } from "../../utils/format";
 import useSWR from "swr";
 import api from "../../api/api";
 import Swal from "sweetalert2";
@@ -620,29 +620,29 @@ function Reportes() {
 
   const handleGuardarPDF = async (doc) => {
     if (reportType == 1) {
-      const formattedStartDate = serviceReportResponse.startDate.split("/").join("-");
-      const formattedEndDate = serviceReportResponse.endDate.split("/").join("-");
-      await doc.save(`Reporte de SERVICIOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      const formattedStartDate = formatDateReport(serviceReportResponse.startDate);
+      const formattedEndDate = formatDateReport(serviceReportResponse.endDate);
+      await doc.save(`Reporte de SERVICIOS ${formattedStartDate} A ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else if (reportType == 2) {
-      const formattedStartDate = serviceResponseId.startDate.split("/").join("-");
-      const formattedEndDate = serviceResponseId.endDate.split("/").join("-");
-      await doc.save(`Reporte por SERVICIO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      const formattedStartDate = formatDateReport(serviceResponseId.startDate);
+      const formattedEndDate = formatDateReport(serviceResponseId.endDate);
+      await doc.save(`Reporte por SERVICIO ${formattedStartDate} A ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else if (reportType == 3) {
-      const formattedStartDate = productReportResponse.startDate.split("/").join("-");
-      const formattedEndDate = productReportResponse.endDate.split("/").join("-");
-      await doc.save(`Reporte de PRODUCTOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      const formattedStartDate = formatDateReport(productReportResponse.startDate);
+      const formattedEndDate = formatDateReport(productReportResponse.endDate);
+      await doc.save(`Reporte de PRODUCTOS ${formattedStartDate} A ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else if (reportType == 4) {
-      const formattedStartDate = productReportResponseId.startDate.split("/").join("-");
-      const formattedEndDate = productReportResponseId.endDate.split("/").join("-");
-      await doc.save(`Reporte por PRODUCTO ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      const formattedStartDate = formatDateReport(productReportResponseId.startDate);
+      const formattedEndDate = formatDateReport(productReportResponseId.endDate);
+      await doc.save(`Reporte por PRODUCTO ${formattedStartDate} A ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else if (reportType == 5) {
-      const formattedStartDate = incomeReport.startDate.split("/").join("-");
-      const formattedEndDate = incomeReport.endDate.split("/").join("-");
-      await doc.save(`Reporte de INGRESOS ${formattedStartDate} - ${formattedEndDate}.pdf`);
+      const formattedStartDate = formatDateReport(incomeReport.startDate);
+      const formattedEndDate = formatDateReport(incomeReport.endDate);
+      await doc.save(`Reporte de INGRESOS ${formattedStartDate} A ${formattedEndDate}.pdf`);
       Swal.fire("Reporte Guardado", "", "success");
     } else Swal.fire("Tipo de reporte no encontrado", "", "error");
   }

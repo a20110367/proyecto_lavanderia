@@ -1340,7 +1340,7 @@ function Reportes() {
       </Modal>
 
       {/* INCOME */}
-      <Modal title={`Reporte de Ingresos`} open={isIncomeModalOpen} width={700} onCancel={() => { setIsIncomeModalOpen(false) }} maskClosable={false}
+      <Modal title={`Reporte de Ingresos`} open={isIncomeModalOpen} width={1000} onCancel={() => { setIsIncomeModalOpen(false) }} maskClosable={false}
         footer={[
           <Button
             onClick={() => (handlePrint())}

@@ -13,6 +13,7 @@ import {
     printReportService,
     printReportServiceId,
     printReportProductId,
+    printReportIncome,
 } from "../controllers/TicketController.js";
 
 const router = express.Router();
@@ -29,6 +30,7 @@ router.post('/generate/report/Product', printReportProduct)
 router.post('/generate/report/Product/id', printReportProductId)
 router.post('/generate/report/Service', printReportService)
 router.post('/generate/report/Service/id', printReportServiceId)
+router.post('/generate/report/Income', printReportIncome);
 
 router.post('/generate/order/canceled', printCanceledOrder);
 router.post('/generate/order/reprint', reprintOrder)

@@ -1467,7 +1467,7 @@ export const printReportServiceId = async (req, res) => {
 
         printer.setTextQuadArea();
         printer.println(`REPORTE DE:`)
-        printer.println(report.description)
+        printer.println(report.summary[0].description)
         printer.newLine();
         printer.println("Fecha de Emisión:")
         printer.println(moment().format("DD/MM/YYYY"))
@@ -1489,7 +1489,7 @@ export const printReportServiceId = async (req, res) => {
         printer.newLine();
 
         printer.setTextQuadArea();
-        printer.println(report.description);
+        printer.println(report.summary[0].description);
         printer.setTextNormal();
         // printer.println(`ID: ${categoryId === 1 ? report.fk_selfService
         //     : categoryId === 2 ? report.fk_laundryService
@@ -1497,8 +1497,8 @@ export const printReportServiceId = async (req, res) => {
         //             : categoryId === 4 ? report.fk_drycleanService
         //                 : categoryId === 5 ? report.fk_otherService
         //                     : report.description}`);
-        printer.println(`Subtotal: $${report._sum.subtotal}`);
-        printer.println(`Unidades: ${report._sum.units}`);
+        printer.println(`Subtotal: $${report.summary[0]._sum.subtotal}`);
+        printer.println(`Unidades: ${report.summary[0]._sum.units}`);
         printer.newLine();
 
         printer.cut();
@@ -1588,7 +1588,7 @@ export const printReportProductId = async (req, res) => {
 
         printer.setTextQuadArea();
         printer.println(`REPORTE DE:`)
-        printer.println(report.description)
+        printer.println(report.suppliesSummary.description)
         printer.newLine();
         printer.println("Fecha de Emisión:")
         printer.println(moment().format("DD/MM/YYYY"))
@@ -1610,11 +1610,11 @@ export const printReportProductId = async (req, res) => {
         printer.newLine();
 
         printer.setTextDoubleHeight();
-        printer.println(report.description);
+        printer.println(report.suppliesSummary.description);
         printer.setTextNormal();
         // printer.println(`ID: ${productId}`);
-        printer.println(`Subtotal: $${report._sum.subtotal}`);
-        printer.println(`Unidades: ${report._sum.units}`);
+        printer.println(`Subtotal: $${report.suppliesSummary._sum.subtotal}`);
+        printer.println(`Unidades: ${report.suppliesSummary._sum.units}`);
         printer.newLine();
 
         // printer.drawLine()
@@ -1631,6 +1631,66 @@ export const printReportProductId = async (req, res) => {
         // printer.newLine()
         // printer.newLine()
         // printer.println('_________________________________')
+
+        printer.cut();
+
+        let execute = await printer.execute();
+
+        res.status(200).json("Print done!");
+
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
+export const printReportIncome = async (req, res) => {
+    try {
+        const { report } = req.body
+
+        printer.clear();
+
+        await printer.printImage('./controllers/utils/img/caprelogoThermalPrinterGrayINFO.png');
+        printer.newLine();
+
+        printer.setTextQuadArea();
+        printer.println(`REPORTE DE:`)
+        printer.println('Ingresos')
+        printer.newLine();
+        printer.println("Fecha de Emisión:")
+        printer.println(moment().format("DD/MM/YYYY"))
+        printer.setTextNormal();
+        printer.newLine();
+
+        printer.println("Fechas seleccionadas:");
+        printer.println(`(${formatDate(report.startDate)}) - (${formatDate(report.endDate)})`);
+        printer.newLine();
+
+        printer.drawLine();
+        printer.newLine();
+        printer.bold(true);
+        printer.setTextQuadArea();
+        printer.println(`Detalles de Ingresos:`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.drawLine();
+        printer.newLine();
+
+        printer.println(`Ingreso por Efectivo: + $${report.incomeSummary._sum.cashIncome ? report.incomeSummary._sum.cashIncome : 0}`);
+        printer.println(`Ingreso por Tarjeta: + $${report.incomeSummary._sum.creditIncome ? report.incomeSummary._sum.creditIncome : 0}`);
+        printer.println(`Retiros: - $${report.incomeSummary._sum.withdrawal ? report.incomeSummary._sum.withdrawal : 0}`);
+        printer.println(`Cancelaciones: - $${report.incomeSummary._sum.cancellations ? report.incomeSummary._sum.cancellations : 0}`);
+        printer.newLine();
+
+        printer.alignRight();
+        printer.bold(true);
+        printer.setTextQuadArea();
+        printer.println(`Ingresos totales: ${report.incomeSummary._sum.totalIncome ? report.incomeSummary._sum.totalIncome : 0}`);
+        printer.setTextNormal();
+        printer.bold(false);
+        printer.alignLeft();
+        printer.drawLine();
+        printer.newLine();
 
         printer.cut();
 

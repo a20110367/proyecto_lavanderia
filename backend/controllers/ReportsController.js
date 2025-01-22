@@ -242,7 +242,7 @@ export const getServicesReport = async (req, res) => {
             // let serviceDescription = otherServiceCatalog.find(serviceItem => serviceItem.id_service === service.fk_otherService);
             // service.description = service.serviceDescription
             totalServiceSales += service._sum.subtotal;
-            totalServiceNumber += service._sum.units; s;
+            totalServiceNumber += service._sum.units;
         });
 
         const payStatusOrderSummary = await prisma.serviceOrder.groupBy({

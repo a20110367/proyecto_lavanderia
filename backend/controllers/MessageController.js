@@ -88,7 +88,7 @@ export const notifyAll = async (req, res) => {
 
 export const sendReport = async (req, res) => {
 
-    const { reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId, startDate, endDate } = req.body
+    const { reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId, incomeReport, startDate, endDate } = req.body
 
     // const doc = generateDoc(reportType, serviceReportResponse, categoryId, serviceResponseId, productReportResponse, productId, productReportResponseId);
 
@@ -305,18 +305,11 @@ export const sendReport = async (req, res) => {
         doc.line(10, 100, 205, 100, 'S');
         let count = 110;
 
-        doc.text(`Descripción: ${serviceResponseId.description}`, 10, count);
+        doc.text(`Descripción: ${serviceResponseId.summary[0].description}`, 10, count);
         count += 10;
-        doc.text(`ID: ${categoryId === 1 ? serviceResponseId.fk_selfService
-            : categoryId === 2 ? serviceResponseId.fk_laundryService
-                : categoryId === 3 ? serviceResponseId.fk_ironService
-                    : categoryId === 4 ? serviceResponseId.fk_drycleanService
-                        : categoryId === 5 ? serviceResponseId.fk_otherService
-                            : serviceResponseId.description}`, 10, count);
+        doc.text(`Subtotal: $${serviceResponseId.summary[0]._sum.subtotal}`, 10, count);
         count += 10;
-        doc.text(`Subtotal: $${serviceResponseId._sum.subtotal}`, 10, count);
-        count += 10;
-        doc.text(`Unidades: ${serviceResponseId._sum.units}`, 10, count);
+        doc.text(`Unidades: ${serviceResponseId.summary[0]._sum.units}`, 10, count);
         count += 20;
     } else if (reportType === 3) {
 
@@ -371,13 +364,37 @@ export const sendReport = async (req, res) => {
         doc.text(`Detalles de Ingresos por Producto:`, 10, 90);
         let count = 110;
 
-        doc.text(`ID: ${productId}`, 10, count);
+        doc.text(`Descripción: ${productReportResponseId.suppliesSummary.description}`, 10, count);
         count += 10;
-        doc.text(`Descripción: ${productReportResponseId.description}`, 10, count);
+        doc.text(`Subtotal: $${productReportResponseId.suppliesSummary._sum.subtotal}`, 10, count);
         count += 10;
-        doc.text(`Subtotal: $${productReportResponseId._sum.subtotal}`, 10, count);
+        doc.text(`Unidades: ${productReportResponseId.suppliesSummary._sum.units}`, 10, count);
+        count += 20;
+
+    } else if (reportType === 5) {
+
+        doc.addImage(img, 'PNG', 150, 10, 48, 30)
+
+        doc.text(`REPORTE DEL DÍA (${moment().format("DD/MM/YYYY")})`, 10, 10);
+
+        doc.text(`Fechas seleccionadas:`, 10, 30);
+        doc.text(`(${formatDate(incomeReport.startDate)}) - (${formatDate(incomeReport.endDate)})`, 10, 40);
+
+        doc.setLineWidth(3)
+        doc.line(10, 80, 205, 80, 'S');
+
+        doc.text(`Detalles de Ingresos:`, 10, 90);
+        let count = 110;
+
+        doc.text(`Ingresos por Efectivo: ${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
         count += 10;
-        doc.text(`Unidades: ${productReportResponseId._sum.units}`, 10, count);
+        doc.text(`Ingresos por Tarjeta: $${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}`, 10, count);
+        count += 10;
+        doc.text(`Retiros: $${incomeReport.incomeSummary._sum.withdrawal ? incomeReport.incomeSummary._sum.withdrawal : 0}`, 10, count);
+        count += 10;
+        doc.text(`Cancelaciones: ${incomeReport.incomeSummary._sum.cancellations ? incomeReport.incomeSummary._sum.cancellations : 0}`, 10, count);
+        count += 20;
+        doc.text(`Ingresos Totales: ${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}`, 10, count);
         count += 20;
 
     } else console.error("Tipo de reporte no encontrado", "", "error");
@@ -479,7 +496,7 @@ export const sendRecoveredPwd = async (res) => {
     const date = moment().format("DD-MM-YYYY");
     const messageUser = `// ${date} //
     Caprel: *${res.pass}*`
-    
+
     const messageOwner = `// ${date} //
     El usuario *${res.username}* ha recuperado su contraseña`
 

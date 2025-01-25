@@ -5,6 +5,21 @@ moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 
+export const calculateCashWorkShiftBalace = async (serviceCashIncome, suppliesCashIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+
+    const cashBalance = (serviceCashIncome + suppliesCashIncome - cashWithdrawal - incomeOrdersCancelled + initialCash)
+
+    return (cashBalance)
+}
+
+export const calculateTotalWorkShiftBalace = async (serviceCashIncome, suppliesCashIncome, serviceCreditIncome, suppliesCreditIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+
+    const workShiftBalance = (serviceCashIncome + suppliesCashIncome + serviceCreditIncome + suppliesCreditIncome - cashWithdrawal - incomeOrdersCancelled + initialCash)
+
+    return (workShiftBalance)
+}
+
+
 
 export const getWorkshiftBalances = async (req, res) => {
     try {
@@ -90,33 +105,39 @@ export const createWorkshiftBalance = async (req, res) => {
             take: -1
         });
 
+        //Asignacion de valores 
         workshiftBalance.cashIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash;
         workshiftBalance.creditIncome = lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit;
         workshiftBalance.withdrawal = lastServiceCashcutInfo.totalCashWithdrawal;
         workshiftBalance.cancellations = lastServiceCashcutInfo.totalCancelations;
         workshiftBalance.initialCash = lastServiceCashcutInfo.initialCash;
-        workshiftBalance.totalCashBalace =
-            lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash
-            + lastServiceCashcutInfo.initialCash - lastServiceCashcutInfo.totalCashWithdrawal
-            - lastServiceCashcutInfo.totalCancelations;
-        workshiftBalance.totalIncome =
-            lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash
-            + lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit
-            - lastServiceCashcutInfo.totalCashWithdrawal - lastServiceCashcutInfo.totalCancelations;
+        workshiftBalance.id_cashCut = lastServiceCashcutInfo.id_cashCut;
+        workshiftBalance.id_supplyCashCut = lastSupplyCashcutInfo.id_supplyCashCut;
+
+
+        workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
+
+            lastServiceCashcutInfo.totalCash,
+            lastSupplyCashcutInfo.totalCash,
+            lastServiceCashcutInfo.totalCashWithdrawal,
+            lastServiceCashcutInfo.totalCancelations,
+            lastServiceCashcutInfo.initialCash
+        )
+
+        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
+            lastServiceCashcutInfo.totalCash,
+            lastSupplyCashcutInfo.totalCash,
+            lastServiceCashcutInfo.creditIncome,
+            lastSupplyCashcutInfo.creditIncome,
+            lastServiceCashcutInfo.totalCashWithdrawal,
+            lastServiceCashcutInfo.totalCancelations,
+            lastServiceCashcutInfo.initialCash
+        )
+
 
         const response = await prisma.workshiftBalance.create({
 
-            data: {
-                id_cashCut: lastServiceCashcutInfo.id_cashCut,
-                id_supplyCashCut: lastSupplyCashcutInfo.id_supplyCashCut,
-                cashIncome: workshiftBalance.cashIncome,
-                creditIncome: workshiftBalance.creditIncome,
-                withdrawal: workshiftBalance.withdrawal,
-                cancellations: workshiftBalance.cancellations,
-                initialCash: workshiftBalance.initialCash,
-                totalCashBalace: workshiftBalance.totalCashBalace,
-                totalIncome: workshiftBalance.totalIncome
-            }
+            data: workshiftBalance
         });
 
         res.status(200).json(response);

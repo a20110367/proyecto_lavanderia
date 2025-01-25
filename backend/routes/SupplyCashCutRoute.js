@@ -5,7 +5,7 @@ import {
     createSupplyCashCut,
     updateSupplyCashCut,
     deleteSupplyCashCut,
-    calculateSupplyCashCut,
+    calculateCashCut,
     closeSupplyCashCut,
     getSupplyCashCutStatus,
     getSupplyLastCashCut
@@ -22,7 +22,7 @@ router.patch('/supplyCashCuts/:id', updateSupplyCashCut);
 
 router.delete('/supplyCashCuts/:id', deleteSupplyCashCut);
 
-router.get('/calculateSupplyCashCut/:id', calculateSupplyCashCut);
+router.get('/calculateSupplyCashCut/:id', calculateCashCut);
 router.get('/getSupplyCashCutStatus', getSupplyCashCutStatus);
 router.get('/getSupplyLastCashCut', getSupplyLastCashCut);
 router.get('/closeSupplyCashCut/:id', closeSupplyCashCut);

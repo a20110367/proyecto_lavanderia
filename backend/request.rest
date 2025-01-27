@@ -742,7 +742,11 @@ GET http://localhost:5000/lastCashCut
 GET http://localhost:5000/cashCuts/
 
 ###
-GET  http://localhost:5000/calculateCashCut/48
+GET  http://localhost:5000/calculateCashCut/10
+
+###
+
+GET  http://localhost:5000/calculateParcialCashCut/10
 
 ###
 

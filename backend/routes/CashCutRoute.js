@@ -8,6 +8,7 @@ import {
     updateCashCut,
     deleteCashCut,
     calculateCashCut,
+    calculateParcialCashCut,
     closeCashCut
 } from "../controllers/CashCutController.js";
 
@@ -18,6 +19,7 @@ router.get('/cashCuts/:id', getCashCutsById);
 router.get('/cashCutStatus', getCashCutStatus);
 router.get('/lastCashCut', getLastCashCut);
 router.get('/calculateCashCut/:id',calculateCashCut);
+router.get('/calculateParcialCashCut/:id',calculateParcialCashCut);
 router.get('/closeCashCut/:id',closeCashCut);
 router.post('/cashCuts', createCashCut);
 router.patch('/cashCuts/:id', updateCashCut);

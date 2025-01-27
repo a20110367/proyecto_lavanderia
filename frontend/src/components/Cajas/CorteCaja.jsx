@@ -358,45 +358,50 @@ function CorteCaja() {
 
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
-      const response = await api.get(`/calculateCashCut/${cashCutId}`);
-      const supplyResponse = await api.get(
-        `/calculateSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
-      );
+      const res = await api.get(`/calculateParcialCashCut/${cashCutId}`);
+      console.log(res.data)
+      // const response = await api.get(`/calculateCashCut/${cashCutId}`);
+      // const supplyResponse = await api.get(
+      //   `/calculateSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
+      // );
 
-      const corteSupply = supplyResponse.data;
-      const corte = response.data;
+      const corteSupply = res.data.suppliesCashCut;
+      const corte = res.data.serviceCashCut;
 
-      const nuevoCorte = {
-        ...corte,
-        id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
-        id_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        ...corteSupply,
-      };
+      // const nuevoCorte = {
+      //   ...corte,
+      //   id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
+      //   id_cashCut: parseInt(localStorage.getItem("cashCutId")),
+      //   ...corteSupply,
+      // };
 
-      setCortes([nuevoCorte]);
+      // setCortes([nuevoCorte]);
       setPartialCorteDialogVisible(false);
 
       const cashCut = {
         casher: cookies.username,
-        cashCutId: nuevoCorte.id_cashCut,
-        workShift: nuevoCorte.workShift,
-        initialCash: nuevoCorte.initialCash,
-        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total,
-        cashCutD: nuevoCorte.cashCutD,
-        cashCutT: nuevoCorte.cashCutT,
+        cashCutId: parseInt(localStorage.getItem("cashCutId")),
+        workShift: corte.workShift,
+        initialCash: corte.initialCash,
+        totalCashWithdrawal: corte.totalCashWithdrawal,
+        totalCancelations: corte.totalCancelations,
+        total: corte.total,
+        cashCutD: corte.cashCutD,
+        cashCutT: corte.cashCutT,
+        ironPiecesDone: corte.ironPiecesDone,
+        pettyCashBalance: corte.pettyCashBalance,
       };
 
       const services = {
-        numberOfItems: nuevoCorte.ordersPayed,
-        selfService: nuevoCorte.totalAutoservicio,
-        laundry: nuevoCorte.totalEncargo,
-        iron: nuevoCorte.totalPlanchado,
-        dryCleaning: nuevoCorte.totalTintoreria,
-        others: nuevoCorte.totalOtrosEncargo,
-        totalIncome: nuevoCorte.totalIncome,
-        totalCash: nuevoCorte.totalCash,
-        totalCredit: nuevoCorte.totalCredit,
+        numberOfItems: corte.ordersPayed,
+        selfService: corte.totalAutoservicio,
+        laundry: corte.totalEncargo,
+        iron: corte.totalPlanchado,
+        dryCleaning: corte.totalTintoreria,
+        others: corte.totalOtrosEncargo,
+        totalIncome: corte.totalIncome,
+        totalCash: corte.totalCash,
+        totalCredit: corte.totalCredit,
       };
 
       const products = {

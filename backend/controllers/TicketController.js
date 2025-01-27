@@ -1037,6 +1037,19 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
             printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
 
+            printer.newLine()
+            printer.println(`Piezas de Planchado Hechas: ${cashCut.ironPiecesDone}`)
+            printer.println(`pettyCashBalance: ${cashCut.pettyCashBalance}`)
+            printer.newLine()
+
+            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Cancelaciones Totales: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.setTextNormal()
+
             printer.drawLine()
         }
 
@@ -1062,14 +1075,6 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
-
-            printer.newLine()
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.total}`)
-            printer.setTextNormal()
 
             printer.setTextQuadArea()
             printer.drawLine()

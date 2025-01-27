@@ -1221,7 +1221,7 @@ function Reportes() {
                 <div key={item.fk_supplyId}>
                   <p className={"text-white text-lx font-bold rounded-md bg-teal-900 text-center py-2"} ></p>
                   <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_supplyId}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />

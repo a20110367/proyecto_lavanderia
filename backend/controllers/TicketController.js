@@ -1295,7 +1295,7 @@ export const printReportService = async (req, res) => {
 
         report.selfServiceSummary.forEach(item => {
             printer.setTextDoubleHeight();
-            printer.println(item.description);
+            printer.println(item.serviceDescription);
             printer.setTextNormal();
             // printer.println(`ID: ${item.fk_selfService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
@@ -1315,7 +1315,7 @@ export const printReportService = async (req, res) => {
         report.laundryServiceSummary.forEach(item => {
             // printer.setTextDoubleHeight();
             printer.bold(true);
-            printer.println(item.description);
+            printer.println(item.serviceDescription);
             printer.bold(false);
             // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_laundryService}`);
@@ -1336,7 +1336,7 @@ export const printReportService = async (req, res) => {
         report.ironServiceSummary.forEach(item => {
             // printer.setTextDoubleHeight();
             printer.bold(true);
-            printer.println(item.description);
+            printer.println(item.serviceDescription);
             printer.bold(false);            // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_ironService}`);
             printer.println(`Subtotal: $${item._sum.subtotal}`);
@@ -1356,7 +1356,7 @@ export const printReportService = async (req, res) => {
         report.drycleanServiceSummary.forEach(item => {
             // printer.setTextDoubleHeight();
             printer.bold(true);
-            printer.println(item.description);
+            printer.println(item.serviceDescription);
             printer.bold(false);
             // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_drycleanService}`);
@@ -1377,7 +1377,7 @@ export const printReportService = async (req, res) => {
         report.otherServiceSumary.forEach(item => {
             // printer.setTextDoubleHeight();
             printer.bold(true);
-            printer.println(item.description);
+            printer.println(item.serviceDescription);
             printer.bold(false);
             // printer.setTextNormal();
             // printer.println(`ID: ${item.fk_otherService}`);

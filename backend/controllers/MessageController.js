@@ -123,7 +123,7 @@ export const sendReport = async (req, res) => {
                 doc.addImage(img, 'PNG', 150, 10, 48, 30)
                 count = 40;
             }
-            doc.text(`Descripción: ${item.description}`, 10, count);
+            doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
             count += 10;
             doc.text(`ID: ${item.fk_selfService}`, 10, count);
             count += 10;
@@ -147,7 +147,7 @@ export const sendReport = async (req, res) => {
                 doc.addImage(img, 'PNG', 150, 10, 48, 30)
                 count = 40;
             }
-            doc.text(`Descripción: ${item.description}`, 10, count);
+            doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
             count += 10;
             doc.text(`ID: ${item.fk_laundryService}`, 10, count);
             count += 10;
@@ -171,7 +171,7 @@ export const sendReport = async (req, res) => {
                 doc.addImage(img, 'PNG', 150, 10, 48, 30)
                 count = 40;
             }
-            doc.text(`Descripción: ${item.description}`, 10, count);
+            doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
             count += 10;
             doc.text(`ID: ${item.fk_ironService}`, 10, count);
             count += 10;
@@ -195,7 +195,7 @@ export const sendReport = async (req, res) => {
                 doc.addImage(img, 'PNG', 150, 10, 48, 30)
                 count = 40;
             }
-            doc.text(`Descripción: ${item.description}`, 10, count);
+            doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
             count += 10;
             doc.text(`ID: ${item.fk_drycleanService}`, 10, count);
             count += 10;
@@ -219,7 +219,7 @@ export const sendReport = async (req, res) => {
                 doc.addImage(img, 'PNG', 150, 10, 48, 30)
                 count = 40;
             }
-            doc.text(`Descripción: ${item.description}`, 10, count);
+            doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
             count += 10;
             doc.text(`ID: ${item.fk_otherService}`, 10, count);
             count += 10;

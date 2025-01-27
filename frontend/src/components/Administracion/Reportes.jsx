@@ -33,7 +33,7 @@ function Reportes() {
           subtotal: 2300
         },
         fk_selfService: 1,
-        description: "Autoservicio Secado"
+        serviceDescription: "Autoservicio Secado"
       },],
     laundryServiceSummary: [
       {
@@ -42,7 +42,7 @@ function Reportes() {
           subtotal: 200
         },
         fk_laundryService: 1,
-        description: "Autoservicio Lavado 10K"
+        serviceDescription: "Autoservicio Lavado 10K"
       },],
     ironServiceSummary: [
       {
@@ -51,7 +51,7 @@ function Reportes() {
           subtotal: 1800
         },
         fk_ironService: 1,
-        description: "Planchado 12pzs"
+        serviceDescription: "Planchado 12pzs"
       },],
     drycleanServiceSummary: [
       {
@@ -60,7 +60,7 @@ function Reportes() {
           subtotal: 3600
         },
         fk_drycleanService: 1,
-        description: "Tintoreria 5pz"
+        serviceDescription: "Tintoreria 5pz"
       },],
     otherServiceSumary: [
       {
@@ -69,7 +69,7 @@ function Reportes() {
           subtotal: 560
         },
         fk_otherService: 1,
-        description: "Lavado de tenis"
+        serviceDescription: "Lavado de tenis"
       },
     ],
     payStatusOrderSummary: [
@@ -308,7 +308,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`Descripción: ${item.description}`, 10, count);
+        doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
         doc.text(`ID: ${item.fk_selfService}`, 10, count);
         count += 10;
@@ -332,7 +332,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`Descripción: ${item.description}`, 10, count);
+        doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
         doc.text(`ID: ${item.fk_laundryService}`, 10, count);
         count += 10;
@@ -356,7 +356,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`Descripción: ${item.description}`, 10, count);
+        doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
         doc.text(`ID: ${item.fk_ironService}`, 10, count);
         count += 10;
@@ -380,7 +380,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`Descripción: ${item.description}`, 10, count);
+        doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
         doc.text(`ID: ${item.fk_drycleanService}`, 10, count);
         count += 10;
@@ -404,7 +404,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`Descripción: ${item.description}`, 10, count);
+        doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
         doc.text(`ID: ${item.fk_otherService}`, 10, count);
         count += 10;
@@ -878,7 +878,7 @@ function Reportes() {
           <div className="w-1/3 text-lg overflow-scroll">
             <p className="font-bold text-2xl">Detalles:</p>
             <br />
-
+            {/* {console.log(serviceReportResponse)} */}
             {/* <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2"} ></p>
             <p className="text-2xl font-bold text-center">AutoServicio</p>
             <p className={"text-white font-bold rounded-md bg-sky-500 text-center py-2 mb-1"} ></p> */}
@@ -889,8 +889,8 @@ function Reportes() {
               serviceReportResponse.selfServiceSummary.map(item => (
                 <div key={item.fk_selfService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                  <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_selfService}</span></p>
+                  <p className="text-xl font-bold text-center">{item.serviceDescription}</p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_selfService}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
@@ -908,8 +908,8 @@ function Reportes() {
               serviceReportResponse.laundryServiceSummary.map(item => (
                 <div key={item.fk_laundryService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                  <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_laundryService}</span></p>
+                  <p className="text-xl font-bold text-center">{item.serviceDescription}</p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_laundryService}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
@@ -926,8 +926,8 @@ function Reportes() {
               serviceReportResponse.ironServiceSummary.map(item => (
                 <div key={item.fk_ironService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                  <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_ironService}</span></p>
+                  <p className="text-xl font-bold text-center">{item.serviceDescription}</p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_ironService}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
@@ -944,8 +944,8 @@ function Reportes() {
               serviceReportResponse.drycleanServiceSummary.map(item => (
                 <div key={item.fk_drycleanService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                  <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_drycleanService}</span></p>
+                  <p className="text-xl font-bold text-center">{item.serviceDescription}</p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_drycleanService}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />
@@ -962,8 +962,8 @@ function Reportes() {
               serviceReportResponse.otherServiceSumary.map(item => (
                 <div key={item.fk_otherService}>
                   <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                  <p className="text-xl font-bold text-center">{item.description}</p>
-                  <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_otherService}</span></p>
+                  <p className="text-xl font-bold text-center">{item.serviceDescription}</p>
+                  {/* <p className="text-lg font-bold">ID: <span className="font-normal" >{item.fk_otherService}</span></p> */}
                   <p className="text-lg font-bold">Subtotal: <span className="font-normal">$ {item._sum.subtotal}</span></p>
                   <p className="text-lg font-bold" >Unidades: <span className="font-normal">{item._sum.units}</span></p>
                   <br />

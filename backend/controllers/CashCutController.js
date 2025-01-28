@@ -290,7 +290,7 @@ const calculateServiceCashCut = async (cashCut_id) => {
 
     const pettyCashBalance = await currentPettyCashBalance()
 
-    const totalBalance = await serviceCashCutBalanceCalculation(
+    const totalServiceBalance = await serviceCashCutBalanceCalculation(
         cashIncome._sum.payTotal,
         creditIncome._sum.payTotal,
         totalCashWithdrawal._sum.amount,
@@ -325,7 +325,7 @@ const calculateServiceCashCut = async (cashCut_id) => {
         "totalIncome": totalPayedIncome._sum.payTotal,//se pasa a totales
         "totalCashWithdrawal": totalCashWithdrawal._sum.amount,//se pasa a totales
         "initialCash": cashCutInitialData.initialCash,//se pasa a totales
-        "total": totalBalance,//se pasa a totales
+        "totalServiceBalance": totalBalance,//se pasa a totales
         "totalEncargo": totalEncargo._sum.totalPrice,
         "totalAutoservicio": totalAutoservicio._sum.totalPrice,
         "totalPlanchado": totalPlanchado._sum.totalPrice,

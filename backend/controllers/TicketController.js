@@ -1045,7 +1045,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
-            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome}`)
+            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome  ? '-' + cashCut.creditIncome : '0'}`)
             printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
             printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
             printer.setTextDoubleHeight();

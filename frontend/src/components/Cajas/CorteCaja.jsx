@@ -367,6 +367,7 @@ function CorteCaja() {
 
       const corteSupply = res.data.suppliesCashCut;
       const corte = res.data.serviceCashCut;
+      const workshift = res.data.workshiftBalance;
 
       // const nuevoCorte = {
       //   ...corte,
@@ -382,14 +383,19 @@ function CorteCaja() {
         casher: cookies.username,
         cashCutId: parseInt(localStorage.getItem("cashCutId")),
         workShift: corte.workShift,
-        initialCash: corte.initialCash,
         totalCashWithdrawal: corte.totalCashWithdrawal,
         totalCancelations: corte.totalCancelations,
-        total: corte.total,
+        totalServiceBalance: corte.totalServiceBalance,
         cashCutD: corte.cashCutD,
         cashCutT: corte.cashCutT,
         ironPiecesDone: corte.ironPiecesDone,
         pettyCashBalance: corte.pettyCashBalance,
+
+        initialCash: workshift.initialCash,
+        cashIncome: workshift.cashIncome,
+        creditIncome: workShift.creditIncome,
+        totalCashWorkShiftBalance: workshift.totalCashWorkShiftBalance,
+        totalIncomeWorkShiftBalance: workshift.totalIncomeWorkShiftBalance,
       };
 
       const services = {

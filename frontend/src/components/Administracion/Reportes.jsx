@@ -310,8 +310,6 @@ function Reportes() {
         }
         doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
-        doc.text(`ID: ${item.fk_selfService}`, 10, count);
-        count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
         doc.text(`Unidades: ${item._sum.units}`, 10, count);
@@ -333,8 +331,6 @@ function Reportes() {
           count = 40;
         }
         doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
-        count += 10;
-        doc.text(`ID: ${item.fk_laundryService}`, 10, count);
         count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
@@ -358,8 +354,6 @@ function Reportes() {
         }
         doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
-        doc.text(`ID: ${item.fk_ironService}`, 10, count);
-        count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
         doc.text(`Unidades: ${item._sum.units}`, 10, count);
@@ -381,8 +375,6 @@ function Reportes() {
           count = 40;
         }
         doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
-        count += 10;
-        doc.text(`ID: ${item.fk_drycleanService}`, 10, count);
         count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
@@ -406,8 +398,6 @@ function Reportes() {
         }
         doc.text(`Descripción: ${item.serviceDescription}`, 10, count);
         count += 10;
-        doc.text(`ID: ${item.fk_otherService}`, 10, count);
-        count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
         doc.text(`Unidades: ${item._sum.units}`, 10, count);
@@ -428,7 +418,7 @@ function Reportes() {
           doc.addImage(img, 'PNG', 150, 10, 48, 30)
           count = 40;
         }
-        doc.text(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`, 10, count);
+        doc.text(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "inProgress" ? "No. de Ordenes en Progreso:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`, 10, count);
         count += 10;
         doc.text(`No. de Servicios: ${item._sum.numberOfItems}`, 10, count);
         count += 10;
@@ -544,8 +534,6 @@ function Reportes() {
           count = 40;
         }
         doc.text(`Descripción: ${item.description}`, 10, count);
-        count += 10;
-        doc.text(`ID: ${item.fk_supplyId}`, 10, count);
         count += 10;
         doc.text(`Subtotal: $${item._sum.subtotal}`, 10, count);
         count += 10;
@@ -980,11 +968,11 @@ function Reportes() {
             <p className={"py-2 mb-1"} ></p>
             {/* <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2"} ></p>
             <p className="font-bold text-2xl">Resumen de Estatus de la Ordenes:</p>
-            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p> */}
+            <p className={"text-white font-bold rounded-md bg-red-900 text-center py-2 mb-1"} ></p> */ console.log(serviceReportResponse)}
             {serviceReportResponse.deliveryStatusOrderSummary.map(item => (
               <div key={item.fk_otherService}>
                 <p className={"text-white text-lx font-bold rounded-md bg-slate-400 text-center py-1"} ></p>
-                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"}</p>
+                <p className="font-bold">{item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "inProgress" ? "No. de Ordenes en Progreso:" : "No. de Ordenes Terminadas:"}</p>
                 <p className="text-lg">{item._count.id_order}</p>
                 <p className="font-bold">No. de Servicios:</p>
                 <p className="text-lg">{item._sum.numberOfItems}</p>

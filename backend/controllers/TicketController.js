@@ -1405,7 +1405,7 @@ export const printReportService = async (req, res) => {
         report.deliveryStatusOrderSummary.forEach(item => {
             // printer.setTextDoubleHeight();
             printer.bold(true);
-            printer.println(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "cancelled" ? "No. de Ordenes Canceladas:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`);
+            printer.println(`${item.orderStatus === "delivered" ? "No. de Ordenes Entregas:" : item.orderStatus === "pending" ? "No. de Ordenes Pendientes:" : item.orderStatus === "inProgress" ? "No. de Ordenes en Progreso:" : "No. de Ordenes Terminadas:"} ${item._count.id_order}`);
             printer.bold(false);
             // printer.setTextNormal();
             printer.println(`No. de Servicios: ${item._sum.numberOfItems}`);

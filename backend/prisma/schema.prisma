@@ -685,13 +685,13 @@ model WorkshiftBalance {
   id_workshifBalance Int   @id @default(autoincrement())
   id_supplyCashCut   Int
   id_cashCut         Int
-  cashIncome         Float
-  creditIncome       Float
-  withdrawal         Float
-  cancellations      Float
-  initialCash        Float
-  totalCashBalace    Float
-  totalIncome        Float
+  cashIncome         Float  //Ingresos en efectivo, servicios + productos
+  creditIncome       Float  //Ingresos en tarjeta de credito, servicios + productos
+  withdrawal         Float  //Retiros de caja que se hacen en efectivo
+  cancellations      Float  //Cancelaciones que tambien se hacen en efectivo si el servicio ya estaba pagado
+  initialCash        Float  //Fondo de caja pero que no es parte de las ganacias
+  totalCashBalace    Float  //Dinero que queda en caja si se suma el ingreso en efectivo y se restan los retiros
+  totalIncome        Float  //Ingresos netos, sumar ingresos y se restan retiros y cancelaciones
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -226,9 +226,9 @@ const currentPettyCashBalance = async () => {
     return (pettyCashBalance)
 }
 
-const serviceCashCutBalanceCalculation = async (cashIncome, creditIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+const serviceCashCutBalanceCalculation = async (cashIncome, creditIncome, cashWithdrawal, incomeOrdersCancelled) => {
 
-    return (cashIncome + creditIncome - cashWithdrawal - incomeOrdersCancelled + initialCash)
+    return (cashIncome + creditIncome - cashWithdrawal - incomeOrdersCancelled)
 }
 
 const cashCutIronPiecesDone = async () => {
@@ -294,8 +294,7 @@ const calculateServiceCashCut = async (cashCut_id) => {
         cashServiceIncome._sum.payTotal,
         creditServicetIncome._sum.payTotal,
         totalCashWithdrawal._sum.amount,
-        totalIncomeOrdesCancelled._sum.amount,
-        cashCutInitialData.initialCash)
+        totalIncomeOrdesCancelled._sum.amount)
 
     //Revisar si esta funcion funciona
 
@@ -483,7 +482,6 @@ export const calculateParcialCashCut = async (req, res) => {
             suppliesCashCut.totalSuppliesCash,
             serviceCashCut.totalCashWithdrawal,
             serviceCashCut.totalCancelations,
-            serviceCashCut.initialCash
         );
 
         workshiftBalance.totalIncome = await calculateTotalWorkShiftBalance(
@@ -493,7 +491,6 @@ export const calculateParcialCashCut = async (req, res) => {
             suppliesCashCut.totalSuppliesCredit,
             serviceCashCut.totalCashWithdrawal,
             serviceCashCut.totalCancelations,
-            serviceCashCut.initialCash
         );
 
         const response = {

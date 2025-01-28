@@ -1683,7 +1683,7 @@ export const printReportIncome = async (req, res) => {
         printer.drawLine();
         printer.newLine();
 
-        printer.println(`Ingreso por Efectivo: + $${report.incomeSummary._sum.cashIncome ? report.incomeSummary._sum.cashIncome : 0}`);
+        printer.println(`Total en Efectivo: + $${report.incomeSummary._sum.cashIncome ? report.incomeSummary._sum.cashIncome : 0}`);
         printer.println(`Ingreso por Tarjeta: + $${report.incomeSummary._sum.creditIncome ? report.incomeSummary._sum.creditIncome : 0}`);
         printer.println(`Retiros: - $${report.incomeSummary._sum.withdrawal ? report.incomeSummary._sum.withdrawal : 0}`);
         printer.println(`Cancelaciones: - $${report.incomeSummary._sum.cancellations ? report.incomeSummary._sum.cancellations : 0}`);
@@ -1692,7 +1692,7 @@ export const printReportIncome = async (req, res) => {
         printer.alignRight();
         printer.bold(true);
         printer.setTextQuadArea();
-        printer.println(`Ingresos totales: ${report.incomeSummary._sum.totalIncome ? report.incomeSummary._sum.totalIncome : 0}`);
+        printer.println(`Ingresos Netos: ${report.incomeSummary._sum.totalIncome ? report.incomeSummary._sum.totalIncome : 0}`);
         printer.setTextNormal();
         printer.bold(false);
         printer.alignLeft();

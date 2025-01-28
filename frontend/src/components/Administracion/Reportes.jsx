@@ -591,7 +591,7 @@ function Reportes() {
       doc.text(`Detalles de Ingresos:`, 10, 90);
       let count = 110;
 
-      doc.text(`Ingresos por Efectivo: + $${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
+      doc.text(`Total en Efectivo: + $${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
       count += 10;
       doc.text(`Ingresos por Tarjeta: + $${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}`, 10, count);
       count += 10;
@@ -599,7 +599,7 @@ function Reportes() {
       count += 10;
       doc.text(`Cancelaciones: - $${incomeReport.incomeSummary._sum.cancellations ? incomeReport.incomeSummary._sum.cancellations : 0}`, 10, count);
       count += 20;
-      doc.text(`Ingresos Totales: $${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}`, 10, count);
+      doc.text(`Ingresos Netos: $${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}`, 10, count);
       count += 20;
       await setDocument(doc);
       return doc;
@@ -1376,13 +1376,13 @@ function Reportes() {
             <p className={"py-2 mb-1"} ></p>
             {incomeReport.incomeSummary ?
               <div>
-                <p className="text-lg font-bold flex"><BsCashCoin size={27} className="text-green-700 mr-4 mt-2" />Ingreso por Efectivo: <span className="font-normal text-green-600">+ ${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}</span></p>
+                <p className="text-lg font-bold flex"><BsCashCoin size={27} className="text-green-700 mr-4 mt-2" />Total en Efectivo: <span className="font-normal text-green-600">+ ${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}</span></p>
                 <p className="text-lg font-bold flex"><IoCard size={27} className="text-blue-700 mr-4" />Ingreso por Tarjeta: <span className="font-normal text-green-600">+ ${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}</span></p>
                 <p className="text-lg font-bold">Retiros: <span className="font-normal  text-red-600">- ${incomeReport.incomeSummary._sum.withdrawal ? incomeReport.incomeSummary._sum.withdrawal : 0}</span></p>
                 <p className="text-lg font-bold">Cancelaciones: <span className="font-normal  text-red-600" >- ${incomeReport.incomeSummary._sum.cancellations ? incomeReport.incomeSummary._sum.cancellations : 0}</span></p>
                 <br />
                 <br />
-                <p className="text-3xl font-bold text-right mr-6">Ingresos totales: <span className="font-normal"> ${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}</span></p>
+                <p className="text-3xl font-bold text-right mr-6">Ingresos Netos: <span className="font-normal"> ${incomeReport.incomeSummary._sum.totalIncome ? incomeReport.incomeSummary._sum.totalIncome : 0}</span></p>
                 <br />
               </div>
               : <p className="text-lg" > Cargando Información...</p>}

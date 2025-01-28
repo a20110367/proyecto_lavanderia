@@ -1683,7 +1683,7 @@ export const printReportIncome = async (req, res) => {
         printer.drawLine();
         printer.newLine();
 
-        printer.println(`Total en Efectivo: + $${report.incomeSummary._sum.cashIncome ? report.incomeSummary._sum.cashIncome : 0}`);
+        printer.println(`Ingresos en Efectivo: + $${report.incomeSummary._sum.cashIncome ? report.incomeSummary._sum.cashIncome : 0}`);
         printer.println(`Ingreso por Tarjeta: + $${report.incomeSummary._sum.creditIncome ? report.incomeSummary._sum.creditIncome : 0}`);
         printer.println(`Retiros: - $${report.incomeSummary._sum.withdrawal ? report.incomeSummary._sum.withdrawal : 0}`);
         printer.println(`Cancelaciones: - $${report.incomeSummary._sum.cancellations ? report.incomeSummary._sum.cancellations : 0}`);

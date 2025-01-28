@@ -374,7 +374,7 @@ export const sendReport = async (req, res) => {
         doc.text(`Detalles de Ingresos:`, 10, 90);
         let count = 110;
 
-        doc.text(`Total en Efectivo: + $${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
+        doc.text(`Ingresos en Efectivo: + $${incomeReport.incomeSummary._sum.cashIncome ? incomeReport.incomeSummary._sum.cashIncome : 0}`, 10, count);
         count += 10;
         doc.text(`Ingresos por Tarjeta: + $${incomeReport.incomeSummary._sum.creditIncome ? incomeReport.incomeSummary._sum.creditIncome : 0}`, 10, count);
         count += 10;

@@ -255,10 +255,10 @@ const calculateServiceCashCut = async (cashCut_id) => {
     const totalCashWithdrawal = await cashCutTotalCashWithdrawals(cashCut_id)
 
     //Pagos recibidos en el turno en efectivo
-    const cashIncome = await cashCutTotalIncomeByPaymentMethod(cashCut_id, 'cash')
+    const cashServiceIncome = await cashCutTotalIncomeByPaymentMethod(cashCut_id, 'cash')
 
     //Pagos recibidos en el turno tarjeta de credito 
-    const creditIncome = await cashCutTotalIncomeByPaymentMethod(cashCut_id, 'credit')
+    const creditServicetIncome = await cashCutTotalIncomeByPaymentMethod(cashCut_id, 'credit')
 
     //Ordenes canceladas durante el turno, revisar importancia
     const ordersCancelled = await cashCutOrdersCancelled(cashCut_id)
@@ -291,14 +291,11 @@ const calculateServiceCashCut = async (cashCut_id) => {
     const pettyCashBalance = await currentPettyCashBalance()
 
     const totalServiceBalance = await serviceCashCutBalanceCalculation(
-        cashIncome._sum.payTotal,
-        creditIncome._sum.payTotal,
+        cashServiceIncome._sum.payTotal,
+        creditServicetIncome._sum.payTotal,
         totalCashWithdrawal._sum.amount,
         totalIncomeOrdesCancelled._sum.amount,
         cashCutInitialData.initialCash)
-
-    console.log("totalBalance")
-    console.log(totalBalance)
 
     //Revisar si esta funcion funciona
 
@@ -320,8 +317,8 @@ const calculateServiceCashCut = async (cashCut_id) => {
     console.log("Fin Service Corte")
     const serviceCashCut =
     {
-        "totalServiceCash": cashIncome._sum.payTotal,//se pasa a totales
-        "totalServiceCredit": creditIncome._sum.payTotal,//se pasa a totales
+        "totalServiceCash": cashServiceIncome._sum.payTotal,//se pasa a totales
+        "totalServiceCredit": creditServicetIncome._sum.payTotal,//se pasa a totales
         "totalServiceIncome": totalPayedIncome._sum.payTotal,//se pasa a totales
         "totalCashWithdrawal": totalCashWithdrawal._sum.amount,//se pasa a totales
         "initialCash": cashCutInitialData.initialCash,//se pasa a totales

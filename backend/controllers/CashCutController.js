@@ -322,7 +322,7 @@ const calculateServiceCashCut = async (cashCut_id) => {
         "totalServiceIncome": totalPayedIncome._sum.payTotal,//se pasa a totales
         "totalCashWithdrawal": totalCashWithdrawal._sum.amount,//se pasa a totales
         "initialCash": cashCutInitialData.initialCash,//se pasa a totales
-        "totalServiceBalace": totalServiceBalance,//se pasa a totales
+        "totalServiceBalance": totalServiceBalance,//se pasa a totales
         "totalEncargo": totalEncargo._sum.totalPrice,
         "totalAutoservicio": totalAutoservicio._sum.totalPrice,
         "totalPlanchado": totalPlanchado._sum.totalPrice,

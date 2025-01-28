@@ -426,8 +426,8 @@ function CorteCaja() {
         wc: corteSupply.totalWC,
         others: corteSupply.totalOtros,
         totalIncome: corteSupply.totalSuppliesIncome,
-        totalCash: corteSupply.totalCashSuppliesCash,
-        totalCredit: corteSupply.totalCreditSuppliesCredit,
+        totalCash: corteSupply.totalSuppliesCash,
+        totalCredit: corteSupply.totalSuppliesCredit,
       };
 
       await api.post('/log/write', {

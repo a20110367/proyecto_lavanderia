@@ -1040,18 +1040,18 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.setTextNormal()
             printer.newLine()
             printer.println(`Piezas de Planchado Hechas: ${cashCut.ironPiecesDone}`)
-            printer.println(`pettyCashBalance: ${cashCut.pettyCashBalance}`)
+            printer.println(`Dinero en Caja Chica: ${cashCut.pettyCashBalance}`)
             printer.newLine()
 
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
             printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome}`)
-            printer.println(`Ingresos Totales: ${cashCut.totalIncome}`)
             printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
             printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
             printer.setTextDoubleHeight();
             printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.totalCashBalance}`)
+            printer.println(`Efectivo Total en Caja: ${cashCut.totalCashBalance}`)
+            printer.println(`Final Total en Caja: ${cashCut.totalIncome}`)
             printer.setTextNormal()
 
             printer.drawLine()
@@ -1074,9 +1074,6 @@ export const generatePartialCashCutTicket = async (req, res) => {
         
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
-            printer.println(`Ingresos Totales: ${services.totalIncome}`)
-            printer.println(`Retiros Totales: ${services.totalCashWithdrawal ? '-' + services.totalCashWithdrawal : '0'}`)
-            printer.println(`Cancelaciones Totales: ${services.totalCancelations ? '-' + services.totalCancelations : '0'}`)
             printer.setTextDoubleHeight();
             printer.newLine()
             printer.println(`Total (Suma de los Servicios): ${services.totalServiceBalance}`)

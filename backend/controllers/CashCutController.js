@@ -481,7 +481,7 @@ export const calculateParcialCashCut = async (req, res) => {
         workshiftBalance.cancellations = serviceCashCut.totalCancelations;
         workshiftBalance.initialCash = serviceCashCut.initialCash;
 
-        workshiftBalance.totalCashWorkShiftBalance = await calculateCashWorkShiftBalace(
+        workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
             serviceCashCut.totalCash,
             suppliesCashCut.totalCashSupply,
             serviceCashCut.totalCashWithdrawal,
@@ -489,7 +489,7 @@ export const calculateParcialCashCut = async (req, res) => {
             serviceCashCut.initialCash
         );
 
-        workshiftBalance.totalIncomeWorkShiftBalance = await calculateTotalWorkShiftBalace(
+        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
             serviceCashCut.totalCash,
             suppliesCashCut.totalCashSupply,
             serviceCashCut.totalCredit,
@@ -539,7 +539,7 @@ export const closeCashCut = async (req, res) => {
             workshiftBalance.id_cashCut = (Number(req.params.id));
             workshiftBalance.id_supplyCashCut = (Number(req.params.id));
 
-            workshiftBalance.totalCashWorkShiftBalance = await calculateCashWorkShiftBalace(
+            workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
                 serviceCashCut.totalCash,
                 suppliesCashCut.totalCashSupply,
                 serviceCashCut.totalCashWithdrawal,
@@ -547,7 +547,7 @@ export const closeCashCut = async (req, res) => {
                 serviceCashCut.initialCash
             );
 
-            workshiftBalance.totalIncomeWorkShiftBalance = await calculateTotalWorkShiftBalace(
+            workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
                 serviceCashCut.totalCash,
                 suppliesCashCut.totalCashSupply,
                 serviceCashCut.totalCredit,

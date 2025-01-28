@@ -5,14 +5,14 @@ moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 
-export const calculateCashWorkShiftBalace = async (serviceCashIncome, suppliesCashIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+export const calculateCashWorkShiftBalance = async (serviceCashIncome, suppliesCashIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
 
     const cashBalance = (serviceCashIncome + suppliesCashIncome - cashWithdrawal - incomeOrdersCancelled + initialCash)
 
     return (cashBalance)
 }
 
-export const calculateTotalWorkShiftBalace = async (serviceCashIncome, suppliesCashIncome, serviceCreditIncome, suppliesCreditIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+export const calculateTotalWorkShiftBalance = async (serviceCashIncome, suppliesCashIncome, serviceCreditIncome, suppliesCreditIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
 
     const workShiftBalance = (serviceCashIncome + suppliesCashIncome + serviceCreditIncome + suppliesCreditIncome - cashWithdrawal - incomeOrdersCancelled + initialCash)
 

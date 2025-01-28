@@ -1,7 +1,7 @@
 import { CashCutStatus, PrismaClient } from "@prisma/client";
 import { response } from "express";
 import { calculateSupplyCashCut } from "./SupplyCashCutController.js";
-import { calculateTotalWorkShiftBalace, calculateCashWorkShiftBalace } from "./WorkshiftBalanceController.js";
+import { calculateTotalWorkShiftBalance, calculateCashWorkShiftBalance } from "./WorkshiftBalanceController.js";
 import moment from "moment";
 moment.locale('es-mx');
 
@@ -478,7 +478,7 @@ export const calculateParcialCashCut = async (req, res) => {
         workshiftBalance.cancellations = serviceCashCut.totalCancelations;
         workshiftBalance.initialCash = serviceCashCut.initialCash;
 
-        workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
+        workshiftBalance.totalCashBalance = await calculateCashWorkShiftBalance(
             serviceCashCut.totalServiceCash,
             suppliesCashCut.totalSuppliesCash,
             serviceCashCut.totalCashWithdrawal,
@@ -486,7 +486,7 @@ export const calculateParcialCashCut = async (req, res) => {
             serviceCashCut.initialCash
         );
 
-        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
+        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalance(
             serviceCashCut.totalServiceCash,
             suppliesCashCut.totalSuppliesCash,
             serviceCashCut.totalServiceCredit,

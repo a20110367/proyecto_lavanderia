@@ -49,7 +49,10 @@ const suppliesTotalPayments = async (suppliesCashCut_id) => {
         }
     });
 
-    if (totalPayedIncome._sum.payTotal = null) totalPayedIncome._sum.payTotal = 0.00
+    if (totalPayedIncome._sum.payTotal == null) totalPayedIncome._sum.payTotal = 0.00
+    console.log("totalPayedIncome")
+    console.log(totalPayedIncome)
+
     return (totalPayedIncome)
 }
 
@@ -169,7 +172,7 @@ export const calculateSupplyCashCut = async (suppliesCashCut_id) => {
     {
         "totalSuppliesCash": supplyCashIncome._sum.payTotal,
         "totalSuppliesCredit": supplyCreditIncome._sum.payTotal,
-        "totalSuppliesIncome": totalSupplyIncome._sum.subtotal,
+        "totalSuppliesIncome": totalSupplyIncome._sum.payTotal,
         "totalJabon": totalJabon._sum.subtotal,
         "totalSuavitel": totalSuavitel._sum.subtotal,
         "totalPinol": totalPinol._sum.subtotal,

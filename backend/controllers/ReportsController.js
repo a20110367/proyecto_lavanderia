@@ -902,8 +902,7 @@ export const getIncomeReport = async (req, res) => {
                 totalIncome: true,
                 creditIncome: true,
                 withdrawal: true,
-                cancellations: true,
-                totalIncome: true
+                cancellations: true
             },
             where: {
                 AND: [

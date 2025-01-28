@@ -115,7 +115,7 @@ export const createWorkshiftBalance = async (req, res) => {
         workshiftBalance.id_supplyCashCut = lastSupplyCashcutInfo.id_supplyCashCut;
 
 
-        workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
+        workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalance(
 
             lastServiceCashcutInfo.totalCash,
             lastSupplyCashcutInfo.totalCash,
@@ -124,7 +124,7 @@ export const createWorkshiftBalance = async (req, res) => {
             lastServiceCashcutInfo.initialCash
         )
 
-        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
+        workshiftBalance.totalIncome = await calculateTotalWorkShiftBalance(
             lastServiceCashcutInfo.totalCash,
             lastSupplyCashcutInfo.totalCash,
             lastServiceCashcutInfo.creditIncome,

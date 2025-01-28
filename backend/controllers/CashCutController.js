@@ -474,6 +474,13 @@ export const calculateParcialCashCut = async (req, res) => {
         const serviceCashCut = await calculateServiceCashCut(Number(req.params.id))
         const suppliesCashCut = await calculateSupplyCashCut(Number(req.params.id))
         const workshiftBalance = Object();
+
+        workshiftBalance.cashIncome = suppliesCashCut.totalCash + serviceCashCut.totalCash;
+        workshiftBalance.creditIncome = suppliesCashCut.totalCredit + serviceCashCut.totalCredit;
+        workshiftBalance.withdrawal = serviceCashCut.totalCashWithdrawal;
+        workshiftBalance.cancellations = serviceCashCut.totalCancelations;
+        workshiftBalance.initialCash = serviceCashCut.initialCash;
+
         workshiftBalance.totalCashWorkShiftBalance = await calculateCashWorkShiftBalace(
             serviceCashCut.totalCash,
             suppliesCashCut.totalCashSupply,
@@ -506,7 +513,8 @@ export const calculateParcialCashCut = async (req, res) => {
 export const closeCashCut = async (req, res) => {
 
     try {
-        let response;
+        let serviceCashCut, suppliesCashCut;
+        const workshiftBalance = Object();
 
         const cashCutInitialData = await currentCashCutInfo(Number(req.params.id))
 
@@ -517,32 +525,109 @@ export const closeCashCut = async (req, res) => {
 
         if (cashCutInitialData.cashCutStatus === "open") {
 
-            const serviceCashCut = await calculateServiceCashCut(Number(req.params.id))
-
-            console.log(serviceCashCut)
-
-            response = serviceCashCut
-
+            serviceCashCut = await calculateServiceCashCut(Number(req.params.id))
             serviceCashCut.cashCutStatus = "closed";
-            const closeCash = await prisma.cashCut.update({
 
+            suppliesCashCut = await calculateSupplyCashCut(Number(req.params.id))
+            suppliesCashCut.cashCutStatus = "closed";
+
+            workshiftBalance.cashIncome = suppliesCashCut.totalCash + serviceCashCut.totalCash;
+            workshiftBalance.creditIncome = suppliesCashCut.totalCredit + serviceCashCut.totalCredit;
+            workshiftBalance.withdrawal = serviceCashCut.totalCashWithdrawal;
+            workshiftBalance.cancellations = serviceCashCut.totalCancelations;
+            workshiftBalance.initialCash = serviceCashCut.initialCash;
+            workshiftBalance.id_cashCut = (Number(req.params.id));
+            workshiftBalance.id_supplyCashCut = (Number(req.params.id));
+
+            workshiftBalance.totalCashWorkShiftBalance = await calculateCashWorkShiftBalace(
+                serviceCashCut.totalCash,
+                suppliesCashCut.totalCashSupply,
+                serviceCashCut.totalCashWithdrawal,
+                serviceCashCut.totalCancelations,
+                serviceCashCut.initialCash
+            );
+
+            workshiftBalance.totalIncomeWorkShiftBalance = await calculateTotalWorkShiftBalace(
+                serviceCashCut.totalCash,
+                suppliesCashCut.totalCashSupply,
+                serviceCashCut.totalCredit,
+                suppliesCashCut.totalCreditSupply,
+                serviceCashCut.totalCashWithdrawal,
+                serviceCashCut.totalCancelations,
+                serviceCashCut.initialCash
+            );
+
+
+            const closeServiceCashCut = prisma.cashCut.update({
                 where: {
 
                     id_cashCut: Number(req.params.id)
                 },
 
                 data: serviceCashCut
-
             });
 
+            const closeSuppliesCashCut = prisma.supplyCashCut.update({
+                where: {
+
+                    id_cashCut: Number(req.params.id)
+                },
+
+                data: serviceCashCut
+            });
+
+            const closeWorkshiftBalance = prisma.workshiftBalance.create({
+
+                data: serviceCashCut
+            });
+
+            await prisma.$transaction([closeServiceCashCut, closeSuppliesCashCut, closeWorkshiftBalance])
+
+
+            // const closeCash = await prisma.cashCut.update({
+
+            //     where: {
+
+            //         id_cashCut: Number(req.params.id)
+            //     },
+
+            //     data: serviceCashCut
+
+            // });
+
+
+
         } else {
-            response = await prisma.cashCut.findFirst({
+            serviceCashCut = await prisma.cashCut.findFirst({
 
                 where: {
 
                     id_cashCut: Number(req.params.id)
                 },
             });
+
+            suppliesCashCut = await prisma.supplyCashCut.findFirst({
+
+                where: {
+
+                    id_cashCut: Number(req.params.id)
+                },
+            });
+
+            workshiftBalance = await prisma.workshiftBalance.findFirst({
+
+                where: {
+
+                    id_cashCut: Number(req.params.id)
+                },
+            });
+
+        }
+
+        const response = {
+            "serviceCashCut": serviceCashCut,
+            "suppliesCashCut": suppliesCashCut,
+            "workshiftBalance": workshiftBalance
         }
 
         res.status(200).json(response);

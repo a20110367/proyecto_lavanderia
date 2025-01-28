@@ -757,9 +757,8 @@ export const getSuppliesReport = async (req, res) => {
             select: {
                 id_supply: true,
                 description: true,
+                category: true
             }
-
-
         });
 
         ///conseguir ids de servicios por categoria en un array y sus correspondinetes descripciones en otro array
@@ -769,8 +768,9 @@ export const getSuppliesReport = async (req, res) => {
         suppliesSummary.forEach(supply => {
             let supplyDescription = suppliesCatalog.find(supplyItem => supplyItem.id_supply === supply.fk_supplyId);
             supply.description = supplyDescription.description
-            totalSuppliesSales += supply._sum.subtotal;
-            totalSuppliesNumber += supply._sum.units;
+            supply.category = supplyDescription.category
+            totalSuppliesSales += supply._sum.subtotal
+            totalSuppliesNumber += supply._sum.units
         });
 
 
@@ -819,8 +819,8 @@ export const getSuppliesReportById = async (req, res) => {
             _sum: {
                 units: true,
                 subtotal: true,
-
             },
+
             where: {
                 AND: [
 
@@ -851,6 +851,7 @@ export const getSuppliesReportById = async (req, res) => {
 
             select: {
                 description: true,
+                category: true
             }
         });
 
@@ -920,7 +921,7 @@ export const getIncomeReport = async (req, res) => {
                 ],
 
             },
-          
+
         });
 
 

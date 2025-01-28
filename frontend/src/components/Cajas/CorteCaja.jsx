@@ -383,9 +383,6 @@ function CorteCaja() {
         casher: cookies.username,
         cashCutId: parseInt(localStorage.getItem("cashCutId")),
         workShift: corte.workShift,
-        totalCashWithdrawal: corte.totalCashWithdrawal,
-        totalCancelations: corte.totalCancelations,
-        totalServiceBalance: corte.totalServiceBalance,
         cashCutD: corte.cashCutD,
         cashCutT: corte.cashCutT,
         ironPiecesDone: corte.ironPiecesDone,
@@ -394,8 +391,10 @@ function CorteCaja() {
         initialCash: workshift.initialCash,
         cashIncome: workshift.cashIncome,
         creditIncome: workShift.creditIncome,
-        totalCashWorkShiftBalance: workshift.totalCashWorkShiftBalance,
-        totalIncomeWorkShiftBalance: workshift.totalIncomeWorkShiftBalance,
+        totalCashBalance: workshift.totalCashBalance,
+        totalIncome: workshift.totalIncome,
+        withdrawal: workshift.withdrawal,
+        cancellations: workshift.cancellations,
       };
 
       const services = {
@@ -405,9 +404,12 @@ function CorteCaja() {
         iron: corte.totalPlanchado,
         dryCleaning: corte.totalTintoreria,
         others: corte.totalOtrosEncargo,
-        totalIncome: corte.totalIncome,
-        totalCash: corte.totalCash,
-        totalCredit: corte.totalCredit,
+        totalIncome: corte.totalServiceIncome,
+        totalCash: corte.totalServiceCash,
+        totalCredit: corte.totalServiceCredit,
+        totalServiceBalance: corte.totalServiceBalance,
+        totalCancelations: corte.totalCancelations,
+        totalCashWithdrawal: corte.totalCashWithdrawal,
       };
 
       const products = {
@@ -423,9 +425,9 @@ function CorteCaja() {
         hook: corteSupply.totalGanchos,
         wc: corteSupply.totalWC,
         others: corteSupply.totalOtros,
-        totalIncome: corteSupply.totalIncomeSupply,
-        totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply,
+        totalIncome: corteSupply.totalSuppliesIncome,
+        totalCash: corteSupply.totalCashSuppliesCash,
+        totalCredit: corteSupply.totalCreditSuppliesCredit,
       };
 
       await api.post('/log/write', {

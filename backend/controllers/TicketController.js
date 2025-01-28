@@ -1037,17 +1037,21 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Fecha: ${formatDate(cashCut.cashCutD)}`)
             printer.println(`Hora: ${formatTicketTime(cashCut.cashCutT)}`)
 
+            printer.setTextNormal()
             printer.newLine()
             printer.println(`Piezas de Planchado Hechas: ${cashCut.ironPiecesDone}`)
             printer.println(`pettyCashBalance: ${cashCut.pettyCashBalance}`)
             printer.newLine()
 
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Cancelaciones Totales: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
+            printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
+            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome}`)
+            printer.println(`Ingresos Totales: ${cashCut.totalIncome}`)
+            printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
+            printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
             printer.setTextDoubleHeight();
             printer.newLine()
-            printer.println(`Final Total en Caja: ${cashCut.total}`)
+            printer.println(`Final Total en Caja: ${cashCut.totalCashBalance}`)
             printer.setTextNormal()
 
             printer.drawLine()
@@ -1066,15 +1070,17 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Total Tintoreria: ${services.dryCleaning}`)
             printer.println(`Total Encargo Varios: ${services.others}`)
 
-            printer.setTextDoubleHeight();
             printer.newLine()
-            printer.println(`Total (Suma de los Servicios): ${services.totalIncome}`)
-            printer.setTextNormal()
-
-            printer.newLine()
-
+        
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
+            printer.println(`Ingresos Totales: ${services.totalIncome}`)
+            printer.println(`Retiros Totales: ${services.totalCashWithdrawal ? '-' + services.totalCashWithdrawal : '0'}`)
+            printer.println(`Cancelaciones Totales: ${services.totalCancelations ? '-' + services.totalCancelations : '0'}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de los Servicios): ${services.totalServiceBalance}`)
+            printer.setTextNormal()
 
             printer.setTextQuadArea()
             printer.drawLine()
@@ -1101,15 +1107,14 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Total WC: ${products.wc}`)
             printer.println(`Total Otros: ${products.others}`)
 
-            printer.setTextDoubleHeight();
-            printer.newLine()
-            printer.println(`Total (Suma de la Venta de Productos): ${products.totalIncome}`)
-            printer.setTextNormal()
-
             printer.newLine()
 
             printer.println(`Ingreso en Efectivo: ${products.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${products.totalCredit}`)
+            printer.setTextDoubleHeight();
+            printer.newLine()
+            printer.println(`Total (Suma de la Venta de Productos): ${products.totalIncome}`)
+            printer.setTextNormal()
 
         }
 

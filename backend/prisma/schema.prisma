@@ -485,7 +485,7 @@ model StaffMember {
 
 model CashCut {
   fk_user             Int
-  total               Float?
+  totalServiceBalance               Float?
   created             DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
   cashCutD            DateTime?     @db.Date
@@ -497,15 +497,15 @@ model CashCut {
   ordersCancelled     Int?
   ironPiecesDone      Int           @default(0)
   totalAutoservicio   Float?
-  totalCash           Float?
+  totalServiceCash           Float?
   totalCashWithdrawal Float?
-  totalCredit         Float?
+  totalServiceCredit         Float?
   totalEncargo        Float?
   totalOtros          Float?        @default(0)
   totalPlanchado      Float?
   totalTintoreria     Float?        @default(0)
   totalOtrosEncargo   Float?        @default(0)
-  totalIncome         Float?
+  totalServiceIncome         Float?
   totalCancelations   Float?
   pettyCashBalance    Float?
 
@@ -560,7 +560,7 @@ model PettyCash {
 
 model SupplyCashCut {
   fk_user            Int
-  total              Float?
+  //total              Float?
   created            DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   cashCutD           DateTime?     @db.Date
@@ -580,9 +580,9 @@ model SupplyCashCut {
   totalGanchos       Float?
   totalWC            Float?
   totalOtros         Float?        @default(0)
-  totalCredit        Float?
-  totalCash          Float?
-  totalIncome        Float?
+  totalSuppliesCredit        Float?
+  totalSuppliesCash          Float?
+  totalSuppliesIncome        Float?
 
   workShift     WorkShift       @default(morning)
   user          User            @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)

@@ -320,12 +320,12 @@ const calculateServiceCashCut = async (cashCut_id) => {
     console.log("Fin Service Corte")
     const serviceCashCut =
     {
-        "totalCash": cashIncome._sum.payTotal,//se pasa a totales
-        "totalCredit": creditIncome._sum.payTotal,//se pasa a totales
-        "totalIncome": totalPayedIncome._sum.payTotal,//se pasa a totales
+        "totalServiceCash": cashIncome._sum.payTotal,//se pasa a totales
+        "totalServiceCredit": creditIncome._sum.payTotal,//se pasa a totales
+        "totalServiceIncome": totalPayedIncome._sum.payTotal,//se pasa a totales
         "totalCashWithdrawal": totalCashWithdrawal._sum.amount,//se pasa a totales
         "initialCash": cashCutInitialData.initialCash,//se pasa a totales
-        "totalServiceBalance": totalServiceBalance,//se pasa a totales
+        "totalServiceBalace": totalServiceBalance,//se pasa a totales
         "totalEncargo": totalEncargo._sum.totalPrice,
         "totalAutoservicio": totalAutoservicio._sum.totalPrice,
         "totalPlanchado": totalPlanchado._sum.totalPrice,
@@ -475,25 +475,25 @@ export const calculateParcialCashCut = async (req, res) => {
         const suppliesCashCut = await calculateSupplyCashCut(Number(req.params.id))
         const workshiftBalance = Object();
 
-        workshiftBalance.cashIncome = suppliesCashCut.totalCash + serviceCashCut.totalCash;
-        workshiftBalance.creditIncome = suppliesCashCut.totalCredit + serviceCashCut.totalCredit;
+        workshiftBalance.cashIncome = suppliesCashCut.totalSuppliesCash + serviceCashCut.totalServiceCash;
+        workshiftBalance.creditIncome = suppliesCashCut.totalSuppliesCredit + serviceCashCut.totalServiceCredit;
         workshiftBalance.withdrawal = serviceCashCut.totalCashWithdrawal;
         workshiftBalance.cancellations = serviceCashCut.totalCancelations;
         workshiftBalance.initialCash = serviceCashCut.initialCash;
 
         workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
-            serviceCashCut.totalCash,
-            suppliesCashCut.totalCashSupply,
+            serviceCashCut.totalServiceCash,
+            suppliesCashCut.totalSuppliesCash,
             serviceCashCut.totalCashWithdrawal,
             serviceCashCut.totalCancelations,
             serviceCashCut.initialCash
         );
 
         workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
-            serviceCashCut.totalCash,
-            suppliesCashCut.totalCashSupply,
-            serviceCashCut.totalCredit,
-            suppliesCashCut.totalCreditSupply,
+            serviceCashCut.totalServiceCash,
+            suppliesCashCut.totalSuppliesCash,
+            serviceCashCut.totalServiceCredit,
+            suppliesCashCut.totalSuppliesCredit,
             serviceCashCut.totalCashWithdrawal,
             serviceCashCut.totalCancelations,
             serviceCashCut.initialCash

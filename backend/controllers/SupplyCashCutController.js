@@ -167,9 +167,9 @@ export const calculateSupplyCashCut = async (suppliesCashCut_id) => {
 
     const suppliesCashCut =
     {
-        "totalCashSupply": supplyCashIncome._sum.payTotal,
-        "totalCreditSupply": supplyCreditIncome._sum.payTotal,
-        "totalIncomeSupply": totalSupplyIncome._sum.subtotal,
+        "totalSuppliesCash": supplyCashIncome._sum.payTotal,
+        "totalSuppliesCredit": supplyCreditIncome._sum.payTotal,
+        "totalSuppliesIncome": totalSupplyIncome._sum.subtotal,
         "totalJabon": totalJabon._sum.subtotal,
         "totalSuavitel": totalSuavitel._sum.subtotal,
         "totalPinol": totalPinol._sum.subtotal,

@@ -7,15 +7,15 @@ const prisma = new PrismaClient();
 
 export const calculateCashWorkShiftBalance = async (serviceCashIncome, suppliesCashIncome, cashWithdrawal, incomeOrdersCancelled) => {
 
-    const cashBalance = (serviceCashIncome + suppliesCashIncome - cashWithdrawal - incomeOrdersCancelled )
-
+    let cashBalance = (serviceCashIncome + suppliesCashIncome - cashWithdrawal - incomeOrdersCancelled )
+    if(cashBalance==null)cashBalance=0.00
     return (cashBalance)
 }
 
-export const calculateTotalWorkShiftBalance = async (serviceCashIncome, suppliesCashIncome, serviceCreditIncome, suppliesCreditIncome, cashWithdrawal, incomeOrdersCancelled, initialCash) => {
+export const calculateTotalWorkShiftBalance = async (serviceCashIncome, suppliesCashIncome, serviceCreditIncome, suppliesCreditIncome, cashWithdrawal, incomeOrdersCancelled) => {
 
-    const workShiftBalance = (serviceCashIncome + suppliesCashIncome + serviceCreditIncome + suppliesCreditIncome - cashWithdrawal - incomeOrdersCancelled)
-
+    let workShiftBalance = (serviceCashIncome + suppliesCashIncome + serviceCreditIncome + suppliesCreditIncome - cashWithdrawal - incomeOrdersCancelled)
+    if(workShiftBalance==null)workShiftBalance=0.00
     return (workShiftBalance)
 }
 
@@ -90,8 +90,8 @@ export const createWorkshiftBalance = async (req, res) => {
                 totalCashWithdrawal: true,
                 totalCancelations: true,
                 initialCash: true,
-                totalCash: true,
-                totalCredit: true,
+                totalServiceCash: true,
+                totalServiceCredit: true,
             },
             take: -1
         });
@@ -99,15 +99,15 @@ export const createWorkshiftBalance = async (req, res) => {
         const lastSupplyCashcutInfo = await prisma.supplyCashCut.findFirst({
             select: {
                 id_supplyCashCut: true,
-                totalCash: true,
-                totalCredit: true,
+                totalSuppliesCash: true,
+                totalSuppliesCredit: true,
             },
             take: -1
         });
 
         //Asignacion de valores 
-        workshiftBalance.cashIncome = lastSupplyCashcutInfo.totalCash + lastServiceCashcutInfo.totalCash;
-        workshiftBalance.creditIncome = lastSupplyCashcutInfo.totalCredit + lastServiceCashcutInfo.totalCredit;
+        workshiftBalance.cashIncome = lastSupplyCashcutInfo.totalSuppliesCash + lastServiceCashcutInfo.totalServiceCash;
+        workshiftBalance.creditIncome = lastSupplyCashcutInfo.totalSuppliesCredit + lastServiceCashcutInfo.totalServiceCredit;
         workshiftBalance.withdrawal = lastServiceCashcutInfo.totalCashWithdrawal;
         workshiftBalance.cancellations = lastServiceCashcutInfo.totalCancelations;
         workshiftBalance.initialCash = lastServiceCashcutInfo.initialCash;
@@ -117,21 +117,19 @@ export const createWorkshiftBalance = async (req, res) => {
 
         workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalance(
 
-            lastServiceCashcutInfo.totalCash,
-            lastSupplyCashcutInfo.totalCash,
+            lastServiceCashcutInfo.totalServiceCash,
+            lastSupplyCashcutInfo.totalSuppliesCash,
             lastServiceCashcutInfo.totalCashWithdrawal,
-            lastServiceCashcutInfo.totalCancelations,
-            lastServiceCashcutInfo.initialCash
+            lastServiceCashcutInfo.totalCancelations
         )
 
         workshiftBalance.totalIncome = await calculateTotalWorkShiftBalance(
-            lastServiceCashcutInfo.totalCash,
-            lastSupplyCashcutInfo.totalCash,
-            lastServiceCashcutInfo.creditIncome,
-            lastSupplyCashcutInfo.creditIncome,
+            lastServiceCashcutInfo.totalServiceCash,
+            lastSupplyCashcutInfo.totalSuppliesCash,
+            lastServiceCashcutInfo.totalServiceCredit,
+            lastSupplyCashcutInfo.totalSuppliesCredit,
             lastServiceCashcutInfo.totalCashWithdrawal,
-            lastServiceCashcutInfo.totalCancelations,
-            lastServiceCashcutInfo.initialCash
+            lastServiceCashcutInfo.totalCancelations
         )
 
 

@@ -525,30 +525,28 @@ export const closeCashCut = async (req, res) => {
             suppliesCashCut = await calculateSupplyCashCut(Number(req.params.id))
             suppliesCashCut.cashCutStatus = "closed";
 
-            workshiftBalance.cashIncome = suppliesCashCut.totalCash + serviceCashCut.totalCash;
-            workshiftBalance.creditIncome = suppliesCashCut.totalCredit + serviceCashCut.totalCredit;
+            workshiftBalance.cashIncome = suppliesCashCut.totalSuppliesCash + serviceCashCut.totalServiceCash;
+            workshiftBalance.creditIncome = suppliesCashCut.totalSuppliesCredit + serviceCashCut.totalServiceCredit;
             workshiftBalance.withdrawal = serviceCashCut.totalCashWithdrawal;
             workshiftBalance.cancellations = serviceCashCut.totalCancelations;
             workshiftBalance.initialCash = serviceCashCut.initialCash;
             workshiftBalance.id_cashCut = (Number(req.params.id));
             workshiftBalance.id_supplyCashCut = (Number(req.params.id));
 
-            workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalace(
-                serviceCashCut.totalCash,
-                suppliesCashCut.totalCashSupply,
+            workshiftBalance.totalCashBalace = await calculateCashWorkShiftBalance(
+                serviceCashCut.totalServiceCash,
+                suppliesCashCut.totalSuppliesCash,
                 serviceCashCut.totalCashWithdrawal,
-                serviceCashCut.totalCancelations,
-                serviceCashCut.initialCash
+                serviceCashCut.totalCancelations
             );
 
-            workshiftBalance.totalIncome = await calculateTotalWorkShiftBalace(
-                serviceCashCut.totalCash,
-                suppliesCashCut.totalCashSupply,
-                serviceCashCut.totalCredit,
-                suppliesCashCut.totalCreditSupply,
+            workshiftBalance.totalIncome = await calculateTotalWorkShiftBalance(
+                serviceCashCut.totalServiceCash,
+                suppliesCashCut.totalSuppliesCash,
+                serviceCashCut.totalServiceCredit,
+                suppliesCashCut.totalSuppliesCredit,
                 serviceCashCut.totalCashWithdrawal,
-                serviceCashCut.totalCancelations,
-                serviceCashCut.initialCash
+                serviceCashCut.totalCancelations
             );
 
 
@@ -564,15 +562,15 @@ export const closeCashCut = async (req, res) => {
             const closeSuppliesCashCut = prisma.supplyCashCut.update({
                 where: {
 
-                    id_cashCut: Number(req.params.id)
+                    id_supplyCashCut: Number(req.params.id)
                 },
 
-                data: serviceCashCut
+                data: suppliesCashCut
             });
 
             const closeWorkshiftBalance = prisma.workshiftBalance.create({
 
-                data: serviceCashCut
+                data: workshiftBalance
             });
 
             await prisma.$transaction([closeServiceCashCut, closeSuppliesCashCut, closeWorkshiftBalance])

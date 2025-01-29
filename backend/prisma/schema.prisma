@@ -497,15 +497,15 @@ model CashCut {
   ordersCancelled     Int?
   ironPiecesDone      Int           @default(0)
   totalAutoservicio   Float?
-  totalServiceCash           Float?
+  totalServiceCash    Float?
   totalCashWithdrawal Float?
-  totalServiceCredit         Float?
+  totalServiceCredit  Float?
   totalEncargo        Float?
   totalOtros          Float?        @default(0)
   totalPlanchado      Float?
   totalTintoreria     Float?        @default(0)
   totalOtrosEncargo   Float?        @default(0)
-  totalServiceIncome         Float?
+  totalServiceIncome  Float?
   totalCancelations   Float?
   pettyCashBalance    Float?
 
@@ -568,7 +568,7 @@ model SupplyCashCut {
   id_supplyCashCut   Int           @id @default(autoincrement())
   cashCutStatus      CashCutStatus @default(open)
   initialCash        Float?        @default(0)
-  ordersPayed        Int?
+  ordersPayedSupply        Int?
   totalJabon         Float?
   totalSuavitel      Float?
   totalPinol         Float?

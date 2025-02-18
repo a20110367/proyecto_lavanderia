@@ -10,14 +10,17 @@ moment.locale('es-mx');
 
 console.log('PRINTER WORKING IN ' + process.env.INTERFACE)
 
-let printer = new ThermalPrinter({
-    type: PrinterTypes.EPSON,
-    interface: process.env.INTERFACE,
-    characterSet: CharacterSet.PC852_LATIN2,
-    removeSpecialCharacters: false,
-    lineCharacter: "=",
-    breakLine: BreakLine.WORD,
-});
+let printer
+
+process.env.IsPrinterEnable === 'true' ?
+    printer = new ThermalPrinter({
+        type: PrinterTypes.EPSON,
+        interface: process.env.INTERFACE,
+        characterSet: CharacterSet.PC852_LATIN2,
+        removeSpecialCharacters: false,
+        lineCharacter: "=",
+        breakLine: BreakLine.WORD,
+    }) : console.log("////////////////////////////////////////////////// \n THE PRINTER IS DISABLED AND THIS IS GONNA MAKE ERRORS ON GUI \n //////////////////////////////////////////////////")
 
 // ORDER TICKET ----------------------------------------------------------------------------
 

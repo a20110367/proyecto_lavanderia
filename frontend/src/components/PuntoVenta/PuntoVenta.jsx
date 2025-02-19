@@ -326,7 +326,7 @@ export default function PuntoVenta() {
     } else if (categoryId === 4) {
       drycleanPieces = pieces;
     }
-    
+
     date = (ironDate ? deliveryDate.add(1, 'days') : deliveryDate)
 
     try {
@@ -394,14 +394,9 @@ export default function PuntoVenta() {
         extraTickets: true,
       };
 
-      // GENERAR EL TICKET
-      await api.post("/generateTicket", {
-        order: order,
-      });
-
       localStorage.setItem("lastSelectedClient", clientName);
       localStorage.setItem("returningFromPuntoVenta", "true");
-      if(!isExpress){
+      if (!isExpress) {
         localStorage.setItem(
           "numberOfPieces",
           pieces +
@@ -409,10 +404,15 @@ export default function PuntoVenta() {
             ? parseInt(localStorage.getItem("numberOfPieces"))
             : 0)
         );
-      }     
+      }
 
       // Regresar a la página anterior
       window.history.back();
+
+      // GENERAR EL TICKET
+      await api.post("/generateTicket", {
+        order: order,
+      });
 
     } catch (err) {
       console.error(err)
@@ -710,77 +710,6 @@ export default function PuntoVenta() {
                 ))}
               </ul>
 
-              {/* ///////////////// LO DE PRODUCTOS QUE POR EL MOMENTO SE VAN A LA VRG ///////////////// NO LO DESCOMENTES SAUL XD
-              {serviceType === "autoservicio" && cart.length > 0 && (
-                <div className="mt-4 rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
-                  <h3 className="text-lg font-semibold mb-2">
-                    Productos Disponibles
-                  </h3>
-                  {dummyProducts.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center mb-2"
-                    >
-                      <div className="flex items-center">
-                        {product.name} - ${product.price}
-                      </div>
-                      <div className="flex items-center">
-                        <button
-                          onClick={() =>
-                            addProduct(product.name, product.price)
-                          }
-                          className="text-green-500 mr-2"
-                        >
-                          <AiOutlinePlusCircle fontSize={18} />
-                        </button>
-                        {selectedProducts.find(
-                          (p) => p.name === product.name
-                        ) && (
-                          <button
-                            onClick={() => removeProduct(product.name)}
-                            className="text-red-500"
-                          >
-                            <AiOutlineMinusCircle fontSize={18} />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-              {selectedProducts.length > 0 && (
-                <div className="mt-4  rounded-lg shadow-lg p-6 overflow-y-auto max-h-25">
-                  <h3 className="text-lg font-semibold mb-2">
-                    Productos Seleccionados
-                  </h3>
-
-                  {selectedProducts.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex justify-between items-center mb-2"
-                    >
-                      <div>
-                        {product.name} x {product.quantity} - $
-                        {product.price * product.quantity}
-                      </div>
-                    </div>
-                  ))}
-
-                  <div className="flex justify-between mt-2">
-                    <div>
-                      <strong>Total Productos:</strong>{" "}
-                      {selectedProducts.reduce(
-                        (total, product) => total + product.quantity,
-                        0
-                      )}
-                    </div>
-                    <div>
-                      <strong>Total:</strong> ${calculateProductTotal()}
-                    </div>
-                  </div>
-                </div>
-              )} */}
-
               <div className="flex mt-4 justify-between text-lg">
                 <div>
                   <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
@@ -908,38 +837,16 @@ export default function PuntoVenta() {
                         <p style={{ fontSize: "16px" }}>
                           {service.description}
                         </p>
-                        {payMethod === 'credit' ? 
-                        (<p style={{ fontSize: "16px" }}>
-                          Costo: ${service.priceCredit * service.quantity}
-                        </p>)
-                        : (<p style={{ fontSize: "16px" }}>
-                          Costo: ${service.price * service.quantity}
-                        </p>)}
+                        {payMethod === 'credit' ?
+                          (<p style={{ fontSize: "16px" }}>
+                            Costo: ${service.priceCredit * service.quantity}
+                          </p>)
+                          : (<p style={{ fontSize: "16px" }}>
+                            Costo: ${service.price * service.quantity}
+                          </p>)}
                         <hr />
                       </div>
                     ))}
-                    {
-                      ////////////////PRODUCTOS SELECCIONADOS QUE SE MUESTRAN PERO DE MOMENTO ALAVERGA//////////////// TAMPOCO LOS DESCOMENTES
-                      /* {selectedProducts.length > 0 && (
-                      <div>
-                        <p className="text-base font-semibold">
-                          Productos Seleccionados:
-                        </p>
-                        {selectedProducts.map((product, index) => (
-                          <div key={index}>
-                            <p style={{ fontSize: "16px" }}>
-                              {product.name} x {product.quantity} - $
-                              {product.price * product.quantity}
-                            </p>
-                          </div>
-                        ))}
-                        <p className="text-base font-semibold">
-                          Total de Productos Seleccionados: $
-                          {calculateProductTotal()}
-                        </p>
-                      </div>
-                    )} */
-                    }
                   </div>
 
                   <div>
@@ -998,7 +905,7 @@ export default function PuntoVenta() {
                             style={{ width: "100%", fontSize: "16px" }}
                             onChange={(value) => setPayMethod(value)}
                             value={payMethod}
-                          >        
+                          >
                             <Option value="cash">Efectivo</Option>
                             <Option value="credit">Tarjeta</Option>
                           </Select>
@@ -1016,7 +923,7 @@ export default function PuntoVenta() {
               <p className="text-2xl font-semibold text-center ">
                 No. Maximo de Piezas:{" "}
                 <span className="text-RedPantone">
-                  { isExpress ? numberOfPieces : pieces + parseInt(numberOfPieces)} / {maxIronCapacity}
+                  {isExpress ? numberOfPieces : pieces + parseInt(numberOfPieces)} / {maxIronCapacity}
                 </span>
               </p>
             ) : (

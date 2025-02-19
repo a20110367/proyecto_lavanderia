@@ -555,9 +555,8 @@ function PedidosAutoservicio() {
                 .filter((machine) => machine.status === "available")
                 .filter((machine) => {
                   if (selectedPedido && selectedPedido.SelfService) {
-                    const serviceDescription =
-                      selectedPedido.SelfService.description.toLowerCase();
-                    if (serviceDescription.includes("lavado")) {
+                    const serviceDescription = selectedPedido.SelfService.description.toLowerCase();
+                    if (serviceDescription.includes("lavado") ) {
                       return machine.machineType
                         .toLowerCase()
                         .includes("lavadora");

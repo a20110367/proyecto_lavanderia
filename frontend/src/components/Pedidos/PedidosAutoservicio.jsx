@@ -556,11 +556,11 @@ function PedidosAutoservicio() {
                 .filter((machine) => {
                   if (selectedPedido && selectedPedido.SelfService) {
                     const serviceDescription = selectedPedido.SelfService.description.toLowerCase();
-                    if (serviceDescription.includes("lavado") ) {
+                    if (selectedPedido.SelfService.machineType == 'lavadora' ) {
                       return machine.machineType
                         .toLowerCase()
                         .includes("lavadora");
-                    } else if (serviceDescription.includes("secado")) {
+                    } else if (selectedPedido.SelfService.machineType == 'secadora') {
                       return machine.machineType
                         .toLowerCase()
                         .includes("secadora");

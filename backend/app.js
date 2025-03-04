@@ -12,7 +12,7 @@ import ServiceIronRoute from './routes/ServiceIronRoute.js'
 import ServiceSelfServiceRoute from './routes/ServiceSelfServiceRoute.js'
 import MachineRoute from './routes/MachineRoute.js'
 import IronStationRoute from './routes/IronStationRoute.js'
-import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
+// import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
 import OrderRoute from './routes/OrderRoute.js'
 import CategoryRoute from './routes/CategoryRoute.js'
 import StaffMemberRoute from './routes/StaffMemberRoute.js'
@@ -66,7 +66,7 @@ app.use(StaffMemberRoute)
 app.use(CashCutRoute)
 app.use(PaymentRoute)
 app.use(DeliveryDetailRoute)
-app.use(LaundryQueueRoute)
+//app.use(LaundryQueueRoute)
 app.use(SelfServiceQueueRoute)
 app.use(ServiceDetailRoute)
 app.use(ServiceOrderDetailRoute)

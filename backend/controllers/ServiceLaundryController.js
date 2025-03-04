@@ -5,9 +5,9 @@ const prisma = new PrismaClient();
 export const getLaundryServices = async (req, res) => {
     try {
         const response = await prisma.laundryService.findMany({
-            
-            where:{
-                deleted:false
+
+            where: {
+                deleted: false
             },
             select: {
 
@@ -89,25 +89,25 @@ export const createLaundryService = async (req, res) => {
 
             res.status(201).json(laundryService);
         }
-else{
-    const laundryServiceReactivation = await prisma.laundryService.update({
-        where: {
-            description: req.body.description
-        },
-        data: {
-            price: req.body.price,
-            priceCredit: req.body.priceCredit,
-            washWeight: req.body.washWeight,
-            washCycleTime: req.body.washCycleTime,
-            dryWeight: req.body.dryWeight,
-            dryCycleTime: req.body.dryCycleTime,
-            deleted: false
+        else {
+            const laundryServiceReactivation = await prisma.laundryService.update({
+                where: {
+                    description: req.body.description
+                },
+                data: {
+                    price: req.body.price,
+                    priceCredit: req.body.priceCredit,
+                    washWeight: req.body.washWeight,
+                    washCycleTime: req.body.washCycleTime,
+                    dryWeight: req.body.dryWeight,
+                    dryCycleTime: req.body.dryCycleTime,
+                    deleted: false
+                }
+            });
+            laundryService = laundryServiceReactivation;
+            res.status(201).json(laundryService);
         }
-    });
-    laundryService = laundryServiceReactivation;
-    res.status(201).json(laundryService);
-}
-        
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

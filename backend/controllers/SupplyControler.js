@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 ///Revisar comprotamiento y dependencias
 export const getSupplies = async (req, res) => {
     try {
-        const response = await prisma.supply.findMany();
+        const response = await prisma.supply.findMany({
+            where: {
+                deleted: false
+            }
+        });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });

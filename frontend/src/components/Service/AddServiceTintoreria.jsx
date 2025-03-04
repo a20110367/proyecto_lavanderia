@@ -23,8 +23,10 @@ function AddServiceTintoreria() {
 
   const navigate = useNavigate();
 
-  const tintoreriaKeywords = ["Tintoreria", "Tintorerias", "tintoreria"];
+  const tintoreriaKeywords = ["Tintoreria"];
   const forbiddenKeyword = ["autoservicio", "autoservicios", "auto servicios", "auto servicio", "planchado", "encargo"];
+  const keywordsNeeded = "(Tintoreria)";
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ function AddServiceTintoreria() {
     );
 
     if (!hasTintoreriaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de tintoreria.");
+      setErrMsg("Error, La Descripción de Tintoreria debe contenar alguna de estas palabras: ");
       return;
     }
 
@@ -96,14 +98,15 @@ function AddServiceTintoreria() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">
-                    {errMsg}
-                  </p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 

@@ -30,6 +30,8 @@ function AddServiceLavanderia() {
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
 
+  const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ function AddServiceLavanderia() {
     );
 
     if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de Encargo.");
+      setErrMsg("Error, La Descripción de Encargo debe contenar alguna de estas palabras: ");
       return;
     }
 
@@ -112,12 +114,15 @@ function AddServiceLavanderia() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">{errMsg}</p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 

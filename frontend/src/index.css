@@ -88,8 +88,6 @@ thead th {
   tr:last-child td:last-child {
     @apply rounded-br-lg;
   }
-
-
 @layer components {
   /*-------------------- CONTAINERS ---------------*/
   .fc {
@@ -138,7 +136,7 @@ thead th {
   }
 
   .HeadContent {
-    @apply rounded-md bg-gray-800 border-b border-solid shadow-md p-4;
+    @apply rounded-md bg-gray-800 border-b border-solid shadow-md p-4 w-fit;
   }
 
   .form-input {
@@ -299,7 +297,15 @@ thead th {
   }
 
   .err-icon {
-    @apply ml-3 text-red-500;
+    @apply mx-2 text-red-500;
+  }
+
+  .err-container {
+    @apply flex w-fit;
+  }
+
+  .err-msg {
+    @apply w-fit text-red-500;
   }
 
   .title-tr {
@@ -415,7 +421,7 @@ thead th {
   }
 
   .side-menu::-webkit-scrollbar-thumb {
-    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue
+    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue;
   }
 
   /*-------------------------------------------- PAGINATOR ----------------------------------------*/
@@ -467,13 +473,13 @@ thead th {
     @apply fill-white
   }
   .st10 {
-    @apply fill-FireBrick
+    @apply fill-FireBrick;
   }
   .svg-container {
-    @apply bg-OxfordBlue w-full h-full
+    @apply bg-OxfordBlue w-full h-full;
   }
   .login-container {
-    @apply w-screen h-screen grid-cols-2 grid place-items-center
+    @apply w-screen h-screen grid-cols-2 grid place-items-center;
   }
 
   .swal-wide{

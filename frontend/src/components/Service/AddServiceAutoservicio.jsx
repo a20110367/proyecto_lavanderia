@@ -13,6 +13,7 @@ function AddServiceAutoservicio() {
   const weightRef = useRef();
 
   const [description, setDescription] = useState("");
+  const keywordsNeeded = "(Autoservicio)";
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState(0);
@@ -29,7 +30,7 @@ function AddServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
-      setErrMsg("Error, solo puedes añadir servicios de 'autoservicio' (debe contener la palabra autoservicio).");
+      setErrMsg("Error, La Descripción de Autoservicio debe contenar alguna de estas palabras: ");
       return;
     }
     try {
@@ -90,14 +91,15 @@ function AddServiceAutoservicio() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">
-                    {errMsg}
-                  </p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 

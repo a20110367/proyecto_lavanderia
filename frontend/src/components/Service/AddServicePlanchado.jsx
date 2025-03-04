@@ -25,6 +25,8 @@ function AddServicePlanchado() {
 
   const planchaduriaKeywords = ["planchado", "planchados", "planchaduría"];
   const forbiddenKeyword = ["autoservicio", "autoservicios", "auto servicios", "auto servicio"];
+  const keywordsNeeded = "(Planchado, Planchados, Planchaduría)";
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ function AddServicePlanchado() {
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
+      setErrMsg("Error, La Descripción de Planchado debe contenar alguna de estas palabras: ");
       return;
     }
 
@@ -96,14 +98,15 @@ function AddServicePlanchado() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">
-                    {errMsg}
-                  </p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 

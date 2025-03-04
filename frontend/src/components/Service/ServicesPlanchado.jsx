@@ -125,7 +125,7 @@ function ServicesPlanchado() {
                 )
                 .map((service, index) => (
                   <tr key={service.id_service}>
-                    <td>{index + 1}</td>
+                    <td>{service.id_service}</td>
                     <td>{service.description}</td>
                     <td>{service.pieces}</td>
                     <td>{service.Category.categoryDescription}</td>

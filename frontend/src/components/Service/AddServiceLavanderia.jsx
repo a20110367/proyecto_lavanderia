@@ -21,16 +21,17 @@ function AddServiceLavanderia() {
   const [dryWeight, setDryWeight] = useState(0);
   const [category, setCategory] = useState("Encargo");
   const [priceCredit, setPriceCredit] = useState(0);
+  const [dryFlat, setDryFlat] = useState(false);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Encargo debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería", "encargo"];
+  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
 
-  const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
+  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 
 
   const handleSubmit = async (e) => {
@@ -79,6 +80,12 @@ function AddServiceLavanderia() {
       setErrMsg("Failed to add service.");
     }
   };
+
+  const setDryFlatTrue = () => {
+    setDryFlat(!dryFlat);
+    setDryWeight(0);
+    setDryCycleTime(0);
+  }
 
   return (
     <div className="signup-form">
@@ -182,29 +189,44 @@ function AddServiceLavanderia() {
                 value={washWeight}
               />
 
+              <div className="flex my-2 items-center">
+                <label className="form-lbl" htmlFor="dryFlat">
+                  Secar Tendido
+                </label>
+                <input
+                  className="serviceCheckbox"
+                  type="checkbox"
+                  id='dryFlat'
+                  name="dryFlat"
+                  onChange={(e) => setDryFlatTrue(!dryFlat)}
+                />
+              </div>
+
               <label className="form-lbl" htmlFor="dryCycleTime">
                 Tiempo de Secado (minutos):
               </label>
               <input
-                className="form-input"
+                className={`${dryFlat ? "form-input bg-gray-200" : "form-input"}`}
                 type="number"
                 id="dryCycleTime"
                 ref={drytimeRef}
                 onChange={(e) => setDryCycleTime(e.target.value)}
                 value={dryCycleTime}
                 required
+                disabled = {dryFlat}
               />
 
               <label className="form-lbl" htmlFor="dryWeight">
                 Peso de Secado (Kilogramos):
               </label>
               <input
-                className="form-input"
+                className={`${dryFlat ? "form-input bg-gray-200" : "form-input"}`}
                 type="number"
                 id="dryWeight"
                 ref={dryweightRef}
                 onChange={(e) => setDryWeight(e.target.value)}
                 value={dryWeight}
+                disabled = {dryFlat}
               />
 
               <label className="form-lbl" htmlFor="category">

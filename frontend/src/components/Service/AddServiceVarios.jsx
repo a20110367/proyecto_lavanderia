@@ -14,14 +14,14 @@ function AddServiceVarios() {
   const [category, setCategory] = useState("Varios");
   const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Servicios Varios debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería", "encargo"];
+  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
-  const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
+  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 
   const handleSubmit = async (e) => {
     e.preventDefault();

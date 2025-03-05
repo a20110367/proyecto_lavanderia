@@ -18,7 +18,7 @@ function AddServiceTintoreria() {
   const [category, setCategory] = useState("Tintoreria");
   const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Tintoreria debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();

@@ -52,13 +52,13 @@
 
 }
 
-thead th {
-  @apply text-sm; /* Font size (0.875rem) */
-  @apply h-10; /* Maximum height (customize as needed) */
-  @apply whitespace-nowrap; /* Prevent line breaks */
-  @apply overflow-hidden;
-  @apply overflow-ellipsis; /* Show ellipsis when content overflows */
-}
+  thead th {
+    @apply text-sm; /* Font size (0.875rem) */
+    @apply h-10; /* Maximum height (customize as needed) */
+    @apply whitespace-nowrap; /* Prevent line breaks */
+    @apply overflow-hidden;
+    @apply overflow-ellipsis; /* Show ellipsis when content overflows */
+  }
 
 
   th {
@@ -485,5 +485,9 @@ thead th {
   .swal-wide{
     @apply w-3/5 !important;
     @apply h-screen !important;
+  }
+
+  .serviceCheckbox {
+    @apply mx-2 p-6 transform w-6 h-6;
   }
 }

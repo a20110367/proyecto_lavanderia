@@ -18,7 +18,7 @@ function AddServicePlanchado() {
   const [category, setCategory] = useState("Planchado");
   const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Planchado debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();

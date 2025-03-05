@@ -21,7 +21,7 @@ function AddServiceAutoservicio() {
   const [service, setService] = useState('lavadora')
   const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Autoservicio debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();

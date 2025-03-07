@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
-import { GiWashingMachine } from "react-icons/gi";
+import { GiWashingMachine, GiClothesline } from "react-icons/gi";
 import { BiSolidDryer } from "react-icons/bi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
@@ -17,6 +17,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import Swal from "sweetalert2";
 
 function PedidosLavanderia() {
   const [pedidos, setPedidos] = useState([]);
@@ -289,6 +290,57 @@ function PedidosLavanderia() {
     }
   };
 
+  const handleClothesLineDry = (pedido) => {
+    try {
+      Swal.fire('OCUPA TENDER LA ROPA', 'Estas prendas son tendidas a mano', 'info').then(async (results) => {
+        if (results.isConfirmed) {
+          console.log("SECADO A MANO")
+
+          const [machinesResponse] = await Promise.all([api.get("/machines")]);
+          const availableMachines = [...machinesResponse.data];
+          const res = await api.get(
+            `/laundryQueueById/${selectedPedido.id_laundryEvent}`
+          );
+          const selectedWashMachine = res.data.WashDetail;
+
+          // Si hay una lavadora seleccionada, cambiar su estado a true
+          if (selectedWashMachine) {
+            // Actualizar el estado del pedido a "inProgressDry"
+            const updatedPedido = {
+              ...selectedPedido,
+              serviceStatus: "inProgressDry",
+            };
+            const updatedPedidos = pedidos.map((p) =>
+              p.id_laundryEvent === selectedPedido.id_laundryEvent
+                ? updatedPedido
+                : p
+            );
+            setPedidos(updatedPedidos);
+
+            const updatedWashers = availableMachines.map((machine) =>
+              machine.id_machine === selectedWashMachine.fk_idWashMachine
+                ? { ...machine, freeForUse: true }
+                : machine
+            );
+            setAvailableMachines(updatedWashers);
+
+            // También actualizar la base de datos
+            await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
+              freeForUse: true,
+            });
+          }
+
+          await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
+            fk_idDryMachine: null,
+            fk_idStaffMember: cookies.token,
+          });
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const handleFinishProcess = async (pedido) => {
     try {
       if (!pedido) {
@@ -298,20 +350,26 @@ function PedidosLavanderia() {
 
       setShowMachineName(false);
 
-      const [machinesResponse] = await Promise.all([api.get("/machines")]);
-      const availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
-      const selectedDryMachine = res.data.DryDetail;
+      let selectedDryMachine = "169";
+      let availableMachines = "some";
+      if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
+        const [machinesResponse] = await Promise.all([api.get("/machines")]);
+        availableMachines = [...machinesResponse.data];
+        const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
+        selectedDryMachine = res.data.DryDetail;
+      }
 
       if (selectedDryMachine) {
         // Liberar la secadora seleccionada
         if (selectedDryMachine) {
-          const updatedDryers = availableMachines.map((machine) =>
-            machine.id_machine === selectedDryMachine.fk_idDryMachine
-              ? { ...machine, freeForUse: true }
-              : machine
-          );
-          setAvailableMachines(updatedDryers);
+          if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
+            const updatedDryers = availableMachines.map((machine) =>
+              machine.id_machine === selectedDryMachine.fk_idDryMachine
+                ? { ...machine, freeForUse: true }
+                : machine
+            );
+            setAvailableMachines(updatedDryers);
+          }
 
           // También actualizar la base de datos
           const res = await api.patch(
@@ -331,9 +389,11 @@ function PedidosLavanderia() {
           );
           setPedidos(updatedPedidos);
 
-          await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
-            freeForUse: true,
-          });
+          if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
+            await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
+              freeForUse: true,
+            });
+          }
 
           if (res.data.orderStatus === "finished") {
             showNotification(
@@ -447,7 +507,7 @@ function PedidosLavanderia() {
                   </td>
 
                   <td className="py-3 px-6 font-medium text-gray-900">
-                    {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}  
+                    {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.LaundryService.description}
@@ -457,21 +517,27 @@ function PedidosLavanderia() {
                     <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
                     <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
                   </td>
-              
+
                   <td className="py-3 px-7 text-black">{pedido.serviceStatus === "inProgressWash" && pedido.WashDetail.Machine ?
-                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
+                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32} />
                       <div className="grid-flow-col">
                         <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.WashDetail.Machine.machineNumber}</span></p>
                         <p className="font-semibold">Modelo: <span className="font-normal">{pedido.WashDetail.Machine.model}</span></p>
                       </div>
-                    </div>  :
-                    pedido.serviceStatus === "inProgressDry" && pedido.DryDetail.Machine ?
-                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
-                      <div className="grid-flow-col">
-                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.DryDetail.Machine.machineNumber}</span></p>
-                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.DryDetail.Machine.model}</span></p>
-                      </div>
-                    </div> : "-"}
+                    </div> :
+                    pedido.serviceStatus === "inProgressDry" && (pedido.DryDetail.Machine && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) ?
+                      <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                        <div className="grid-flow-col">
+                          <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.DryDetail.Machine.machineNumber}</span></p>
+                          <p className="font-semibold">Modelo: <span className="font-normal">{pedido.DryDetail.Machine.model}</span></p>
+                        </div>
+                      </div> :
+                      pedido.serviceStatus === "inProgressDry" && (pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0) ?
+                        <div className="flex"><GiClothesline className="text-red-500" size={32} />
+                          <div className="grid-flow-col">
+                            <p className="ml-2 font-semibold">Secado <span className="font-black text-red-600">Tendido</span></p>
+                          </div>
+                        </div> : "-"}
                   </td>
 
                   <td className="py-3 px-6 font-bold ">
@@ -524,7 +590,16 @@ function PedidosLavanderia() {
                       </button>
                     )}
 
-                    {pedido.serviceStatus === "inProgressWash" && (
+                    {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0 && (
+                      <button
+                        onClick={() => handleClothesLineDry(pedido)}
+                        className="btn-dry ml-2 mt-1"
+                      >
+                        Secado
+                      </button>
+                    )}
+
+                    {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0 && (
                       <button
                         onClick={() => handleStartDryerProcess(pedido)}
                         className="btn-dry ml-2 mt-1"
@@ -624,9 +699,8 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>
@@ -702,9 +776,8 @@ function PedidosLavanderia() {
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

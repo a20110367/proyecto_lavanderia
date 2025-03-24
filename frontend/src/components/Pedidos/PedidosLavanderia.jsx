@@ -34,6 +34,9 @@ function PedidosLavanderia() {
   const itemsPerPage = 10;
   const [showMachineName, setShowMachineName] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState(false);
+  const [combinedWash, setCombinedWash] = useState(false);
+  const [combinedDry, setCombinedDry] = useState(false);
+  const [lastDryMachine, setLastDryMachine] = useState(JSON.parse(localStorage.getItem("selectedCombinedDryMachine")));
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
@@ -123,6 +126,10 @@ function PedidosLavanderia() {
 
   const handleSelectDryMachine = (machine) => {
     setSelectedDryMachine(machine);
+    if(combinedDry){
+      localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(machine));
+      setLastDryMachine(machine);
+    }
   };
 
   const handleStartProcess = async (pedido) => {
@@ -425,6 +432,18 @@ function PedidosLavanderia() {
     }
   };
 
+  const change2CombinedDry = async (combinedD) => {
+    setCombinedDry(combinedD);
+    combinedD ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) :
+      localStorage.removeItem("selectedCombinedDryMachine");
+  }
+
+  const change2CombinedWash = async (combinedW) => {
+    setCombinedWash(combinedW);
+    combinedW ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) :
+      localStorage.removeItem("selectedCombinedWashMachine");
+  }
+
   return (
     <div>
       <div className="mb-3">
@@ -719,6 +738,13 @@ function PedidosLavanderia() {
                     </td>
                   </tr>
                 ))}
+              <tr>
+                <td colSpan={6}><div><p className="font-bold text-lg">Es Lavadora Combinada ?</p></div></td>
+                <td><Checkbox
+                  onChange={() => change2CombinedWash(!combinedWash)}
+                  className="mb-2"
+                /></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -749,7 +775,7 @@ function PedidosLavanderia() {
       >
         <div>
           <p className="mb-4 text-xl font-bold">Selecciona una secadora:</p>
-          <table className="w-full text-center">
+          <table className="w-full text-center border-collapse">
             <thead className="bg-gray-200">
               <tr>
                 <th>No. de Equipo</th>
@@ -796,6 +822,43 @@ function PedidosLavanderia() {
                     </td>
                   </tr>
                 ))}
+              <tr><p className="font-bold text-lg">Es Secadora Combinada ?</p></tr>
+              {console.log("ZAPATO " + lastDryMachine)}
+              {typeof lastDryMachine != undefined? (
+                <tr key={lastDryMachine.id_machine}>
+                  <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>
+                  <td className="text-green-500">{lastDryMachine.machineType}</td>
+                  <td>{lastDryMachine.model}</td>
+                  <td>{lastDryMachine.cicleTime}</td>
+                  <td>{lastDryMachine.weight}</td>
+                  <td
+                    className={`${lastDryMachine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                  >
+                    {lastDryMachine.freeForUse ? "Libre" : "Ocupado"}
+                  </td>
+
+                  <td>
+                    <div className="flex flex-col items-center">
+                      <Checkbox
+                        key={`checkbox_${lastDryMachine.id_machine}`}
+                        checked={selectedDryMachine === lastDryMachine}
+                        onChange={() => handleSelectDryMachine(lastDryMachine)}
+                        className="mb-2"
+                      />
+                      <span className="text-blue-500">Seleccionar</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan={6}><p>No hay Secadora Anterior</p></td>
+                  <td><Checkbox
+                    onChange={() => change2CombinedDry(!combinedDry)}
+                    className="mb-2"
+                    disabled={!selectedDryMachine}
+                  /></td></tr>
+              )}
             </tbody>
           </table>
         </div>

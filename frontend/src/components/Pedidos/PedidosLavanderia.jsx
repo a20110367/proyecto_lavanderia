@@ -36,7 +36,28 @@ function PedidosLavanderia() {
   const [notificationMessage, setNotificationMessage] = useState(false);
   const [combinedWash, setCombinedWash] = useState(false);
   const [combinedDry, setCombinedDry] = useState(false);
+  // const [lastDryMachine, setLastDryMachine] = useState({
+  //   id_machine: 0,
+  //   machineNumber: 0,
+  //   machineType: "SECA",
+  //   model: "LG",
+  //   cicleTime: 0,
+  //   weight: 0,
+  //   freeForUse: false,
+  //   isDummy: true,
+  // });
+  // const [lastWashMachine, setLastWashMachine] = useState({
+  //   id_machine: 0,
+  //   machineNumber: 0,
+  //   machineType: "LAVA",
+  //   model: "LG",
+  //   cicleTime: 0,
+  //   weight: 0,
+  //   freeForUse: false,
+  //   isDummy: true,
+  // });
   const [lastDryMachine, setLastDryMachine] = useState(JSON.parse(localStorage.getItem("selectedCombinedDryMachine")));
+  const [lastWashMachine, setLastWashMachine] = useState(JSON.parse(localStorage.getItem("selectedCombinedWashMachine")));
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
@@ -61,6 +82,44 @@ function PedidosLavanderia() {
     if (data) {
       setPedidos(data);
       setFilteredPedidos(data);
+    }
+    // if(!localStorage.getItem("selectedCombinedDryMachine")){
+    //   const localSDry = localStorage.getItem("selectedCombinedDryMachine")
+    //   setLastDryMachine(JSON.parse(localSDry))
+    // }
+    // if(!localStorage.getItem("selectedCombinedWashMachine")){
+    //   const localSWash = localStorage.getItem("selectedCombinedWashMachine")
+    //   setLastWashMachine(JSON.parse(localSWash))
+    // }
+    if (localStorage.getItem("selectedCombinedDryMachine") == null) {
+      const dummy = {
+        id_machine: 0,
+        machineNumber: 0,
+        machineType: "SECA",
+        model: "LG",
+        cicleTime: 0,
+        weight: 0,
+        freeForUse: false,
+        isDummy: true,
+      }
+      setLastDryMachine(dummy)
+    }else{
+      setLastDryMachine(JSON.parse(localStorage.getItem("selectedCombinedDryMachine")))
+    }
+    if (localStorage.getItem("selectedCombinedWashMachine") == null) {
+      const dummy = {
+        id_machine: 0,
+        machineNumber: 0,
+        machineType: "LAVA",
+        model: "LG",
+        cicleTime: 0,
+        weight: 0,
+        freeForUse: false,
+        isDummy: true,
+      }
+      setLastWashMachine(dummy)
+    }else{
+      setLastWashMachine(JSON.parse(localStorage.getItem("selectedCombinedWashMachine")))
     }
   }, [data]);
 
@@ -122,11 +181,15 @@ function PedidosLavanderia() {
 
   const handleSelectMachine = (machine) => {
     setSelectedWashMachine(machine);
+    if (combinedWash) {
+      localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(machine));
+      setLastWashMachine(machine);
+    }
   };
 
   const handleSelectDryMachine = (machine) => {
     setSelectedDryMachine(machine);
-    if(combinedDry){
+    if (combinedDry) {
       localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(machine));
       setLastDryMachine(machine);
     }
@@ -738,13 +801,43 @@ function PedidosLavanderia() {
                     </td>
                   </tr>
                 ))}
-              <tr>
-                <td colSpan={6}><div><p className="font-bold text-lg">Es Lavadora Combinada ?</p></div></td>
-                <td><Checkbox
-                  onChange={() => change2CombinedWash(!combinedWash)}
-                  className="mb-2"
-                /></td>
-              </tr>
+              <tr><p className="font-bold text-lg">Es Lavadora Combinada ?</p></tr>
+              {console.log("WASHMACHINE " + lastWashMachine)}
+              {!lastWashMachine.isDummy ? (
+                <tr key={lastWashMachine.id_machine}>
+                  <td className="font-bold text-blue-600">{lastWashMachine.machineNumber}</td>
+                  <td className="text-blue-600">{lastWashMachine.machineType}</td>
+                  <td>{lastWashMachine.model}</td>
+                  <td>{lastWashMachine.cicleTime}</td>
+                  <td>{lastWashMachine.weight}</td>
+                  <td
+                    className={`${lastWashMachine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                  >
+                    {lastWashMachine.freeForUse ? "Libre" : "Ocupado"}
+                  </td>
+
+                  <td>
+                    <div className="flex flex-col items-center">
+                      <Checkbox
+                        key={`checkbox_${lastWashMachine.id_machine}`}
+                        checked={selectedWashMachine === lastWashMachine}
+                        onChange={() => handleSelectMachine(lastWashMachine)}
+                        className="mb-2"
+                      />
+                      <span className="text-blue-500">Seleccionar</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td colSpan={6}><p>No hay Lavadora Anterior</p></td>
+                  <td><Checkbox
+                    onChange={() => change2CombinedWash(!combinedWash)}
+                    className="mb-2"
+                    disabled={!selectedWashMachine}
+                  /></td></tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -823,8 +916,8 @@ function PedidosLavanderia() {
                   </tr>
                 ))}
               <tr><p className="font-bold text-lg">Es Secadora Combinada ?</p></tr>
-              {console.log("ZAPATO " + lastDryMachine)}
-              {typeof lastDryMachine != undefined? (
+              {console.log("DRYMACHINE " + lastDryMachine)}
+              {!lastDryMachine.isDummy ? (
                 <tr key={lastDryMachine.id_machine}>
                   <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>
                   <td className="text-green-500">{lastDryMachine.machineType}</td>

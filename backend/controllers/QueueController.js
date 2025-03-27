@@ -154,24 +154,46 @@ export const updateLaundryQueue = async (req, res) => {
 
 export const updateWashDetails = async (req, res) => {
 
+    const laundryEvent = Number(req.params.id);
+    const { combinedWash, fk_idWashMachine, fk_idStaffMember } = req.body;
+    if (fk_idWashMachine == null) console.log("No hay datos de equipo al lavar");
+
     try {
         const washDetail = await prisma.washDetail.update({
             where: {
-                fk_laundryEvent: Number(req.params.id)
+                fk_laundryEvent: laundryEvent
             },
 
-            data: req.body
+            data: {
+                fk_idWashMachine: fk_idWashMachine,
+                fk_idStaffMember: fk_idStaffMember
+            }
         });
 
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: Number(req.params.id)
+                id_laundryEvent: laundryEvent
             },
 
             data: {
-                serviceStatus: "inProgressWash"
+                serviceStatus: "inProgressWash",
+                combinedWash: combinedWash,
             }
         });
+
+        if (!combinedWash) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idWashMachine
+                },
+
+                data: {
+                    freeForUse: false
+                }
+
+            });
+        }
 
         res.status(200).json(washDetail);
     } catch (e) {
@@ -182,13 +204,20 @@ export const updateWashDetails = async (req, res) => {
 
 export const updateDryDetails = async (req, res) => {
 
+    const laundryEvent = Number(req.params.id);
+    const { combinedWash, combinedDry, fk_idWashMachine, fk_idDryMachine, fk_idStaffMember } = req.body;
+    if (fk_idWashMachine == null || fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
+
     try {
         const dryDetail = await prisma.dryDetail.update({
             where: {
-                fk_laundryEvent: Number(req.params.id)
+                fk_laundryEvent: laundryEvent
             },
 
-            data: req.body
+            data: {
+                fk_idDryMachine: fk_idDryMachine,
+                fk_idStaffMember: fk_idStaffMember
+            }
         });
 
         const laundryEvent = await prisma.laundryQueue.update({
@@ -197,9 +226,39 @@ export const updateDryDetails = async (req, res) => {
             },
 
             data: {
-                serviceStatus: "inProgressDry"
+                serviceStatus: "inProgressDry",
+                combinedDry: combinedDry,
             }
         });
+
+        if (!combinedWash) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idWashMachine
+                },
+
+                data: {
+                    freeForUse: true
+                }
+
+            });
+        }
+
+        if (!combinedDry && fk_idDryMachine != null) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idDryMachine
+                },
+
+                data: {
+                    freeForUse: false
+                }
+
+            });
+        }
+
         res.status(200).json(dryDetail);
     } catch (e) {
         res.status(400).json({ msg: e.message });
@@ -208,10 +267,16 @@ export const updateDryDetails = async (req, res) => {
 }
 
 export const finishLaundryQueue = async (req, res) => {
+
+    const laundryEvent = Number(req.params.id);
+    const { combinedDry, fk_idDryMachine, fk_idStaffMember } = req.body;
+    if (fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
+
+
     try {
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: Number(req.params.id)
+                id_laundryEvent: laundryEvent
             },
 
             data: {
@@ -246,7 +311,21 @@ export const finishLaundryQueue = async (req, res) => {
                     },
                 ],
             },
-        })
+        });
+
+        if (!combinedDry && fk_idDryMachine != null) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idDryMachine
+                },
+
+                data: {
+                    freeForUse: true
+                }
+
+            });
+        }
 
         let response;
         if (serviceOrderFinished.length === 0) {

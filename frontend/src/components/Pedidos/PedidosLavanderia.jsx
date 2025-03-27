@@ -56,8 +56,8 @@ function PedidosLavanderia() {
   //   freeForUse: false,
   //   isDummy: true,
   // });
-  const [lastDryMachine, setLastDryMachine] = useState(JSON.parse(localStorage.getItem("selectedCombinedDryMachine")));
-  const [lastWashMachine, setLastWashMachine] = useState(JSON.parse(localStorage.getItem("selectedCombinedWashMachine")));
+  const [lastDryMachine, setLastDryMachine] = useState();
+  const [lastWashMachine, setLastWashMachine] = useState();
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
@@ -105,6 +105,7 @@ function PedidosLavanderia() {
       setLastDryMachine(dummy)
     }else{
       setLastDryMachine(JSON.parse(localStorage.getItem("selectedCombinedDryMachine")))
+      // setCombinedDry(true);
     }
     if (localStorage.getItem("selectedCombinedWashMachine") == null) {
       const dummy = {
@@ -120,6 +121,7 @@ function PedidosLavanderia() {
       setLastWashMachine(dummy)
     }else{
       setLastWashMachine(JSON.parse(localStorage.getItem("selectedCombinedWashMachine")))
+      // setCombinedWash(true);
     }
   }, [data]);
 
@@ -179,20 +181,24 @@ function PedidosLavanderia() {
     }, 2000);
   };
 
-  const handleSelectMachine = (machine) => {
+  const handleSelectWashMachine = (machine) => {
     setSelectedWashMachine(machine);
-    if (combinedWash) {
-      localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(machine));
-      setLastWashMachine(machine);
-    }
+    setCombinedWash(false);
   };
 
   const handleSelectDryMachine = (machine) => {
     setSelectedDryMachine(machine);
-    if (combinedDry) {
-      localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(machine));
-      setLastDryMachine(machine);
-    }
+    setCombinedWash(false);
+  };
+
+  const handleSelectCombinedWashMachine = (machine) => {
+    setSelectedWashMachine(machine);
+    setCombinedWash(true)
+  };
+
+  const handleSelectCombinedDryMachine = (machine) => {
+    setSelectedDryMachine(machine);
+    setCombinedWash(true);
   };
 
   const handleStartProcess = async (pedido) => {
@@ -236,9 +242,13 @@ function PedidosLavanderia() {
       );
       setAvailableMachines(updatedMachines);
 
-      await api.patch(`/machines/${selectedWashMachine.id_machine}`, {
-        freeForUse: false,
-      });
+      // await api.patch(`/machines/${selectedWashMachine.id_machine}`, {
+      //   freeForUse: false,
+      // });
+
+      !combinedWash ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
+      // lastWashMachine.machineNumber === 0 || lastWashMachine != selectedWashMachine ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_laundryEvent === selectedPedido.id_laundryEvent
           ? { ...p, serviceStatus: "inProgressWash" }
@@ -252,6 +262,7 @@ function PedidosLavanderia() {
       });
 
       await api.patch(`/updateWashDetails/${selectedPedido.id_laundryEvent}`, {
+        combinedWash: combinedWash,
         fk_idWashMachine: selectedWashMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
@@ -324,9 +335,9 @@ function PedidosLavanderia() {
           setAvailableMachines(updatedWashers);
 
           // También actualizar la base de datos
-          await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
-            freeForUse: true,
-          });
+          // await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
+          //   freeForUse: true,
+          // });
 
           // await api.patch(
           //   `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
@@ -347,11 +358,16 @@ function PedidosLavanderia() {
       setAvailableMachines(updatedDryers);
 
       // Actualizar la base de datos
-      await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
-        freeForUse: false,
-      });
+      // await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
+      //   freeForUse: false,
+      // });
+
+      !combinedDry ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) : console.log("TOGETHER");
 
       await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
+        combinedWash: selectedPedido.combinedWash,
+        combinedDry: combinedDry,
+        fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
         fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
@@ -442,13 +458,11 @@ function PedidosLavanderia() {
           }
 
           // También actualizar la base de datos
-          const res = await api.patch(
-            `/finishLaundryQueue/${pedido.id_laundryEvent}`,
-            {
-              fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
-              fk_idStaffMember: cookies.token,
-            }
-          );
+          const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`,{
+            combinedDry: selectedPedido.combinedDry,
+            fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
+            fk_idStaffMember: cookies.token,
+          });
 
           // const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
 
@@ -495,17 +509,15 @@ function PedidosLavanderia() {
     }
   };
 
-  const change2CombinedDry = async (combinedD) => {
-    setCombinedDry(combinedD);
-    combinedD ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) :
-      localStorage.removeItem("selectedCombinedDryMachine");
-  }
+  const hideWashModal = async () => {
+    setCombinedWash(false);
+    setShowMachineName(false);
+  };
 
-  const change2CombinedWash = async (combinedW) => {
-    setCombinedWash(combinedW);
-    combinedW ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) :
-      localStorage.removeItem("selectedCombinedWashMachine");
-  }
+  const hideDryerModal = async () => {
+    setCombinedDry(false);
+    setShowDryerSelection(false);
+  };
 
   return (
     <div>
@@ -730,7 +742,7 @@ function PedidosLavanderia() {
 
       <Modal
         open={showMachineName}
-        onCancel={() => setShowMachineName(false)}
+        onCancel={() => hideWashModal()}
         footer={[
           <button
             key="submit"
@@ -744,13 +756,19 @@ function PedidosLavanderia() {
           <button
             key="cancel"
             className="btn-primary-cancel ml-2"
-            onClick={() => setShowMachineName(false)}
+            onClick={() => hideWashModal()}
           >
             Cancelar
           </button>,
         ]}
         width={1000}
-        style={{ padding: "20px" }}
+        style={{ 
+          body: {
+            height: 400,
+            overflow: "hidden",
+            overflowY: "scroll",
+          },
+        }}
       >
         <div>
           <p className="mb-4 text-xl font-bold">Selecciona una lavadora:</p>
@@ -792,7 +810,7 @@ function PedidosLavanderia() {
                         <Checkbox
                           key={`checkbox_${machine.id_machine}`}
                           checked={selectedWashMachine === machine}
-                          onChange={() => handleSelectMachine(machine)}
+                          onChange={() => handleSelectWashMachine(machine)}
                           className="mb-2"
                           disabled={!machine.freeForUse}
                         />
@@ -801,9 +819,9 @@ function PedidosLavanderia() {
                     </td>
                   </tr>
                 ))}
-              <tr><p className="font-bold text-lg">Es Lavadora Combinada ?</p></tr>
+              { lastWashMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Lavadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Lavadora Anterior</p></td>}
               {console.log("WASHMACHINE " + lastWashMachine)}
-              {!lastWashMachine.isDummy ? (
+              {lastWashMachine.machineNumber != 0 ? (
                 <tr key={lastWashMachine.id_machine}>
                   <td className="font-bold text-blue-600">{lastWashMachine.machineNumber}</td>
                   <td className="text-blue-600">{lastWashMachine.machineType}</td>
@@ -822,7 +840,9 @@ function PedidosLavanderia() {
                       <Checkbox
                         key={`checkbox_${lastWashMachine.id_machine}`}
                         checked={selectedWashMachine === lastWashMachine}
-                        onChange={() => handleSelectMachine(lastWashMachine)}
+                        onChange={() => handleSelectCombinedWashMachine(lastWashMachine)}
+                        // disabled={!selectedWashMachine}
+                        // disabled={combinedWash}
                         className="mb-2"
                       />
                       <span className="text-blue-500">Seleccionar</span>
@@ -830,13 +850,7 @@ function PedidosLavanderia() {
                   </td>
                 </tr>
               ) : (
-                <tr>
-                  <td colSpan={6}><p>No hay Lavadora Anterior</p></td>
-                  <td><Checkbox
-                    onChange={() => change2CombinedWash(!combinedWash)}
-                    className="mb-2"
-                    disabled={!selectedWashMachine}
-                  /></td></tr>
+                ""
               )}
             </tbody>
           </table>
@@ -845,7 +859,7 @@ function PedidosLavanderia() {
 
       <Modal
         open={showDryerSelection}
-        onCancel={() => setShowDryerSelection(false)}
+        onCancel={() => hideDryerModal()}
         footer={[
           <button
             key="submit"
@@ -858,13 +872,19 @@ function PedidosLavanderia() {
           <button
             key="cancel"
             className="btn-primary-cancel ml-2"
-            onClick={() => setShowDryerSelection(false)}
+            onClick={() => hideDryerModal()}
           >
             Cancelar
           </button>,
         ]}
         width={1000}
-        style={{ padding: "20px" }}
+        style={{ 
+          body: {
+            height: 400,
+            overflow: "hidden",
+            overflowY: "scroll",
+          },
+        }}
       >
         <div>
           <p className="mb-4 text-xl font-bold">Selecciona una secadora:</p>
@@ -915,9 +935,9 @@ function PedidosLavanderia() {
                     </td>
                   </tr>
                 ))}
-              <tr><p className="font-bold text-lg">Es Secadora Combinada ?</p></tr>
+              { lastDryMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Secadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Secadora Anterior</p></td>}
               {console.log("DRYMACHINE " + lastDryMachine)}
-              {!lastDryMachine.isDummy ? (
+              {lastDryMachine.machineNumber != 0 ? (
                 <tr key={lastDryMachine.id_machine}>
                   <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>
                   <td className="text-green-500">{lastDryMachine.machineType}</td>
@@ -936,7 +956,8 @@ function PedidosLavanderia() {
                       <Checkbox
                         key={`checkbox_${lastDryMachine.id_machine}`}
                         checked={selectedDryMachine === lastDryMachine}
-                        onChange={() => handleSelectDryMachine(lastDryMachine)}
+                        onChange={() => handleSelectCombinedDryMachine(lastDryMachine)}
+                        // disabled={combinedDry}
                         className="mb-2"
                       />
                       <span className="text-blue-500">Seleccionar</span>
@@ -944,13 +965,7 @@ function PedidosLavanderia() {
                   </td>
                 </tr>
               ) : (
-                <tr>
-                  <td colSpan={6}><p>No hay Secadora Anterior</p></td>
-                  <td><Checkbox
-                    onChange={() => change2CombinedDry(!combinedDry)}
-                    className="mb-2"
-                    disabled={!selectedDryMachine}
-                  /></td></tr>
+                ""
               )}
             </tbody>
           </table>

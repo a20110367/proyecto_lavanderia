@@ -365,7 +365,7 @@ function PedidosLavanderia() {
       !combinedDry ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) : console.log("TOGETHER");
 
       await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
-        combinedWash: selectedPedido.combinedWash,
+        combinedWash: await selectedPedido.combinedWash,
         combinedDry: combinedDry,
         fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
         fk_idDryMachine: selectedDryMachine.id_machine,
@@ -417,7 +417,7 @@ function PedidosLavanderia() {
           }
 
           await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
-            combinedWash: selectedPedido.combinedWash,
+            combinedWash: await selectedPedido.combinedWash,
             combinedDry: combinedDry,
             fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
             fk_idDryMachine: null,
@@ -461,7 +461,7 @@ function PedidosLavanderia() {
 
           // También actualizar la base de datos
           const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`,{
-            combinedDry: selectedPedido.combinedDry,
+            combinedDry: await selectedPedido.combinedDry,
             fk_idDryMachine: selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null,
             fk_idStaffMember: cookies.token,
           });

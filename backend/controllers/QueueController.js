@@ -154,14 +154,14 @@ export const updateLaundryQueue = async (req, res) => {
 
 export const updateWashDetails = async (req, res) => {
 
-    const laundryEvent = Number(req.params.id);
+   
     const { combinedWash, fk_idWashMachine, fk_idStaffMember } = req.body;
     if (fk_idWashMachine == null) console.log("No hay datos de equipo al lavar");
 
     try {
         const washDetail = await prisma.washDetail.update({
             where: {
-                fk_laundryEvent: laundryEvent
+                fk_laundryEvent: Number(req.params.id),
             },
 
             data: {
@@ -172,7 +172,7 @@ export const updateWashDetails = async (req, res) => {
 
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: laundryEvent
+                id_laundryEvent: Number(req.params.id),
             },
 
             data: {
@@ -204,14 +204,14 @@ export const updateWashDetails = async (req, res) => {
 
 export const updateDryDetails = async (req, res) => {
 
-    const laundryEvent = Number(req.params.id);
+    
     const { combinedWash, combinedDry, fk_idWashMachine, fk_idDryMachine, fk_idStaffMember } = req.body;
     if (fk_idWashMachine == null || fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
 
     try {
         const dryDetail = await prisma.dryDetail.update({
             where: {
-                fk_laundryEvent: laundryEvent
+                fk_laundryEvent: Number(req.params.id),
             },
 
             data: {
@@ -268,7 +268,7 @@ export const updateDryDetails = async (req, res) => {
 
 export const finishLaundryQueue = async (req, res) => {
 
-    const laundryEvent = Number(req.params.id);
+    
     const { combinedDry, fk_idDryMachine, fk_idStaffMember } = req.body;
     if (fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
 
@@ -276,7 +276,7 @@ export const finishLaundryQueue = async (req, res) => {
     try {
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: laundryEvent
+                id_laundryEvent: Number(req.params.id),
             },
 
             data: {

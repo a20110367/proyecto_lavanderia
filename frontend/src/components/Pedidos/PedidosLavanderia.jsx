@@ -411,12 +411,15 @@ function PedidosLavanderia() {
             setAvailableMachines(updatedWashers);
 
             // También actualizar la base de datos
-            await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
-              freeForUse: true,
-            });
+            // await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
+            //   freeForUse: true,
+            // });
           }
 
           await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
+            combinedWash: selectedPedido.combinedWash,
+            combinedDry: combinedDry,
+            fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
             fk_idDryMachine: null,
             fk_idStaffMember: cookies.token,
           });
@@ -436,7 +439,7 @@ function PedidosLavanderia() {
 
       setShowMachineName(false);
 
-      let selectedDryMachine = "169";
+      let selectedDryMachine = 0;
       let availableMachines = "some";
       if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
         const [machinesResponse] = await Promise.all([api.get("/machines")]);
@@ -445,7 +448,6 @@ function PedidosLavanderia() {
         selectedDryMachine = res.data.DryDetail;
       }
 
-      if (selectedDryMachine) {
         // Liberar la secadora seleccionada
         if (selectedDryMachine) {
           if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
@@ -460,7 +462,7 @@ function PedidosLavanderia() {
           // También actualizar la base de datos
           const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`,{
             combinedDry: selectedPedido.combinedDry,
-            fk_idDryMachine: selectedDryMachine.fk_idDryMachine,
+            fk_idDryMachine: selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null,
             fk_idStaffMember: cookies.token,
           });
 
@@ -473,11 +475,11 @@ function PedidosLavanderia() {
           );
           setPedidos(updatedPedidos);
 
-          if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
-            await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
-              freeForUse: true,
-            });
-          }
+          // if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
+          //   await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
+          //     freeForUse: true,
+          //   });
+          // }
 
           if (res.data.orderStatus === "finished") {
             showNotification(
@@ -503,7 +505,6 @@ function PedidosLavanderia() {
             showNotification(`Tarea del Pedido finalizada correctamente`);
           }
         }
-      }
     } catch (err) {
       console.log(err);
     }

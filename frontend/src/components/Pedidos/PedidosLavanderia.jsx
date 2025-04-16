@@ -56,8 +56,26 @@ function PedidosLavanderia() {
   //   freeForUse: false,
   //   isDummy: true,
   // });
-  const [lastDryMachine, setLastDryMachine] = useState();
-  const [lastWashMachine, setLastWashMachine] = useState();
+  const [lastDryMachine, setLastDryMachine] = useState({
+    id_machine: 0,
+    machineNumber: 0,
+    machineType: "SECA",
+    model: "LG",
+    cicleTime: 0,
+    weight: 0,
+    freeForUse: false,
+    isDummy: true,
+  });
+  const [lastWashMachine, setLastWashMachine] = useState({
+    id_machine: 0,
+    machineNumber: 0,
+    machineType: "LAVA",
+    model: "LG",
+    cicleTime: 0,
+    weight: 0,
+    freeForUse: false,
+    isDummy: true,
+  });
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;

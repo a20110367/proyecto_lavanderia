@@ -185,6 +185,11 @@ function EntregaVarios() {
         });
       });
 
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
+      });
+      setFilteredPedidos(updatedFilteredPedidos);
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
@@ -206,10 +211,6 @@ function EntregaVarios() {
       await api.post('/generateTicket', {
         order: order,
       })
-      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-        return order.id_order !== pedido.id_order;
-      });
-      setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
       console.log(err);
     }

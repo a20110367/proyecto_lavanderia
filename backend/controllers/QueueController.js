@@ -154,7 +154,7 @@ export const updateLaundryQueue = async (req, res) => {
 
 export const updateWashDetails = async (req, res) => {
 
-   
+
     const { combinedWash, fk_idWashMachine, fk_idStaffMember } = req.body;
     if (fk_idWashMachine == null) console.log("No hay datos de equipo al lavar");
 
@@ -204,7 +204,7 @@ export const updateWashDetails = async (req, res) => {
 
 export const updateDryDetails = async (req, res) => {
 
-    
+
     const { combinedWash, combinedDry, fk_idWashMachine, fk_idDryMachine, fk_idStaffMember } = req.body;
     if (fk_idWashMachine == null || fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
 
@@ -268,7 +268,7 @@ export const updateDryDetails = async (req, res) => {
 
 export const finishLaundryQueue = async (req, res) => {
 
-    
+
     const { combinedDry, fk_idDryMachine, fk_idStaffMember } = req.body;
     if (fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
 

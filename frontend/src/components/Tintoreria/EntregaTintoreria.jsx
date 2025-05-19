@@ -203,6 +203,13 @@ function EntregaTintoreria() {
       // };
       // orderTicket(order);
 
+      setFkPayment(res.data.id_payment);
+      console.log(res.data.id_payment);
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
+      });
+      setFilteredPedidos(updatedFilteredPedidos);
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
@@ -224,12 +231,6 @@ function EntregaTintoreria() {
       await api.post('/generateTicket', {
         order: order,
       })
-      setFkPayment(res.data.id_payment);
-      console.log(res.data.id_payment);
-      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-        return order.id_order !== pedido.id_order;
-      });
-      setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
       console.log(err);
     }

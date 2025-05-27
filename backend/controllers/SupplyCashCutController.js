@@ -59,7 +59,7 @@ const suppliesTotalPayments = async (suppliesCashCut_id) => {
 
 const suppliesCashCutTotalIncomeByPaymentMethod = async (suppliesCashCut_id, paymentMethod) => {
 
-    const totalCashIncome = await prisma.payment.aggregate({
+    const totalCashIncome = await prisma.supplyPayment.aggregate({
 
         where: {
             AND: [

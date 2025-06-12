@@ -764,7 +764,7 @@ function CorteCaja() {
             <div className="w-1/2">
               <p className="text-lg">
                 <span className="font-bold">ID:</span>{" "}
-                {selectedCorte.id_cashCut}
+                {selectedCorte.workshiftBalance.id_cashCut}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Usuario:</span> {cookies.username}

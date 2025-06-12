@@ -119,7 +119,9 @@ function CorteCaja() {
     try {
       setBlockButton(true);
 
-      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
+      const workShift = moment().hours() < 12 ? "morning" : "evening";
+
+      setWorkShift(workShift);
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
       // const supplyResponse = await api.get(
@@ -134,11 +136,11 @@ function CorteCaja() {
       const generalRes = response.data.workshiftBalance;
 
       const workshiftBalance = {
-        id_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        id_cashCut: cashCutId,
         id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
         casher: cookies.username,
         cashCutId: generalRes.id_cashCut,
-        workShift: response.data.workShift,
+        workShift: workShift,
         initialCash: generalRes.initialCash,
         total: generalRes.totalIncome,
         cashCutD: response.data.cashCutD,
@@ -156,8 +158,8 @@ function CorteCaja() {
         iron: servicesRes.totalPlanchado,
         dryCleaning: servicesRes.totalTintoreria,
         others: servicesRes.totalOtrosEncargo,
-        totalIncome: servicesRes.totalIncome,
-        totalCash: servicesRes.totalServiceIncome,
+        totalIncome: servicesRes.totalServiceIncome,
+        totalCash: servicesRes.totalServiceCash,
         totalCredit: servicesRes.totalServiceCredit,
         canceledOrders: servicesRes.ordersCancelled,
         totalCancelations: servicesRes.totalCancelations,
@@ -829,7 +831,7 @@ function CorteCaja() {
                 {selectedCorte.serviceCashCut.numberOfItems}
               </p>
               <p className="text-lg">
-                <span className="font-bold ">Piezas de Planchado hechas:</span>
+                <span className="font-bold ">Piezas de Planchado hechas: </span>
                 {selectedCorte.serviceCashCut.ironPiecesDone
                   ? (selectedCorte.serviceCashCut.ironPiecesDone + "Piezas")
                   : "0 Piezas" }

@@ -140,7 +140,7 @@ function CorteCaja() {
         cashCutId: generalRes.id_cashCut,
         workShift: response.data.workShift,
         initialCash: generalRes.initialCash,
-        total: generalRes.totalCashBalace,
+        total: generalRes.totalIncome,
         cashCutD: response.data.cashCutD,
         cashCutT: response.data.cashCutT,
         totalCancelations: generalRes.cancellations,
@@ -829,10 +829,10 @@ function CorteCaja() {
                 {selectedCorte.serviceCashCut.numberOfItems}
               </p>
               <p className="text-lg">
-                <span className="font-bold ">Piezas de Planchado hechas:</span> $
+                <span className="font-bold ">Piezas de Planchado hechas:</span>
                 {selectedCorte.serviceCashCut.ironPiecesDone
-                  ? ("-" + selectedCorte.serviceCashCut.ironPiecesDone)
-                  : 0}
+                  ? (selectedCorte.serviceCashCut.ironPiecesDone + "Piezas")
+                  : "0 Piezas" }
               </p>
             </div>
             {/* Segunda Columna */}
@@ -901,7 +901,7 @@ function CorteCaja() {
                   : 0}
               </p>
 
-              <p className="text-2xl font-bold text-blue-700"> ▋▋▋▋▋▋▋DETALLES GENERALES ▋▋▋▋▋▋▋▋</p>
+              <p className="text-2xl font-bold text-blue-700"> ▋▋▋ DETALLES GENERALES  ▋▋▋</p>
               <p className="text-lg">
                 <span className="font-bold">Dinero en Fondo:</span> $
                 {selectedCorte.workshiftBalance.initialCash ? selectedCorte.workshiftBalance.initialCash : 0}
@@ -909,13 +909,13 @@ function CorteCaja() {
               <p className="text-lg">
                 <span className="font-bold">Ingresos de Efectivo:</span> $
                 {selectedCorte.workshiftBalance.cashIncome
-                  ? ("-" + selectedCorte.workshiftBalance.cashIncome)
+                  ? (selectedCorte.workshiftBalance.cashIncome)
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Ingresos de Tarjeta:</span> $
                 {selectedCorte.workshiftBalance.creditIncome
-                  ? ("-" + selectedCorte.workshiftBalance.creditIncome)
+                  ? (selectedCorte.workshiftBalance.creditIncome)
                   : 0}
               </p>
               <p className="text-lg text-red-600">

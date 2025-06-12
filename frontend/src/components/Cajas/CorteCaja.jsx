@@ -192,7 +192,7 @@ function CorteCaja() {
       pdf.text(
         `Turno: ${workshiftBalance.workShift === "morning"
           ? "Matutino"
-          : nuevoCorte.workShift === "evening"
+          : workshiftBalance.workShift === "evening"
             ? "Vespertino"
             : "Nocturno"
         }`,

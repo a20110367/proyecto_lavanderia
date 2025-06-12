@@ -769,9 +769,9 @@ function CorteCaja() {
               </p>
               <p className="text-lg">
                 <span className="font-bold">Turno:</span>{" "}
-                {selectedCorte.workShift === "morning"
+                {selectedCorte.workshiftBalance.workShift === "morning"
                   ? "Matutino"
-                  : selectedCorte.workShift === "evening"
+                  : selectedCorte.workshiftBalance.workShift === "evening"
                     ? "Vespertino"
                     : ""}
               </p>
@@ -792,59 +792,131 @@ function CorteCaja() {
               </p>
               <p className="text-lg">
                 <span className="font-bold">Autoservicio:</span> $
-                {selectedCorte.serviceCashCut.totalAutoservicio
-                  ? selectedCorte.serviceCashCut.totalAutoservicio
+                {selectedCorte.serviceCashCut.selfService
+                  ? selectedCorte.serviceCashCut.selfService
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Lavado por Encargo:</span> $
-                {selectedCorte.serviceCashCut.totalEncargo ? selectedCorte.serviceCashCut.totalEncargo : 0}
+                {selectedCorte.serviceCashCut.laundry ? selectedCorte.serviceCashCut.laundry : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Planchado:</span> $
-                {selectedCorte.serviceCashCut.totalPlanchado
-                  ? selectedCorte.serviceCashCut.totalPlanchado
+                {selectedCorte.serviceCashCut.iron
+                  ? selectedCorte.serviceCashCut.iron
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Tintorería:</span> $
-                {selectedCorte.serviceCashCut.totalTintoreria
-                  ? selectedCorte.serviceCashCut.totalTintoreria
+                {selectedCorte.serviceCashCut.dryCleaning
+                  ? selectedCorte.serviceCashCut.dryCleaning
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Encargo Varios:</span> $
-                {selectedCorte.serviceCashCut.totalOtrosEncargo
-                  ? selectedCorte.serviceCashCut.totalOtrosEncargo
+                {selectedCorte.serviceCashCut.others
+                  ? selectedCorte.serviceCashCut.others
                   : 0}
               </p>
               <p className="text-2xl">
                 <span className="font-bold">
                   Total (Suma de los Servicios):
                 </span>{" "}
-                ${selectedCorte.serviceCashCut.totalServiceIncome ? selectedCorte.serviceCashCut.totalServiceIncome : 0}
-              </p>
-              <br />
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingresos totales de servicios:
-                </span>
+                ${selectedCorte.serviceCashCut.totalIncome ? selectedCorte.serviceCashCut.totalIncome : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Servicios Pagados: </span>
-                {selectedCorte.serviceCashCut.ordersPayed}
+                {selectedCorte.serviceCashCut.numberOfItems}
               </p>
+              <p className="text-lg">
+                <span className="font-bold ">Piezas de Planchado hechas:</span> $
+                {selectedCorte.serviceCashCut.ironPiecesDone
+                  ? ("-" + selectedCorte.serviceCashCut.ironPiecesDone)
+                  : 0}
+              </p>
+            </div>
+            {/* Segunda Columna */}
+            <div className="w-1/2">
+              <p className="text-lg">
+                <span className="font-bold">Ingreso de Productos:</span>
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Jabón:</span> $
+                {selectedCorte.suppliesCashCut.soap ? selectedCorte.suppliesCashCut.soap : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Suavitel:</span> $
+                {selectedCorte.suppliesCashCut.suavitel ? selectedCorte.suppliesCashCut.suavitel : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Pinol:</span> $
+                {selectedCorte.suppliesCashCut.pinol ? selectedCorte.suppliesCashCut.pinol : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Desengrasante:</span> $
+                {selectedCorte.suppliesCashCut.degreaser
+                  ? selectedCorte.suppliesCashCut.degreaser
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Cloro:</span> $
+                {selectedCorte.suppliesCashCut.chlorine ? selectedCorte.suppliesCashCut.chlorine : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Sanitizante:</span> $
+                {selectedCorte.suppliesCashCut.sanitizer
+                  ? selectedCorte.suppliesCashCut.sanitizer
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Bolsa:</span> $
+                {selectedCorte.suppliesCashCut.bag ? selectedCorte.suppliesCashCut.bag : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Reforzado:</span> $
+                {selectedCorte.suppliesCashCut.reinforced
+                  ? selectedCorte.suppliesCashCut.reinforced
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ganchos:</span> $
+                {selectedCorte.suppliesCashCut.hook ? selectedCorte.suppliesCashCut.hook : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">WC:</span> $
+                {selectedCorte.suppliesCashCut.wc ? selectedCorte.suppliesCashCut.wc : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Otros:</span> $
+                {selectedCorte.suppliesCashCut.others ? selectedCorte.suppliesCashCut.others : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ordenes Pagadas: </span>
+                {selectedCorte.suppliesCashCut.numberOfItems}
+              </p>
+              <p className="text-2xl">
+                <span className="font-bold">Ingreso total de productos:</span> $
+                {selectedCorte.suppliesCashCut.totalIncome
+                  ? selectedCorte.suppliesCashCut.totalIncome
+                  : 0}
+              </p>
+
+              <p className="text-2xl font-bold text-blue-700"> ▋▋▋▋▋▋▋DETALLES GENERALES ▋▋▋▋▋▋▋▋</p>
               <p className="text-lg">
                 <span className="font-bold">Dinero en Fondo:</span> $
-                {selectedCorte.serviceCashCut.initialCash ? selectedCorte.serviceCashCut.initialCash : 0}
+                {selectedCorte.workshiftBalance.initialCash ? selectedCorte.workshiftBalance.initialCash : 0}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Ingreso en Efectivo:</span> $
-                {selectedCorte.serviceCashCut.totalServiceCash ? selectedCorte.serviceCashCut.totalServiceCash : 0}
+                <span className="font-bold">Ingresos de Efectivo:</span> $
+                {selectedCorte.workshiftBalance.cashIncome
+                  ? ("-" + selectedCorte.workshiftBalance.cashIncome)
+                  : 0}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Ingreso en Tarjeta:</span> $
-                {selectedCorte.totalServiceCredit ? selectedCorte.totalServiceCredit : 0}
+                <span className="font-bold">Ingresos de Tarjeta:</span> $
+                {selectedCorte.workshiftBalance.creditIncome
+                  ? ("-" + selectedCorte.workshiftBalance.creditIncome)
+                  : 0}
               </p>
               <p className="text-lg text-red-600">
                 <span className="font-bold">Retiros Totales:</span> $
@@ -860,98 +932,7 @@ function CorteCaja() {
               </p>
               <p className="text-2xl ">
                 <span className="font-bold">Final Total en Caja:</span> $
-                {selectedCorte.workshiftBalance.totalIncome ? selectedCorte.workshiftBalance.totalIncome : 0}
-              </p>
-            </div>
-            {/* Tercera Columna */}
-            <div className="w-1/2">
-              <p className="text-lg">
-                <span className="font-bold">Ingreso de Productos:</span>
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Jabón:</span> $
-                {selectedCorte.suppliesCashCut.totalJabon ? selectedCorte.suppliesCashCut.totalJabon : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Suavitel:</span> $
-                {selectedCorte.suppliesCashCut.totalSuavitel ? selectedCorte.suppliesCashCut.totalSuavitel : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Pinol:</span> $
-                {selectedCorte.suppliesCashCut.totalPinol ? selectedCorte.suppliesCashCut.totalPinol : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Desengrasante:</span> $
-                {selectedCorte.suppliesCashCut.totalDesengrasante
-                  ? selectedCorte.suppliesCashCut.totalDesengrasante
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Cloro:</span> $
-                {selectedCorte.suppliesCashCut.totalCloro ? selectedCorte.suppliesCashCut.totalCloro : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Sanitizante:</span> $
-                {selectedCorte.suppliesCashCut.totalSanitizante
-                  ? selectedCorte.suppliesCashCut.totalSanitizante
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Bolsa:</span> $
-                {selectedCorte.suppliesCashCut.totalBolsa ? selectedCorte.suppliesCashCut.totalBolsa : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Reforzado:</span> $
-                {selectedCorte.suppliesCashCut.totalReforzado
-                  ? selectedCorte.suppliesCashCut.totalReforzado
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Ganchos:</span> $
-                {selectedCorte.suppliesCashCut.totalGanchos ? selectedCorte.suppliesCashCut.totalGanchos : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">WC:</span> $
-                {selectedCorte.suppliesCashCut.totalWC ? selectedCorte.suppliesCashCut.totalWC : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Otros:</span> $
-                {selectedCorte.suppliesCashCut.totalOtros ? selectedCorte.suppliesCashCut.totalOtros : 0}
-              </p>
-              <br />
-
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingresos totales de productos:
-                </span>
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Ordenes Pagadas: </span>
-                {selectedCorte.suppliesCashCut.ordersPayedSupply}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingreso de productos con Efectivo:
-                </span>{" "}
-                $
-                {selectedCorte.suppliesCashCut.totalSuppliesCash
-                  ? selectedCorte.suppliesCashCut.totalSuppliesCash
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingreso de productos con Tarjeta:
-                </span>{" "}
-                $
-                {selectedCorte.suppliesCashCut.totalSuppliesCredit
-                  ? selectedCorte.suppliesCashCut.totalSuppliesCredit
-                  : 0}
-              </p>
-              <p className="text-2xl">
-                <span className="font-bold">Ingreso total de productos:</span> $
-                {selectedCorte.suppliesCashCut.totalIncomeSupply
-                  ? selectedCorte.suppliesCashCut.totalIncomeSupply
-                  : 0}
+                {selectedCorte.workshiftBalance.total ? selectedCorte.workshiftBalance.total : 0}
               </p>
             </div>
           </div>

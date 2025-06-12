@@ -886,8 +886,9 @@ export const cashCutTicket = async (req, res) => {
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
 
             printer.newLine()
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
-            printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
+            printer.println(`No. de Piezas de Planchado Hechas: ${services.ironPiecesDone ? services.ironPiecesDone : '0'}`)
+            printer.println(`Retiros Totales: ${services.totalCashWithdrawal ? '-' + services.totalCashWithdrawal : '0'}`)
+            printer.println(`Dinero en Fondo: ${services.initialCash}`)
             printer.setTextDoubleHeight();
             printer.newLine()
             printer.println(`Final Total en Caja: ${cashCut.total}`)
@@ -897,9 +898,9 @@ export const cashCutTicket = async (req, res) => {
             printer.setTextDoubleHeight();
             printer.drawLine()
             printer.setTextNormal()
-            if (cashCut.ordersCancelled) {
-                printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? cashCut.ordersCancelled : '0'}`)
-                printer.println(`Monto Total de Ordenes Canceladas: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
+            if (services.canceledOrders) {
+                printer.println(`Ordenes Canceladas: ${services.canceledOrders ? services.canceledOrders : '0'}`)
+                printer.println(`Monto Total de Ordenes Canceladas: ${services.totalCancelations ? '-' + services.totalCancelations : '0'}`)
             }
             printer.setTextDoubleHeight();
             printer.drawLine()

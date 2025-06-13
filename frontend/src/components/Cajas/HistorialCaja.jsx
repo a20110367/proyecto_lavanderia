@@ -253,7 +253,7 @@ function HistorialCaja() {
                   EN TARJETA
                 </th>
                 <th>
-                  RETIROS <br />
+                  EGRESOS <br />
                   TOTALES
                 </th>
                 <th>
@@ -281,18 +281,18 @@ function HistorialCaja() {
                       ${corte.initialCash ? corte.initialCash : 0}
                     </td>
                     <td className="">
-                      ${corte.totalCash ? corte.totalCash : 0}
+                      ${corte.totalServiceCash ? corte.totalServiceCash : 0}
                     </td>
                     <td className="">
-                      ${corte.totalCredit ? corte.totalCredit : 0}
+                      ${corte.totalServiceCredit ? corte.totalServiceCredit : 0}
                     </td>
-                    <td className="">
+                    <td className="text-red-500">
                       $
-                      {corte.totalCashWithdrawal
-                        ? corte.totalCashWithdrawal
+                      { corte.totalCashWithdrawal && corte.totalCancelations
+                        ?  "-" + (corte.totalCashWithdrawal + corte.totalCancelations)
                         : 0}
                     </td>
-                    <td className="">${corte.total ? corte.total : 0}</td>
+                    <td className="text-blue-500 font-bold">${corte.totalServiceBalance ? corte.totalServiceBalance : 0}</td>
                     <td className="">
                       {corte.user.name} {corte.user.firsLN}{" "}
                       {corte.user.secondLN}
@@ -375,16 +375,22 @@ function HistorialCaja() {
                 <div className="w-1/2">
                   <p className="text-lg">
                     <span className="font-bold">Ingreso en Efectivo:</span> $
-                    {selectedCorte.totalCash ? selectedCorte.totalCash : 0}
+                    {selectedCorte.totalServiceCash ? selectedCorte.totalServiceCash : 0}
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Ingreso en Tarjeta:</span> $
-                    {selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
+                    {selectedCorte.totalServiceCredit ? selectedCorte.totalServiceCredit : 0}
                   </p>
-                  <p className="text-lg">
+                  <p className="text-lg text-red-500">
                     <span className="font-bold">Retiros Totales:</span> $
                     {selectedCorte.totalCashWithdrawal
                       ? selectedCorte.totalCashWithdrawal
+                      : 0}
+                  </p>
+                  <p className="text-lg text-red-500">
+                    <span className="font-bold">Reembolsos Totales:</span> $
+                    {selectedCorte.totalCancelations
+                      ? selectedCorte.totalCancelations
                       : 0}
                   </p>
                   <p className="text-lg">
@@ -393,7 +399,7 @@ function HistorialCaja() {
                   </p>
                   <p className="text-lg">
                     <span className="font-bold">Final Total en Caja:</span> $
-                    {selectedCorte.total ? selectedCorte.total : 0}
+                    {selectedCorte.totalServiceBalance ? selectedCorte.totalServiceBalance : 0}
                   </p>
                 </div>
               </div>
@@ -433,7 +439,7 @@ function HistorialCaja() {
                   <span className="font-bold">
                     Total (Suma de los Servicios):
                   </span>{" "}
-                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+                  ${selectedCorte.totalServiceIncome ? selectedCorte.totalServiceIncome : 0}
                 </p>
               </div>
             </div>

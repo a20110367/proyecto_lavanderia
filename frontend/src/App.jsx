@@ -105,7 +105,7 @@ import Reportes from "./components/Administracion/Reportes"
 import Cancelacion from "./components/Administracion/Cancelacion";
 import HistorialOrdenesCanceladas from "./components/Administracion/CancelHistoryOrder"
 import CajaChica from "./components/Administracion/CajaChica"
-import Reembolso from "./components/Administracion/Reembolso"
+// import Reembolso from "./components/Administracion/Reembolso"
 
 function App() {
     const { cookies } = useAuth();
@@ -148,7 +148,7 @@ function App() {
                     <Route path="/historialOrdenesCanceladas" element={<HistorialOrdenesCanceladas/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
-                    <Route path="/reembolso" element={<Reembolso />} />
+                    {/* <Route path="/reembolso" element={<Reembolso />} /> */}
                     <Route path="/cajaPedidos" element={<CajaPedidos />} />
 
                     {/* Services */}

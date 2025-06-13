@@ -72,9 +72,12 @@ export const getUsers = async (req, res) => {
     try {
         const response = await prisma.user.findMany({
             where: {
-                deleted: false
+                deleted: false,
+                NOT: {
+                    username: "admin"
+                }
             }
-        });
+            });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });
@@ -141,7 +144,7 @@ export const createUser = async (req, res) => {
             res.status(409).json(response);
         } else {
             const user = await prisma.user.create({
-                data: req.body         
+                data: req.body
             });
             const staffMember = await prisma.staffMember.create({
                 data: {
@@ -181,16 +184,16 @@ export const createUserMany = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
-    const {email, phone} = req.body;
+    const { email, phone } = req.body;
     try {
 
         let response
         const phoneValidation = await prisma.user.findFirst({
             where: {
-                NOT:{
+                NOT: {
                     id_user: Number(req.params.id)
                 },
-                phone: phone,                
+                phone: phone,
             },
 
             select: {
@@ -200,7 +203,7 @@ export const updateUser = async (req, res) => {
 
         const mailValidation = await prisma.user.findFirst({
             where: {
-                NOT:{
+                NOT: {
                     id_user: Number(req.params.id)
                 },
                 email: email
@@ -231,7 +234,7 @@ export const updateUser = async (req, res) => {
                 where: {
                     id_user: Number(req.params.id)
                 },
-    
+
                 data: req.body
             });
             res.status(200).json(user);

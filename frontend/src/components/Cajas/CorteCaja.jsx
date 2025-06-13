@@ -634,13 +634,13 @@ function CorteCaja() {
                     ${corte.workshiftBalance.creditIncome ? corte.workshiftBalance.creditIncome : 0}
                   </td>
                   <td className="py-3 px-6">
-                    ${corte.workshiftBalance.total ? corte.workshiftBalance.total : 0}
+                    ${corte.workshiftBalance.creditIncome && corte.workshiftBalance.cashIncome ? corte.workshiftBalance.cashIncome + corte.workshiftBalance.creditIncome : 0}
                   </td>
                   <td className="py-3 px-6">
-                    {corte.workshiftBalance.totalCancelations ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
+                    {corte.workshiftBalance.totalCancelations && corte.workshiftBalance.totalwithdrawal ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
                   </td>
                   <td className="py-3 px-6">
-                    ${corte.workshiftBalance.totalIncome ? corte.workshiftBalance.totalIncome : 0}
+                    ${corte.workshiftBalance.total ? corte.workshiftBalance.total: 0}
                   </td>
                   <td className="py-3 px-6">
                     <button

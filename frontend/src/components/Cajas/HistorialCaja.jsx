@@ -288,7 +288,7 @@ function HistorialCaja() {
                     </td>
                     <td className="text-red-500">
                       $
-                      { corte.totalCashWithdrawal && corte.totalCancelations
+                      { corte.totalCashWithdrawal || corte.totalCancelations
                         ?  "-" + (corte.totalCashWithdrawal + corte.totalCancelations)
                         : 0}
                     </td>

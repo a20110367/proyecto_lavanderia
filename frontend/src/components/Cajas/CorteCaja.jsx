@@ -634,10 +634,10 @@ function CorteCaja() {
                     ${corte.workshiftBalance.creditIncome ? corte.workshiftBalance.creditIncome : 0}
                   </td>
                   <td className="py-3 px-6 text-green-600">
-                    {corte.workshiftBalance.creditIncome && corte.workshiftBalance.cashIncome ? "+$" + (corte.workshiftBalance.cashIncome + corte.workshiftBalance.creditIncome) : 0}
+                    {corte.workshiftBalance.creditIncome || corte.workshiftBalance.cashIncome ? "+$" + (corte.workshiftBalance.cashIncome + corte.workshiftBalance.creditIncome) : 0}
                   </td>
                   <td className="py-3 px-6 text-red-500">
-                    {corte.workshiftBalance.totalCancelations && corte.workshiftBalance.totalwithdrawal ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
+                    {corte.workshiftBalance.totalCancelations || corte.workshiftBalance.totalwithdrawal ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
                   </td>
                   <td className="py-3 px-6 text-blue-500">
                     ${corte.workshiftBalance.total ? corte.workshiftBalance.total: 0}

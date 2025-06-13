@@ -463,8 +463,16 @@ const printOrderDetailIronTicket = async (order) => {
         let count = 0;
         let quant = 0;
 
+        let individualPieces = 0;
+
         const totalPackages = parseInt(order.pieces / 6) + parseInt(order.pieces % 6 != 0 ? 1 : 0);
         order.cart.forEach(async (detail, index) => {
+
+            if (detail.quantity < 6) {
+                individualPieces += 1;
+                return true;
+            }
+
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 
                 //EXTRAS
@@ -572,6 +580,46 @@ const printOrderDetailIronTicket = async (order) => {
                 count++;
             }
         })
+
+        if (individualPieces > 0) {
+            printer.drawLine()
+            printer.setTextSize(2, 2);
+            printer.bold(true)
+            printer.println('No. de Orden:')
+            printer.setTextSize(7, 7);
+            printer.println(`${order.id_order} - ${count + 1}`)
+            printer.setTextSize(2, 2);
+            printer.println(`Piezas: ${individualPieces}`)
+            printer.newLine()
+            printer.println(`Paquete: ${totalPackages}`)
+            printer.newLine()
+            printer.bold(false)
+            printer.newLine()
+            // printer.newLine()
+            // printer.setTextNormal();
+            printer.setTextDoubleHeight();
+            printer.println('Cliente:')
+            printer.println(`${order.client}`)
+            printer.newLine()
+            printer.println('Descripcion:')
+            printer.println(`PIEZAS INDIVIDUALES`)
+            printer.newLine()
+            printer.println(`Cantidad: ${totalPackages} - ${totalPackages}`)
+            printer.newLine()
+            printer.setTypeFontB();
+            printer.setTextSize(3, 2);
+            printer.println(`Total de Piezas:`)
+            printer.setTextNormal();
+            printer.newLine()
+            printer.setTextSize(3, 2);
+            printer.println(order.pieces)
+            printer.setTextDoubleHeight();
+            if (order.notes) {
+                printer.newLine()
+                printer.println(`Observaciones:`)
+                printer.println(`${order.notes}`)
+            }
+        }
 
 
         // // TERCER APROACH
@@ -1049,7 +1097,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
-            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome  ? '-' + cashCut.creditIncome : '0'}`)
+            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome ? '-' + cashCut.creditIncome : '0'}`)
             printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
             printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
             printer.setTextDoubleHeight();
@@ -1075,7 +1123,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Total Encargo Varios: ${services.others}`)
 
             printer.newLine()
-        
+
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
             printer.setTextDoubleHeight();

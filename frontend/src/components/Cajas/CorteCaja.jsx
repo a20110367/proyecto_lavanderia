@@ -833,7 +833,7 @@ function CorteCaja() {
               <p className="text-lg">
                 <span className="font-bold ">Piezas de Planchado hechas: </span>
                 {selectedCorte.serviceCashCut.ironPiecesDone
-                  ? (selectedCorte.serviceCashCut.ironPiecesDone + "Piezas")
+                  ? (selectedCorte.serviceCashCut.ironPiecesDone + " Piezas")
                   : "0 Piezas" }
               </p>
             </div>

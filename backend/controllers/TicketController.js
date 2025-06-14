@@ -1782,10 +1782,10 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(canceled.id_canceled);
         printer.newLine();
         printer.println(`FECHA DE CANCELACIÓN`)
-        printer.println(moment().format("DD/MM/YYYY - HH:MM"));
+        printer.println(moment().format("DD/MM/YYYY - HH:mm"));
         printer.newLine();
         printer.println(`No. de Orden CANCELADA:`);
-        printer.setTextSize(7, 7);
+        printer.setTextSize(4, 4);
         printer.println(canceled.id_order);
 
         printer.setTextNormal();
@@ -1832,6 +1832,17 @@ export const printCanceledOrder = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+export const printCanceledOrder1 = async (req, res) => {
+    try {
+        console.log(moment().format("DD/MM/YYYY - HH:MM"));
+        res.status(200).json({ msg:moment().format("DD/MM/YYYY - HH:mm") })
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
 
 const n2word = (number) => {
     try {

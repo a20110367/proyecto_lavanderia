@@ -135,10 +135,6 @@ function Retiro() {
           logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
         });
 
-        await api.post('/generateCashWithdrawalTicket', {
-          cashWithdrawal: cashWithdrawal,
-        })
-
         const nuevoRetiro = {
           id_cashWithdrawal: res.data.id_cashWithdrawal,
           amount: parseInt(monto),
@@ -149,6 +145,11 @@ function Retiro() {
 
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
+
+        // await api.post('/generateCashWithdrawalTicket', {
+        //   cashWithdrawal: cashWithdrawal,
+        // })
+
       }
     } catch (err) {
       console.error(err);

@@ -22,12 +22,12 @@ function Cancelacion() {
   const { cookies } = useAuth();
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
-  const [forcePage, setForcePage] = useState(0);
+  // const [forcePage, setForcePage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
-    setForcePage(selectedPage.selected);
+    // setForcePage(selectedPage.selected);
   };
 
   const fetcher = async () => {
@@ -153,7 +153,7 @@ function Cancelacion() {
           logEntry: `WARNING Cancelacion.jsx : ${cookies.username} has canceled an order of $${canceledOrder.totalPrice} with id: ${cancelRes.data.id_cancelledOrder}`
         });
 
-        setForcePage(0);
+        // setForcePage(0);
 
         const res = await api.get(`/orders/${orderId}`);
 
@@ -313,7 +313,7 @@ function Cancelacion() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
-          forcePage = {(forcePage || 0)}
+          // forcePage = {(forcePage || 0)}
         />
       </div>
     </div>

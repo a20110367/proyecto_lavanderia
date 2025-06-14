@@ -456,6 +456,7 @@ function CorteCaja() {
 
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
+    console.log(selectedCorte)
     try {
       if (selectedCorte) {
         console.log(selectedCorte);

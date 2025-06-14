@@ -456,49 +456,54 @@ function CorteCaja() {
 
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
-    console.log(selectedCorte)
     try {
       if (selectedCorte) {
         console.log(selectedCorte);
         const cashCut = {
           casher: cookies.username,
-          cashCutId: selectedCorte.workshiftBalance.id_cashCut,
+          cashCutId: selectedCorte.workshiftBalance.cashCutId,
           workShift: selectedCorte.workshiftBalance.workShift,
           initialCash: selectedCorte.workshiftBalance.initialCash,
-          totalCashWithdrawal: selectedCorte.workshiftBalance.totalCancellations,
-          total: selectedCorte.workshiftBalance.totalIncome,
+          totalwithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+          totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
+          total: selectedCorte.workshiftBalance.total,
           cashCutD: selectedCorte.workshiftBalance.cashCutD,
-          cashCutT: selectedCorte.cashCutT,
+          cashCutT: selectedCorte.workshiftBalance.cashCutT,
+          creditIncome: selectedCorte.workshiftBalance.creditIncome,
+          cashIncome: selectedCorte.workshiftBalance.cashIncome
         };
 
         const services = {
-          numberOfItems: selectedCorte.serviceCashCut.ordersPayed,
-          selfService: selectedCorte.serviceCashCut.totalAutoservicio,
-          laundry: selectedCorte.serviceCashCut.totalEncargo,
-          iron: selectedCorte.serviceCashCut.totalPlanchado,
-          dryCleaning: selectedCorte.serviceCashCut.totalTintoreria,
-          others: selectedCorte.serviceCashCut.totalOtrosEncargo,
-          totalIncome: selectedCorte.serviceCashCut.totalServiceIncome,
-          totalCash: selectedCorte.serviceCashCut.totalServiceCash,
-          totalCredit: selectedCorte.serviceCashCut.totalServiceCredit,
+          numberOfItems: selectedCorte.serviceCashCut.numberOfItems,
+          selfService: selectedCorte.serviceCashCut.selfService,
+          laundry: selectedCorte.serviceCashCut.laundry,
+          iron: selectedCorte.serviceCashCut.iron,
+          dryCleaning: selectedCorte.serviceCashCut.dryCleaning,
+          others: selectedCorte.serviceCashCut.others,
+          totalIncome: selectedCorte.serviceCashCut.totalIncome,
+          totalCash: selectedCorte.serviceCashCut.totalCash,
+          totalCredit: selectedCorte.serviceCashCut.totalCredit,
+          totalCashWithdrawal: selectedCorte.serviceCashCut.totalCashWithdrawal,
+          totalCancelations: selectedCorte.serviceCashCut.totalCancelations,
+          canceledOrders: selectedCorte.serviceCashCut.canceledOrders,
         };
 
         const products = {
-          numberOfItems: selectedCorte.suppliesCashCut.ordersPayedSupply,
-          soap: selectedCorte.suppliesCashCut.totalJabon,
-          suavitel: selectedCorte.suppliesCashCut.totalSuavitel,
-          pinol: selectedCorte.suppliesCashCut.totalPinol,
-          degreaser: selectedCorte.suppliesCashCut.totalDesengrasante,
-          chlorine: selectedCorte.suppliesCashCut.totalCloro,
-          sanitizer: selectedCorte.suppliesCashCut.totalSanitizante,
-          bag: selectedCorte.suppliesCashCut.totalBolsa,
-          reinforced: selectedCorte.suppliesCashCut.totalReforzado,
-          hook: selectedCorte.suppliesCashCut.totalGanchos,
-          wc: selectedCorte.suppliesCashCut.totalWC,
-          others: selectedCorte.suppliesCashCut.totalOtros,
-          totalIncome: selectedCorte.suppliesCashCut.totalSuppliesIncome,
-          totalCash: selectedCorte.suppliesCashCut.totalSuppliesCash,
-          totalCredit: selectedCorte.suppliesCashCut.totalSuppliesCredit,
+          numberOfItems: selectedCorte.suppliesCashCut.numberOfItems,
+          soap: selectedCorte.suppliesCashCut.soap,
+          suavitel: selectedCorte.suppliesCashCut.suavitel,
+          pinol: selectedCorte.suppliesCashCut.pinol,
+          degreaser: selectedCorte.suppliesCashCut.degreaser,
+          chlorine: selectedCorte.suppliesCashCut.chlorine,
+          sanitizer: selectedCorte.suppliesCashCut.sanitizer,
+          bag: selectedCorte.suppliesCashCut.bag,
+          reinforced: selectedCorte.suppliesCashCut.reinforced,
+          hook: selectedCorte.suppliesCashCut.hook,
+          wc: selectedCorte.suppliesCashCut.wc,
+          others: selectedCorte.suppliesCashCut.others,
+          totalIncome: selectedCorte.suppliesCashCut.totalIncome,
+          totalCash: selectedCorte.suppliesCashCut.totalCash,
+          totalCredit: selectedCorte.suppliesCashCut.totalCredit,
         };
 
         await api.post("/generateCashCutTicket", {

@@ -464,7 +464,7 @@ function CorteCaja() {
           cashCutId: selectedCorte.workshiftBalance.cashCutId,
           workShift: selectedCorte.workshiftBalance.workShift,
           initialCash: selectedCorte.workshiftBalance.initialCash,
-          totalwithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+          totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
           totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
           total: selectedCorte.workshiftBalance.total,
           cashCutD: selectedCorte.workshiftBalance.cashCutD,
@@ -486,6 +486,7 @@ function CorteCaja() {
           totalCashWithdrawal: selectedCorte.serviceCashCut.totalCashWithdrawal,
           totalCancelations: selectedCorte.serviceCashCut.totalCancelations,
           canceledOrders: selectedCorte.serviceCashCut.canceledOrders,
+          ironPiecesDone: selectedCorte.serviceCashCut.ironPiecesDone,
         };
 
         const products = {

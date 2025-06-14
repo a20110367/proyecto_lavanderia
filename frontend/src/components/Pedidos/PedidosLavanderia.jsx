@@ -576,7 +576,7 @@ const modifyCombinedWash = async (selectedWashMachine) => {
 
 const modifyCombinedDry = async (selectedDryMachine) => {
   localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine))
-  setLastWashMachine(selectedDryMachine);
+  setLastDryMachine(selectedDryMachine);
 }
 return (
   <div>

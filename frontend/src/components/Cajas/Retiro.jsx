@@ -82,72 +82,77 @@ function Retiro() {
   };
 
   const handleConfirmRetiro = async () => {
-    let isValid = true;
+    try {
+      let isValid = true;
 
-    if (!monto) {
-      setMontoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMontoError("");
-    }
-
-    if (!motivo) {
-      setMotivoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (!localStorage.getItem("cashCutId")) {
-      setMotivoError("No se ha inicializado la caja");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (isValid) {
-      const date = moment().format();
-
-      const res = await api.post("/cashWithdrawals", {
-        cashWithdrawalType: "withdrawal",
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        fk_user: cookies.token,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-      });
-      setVisible(false);
-
-      console.log(res)
-
-      const cashWithdrawal = {
-        cashWithdrawalType: "withdrawal",
-        id_cashWithdrawal: res.data.id_cashWithdrawal,
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        casher: cookies.username,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
+      if (!monto) {
+        setMontoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMontoError("");
       }
 
-      await api.post('/log/write', {
-        logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
-      });
+      if (!motivo) {
+        setMotivoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
 
-      // await api.post('/generateCashWithdrawalTicket', {
-      //   cashWithdrawal: cashWithdrawal,
-      // })
+      if (!localStorage.getItem("cashCutId")) {
+        setMotivoError("No se ha inicializado la caja");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
 
-      const nuevoRetiro = {
-        id_cashWithdrawal: res.data.id_cashWithdrawal,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-        user: { name: cookies.username },
-      };
+      if (isValid) {
+        const date = moment().format();
 
-      setRetiros([...retiros, nuevoRetiro]);
-      setFilteredRetiros([...retiros, nuevoRetiro]);
+        const res = await api.post("/cashWithdrawals", {
+          cashWithdrawalType: "withdrawal",
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          fk_user: cookies.token,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        });
+        setVisible(false);
+
+        console.log(res)
+
+        const cashWithdrawal = {
+          cashWithdrawalType: "withdrawal",
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          casher: cookies.username,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        }
+
+        await api.post('/log/write', {
+          logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
+        });
+
+        await api.post('/generateCashWithdrawalTicket', {
+          cashWithdrawal: cashWithdrawal,
+        })
+
+        const nuevoRetiro = {
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+          user: { name: cookies.username },
+        };
+
+        setRetiros([...retiros, nuevoRetiro]);
+        setFilteredRetiros([...retiros, nuevoRetiro]);
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error con la impresora", "Intente y conecter la impresora", "error");
     }
   };
 

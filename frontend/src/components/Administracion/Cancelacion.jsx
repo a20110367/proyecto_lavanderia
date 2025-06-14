@@ -22,11 +22,12 @@ function Cancelacion() {
   const { cookies } = useAuth();
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
-
+  const [forcePage, setForcePage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const fetcher = async () => {
@@ -69,9 +70,9 @@ function Cancelacion() {
     }
     console.log(cancelacion)
     setOrderId(cancelacion.id_order);
-    if(cancelacion.payStatus === "paid"){
+    if (cancelacion.payStatus === "paid") {
       setAmount(cancelacion.amount)
-    }else{
+    } else {
       setAmount(0)
     }
     setCanceledOrder(cancelacion)
@@ -103,7 +104,7 @@ function Cancelacion() {
           confirmButtonColor: "#034078",
         });
         isValid = false;
-        await api.post('/sendWarning',{
+        await api.post('/sendWarning', {
           canceledOrder: canceledOrder,
           casher: cookies.username,
           date: moment().format('DD/MM/YYYY'),
@@ -120,13 +121,13 @@ function Cancelacion() {
         setMotivoError("");
       }
 
-      
+
 
       if (isValid) {
-        if(!canceledOrder.express){
-          if((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0){
+        if (!canceledOrder.express) {
+          if ((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0) {
             localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
-          }else{
+          } else {
             localStorage.setItem("numberOfPieces", 0)
           }
         }
@@ -141,8 +142,8 @@ function Cancelacion() {
           title: "Orden Cancelada con Exito!",
           text: "Se elimino con exito la orden además de notificar al dueño.",
           icon: "success"
-        }); 
-        
+        });
+
         const cancelRes = await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
@@ -151,6 +152,8 @@ function Cancelacion() {
         await api.post('/log/write', {
           logEntry: `WARNING Cancelacion.jsx : ${cookies.username} has canceled an order of $${canceledOrder.totalPrice} with id: ${cancelRes.data.id_cancelledOrder}`
         });
+
+        setForcePage(0);
 
         const res = await api.get(`/orders/${orderId}`);
 
@@ -166,7 +169,7 @@ function Cancelacion() {
           }
         })
 
-        await api.post('/sendWarning',{
+        await api.post('/sendWarning', {
           canceledOrder: canceledOrder,
           casher: cookies.username,
           date: moment().format('DD/MM/YYYY'),
@@ -225,7 +228,7 @@ function Cancelacion() {
             .slice()
             .reverse()
             .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((cancelacion) => ( 
+            .map((cancelacion) => (
               <tr
                 className="bg-white border-b"
                 key={cancelacion.id_order}
@@ -250,7 +253,7 @@ function Cancelacion() {
                   >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
                   </button></td>
               </tr>
-          ))}
+            ))}
         </tbody>
       </table>
       <Modal
@@ -276,24 +279,24 @@ function Cancelacion() {
           </Button>,
         ]}
       >
-          <form>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2 ">
-                Motivo:
-              </label>
-              <Input
-                value={cause}
-                onChange={(e) => setCause(e.target.value)}
-                placeholder="Ingrese el motivo"
-                onInput={handleMotivoInput}
-              />
-              <p className="text-red-500">{motivoError}</p>
-            </div>
-            <div className="text-right mr-8">
-              <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderId}</span></p>
-              {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
-            </div>
-          </form>
+        <form>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2 ">
+              Motivo:
+            </label>
+            <Input
+              value={cause}
+              onChange={(e) => setCause(e.target.value)}
+              placeholder="Ingrese el motivo"
+              onInput={handleMotivoInput}
+            />
+            <p className="text-red-500">{motivoError}</p>
+          </div>
+          <div className="text-right mr-8">
+            <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderId}</span></p>
+            {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
+          </div>
+        </form>
       </Modal>
       <div className="flex justify-center mt-4 mb-4">
         <ReactPaginate
@@ -310,6 +313,7 @@ function Cancelacion() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
     </div>

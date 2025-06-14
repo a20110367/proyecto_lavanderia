@@ -128,9 +128,6 @@ function CorteCaja() {
       //   `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
       // );
 
-      console.log(response)
-      // console.log(supplyResponse)
-
       const servicesRes = response.data.serviceCashCut;
       const suppliesRes = response.data.suppliesCashCut;
       const generalRes = response.data.workshiftBalance;
@@ -367,18 +364,8 @@ function CorteCaja() {
 
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
-      const res = await api.get(`/calculateParcialCashCut/${cashCutId}`);
-      console.log(res.data)
-      // const response = await api.get(`/calculateCashCut/${cashCutId}`);
-      // const supplyResponse = await api.get(
-      //   `/calculateSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
-      // );
+      const response = await api.get(`/calculateParcialCashCut/${cashCutId}`);
 
-      const corteSupply = res.data.suppliesCashCut;
-      const corte = res.data.serviceCashCut;
-      const workshift = res.data.workshiftBalance;
-
-      // const nuevoCorte = {
       //   ...corte,
       //   id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
       //   id_cashCut: parseInt(localStorage.getItem("cashCutId")),
@@ -388,52 +375,58 @@ function CorteCaja() {
       // setCortes([nuevoCorte]);
       setPartialCorteDialogVisible(false);
 
-      const cashCut = {
+      const servicesRes = response.data.serviceCashCut;
+      const suppliesRes = response.data.suppliesCashCut;
+      const generalRes = response.data.workshiftBalance;
+
+      const workshiftBalance = {
+        id_cashCut: cashCutId,
+        id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
         casher: cookies.username,
-        cashCutId: selectedCorte.workshiftBalance.cashCutId,
-        workShift: selectedCorte.workshiftBalance.workShift,
-        initialCash: selectedCorte.workshiftBalance.initialCash,
-        totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
-        totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
-        total: selectedCorte.workshiftBalance.total,
-        cashCutD: selectedCorte.workshiftBalance.cashCutD,
-        cashCutT: selectedCorte.workshiftBalance.cashCutT,
-        creditIncome: selectedCorte.workshiftBalance.creditIncome,
-        cashIncome: selectedCorte.workshiftBalance.cashIncome
+        cashCutId: generalRes.id_cashCut,
+        workShift: workShift,
+        initialCash: generalRes.initialCash,
+        total: generalRes.totalIncome,
+        cashCutD: response.data.cashCutD,
+        cashCutT: response.data.cashCutT,
+        totalCancelations: generalRes.cancellations,
+        totalwithdrawal: generalRes.withdrawal,
+        creditIncome: generalRes.creditIncome,
+        cashIncome: generalRes.cashIncome
       };
 
-      const services = {
-        numberOfItems: selectedCorte.serviceCashCut.numberOfItems,
-        selfService: selectedCorte.serviceCashCut.selfService,
-        laundry: selectedCorte.serviceCashCut.laundry,
-        iron: selectedCorte.serviceCashCut.iron,
-        dryCleaning: selectedCorte.serviceCashCut.dryCleaning,
-        others: selectedCorte.serviceCashCut.others,
-        totalIncome: selectedCorte.serviceCashCut.totalIncome,
-        totalCash: selectedCorte.serviceCashCut.totalCash,
-        totalCredit: selectedCorte.serviceCashCut.totalCredit,
-        totalCashWithdrawal: selectedCorte.serviceCashCut.totalCashWithdrawal,
-        totalCancelations: selectedCorte.serviceCashCut.totalCancelations,
-        canceledOrders: selectedCorte.serviceCashCut.canceledOrders,
-        ironPiecesDone: selectedCorte.serviceCashCut.ironPiecesDone,
+      const serviceCashCut = {
+        numberOfItems: servicesRes.ordersPayed,
+        selfService: servicesRes.totalAutoservicio,
+        laundry: servicesRes.totalEncargo,
+        iron: servicesRes.totalPlanchado,
+        dryCleaning: servicesRes.totalTintoreria,
+        others: servicesRes.totalOtrosEncargo,
+        totalIncome: servicesRes.totalServiceIncome,
+        totalCash: servicesRes.totalServiceCash,
+        totalCredit: servicesRes.totalServiceCredit,
+        canceledOrders: servicesRes.ordersCancelled,
+        totalCancelations: servicesRes.totalCancelations,
+        totalCashWithdrawal: servicesRes.totalCashWithdrawal,
+        ironPiecesDone: servicesRes.ironPiecesDone,
       };
 
-      const products = {
-        numberOfItems: selectedCorte.suppliesCashCut.numberOfItems,
-        soap: selectedCorte.suppliesCashCut.soap,
-        suavitel: selectedCorte.suppliesCashCut.suavitel,
-        pinol: selectedCorte.suppliesCashCut.pinol,
-        degreaser: selectedCorte.suppliesCashCut.degreaser,
-        chlorine: selectedCorte.suppliesCashCut.chlorine,
-        sanitizer: selectedCorte.suppliesCashCut.sanitizer,
-        bag: selectedCorte.suppliesCashCut.bag,
-        reinforced: selectedCorte.suppliesCashCut.reinforced,
-        hook: selectedCorte.suppliesCashCut.hook,
-        wc: selectedCorte.suppliesCashCut.wc,
-        others: selectedCorte.suppliesCashCut.others,
-        totalIncome: selectedCorte.suppliesCashCut.totalIncome,
-        totalCash: selectedCorte.suppliesCashCut.totalCash,
-        totalCredit: selectedCorte.suppliesCashCut.totalCredit,
+      const suppliesCashCut = {
+        numberOfItems: suppliesRes.ordersPayedSupply,
+        soap: suppliesRes.totalJabon,
+        suavitel: suppliesRes.totalSuavitel,
+        pinol: suppliesRes.totalPinol,
+        degreaser: suppliesRes.totalDesengrasante,
+        chlorine: suppliesRes.totalCloro,
+        sanitizer: suppliesRes.totalSanitizante,
+        bag: suppliesRes.totalBolsa,
+        reinforced: suppliesRes.totalReforzado,
+        hook: suppliesRes.totalGanchos,
+        wc: suppliesRes.totalWC,
+        others: suppliesRes.totalOtros,
+        totalIncome: suppliesRes.totalSuppliesIncome,
+        totalCash: suppliesRes.totalSuppliesCash,
+        totalCredit: suppliesRes.totalSuppliesCredit,
       };
 
       await api.post('/log/write', {

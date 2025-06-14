@@ -264,7 +264,7 @@ function PedidosLavanderia() {
       //   freeForUse: false,
       // });
 
-      !combinedWash ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
+      !combinedWash ? modifyCombinedWash(selectedWashMachine) : console.log("NOT TOGETHER");
       // lastWashMachine.machineNumber === 0 || lastWashMachine != selectedWashMachine ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
 
       const updatedPedidos = pedidos.map((p) =>
@@ -399,7 +399,7 @@ function PedidosLavanderia() {
     //   freeForUse: false,
     // });
 
-    !combinedDry ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) : console.log("TOGETHER");
+    !combinedDry ? modifyCombinedDry(selectedDryMachine) : console.log("TOGETHER");
 
     await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
       combinedWash: await selectedPedido.combinedWash,
@@ -569,6 +569,15 @@ const hideDryerModal = async () => {
   setShowDryerSelection(false);
 };
 
+const modifyCombinedWash = async (selectedWashMachine) => {
+  localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine))
+  setLastWashMachine(selectedWashMachine);
+}
+
+const modifyCombinedDry = async (selectedDryMachine) => {
+  localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine))
+  setLastWashMachine(selectedDryMachine);
+}
 return (
   <div>
     <div className="mb-3">

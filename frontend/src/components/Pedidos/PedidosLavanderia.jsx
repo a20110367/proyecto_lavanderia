@@ -36,6 +36,7 @@ function PedidosLavanderia() {
   const [notificationMessage, setNotificationMessage] = useState(false);
   const [combinedWash, setCombinedWash] = useState(false);
   const [combinedDry, setCombinedDry] = useState(false);
+  const [resetPage, setResetPage] = useState(0);
   // const [lastDryMachine, setLastDryMachine] = useState({
   //   id_machine: 0,
   //   machineNumber: 0,
@@ -82,6 +83,7 @@ function PedidosLavanderia() {
   const endIndex = startIndex + itemsPerPage;
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setResetPage(selectedPage.selected);
   };
   const [showDryerSelection, setShowDryerSelection] = useState(false);
 
@@ -235,6 +237,7 @@ function PedidosLavanderia() {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
+      setResetPage(0);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -408,6 +411,7 @@ function PedidosLavanderia() {
       fk_idDryMachine: selectedDryMachine.id_machine,
       fk_idStaffMember: cookies.token,
     });
+    setResetPage(0);
   } catch (error) {
     console.error("Error al confirmar la secadora:", error);
   }
@@ -474,6 +478,7 @@ const handleClothesLineDry = (pedido) => {
         });
       }
     });
+    setResetPage(0);
   } catch (err) {
     console.error(err);
   }
@@ -554,6 +559,7 @@ const handleFinishProcess = async (pedido) => {
         showNotification(`Tarea del Pedido finalizada correctamente`);
       }
     }
+    setResetPage(0);
   } catch (err) {
     console.log(err);
   }
@@ -780,6 +786,7 @@ return (
         previousLabel="Anterior"
         nextLabel="Siguiente"
         breakLabel="..."
+        forcePage = {(resetPage || 0)}
         pageCount={Math.ceil(
           filteredPedidos.filter(
             (pedido) =>

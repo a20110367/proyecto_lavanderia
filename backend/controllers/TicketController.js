@@ -411,7 +411,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTextSize(2, 2);
                 printer.bold(true)
                 printer.println('No. de Orden:')
-                printer.setTextSize(7, 7);
+                printer.setTextSize(4, 4);
                 printer.println(`${order.id_order}-${count + 1}`)
                 printer.setTextSize(2, 2);
                 printer.bold(false)

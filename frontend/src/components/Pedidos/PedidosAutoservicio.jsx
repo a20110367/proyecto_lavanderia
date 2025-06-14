@@ -46,9 +46,11 @@ function PedidosAutoservicio() {
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const [forcePage, setForcePage] = useState(0);
   const { cookies } = useAuth();
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const checkShelly = async (machine) => {
@@ -256,6 +258,7 @@ function PedidosAutoservicio() {
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al actualizar el pedido o la máquina:", error);
     }
@@ -305,6 +308,7 @@ function PedidosAutoservicio() {
       });
 
       setShowMachineName(false);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -510,6 +514,7 @@ function PedidosAutoservicio() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
 

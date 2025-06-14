@@ -32,8 +32,10 @@ function PedidosTintoreria() {
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const handlePageChange = (selectedPage) => {
+  const [forcePage, setForcePage] = useState(0);
+ const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const fetcher = async () => {
@@ -119,6 +121,7 @@ function PedidosTintoreria() {
         fk_idStaffMemberDelivery: cookies.token,
       });
       showNotification(`Pedido iniciado`);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -164,6 +167,7 @@ function PedidosTintoreria() {
         text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
         warning: false,
       });
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -342,6 +346,7 @@ function PedidosTintoreria() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
       <Modal

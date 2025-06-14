@@ -468,8 +468,8 @@ const printOrderDetailIronTicket = async (order) => {
         const totalPackages = parseInt(order.pieces / 6) + parseInt(order.pieces % 6 != 0 ? 1 : 0);
         order.cart.forEach(async (detail, index) => {
 
-            if (detail.quantity < 6 && order.serviceType === "planchado") {
-                individualPieces += 1;
+            if (detail.pieces < 6 && order.serviceType === "planchado") {
+                individualPieces += detail.quantity;
                 return true;
             }
 

@@ -390,53 +390,50 @@ function CorteCaja() {
 
       const cashCut = {
         casher: cookies.username,
-        cashCutId: parseInt(localStorage.getItem("cashCutId")),
-        workShift: corte.workShift,
-        cashCutD: corte.cashCutD,
-        cashCutT: corte.cashCutT,
-        ironPiecesDone: corte.ironPiecesDone,
-        pettyCashBalance: corte.pettyCashBalance,
-
-        initialCash: workshift.initialCash,
-        cashIncome: workshift.cashIncome,
-        creditIncome: workShift.creditIncome,
-        totalCashBalance: workshift.totalCashBalance,
-        totalIncome: workshift.totalIncome,
-        withdrawal: workshift.withdrawal,
-        cancellations: workshift.cancellations,
+        cashCutId: selectedCorte.workshiftBalance.cashCutId,
+        workShift: selectedCorte.workshiftBalance.workShift,
+        initialCash: selectedCorte.workshiftBalance.initialCash,
+        totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+        totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
+        total: selectedCorte.workshiftBalance.total,
+        cashCutD: selectedCorte.workshiftBalance.cashCutD,
+        cashCutT: selectedCorte.workshiftBalance.cashCutT,
+        creditIncome: selectedCorte.workshiftBalance.creditIncome,
+        cashIncome: selectedCorte.workshiftBalance.cashIncome
       };
 
       const services = {
-        numberOfItems: corte.ordersPayed,
-        selfService: corte.totalAutoservicio,
-        laundry: corte.totalEncargo,
-        iron: corte.totalPlanchado,
-        dryCleaning: corte.totalTintoreria,
-        others: corte.totalOtrosEncargo,
-        totalIncome: corte.totalServiceIncome,
-        totalCash: corte.totalServiceCash,
-        totalCredit: corte.totalServiceCredit,
-        totalServiceBalance: corte.totalServiceBalance,
-        totalCancelations: corte.totalCancelations,
-        totalCashWithdrawal: corte.totalCashWithdrawal,
+        numberOfItems: selectedCorte.serviceCashCut.numberOfItems,
+        selfService: selectedCorte.serviceCashCut.selfService,
+        laundry: selectedCorte.serviceCashCut.laundry,
+        iron: selectedCorte.serviceCashCut.iron,
+        dryCleaning: selectedCorte.serviceCashCut.dryCleaning,
+        others: selectedCorte.serviceCashCut.others,
+        totalIncome: selectedCorte.serviceCashCut.totalIncome,
+        totalCash: selectedCorte.serviceCashCut.totalCash,
+        totalCredit: selectedCorte.serviceCashCut.totalCredit,
+        totalCashWithdrawal: selectedCorte.serviceCashCut.totalCashWithdrawal,
+        totalCancelations: selectedCorte.serviceCashCut.totalCancelations,
+        canceledOrders: selectedCorte.serviceCashCut.canceledOrders,
+        ironPiecesDone: selectedCorte.serviceCashCut.ironPiecesDone,
       };
 
       const products = {
-        numberOfItems: corteSupply.ordersPayedSupply,
-        soap: corteSupply.totalJabon,
-        suavitel: corteSupply.totalSuavitel,
-        pinol: corteSupply.totalPinol,
-        degreaser: corteSupply.totalDesengrasante,
-        chlorine: corteSupply.totalCloro,
-        sanitizer: corteSupply.totalSanitizante,
-        bag: corteSupply.totalBolsa,
-        reinforced: corteSupply.totalReforzado,
-        hook: corteSupply.totalGanchos,
-        wc: corteSupply.totalWC,
-        others: corteSupply.totalOtros,
-        totalIncome: corteSupply.totalSuppliesIncome,
-        totalCash: corteSupply.totalSuppliesCash,
-        totalCredit: corteSupply.totalSuppliesCredit,
+        numberOfItems: selectedCorte.suppliesCashCut.numberOfItems,
+        soap: selectedCorte.suppliesCashCut.soap,
+        suavitel: selectedCorte.suppliesCashCut.suavitel,
+        pinol: selectedCorte.suppliesCashCut.pinol,
+        degreaser: selectedCorte.suppliesCashCut.degreaser,
+        chlorine: selectedCorte.suppliesCashCut.chlorine,
+        sanitizer: selectedCorte.suppliesCashCut.sanitizer,
+        bag: selectedCorte.suppliesCashCut.bag,
+        reinforced: selectedCorte.suppliesCashCut.reinforced,
+        hook: selectedCorte.suppliesCashCut.hook,
+        wc: selectedCorte.suppliesCashCut.wc,
+        others: selectedCorte.suppliesCashCut.others,
+        totalIncome: selectedCorte.suppliesCashCut.totalIncome,
+        totalCash: selectedCorte.suppliesCashCut.totalCash,
+        totalCredit: selectedCorte.suppliesCashCut.totalCredit,
       };
 
       await api.post('/log/write', {
@@ -647,7 +644,7 @@ function CorteCaja() {
                     {corte.workshiftBalance.totalCancelations || corte.workshiftBalance.totalwithdrawal ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
                   </td>
                   <td className="py-3 px-6 text-blue-500">
-                    ${corte.workshiftBalance.total ? corte.workshiftBalance.total: 0}
+                    ${corte.workshiftBalance.total ? corte.workshiftBalance.total : 0}
                   </td>
                   <td className="py-3 px-6">
                     <button
@@ -841,7 +838,7 @@ function CorteCaja() {
                 <span className="font-bold ">Piezas de Planchado hechas: </span>
                 {selectedCorte.serviceCashCut.ironPiecesDone
                   ? (selectedCorte.serviceCashCut.ironPiecesDone + " Piezas")
-                  : "0 Piezas" }
+                  : "0 Piezas"}
               </p>
             </div>
             {/* Segunda Columna */}

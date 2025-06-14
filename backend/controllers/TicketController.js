@@ -430,7 +430,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.setTypeFontB();
                 printer.setTextSize(3, 2);
-                printer.println(`Total de Elementos:`)
+                printer.println(`No. de Servicios`)
                 printer.setTextNormal();
                 printer.newLine()
                 printer.setTextSize(3, 2);
@@ -490,7 +490,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(2, 2);
                     printer.bold(true)
                     printer.println('No. de Orden:')
-                    printer.setTextSize(7, 7);
+                    printer.setTextSize(4, 4);
                     printer.println(`${order.id_order}-${count + 1}`)
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
@@ -538,8 +538,8 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextSize(2, 2);
                         printer.bold(true)
                         printer.println('No. de Orden:')
-                        printer.setTextSize(7, 7);
-                        printer.println(`${order.id_order} - ${count + 1}`)
+                        printer.setTextSize(4, 4);
+                        printer.println(`${order.id_order}-${count + 1}`)
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
@@ -586,8 +586,8 @@ const printOrderDetailIronTicket = async (order) => {
             printer.setTextSize(2, 2);
             printer.bold(true)
             printer.println('No. de Orden:')
-            printer.setTextSize(7, 7);
-            printer.println(`${order.id_order} - ${count + 1}`)
+            printer.setTextSize(4, 4);
+            printer.println(`${order.id_order}-${count + 1}`)
             printer.setTextSize(2, 2);
             printer.println(`Piezas: ${individualPieces}`)
             printer.newLine()
@@ -619,6 +619,7 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.println(`Observaciones:`)
                 printer.println(`${order.notes}`)
             }
+            printer.cut();
         }
 
 

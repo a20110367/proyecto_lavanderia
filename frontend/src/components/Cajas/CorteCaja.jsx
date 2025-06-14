@@ -434,9 +434,9 @@ function CorteCaja() {
       });
 
       await api.post("/generatePartialCashCutTicket", {
-        cashCut: cashCut,
-        services: services,
-        products: products,
+        cashCut: workshiftBalance,
+        services: serviceCashCut,
+        products: suppliesCashCut,
       });
 
     } catch (err) {

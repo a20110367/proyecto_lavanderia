@@ -365,7 +365,6 @@ function CorteCaja() {
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/calculateParcialCashCut/${cashCutId}`);
-      console.log(response)
 
       //   ...corte,
       //   id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),

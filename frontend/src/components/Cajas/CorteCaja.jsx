@@ -365,6 +365,7 @@ function CorteCaja() {
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
       const response = await api.get(`/calculateParcialCashCut/${cashCutId}`);
+      console.log(response)
 
       //   ...corte,
       //   id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
@@ -386,13 +387,14 @@ function CorteCaja() {
         cashCutId: generalRes.id_cashCut,
         workShift: workShift,
         initialCash: generalRes.initialCash,
-        total: generalRes.totalIncome,
+        totalIncome: generalRes.totalIncome,
         cashCutD: response.data.cashCutD,
         cashCutT: response.data.cashCutT,
         totalCancelations: generalRes.cancellations,
         totalwithdrawal: generalRes.withdrawal,
         creditIncome: generalRes.creditIncome,
-        cashIncome: generalRes.cashIncome
+        cashIncome: generalRes.cashIncome,
+        totalCashBalance: generalRes.totalCashBalance,
       };
 
       const serviceCashCut = {

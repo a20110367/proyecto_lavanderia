@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function AddServiceLavanderia() {
@@ -18,14 +20,18 @@ function AddServiceLavanderia() {
   const [dryCycleTime, setDryCycleTime] = useState(0);
   const [dryWeight, setDryWeight] = useState(0);
   const [category, setCategory] = useState("Encargo");
+  const [priceCredit, setPriceCredit] = useState(0);
+  const [dryFlat, setDryFlat] = useState(false);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Encargo debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
+  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
+
+  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 
 
   const handleSubmit = async (e) => {
@@ -36,23 +42,24 @@ function AddServiceLavanderia() {
     );
 
     if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de Encargo.");
+      setErrMsg("Error, La Descripción de Encargo debe contenar alguna de estas palabras: ");
       return;
     }
 
     const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
-    description.toLowerCase().includes(keyword)
-  );
+      description.toLowerCase().includes(keyword)
+    );
 
-  if (hasForbiddenKeyword) {
-    setErrMsg("Error, no puedes añadir servicios Varios.");
-    return;
-  }
+    if (hasForbiddenKeyword) {
+      setErrMsg("Error, no puedes añadir servicios Varios.");
+      return;
+    }
 
     try {
       await api.post("/servicesLaundry", {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         washWeight: parseInt(washWeight),
         washCycleTime: parseInt(washCycleTime),
         category_id: 2,
@@ -73,6 +80,12 @@ function AddServiceLavanderia() {
       setErrMsg("Failed to add service.");
     }
   };
+
+  const setDryFlatTrue = () => {
+    setDryFlat(!dryFlat);
+    setDryWeight(0);
+    setDryCycleTime(0);
+  }
 
   return (
     <div className="signup-form">
@@ -108,26 +121,46 @@ function AddServiceLavanderia() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">{errMsg}</p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex items-center">
+                <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
-                step="0.1"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex items-center">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -156,36 +189,51 @@ function AddServiceLavanderia() {
                 value={washWeight}
               />
 
+              <div className="flex my-2 items-center">
+                <label className="form-lbl" htmlFor="dryFlat">
+                  Secar Tendido
+                </label>
+                <input
+                  className="serviceCheckbox"
+                  type="checkbox"
+                  id='dryFlat'
+                  name="dryFlat"
+                  onChange={(e) => setDryFlatTrue(!dryFlat)}
+                />
+              </div>
+
               <label className="form-lbl" htmlFor="dryCycleTime">
                 Tiempo de Secado (minutos):
               </label>
               <input
-                className="form-input"
+                className={`${dryFlat ? "form-input bg-gray-200" : "form-input"}`}
                 type="number"
                 id="dryCycleTime"
                 ref={drytimeRef}
                 onChange={(e) => setDryCycleTime(e.target.value)}
                 value={dryCycleTime}
                 required
+                disabled = {dryFlat}
               />
 
               <label className="form-lbl" htmlFor="dryWeight">
                 Peso de Secado (Kilogramos):
               </label>
               <input
-                className="form-input"
+                className={`${dryFlat ? "form-input bg-gray-200" : "form-input"}`}
                 type="number"
                 id="dryWeight"
                 ref={dryweightRef}
                 onChange={(e) => setDryWeight(e.target.value)}
                 value={dryWeight}
+                disabled = {dryFlat}
               />
 
               <label className="form-lbl" htmlFor="category">
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Encargo"

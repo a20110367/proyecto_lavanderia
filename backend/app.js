@@ -12,7 +12,7 @@ import ServiceIronRoute from './routes/ServiceIronRoute.js'
 import ServiceSelfServiceRoute from './routes/ServiceSelfServiceRoute.js'
 import MachineRoute from './routes/MachineRoute.js'
 import IronStationRoute from './routes/IronStationRoute.js'
-import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
+// import LaundryQueueRoute from './routes/LaundryQueueRoute.js'
 import OrderRoute from './routes/OrderRoute.js'
 import CategoryRoute from './routes/CategoryRoute.js'
 import StaffMemberRoute from './routes/StaffMemberRoute.js'
@@ -29,14 +29,18 @@ import IronControlRoute from './routes/IronControlRoute.js'
 import ServiceDryclean from './routes/ServiceDrycleanRoute.js'
 import OtherService from './routes/ServiceOtherServiceRoute.js'
 import IronCutRoute from './routes/IronCutRoute.js';
+import RefundRoute from './routes/RefundRoute.js';
+import WorkshiftBalanceRoute from './routes/WorkshiftBalanceRoute.js';
 
-import SupplyRoute  from "./routes/SupplyRoute.js";
-import SupplyCashCutRoute  from "./routes/SupplyCashCutRoute.js";
-import SupplyOrderDetailRoute  from "./routes/SupplyOrderDetailRoute.js";
-import SupplyOrderRoute  from "./routes/SupplyOrderRoute.js";
-import SupplyPaymentRoute  from "./routes/SupplyPaymentRoute.js";
+import SupplyRoute from "./routes/SupplyRoute.js";
+import SupplyCashCutRoute from "./routes/SupplyCashCutRoute.js";
+import SupplyOrderDetailRoute from "./routes/SupplyOrderDetailRoute.js";
+import SupplyOrderRoute from "./routes/SupplyOrderRoute.js";
+import SupplyPaymentRoute from "./routes/SupplyPaymentRoute.js";
 
 import Ticket from './routes/TicketRoute.js'
+import Reports from './routes/ReportsRoute.js'
+import LogRoute from './routes/LogRoute.js'
 
 dotenv.config({ path: '.env' });
 const app = express();
@@ -45,6 +49,8 @@ app.use(cors());
 app.use(express.json());
 
 //Uso de rutas de por la aplicación
+app.use(LogRoute)
+
 app.use(UserRoute)
 app.use(ClientRoute)
 app.use(QueueRoute)
@@ -60,7 +66,7 @@ app.use(StaffMemberRoute)
 app.use(CashCutRoute)
 app.use(PaymentRoute)
 app.use(DeliveryDetailRoute)
-app.use(LaundryQueueRoute)
+//app.use(LaundryQueueRoute)
 app.use(SelfServiceQueueRoute)
 app.use(ServiceDetailRoute)
 app.use(ServiceOrderDetailRoute)
@@ -77,7 +83,9 @@ app.use(SupplyPaymentRoute)
 app.use(SupplyCashCutRoute)
 app.use(SupplyOrderRoute)
 app.use(IronCutRoute)
-
+app.use(Reports)
+app.use(RefundRoute)
+app.use(WorkshiftBalanceRoute)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

@@ -1,18 +1,31 @@
 import { PrismaClient } from "@prisma/client";
+import moment from 'moment'
 
 const prisma = new PrismaClient();
 
 export const getIronCuts = async (req, res) => {
+
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+
+
     try {
         const response = await prisma.ironCut.findMany({
 
-            take: 730,
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
+
         });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });
     }
 }
+
+
 
 export const getIronCutById = async (req, res) => {
     try {
@@ -29,11 +42,10 @@ export const getIronCutById = async (req, res) => {
 
 export const getLastIronCut = async (req, res) => {
     try {
-        const response = await prisma.ironCut.findMany({
-            orderBy: {
-                id_ironCut: 'desc',
-            },
-            take: 1,
+        const response = await prisma.ironCut.findFirst({
+
+            take: -1,
+        
         });
         res.status(200).json(response);
     } catch (e) {
@@ -407,26 +419,11 @@ export const calculateIronCut = async (req, res) => {
             ironCutE4E._sum.ironPieces = 0
 
 
-        // const response =
-        // {
-        //     "station1R": ironCutE1R._sum.ironPieces,
-        //     "station1E": ironCutE1E._sum.ironPieces,
-        //     "station2R": ironCutE2R._sum.ironPieces,
-        //     "station2E": ironCutE2E._sum.ironPieces,
-        //     "station3R": ironCutE3R._sum.ironPieces,
-        //     "station3E": ironCutE3E._sum.ironPieces,
-        //     "station4R": ironCutE4R._sum.ironPieces,
-        //     "station4E": ironCutE4E._sum.ironPieces,
-        //     "startingDay": startDate.created,
-        //     "endDay": today
-
-
-        // }
         console.log(startDate)
-        if(startDate){
+        if (startDate) {
             const ironCutCreate = await prisma.ironCut.create({
                 data: {
-    
+
                     "station1R": ironCutE1R._sum.ironPieces,
                     "station1E": ironCutE1E._sum.ironPieces,
                     "station2R": ironCutE2R._sum.ironPieces,
@@ -437,55 +434,55 @@ export const calculateIronCut = async (req, res) => {
                     "station4E": ironCutE4E._sum.ironPieces,
                     "startingDay": startDate.created,
                     "endDay": today
-    
+
                 },
-    
+
             });
-    
+
             res.status(200).json(ironCutCreate);
-        }else{
+        } else {
             res.status(200).json(false);
         }
-        
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
 }
 
-//Actualiza los contadores al inicio de un dia de trabajo
-export const updateDiaryIron = async (req, res) => {
+// //Actualiza los contadores al inicio de un dia de trabajo
+// export const updateDiaryIron = async (req, res) => {
 
-    try {
-        const ironCutBefore = await prisma.ironCut.findMany({
-            orderBy: {
-                id_ironCut: 'desc',
-            },
-            skip: 1,
-            take: 1,
-        });
+//     try {
+//         const ironCutBefore = await prisma.ironCut.findMany({
+//             orderBy: {
+//                 id_ironCut: 'desc',
+//             },
+//             skip: 1,
+//             take: 1,
+//         });
 
-        const piecesToday = ironCutBefore[0].piecesTomorrow + ironCutBefore[0].piecesLeft;
+//         const piecesToday = ironCutBefore[0].piecesTomorrow + ironCutBefore[0].piecesLeft;
 
-        const ironCutCurrent = await prisma.ironCut.update({
+//         const ironCutCurrent = await prisma.ironCut.update({
 
-            where: {
-                id_ironCut: Number(req.params.id),
-            },
+//             where: {
+//                 id_ironCut: Number(req.params.id),
+//             },
 
-            data: {
-                piecesToday: piecesToday,
-                piecesLeft: piecesToday
-            }
+//             data: {
+//                 piecesToday: piecesToday,
+//                 piecesLeft: piecesToday
+//             }
 
-        });
+//         });
 
 
 
-        res.status(200).json(ironCutCurrent);
-    } catch (e) {
-        res.status(400).json({ msg: e.message });
-    }
-}
+//         res.status(200).json(ironCutCurrent);
+//     } catch (e) {
+//         res.status(400).json({ msg: e.message });
+//     }
+// }
 //Actualiza las piezas hechas en el dia, y por lo tanto las quita de backlog de planchado
 //REVISAR POR FALLAS DE DISEÑO LOGICO
 export const updateCashCutIron = async (req, res) => {

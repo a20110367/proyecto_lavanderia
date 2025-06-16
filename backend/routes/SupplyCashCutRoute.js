@@ -2,13 +2,13 @@ import express from 'express';
 import {
     getSupplyCashCuts,
     getSupplyCashCutsById,
-    createCashCut,
+    createSupplyCashCut,
     updateSupplyCashCut,
     deleteSupplyCashCut,
-    calculateSupplyCashCut,
-    closeCashCut,
-    getCashCutStatus,
-    getLastCashCut
+    calculateCashCut,
+    closeSupplyCashCut,
+    getSupplyCashCutStatus,
+    getSupplyLastCashCut
 } from "../controllers/SupplyCashCutController.js";
 
 const router = express.Router();
@@ -16,15 +16,15 @@ const router = express.Router();
 router.get('/supplyCashCuts', getSupplyCashCuts);
 router.get('/supplyCashCuts/:id', getSupplyCashCutsById);
 
-router.post('/supplyCashCuts', createCashCut);
+router.post('/supplyCashCuts', createSupplyCashCut);
 
 router.patch('/supplyCashCuts/:id', updateSupplyCashCut);
 
 router.delete('/supplyCashCuts/:id', deleteSupplyCashCut);
 
-router.get('/calculateSupplyCashCut/:id', calculateSupplyCashCut);
-router.get('/getSupplyCashCutStatus', getCashCutStatus);
-router.get('/getSupplyLastCashCut', getLastCashCut);
-router.get('/closeSupplyCashCut/:id', closeCashCut);
+router.get('/calculateSupplyCashCut/:id', calculateCashCut);
+router.get('/getSupplyCashCutStatus', getSupplyCashCutStatus);
+router.get('/getSupplyLastCashCut', getSupplyLastCashCut);
+router.get('/closeSupplyCashCut/:id', closeSupplyCashCut);
 
 export default router;

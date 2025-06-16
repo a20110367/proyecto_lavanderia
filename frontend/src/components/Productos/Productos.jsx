@@ -29,6 +29,7 @@ function Productos() {
   const { mutate } = useSWRConfig();
   const fetcher = async () => {
     const response = await api.get("/supplies");
+    console.log(response)
     return response.data;
   };
 
@@ -74,8 +75,8 @@ function Productos() {
                 <th>ID Producto</th>
                 <th>Descripción</th>
                 <th>Categoria</th>
-                <th>Medida</th>
-                <th>Unidades</th>
+                <th>Cantidad</th>
+                <th>Unidad de Medida</th>
                 <th>Precio</th>
                 <th>Opciones</th>
               </tr>
@@ -88,8 +89,8 @@ function Productos() {
                 )
                 .map((service, index) => (
                   <tr key={service.id_supply}>
-                    <td>{index + 1}</td>
-                    <td>{service.description}</td>
+                    <td>{service.id_supply}</td>
+                    <td className="font-bold">{service.description}</td>
                     <td>
                       {service.category === "jabon"
                         ? "Jabon"
@@ -114,6 +115,7 @@ function Productos() {
                         : "Otro"}
                     </td>
 
+                    <td>{service.value}</td>
                     <td>
                       {service.unit === "mililitros"
                         ? "Mililitros"
@@ -123,7 +125,6 @@ function Productos() {
                         ? "Piezas"
                         : "Otro"}
                     </td>
-                    <td>{service.value}</td>
                     <td>${service.price}</td>
                     <td>
                       <button

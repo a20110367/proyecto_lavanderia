@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
+import { TbCircleLetterA, TbCircleLetterM } from "react-icons/tb";
 import { Modal, Button, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -40,7 +41,7 @@ function Reembolso() {
   useEffect(() => {
     if (data) {
       const reembolsosFiltrados = data.filter(
-        (reembolso) => reembolso.cashWithdrawalType === "refound"
+        (reembolso) => reembolso.cashWithdrawalType === "refound" || reembolso.cashWithdrawalType === "service_cancelled"
       );
       setReembolsos(reembolsosFiltrados);
       setFilteredReembolsos(reembolsosFiltrados);
@@ -112,6 +113,12 @@ function Reembolso() {
       if (!motivo) {
         setMotivoError("Este campo es obligatorio");
         isValid = false;
+        await api.post('/sendWarning',{
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY'),
+          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
+        })
       } else {
         setMotivoError("");
       }
@@ -214,6 +221,7 @@ function Reembolso() {
             <th>Monto</th>
             <th>Motivo</th>
             <th>Fecha</th>
+            <th>Tipo</th>
           </tr>
         </thead>
         <tbody>
@@ -233,6 +241,19 @@ function Reembolso() {
                 <td className="py-3 px-6">{"$" + reembolso.amount}</td>
                 <td className="py-3 px-6">{reembolso.cause}</td>
                 <td className="py-3 px-6">{formatDate(reembolso.date)}</td>
+                <td className="py-3 px-6 font-bold">
+                  <div className={`grid grid-cols-1  ${reembolso.cashWithdrawalType === "refound" ? "text-FireBrick" : "text-Moonstone"}`}>
+                    {reembolso.cashWithdrawalType === "refound" ? 
+                      "Manual":
+                      "Automatica"
+                    }
+                    {
+                      reembolso.cashWithdrawalType === "refound" ? 
+                      <TbCircleLetterM fontSize={20} className="text-FireBrick" /> :
+                      <TbCircleLetterA fontSize={20} className="text-Moonstone" />
+                    }
+                  </div>
+                </td>
               </tr>
             ))}
         </tbody>

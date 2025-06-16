@@ -4,6 +4,7 @@ import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 // Dialogs
@@ -56,6 +57,11 @@ function Planchas() {
     deleteIron(id_ironStation);
   };
 
+  const isFree = (iron) => {    
+    iron.freeForUse ? 
+    navigate(`/editPlancha/${iron.id_ironStation}`) :
+    Swal.fire("No se puede modificar la Estación mientras este en uso", "", "warning")
+  }
 
   return (
     <div>
@@ -89,7 +95,7 @@ function Planchas() {
                 )
                 .map((iron, index) => (
                   <tr key={iron.id_ironStation}> 
-                    <td>{index + 1}</td>
+                    <td className="font-bold text-yellow-500">{iron.id_ironStation}</td>
                     <td
                       className={`font-semibold ${iron.machineType === "lavadora"
                           ? "text-dodgerBlue"
@@ -120,7 +126,7 @@ function Planchas() {
                     <td>
                       <button
                         onClick={() =>
-                          navigate(`/editPlancha/${iron.id_ironStation}`)
+                          isFree(iron)
                         }
                         className="btn-edit"
                       >

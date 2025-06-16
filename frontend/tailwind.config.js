@@ -43,6 +43,9 @@ export default {
 
       //GREEN
       Malachite: '#33C944',
+      
+      // YELLOW 
+      AutoBtn : '#fffe01',
     }, 
   },
   plugins: [],

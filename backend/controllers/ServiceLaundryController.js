@@ -5,11 +5,16 @@ const prisma = new PrismaClient();
 export const getLaundryServices = async (req, res) => {
     try {
         const response = await prisma.laundryService.findMany({
+
+            where: {
+                deleted: false
+            },
             select: {
 
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit: true,
                 washWeight: true,
                 washCycleTime: true,
                 dryWeight: true,
@@ -43,6 +48,7 @@ export const getLaundryServicesById = async (req, res) => {
                 id_service: true,
                 description: true,
                 price: true,
+                priceCredit: true,
                 washWeight: true,
                 washCycleTime: true,
                 dryWeight: true,
@@ -66,10 +72,42 @@ export const getLaundryServicesById = async (req, res) => {
 export const createLaundryService = async (req, res) => {
 
     try {
-        const laundryService = await prisma.laundryService.create({
-            data: req.body
+
+        let laundryService;
+        const laundryServiceStatus = await prisma.laundryService.findFirst({
+            where: {
+                description: req.body.description
+            }
         });
-        res.status(201).json(laundryService);
+
+        if (laundryServiceStatus == null) {
+            const laundryServiceNew = await prisma.laundryService.create({
+                data: req.body
+            });
+
+            laundryService = laundryServiceNew;
+
+            res.status(201).json(laundryService);
+        }
+        else {
+            const laundryServiceReactivation = await prisma.laundryService.update({
+                where: {
+                    description: req.body.description
+                },
+                data: {
+                    price: req.body.price,
+                    priceCredit: req.body.priceCredit,
+                    washWeight: req.body.washWeight,
+                    washCycleTime: req.body.washCycleTime,
+                    dryWeight: req.body.dryWeight,
+                    dryCycleTime: req.body.dryCycleTime,
+                    deleted: false
+                }
+            });
+            laundryService = laundryServiceReactivation;
+            res.status(201).json(laundryService);
+        }
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -104,9 +142,13 @@ export const updateLaundryService = async (req, res) => {
 export const deleteLaundryService = async (req, res) => {
 
     try {
-        const laundryService = await prisma.laundryService.delete({
+        const laundryService = await prisma.laundryService.update({
             where: {
                 id_service: Number(req.params.id)
+            },
+
+            data: {
+                deleted: true,
             }
 
         });

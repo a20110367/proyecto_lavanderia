@@ -7,3 +7,4 @@ backend/logs
 *.env
 backend/controllers/utils/mailer.js
 backend/.env
+backend/logs/*.log

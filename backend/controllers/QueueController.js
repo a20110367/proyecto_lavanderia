@@ -6,6 +6,23 @@ const prisma = new PrismaClient();
 export const getLaundryQueue = async (req, res) => {
     try {
         const response = await prisma.laundryQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
+
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
+
             include: {
                 LaundryService: true,
                 serviceOrder: {
@@ -42,6 +59,8 @@ export const getLaundryQueue = async (req, res) => {
                                 ipAddress: true,
                                 id_machine: true,
                                 model: true,
+                                machineNumber: true,
+                                machineType: true
                             }
                         },
                     },
@@ -56,6 +75,8 @@ export const getLaundryQueue = async (req, res) => {
                                 ipAddress: true,
                                 id_machine: true,
                                 model: true,
+                                machineNumber: true,
+                                machineType: true
                             }
                         },
                     },
@@ -133,24 +154,46 @@ export const updateLaundryQueue = async (req, res) => {
 
 export const updateWashDetails = async (req, res) => {
 
+
+    const { combinedWash, fk_idWashMachine, fk_idStaffMember } = req.body;
+    if (fk_idWashMachine == null) console.log("No hay datos de equipo al lavar");
+
     try {
         const washDetail = await prisma.washDetail.update({
             where: {
-                fk_laundryEvent: Number(req.params.id)
+                fk_laundryEvent: Number(req.params.id),
             },
 
-            data: req.body
+            data: {
+                fk_idWashMachine: fk_idWashMachine,
+                fk_idStaffMember: fk_idStaffMember
+            }
         });
 
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: Number(req.params.id)
+                id_laundryEvent: Number(req.params.id),
             },
 
             data: {
-                serviceStatus: "inProgressWash"
+                serviceStatus: "inProgressWash",
+                combinedWash: combinedWash,
             }
         });
+
+        if (!combinedWash) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idWashMachine
+                },
+
+                data: {
+                    freeForUse: false
+                }
+
+            });
+        }
 
         res.status(200).json(washDetail);
     } catch (e) {
@@ -161,13 +204,20 @@ export const updateWashDetails = async (req, res) => {
 
 export const updateDryDetails = async (req, res) => {
 
+
+    const { combinedWash, combinedDry, fk_idWashMachine, fk_idDryMachine, fk_idStaffMember } = req.body;
+    if (fk_idWashMachine == null || fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
+
     try {
         const dryDetail = await prisma.dryDetail.update({
             where: {
-                fk_laundryEvent: Number(req.params.id)
+                fk_laundryEvent: Number(req.params.id),
             },
 
-            data: req.body
+            data: {
+                fk_idDryMachine: fk_idDryMachine,
+                fk_idStaffMember: fk_idStaffMember
+            }
         });
 
         const laundryEvent = await prisma.laundryQueue.update({
@@ -176,9 +226,39 @@ export const updateDryDetails = async (req, res) => {
             },
 
             data: {
-                serviceStatus: "inProgressDry"
+                serviceStatus: "inProgressDry",
+                combinedDry: combinedDry,
             }
         });
+
+        if (!combinedWash) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idWashMachine
+                },
+
+                data: {
+                    freeForUse: true
+                }
+
+            });
+        }
+
+        if (!combinedDry && fk_idDryMachine != null) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idDryMachine
+                },
+
+                data: {
+                    freeForUse: false
+                }
+
+            });
+        }
+
         res.status(200).json(dryDetail);
     } catch (e) {
         res.status(400).json({ msg: e.message });
@@ -187,10 +267,16 @@ export const updateDryDetails = async (req, res) => {
 }
 
 export const finishLaundryQueue = async (req, res) => {
+
+
+    const { combinedDry, fk_idDryMachine, fk_idStaffMember } = req.body;
+    if (fk_idDryMachine == null) console.log("No hay datos de equipo al secar o es secar colgado");
+
+
     try {
         const laundryEvent = await prisma.laundryQueue.update({
             where: {
-                id_laundryEvent: Number(req.params.id)
+                id_laundryEvent: Number(req.params.id),
             },
 
             data: {
@@ -225,9 +311,23 @@ export const finishLaundryQueue = async (req, res) => {
                     },
                 ],
             },
-        })
+        });
 
-        var response;
+        if (!combinedDry && fk_idDryMachine != null) {
+            await prisma.machine.update({
+
+                where: {
+                    id_machine: fk_idDryMachine
+                },
+
+                data: {
+                    freeForUse: true
+                }
+
+            });
+        }
+
+        let response;
         if (serviceOrderFinished.length === 0) {
 
             const serviceOrder = await prisma.serviceOrder.update({
@@ -280,7 +380,22 @@ export const deleteLaundryQueue = async (req, res) => {
 export const getSelfServiceQueue = async (req, res) => {
     try {
         const response = await prisma.selfServiceQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
 
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
 
             include: {
                 SelfService: true,
@@ -314,6 +429,8 @@ export const getSelfServiceQueue = async (req, res) => {
                         ipAddress: true,
                         id_machine: true,
                         model: true,
+                        machineNumber: true,
+                        machineType: true,
                     }
                 },
             },
@@ -337,6 +454,8 @@ export const getSelfServiceQueueById = async (req, res) => {
                         ipAddress: true,
                         id_machine: true,
                         model: true,
+                        machineNumber: true,
+                        machineType: true,
                     }
                 },
             }
@@ -492,7 +611,8 @@ export const deleteSelfServiceQueue = async (req, res) => {
     }
 }
 
-export const getIronQueue = async (req, res) => {
+//Se maneja sobre la orden por el tema de las piezas
+export const getIronQueue = async (req, res) => { //tomar en cuenta que iron no tiene cola propia, por lo que se gestiona sobre la orden de servicio
     try {
         const response = await prisma.serviceOrder.findMany({
             where: {
@@ -501,11 +621,15 @@ export const getIronQueue = async (req, res) => {
                         fk_categoryId: 3
                     },
                     {
-                        NOT: {
-
-                            orderStatus: "stored"
-
-                        },
+                        OR:
+                            [
+                                {
+                                    orderStatus: "pending"
+                                },
+                                {
+                                    orderStatus: "inProgress"
+                                }
+                            ]
                     }
                 ],
 
@@ -558,6 +682,62 @@ export const getIronQueue = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 }
+
+// export const getIronQueue = async (req, res) => { 
+//     try {
+//         const response = await prisma.ironQueue.findMany({
+//             where:{
+//                 OR:[
+//                     {
+//                         NOT:{
+//                             serviceStatus:"finished"
+//                         }
+
+//                     },
+//                     {
+//                         NOT:{
+//                             serviceStatus:"cancelled"
+//                         }
+
+//                     },
+//                 ]
+//             },
+
+//             include: {
+//                 ironService: true,
+//                 serviceOrder: {
+//                     select: {
+//                         user: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                             },
+//                         },
+//                         client: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                                 phone: true,
+//                                 email: true,
+//                             },
+//                         },
+
+//                         notes: true,
+//                         scheduledDeliveryDate: true,
+//                         scheduledDeliveryTime: true,
+//                     },
+//                 },
+//             },
+
+//         });
+//         res.status(200).json(response);
+//     } catch (e) {
+//         res.status(500).json({ msg: e.message });
+//     }
+// }
+
 
 export const getIronQueueById = async (req, res) => {
     try {
@@ -690,7 +870,7 @@ export const deleteIronQueue = async (req, res) => {
     }
 }
 
-
+//Se maneja sobre las ordeners por las piezas
 export const getDrycleanQueue = async (req, res) => {
     try {
         const response = await prisma.serviceOrder.findMany({
@@ -700,11 +880,15 @@ export const getDrycleanQueue = async (req, res) => {
                         fk_categoryId: 4
                     },
                     {
-                        NOT: {
-
-                            orderStatus: "stored"
-
-                        },
+                        OR:
+                            [
+                                {
+                                    orderStatus: "pending"
+                                },
+                                {
+                                    orderStatus: "inProgress"
+                                }
+                            ]
                     }
                 ],
 
@@ -756,6 +940,62 @@ export const getDrycleanQueue = async (req, res) => {
         res.status(500).json({ msg: e.message });
     }
 }
+
+// export const getDrycleanQueue = async (req, res) => {
+//     try {
+//         const response = await prisma.drycleanQueue.findMany({
+//             where:{
+//                 OR:[
+//                     {
+//                         NOT:{
+//                             serviceStatus:"finished"
+//                         }
+
+//                     },
+//                     {
+//                         NOT:{
+//                             serviceStatus:"cancelled"
+//                         }
+
+//                     },
+//                 ]
+//             },
+
+//             include: {
+//                 drycleanService: true,
+//                 serviceOrder: {
+//                     select: {
+//                         user: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                             },
+//                         },
+//                         client: {
+//                             select: {
+//                                 name: true,
+//                                 firstLN: true,
+//                                 secondLN: true,
+//                                 phone: true,
+//                                 email: true,
+//                             },
+//                         },
+
+//                         notes: true,
+//                         scheduledDeliveryDate: true,
+//                         scheduledDeliveryTime: true,
+//                     },
+//                 },
+//             },
+
+//         });
+//         res.status(200).json(response);
+//     } catch (e) {
+//         res.status(500).json({ msg: e.message });
+//     }
+// }
+
 
 export const getDrycleanQueueById = async (req, res) => {
     try {
@@ -892,7 +1132,22 @@ export const deleteDrycleanQueue = async (req, res) => {
 export const getOtherQueue = async (req, res) => {
     try {
         const response = await prisma.otherQueue.findMany({
+            where: {
+                AND: [
+                    {
+                        NOT: {
+                            serviceStatus: "finished"
+                        }
 
+                    },
+                    {
+                        NOT: {
+                            serviceStatus: "cancelled"
+                        }
+
+                    },
+                ]
+            },
 
             include: {
                 otherService: true,

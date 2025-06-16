@@ -3,7 +3,199 @@ import { response } from "express";
 
 const prisma = new PrismaClient();
 
+//FUnciones generales
 
+const lastSuppliesCashCutInfo = async () => {
+
+    const lastCashCut = await prisma.supplyCashCut.findFirst({
+
+        take: -1,
+
+        select: {
+            id_supplyCashCut: true,
+            cashCutStatus: true,
+        }
+
+    });
+
+    return (lastCashCut)
+}
+
+const suppliesCurrentCashCutInfo = async (suppliesCashCut_id) => {
+
+    const currentCashCut = await prisma.supplyCashCut.findUnique({
+        where: {
+            id_supplyCashCut: suppliesCashCut_id
+        },
+        select: {
+            workShift: true,
+            initialCash: true,
+            cashCutStatus: true
+        }
+    });
+
+    if (currentCashCut.initialCash == null) currentCashCut.initialCash = 0.00
+    return (currentCashCut)
+}
+
+const suppliesTotalPayments = async (suppliesCashCut_id) => {
+    const totalPayedIncome = await prisma.supplyPayment.aggregate({
+
+        where: {
+            fk_cashCut: suppliesCashCut_id
+        },
+        _sum: {
+            payTotal: true,
+        }
+    });
+
+    if (totalPayedIncome._sum.payTotal == null) totalPayedIncome._sum.payTotal = 0.00
+    console.log("totalPayedIncome")
+    console.log(totalPayedIncome)
+
+    return (totalPayedIncome)
+}
+
+
+const suppliesCashCutTotalIncomeByPaymentMethod = async (suppliesCashCut_id, paymentMethod) => {
+
+    const totalCashIncome = await prisma.supplyPayment.aggregate({
+
+        where: {
+            AND: [
+                {
+                    fk_cashCut: suppliesCashCut_id
+
+                },
+                {
+
+                    payMethod: paymentMethod
+                }
+            ],
+        },
+        _sum: {
+            payTotal: true
+        }
+    });
+
+    if (totalCashIncome._sum.payTotal == null) totalCashIncome._sum.payTotal = 0.00
+
+    return (totalCashIncome)
+}
+
+const suppliesCashCutOrdersPayed = async (suppliesCashCut_id) => {
+
+    const ordersPayed = await prisma.supplyPayment.findMany({
+
+        where: {
+            fk_cashCut: suppliesCashCut_id
+        },
+        select: {
+            SupplyOrder: {
+                select: {
+                    id_supplyOrder: true
+                },
+            },
+        },
+    });
+
+    return (ordersPayed)
+}
+
+const suppliesCashCutOrdersIncomeByCategory = async (payedOrders, supplyCategory) => {
+
+    const incomeByCategory = await prisma.supplyOrderDetail.aggregate({
+
+        where: {
+            AND: [
+
+                {
+                    Supply: {
+                        category: supplyCategory
+                    },
+                },
+                {
+                    SupplyOrder: {
+                        id_supplyOrder: {
+                            in: payedOrders,
+                        },
+                    }
+
+                },
+            ],
+        },
+
+        _sum: {
+            subtotal: true,
+        },
+    });
+
+    if (incomeByCategory._sum.subtotal == null) incomeByCategory._sum.subtotal = 0.00
+
+    return (incomeByCategory)
+}
+
+export const calculateSupplyCashCut = async (suppliesCashCut_id) => {
+    const currentCashCutInfo = await suppliesCurrentCashCutInfo(suppliesCashCut_id)
+
+    const totalSupplyIncome = await suppliesTotalPayments(suppliesCashCut_id)
+    const supplyCashIncome = await suppliesCashCutTotalIncomeByPaymentMethod(suppliesCashCut_id, 'cash')
+    const supplyCreditIncome = await suppliesCashCutTotalIncomeByPaymentMethod(suppliesCashCut_id, 'credit')
+
+    const supplyOrdersPayed = await suppliesCashCutOrdersPayed(suppliesCashCut_id)
+
+    const orders = Object.values(supplyOrdersPayed).map(ord => ord.SupplyOrder.id_supplyOrder);
+    console.log(orders)
+
+    const totalJabon = await suppliesCashCutOrdersIncomeByCategory(orders, "jabon")
+    const totalSuavitel = await suppliesCashCutOrdersIncomeByCategory(orders, "suavitel")
+    const totalPinol = await suppliesCashCutOrdersIncomeByCategory(orders, "pinol")
+    const totalDesengrasante = await suppliesCashCutOrdersIncomeByCategory(orders, "desengrasante")
+    const totalCloro = await suppliesCashCutOrdersIncomeByCategory(orders, "cloro")
+    const totalSanitizante = await suppliesCashCutOrdersIncomeByCategory(orders, "sanitizante")
+    const totalBolsa = await suppliesCashCutOrdersIncomeByCategory(orders, "bolsa")
+    const totalReforzado = await suppliesCashCutOrdersIncomeByCategory(orders, "reforzado")
+    const totalGanchos = await suppliesCashCutOrdersIncomeByCategory(orders, "ganchos")
+    const totalWC = await suppliesCashCutOrdersIncomeByCategory(orders, "wc")
+    const totalOtros = await suppliesCashCutOrdersIncomeByCategory(orders, "otros")
+
+    console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
+        totalBolsa._sum.subtotal, totalReforzado._sum.subtotal, totalGanchos._sum.subtotal, totalWC._sum.subtotal);
+    //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
+
+    const today = new Date().toJSON();
+    const time = new Date().toJSON();
+
+    console.log("Fin Supplies Corte")
+
+    const suppliesCashCut =
+    {
+        "totalSuppliesCash": supplyCashIncome._sum.payTotal,
+        "totalSuppliesCredit": supplyCreditIncome._sum.payTotal,
+        "totalSuppliesIncome": totalSupplyIncome._sum.payTotal,
+        "totalJabon": totalJabon._sum.subtotal,
+        "totalSuavitel": totalSuavitel._sum.subtotal,
+        "totalPinol": totalPinol._sum.subtotal,
+        "totalDesengrasante": totalDesengrasante._sum.subtotal,
+        "totalCloro": totalCloro._sum.subtotal,
+        "totalSanitizante": totalSanitizante._sum.subtotal,
+        "totalBolsa": totalBolsa._sum.subtotal,
+        "totalReforzado": totalReforzado._sum.subtotal,
+        "totalGanchos": totalGanchos._sum.subtotal,
+        "totalWC": totalWC._sum.subtotal,
+        "totalOtros": totalOtros._sum.subtotal,
+        "ordersPayedSupply": orders.length,
+        "cashCutD": today,
+        "cashCutT": time,
+        "workShift": currentCashCutInfo.workShift
+    }
+
+    return (suppliesCashCut);
+
+}
+
+
+//CRUD GENERAL
 export const getSupplyCashCuts = async (req, res) => {
     try {
         const response = await prisma.supplyCashCut.findMany({
@@ -34,22 +226,16 @@ export const getSupplyCashCutsById = async (req, res) => {
     }
 }
 
-export const createCashCut = async (req, res) => {
+export const createSupplyCashCut = async (req, res) => {
 
     try {
 
-        const lastSupplyCashCut = await prisma.supplyCashCut.aggregate({
-
-            _max: {
-                id_supplyCashCut: true,
-            }
-
-        });
-        var cashCut;
+        const lastSupplyCashCut = await lastSuppliesCashCutInfo();
+        let suppliesCashCut;
         console.log("ULTIMO CORTE DE PRODUCTOS")
-        console.log(lastSupplyCashCut._max.id_supplyCashCut)
-        if (lastSupplyCashCut._max.id_supplyCashCut == null) {
-            cashCut = await prisma.supplyCashCut.create({
+        console.log(lastSupplyCashCut.id_supplyCashCut)
+        if (lastSupplyCashCut === null) {
+            suppliesCashCut = await prisma.supplyCashCut.create({
                 data: req.body
 
             });
@@ -57,42 +243,18 @@ export const createCashCut = async (req, res) => {
         }
         else {
 
-            const cashCutStatus = await prisma.supplyCashCut.findFirst({
-                where: {
-                    id_supplyCashCut: lastSupplyCashCut._max.id_cashCut,
-                },
+            if (lastSupplyCashCut.cashCutStatus === "open") {
 
-                select: {
-                    cashCutStatus: true,
-                },
-
-            });
-
-            if (cashCutStatus.cashCutStatus === "open") {
-
-                console.log(lastSupplyCashCut._max.id_cashCut);
-                cashCut = await prisma.supplyCashCut.findFirst({
-                    where: {
-                        id_supplyCashCut: lastSupplyCashCut._max.id_cashCut
-                    },
-                    select: {
-                        initialCash: true,
-                        id_cashCut: true,
-                    },
-                });
+                suppliesCashCut = lastSupplyCashCut
 
             } else {
-                cashCut = await prisma.supplyCashCut.create({
+                suppliesCashCut = await prisma.supplyCashCut.create({
                     data: req.body
 
                 });
             }
-
         }
-
-
-
-        res.status(201).json(cashCut);
+        res.status(201).json(suppliesCashCut);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -126,916 +288,50 @@ export const deleteSupplyCashCut = async (req, res) => {
     }
 }
 
-export const calculateSupplyCashCut = async (req, res) => {
+export const calculateCashCut = async (req, res) => {
 
     try {
-        const total = await prisma.supplyPayment.aggregate({
 
-            where: {
-                fk_cashCut: Number(req.params.id)
-            },
-            _sum: {
-                payTotal: true,
-            }
-        });
-
-        const workShift = await prisma.supplyCashCut.findFirst({
-
-            where: {
-                id_supplyCashCut: Number(req.params.id)
-            },
-            select: {
-                workShift: true,
-            }
-
-        });
-
-        total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
-
-        const cash = await prisma.supplyPayment.aggregate({
-            where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id)
-
-                    },
-                    {
-
-                        payMethod: 'cash'
-                    }
-
-                ],
-            },
-
-            _sum: {
-                payTotal: true
-            }
-        });
-        cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
-
-        const credit = await prisma.supplyPayment.aggregate({
-            where: {
-                AND: [
-                    {
-                        fk_cashCut: Number(req.params.id),
-
-                    },
-                    {
-
-                        payMethod: 'credit',
-                    },
-
-                ],
-            },
-            _sum: {
-                payTotal: true
-            }
-        });
-
-
-        credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-
-        const ordersPayed = await prisma.supplyPayment.findMany({
-
-            where: {
-                fk_cashCut: Number(req.params.id)
-            }, select: {
-                SupplyOrder: {
-                    select: {
-                        id_supplyOrder: true
-                    },
-                },
-            },
-        });
-
-        const orders = Object.values(ordersPayed).map(ord => ord.SupplyOrder.id_supplyOrder);
-        console.log(orders)
-
-        const totalJabon = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "jabon"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalJabon._sum.subtotal === null ? totalJabon._sum.subtotal = 0 : totalJabon._sum.subtotal + 0;
-
-
-        const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "suavitel"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalSuavitel._sum.subtotal === null ? totalSuavitel._sum.subtotal = 0 : totalSuavitel._sum.subtotal + 0;
-
-        const totalPinol = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "pinol"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalPinol._sum.subtotal === null ? totalPinol._sum.subtotal = 0 : totalPinol._sum.subtotal + 0;
-
-        const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "desengrasante"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalDesengrasante._sum.subtotal === null ? totalDesengrasante._sum.subtotal = 0 : totalDesengrasante._sum.subtotal + 0;
-
-        const totalCloro = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "cloro"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalCloro._sum.subtotal === null ? totalCloro._sum.subtotal = 0 : totalCloro._sum.subtotal + 0;
-
-        const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "sanitizante"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalSanitizante._sum.subtotal === null ? totalSanitizante._sum.subtotal = 0 : totalSanitizante._sum.subtotal + 0;
-
-        const totalBolsa = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "bolsa"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalBolsa._sum.subtotal === null ? totalBolsa._sum.subtotal = 0 : totalBolsa._sum.subtotal + 0;
-
-        const totalReforzado = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "reforzado"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalReforzado._sum.subtotal === null ? totalReforzado._sum.subtotal = 0 : totalReforzado._sum.subtotal + 0;
-
-        const totalGanchos = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "ganchos"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalGanchos._sum.subtotal === null ? totalGanchos._sum.subtotal = 0 : totalGanchos._sum.subtotal + 0;
-
-        const totalWC = await prisma.supplyOrderDetail.aggregate({
-
-            where: {
-                AND: [
-
-                    {
-                        Supply: {
-                            category: "wc"
-                        }
-                    },
-                    {
-                        SupplyOrder: {
-                            id_supplyOrder: {
-                                in: orders,
-                            },
-                        },
-                    }
-
-                ],
-            },
-
-            _sum: {
-                subtotal: true,
-            },
-
-        });
-
-        totalWC._sum.subtotal === null ? totalWC._sum.subtotal = 0 : totalWC._sum.subtotal + 0;
-
-
-
-        const totalOtros = (parseFloat(total._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
-            totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
-
-
-
-        console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
-            totalBolsa._sum.subtotal, totalReforzado._sum.subtotal, totalGanchos._sum.subtotal, totalWC._sum.subtotal);
-        //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
-
-        const today = new Date().toJSON();
-        const time = new Date().toJSON();
-        const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
-
-        const response =
-        {
-            "totalCashSupply": cash._sum.payTotal,
-            "totalCreditSupply": credit._sum.payTotal,
-            "totalIncomeSupply": totalIncome,
-            "totalJabon": totalJabon._sum.subtotal,
-            "totalSuavitel": totalSuavitel._sum.subtotal,
-            "totalPinol": totalPinol._sum.subtotal,
-            "totalDesengrasante": totalDesengrasante._sum.subtotal,
-            "totalCloro": totalCloro._sum.subtotal,
-            "totalSanitizante": totalSanitizante._sum.subtotal,
-            "totalBolsa": totalBolsa._sum.subtotal,
-            "totalReforzado": totalReforzado._sum.subtotal,
-            "totalGanchos": totalGanchos._sum.subtotal,
-            "totalWC": totalWC._sum.subtotal,
-            "totalOtros": totalOtros,
-            "ordersPayedSupply": orders.length,
-            "cashCutD": today,
-            "workShift": workShift.workShift
-            //"selfService":selfService
-            //"ordersIds":ordersIds
-        }
-
-        // console.log(total);
-        // console.log(cash);
-        // console.log(credit);
+        const suppliesCashCut = await calculateSupplyCashCut(Number(req.params.id))
+        const response = suppliesCashCut
         res.status(200).json(response);
     } catch (e) {
         res.status(404).json({ msg: e.message });
     }
 }
 
-export const closeCashCut = async (req, res) => {
+export const closeSupplyCashCut = async (req, res) => {
 
     try {
-        var response;
+        let response;
 
-        const cashCutStatus = await prisma.supplyCashCut.findFirst({
-            where: {
-                id_supplyCashCut: Number(req.params.id)
-            },
+        const cashCutInitialData = await suppliesCurrentCashCutInfo(Number(req.params.id))
 
-            select: {
-                cashCutStatus: true,
-            },
+        console.log(cashCutInitialData.cashCutStatus);
 
-        });
+        if (cashCutInitialData.cashCutStatus === "open") {
 
-        const workShift = await prisma.supplyCashCut.findFirst({
+            const suppliesCashCut = calculateSupplyCashCut(Number(req.params.id))
 
-            where: {
-                id_supplyCashCut: Number(req.params.id)
-            },
-            select: {
-                workShift: true,
-            }
+            suppliesCashCut.cashCutStatus = "closed"
 
-        });
-
-        console.log(cashCutStatus.cashCutStatus);
-
-        if (cashCutStatus.cashCutStatus === "open") {
-
-            const total = await prisma.supplyPayment.aggregate({
-
-                where: {
-                    fk_cashCut: Number(req.params.id)
-                },
-                _sum: {
-                    payTotal: true,
-                }
-            });
-
-            // const workShift = await prisma.supplyCashCut.findFirst({
-
-            //     where: {
-            //         id_supplyCashCut: Number(req.params.id)
-            //     },
-            //     select: {
-            //         workShift: true,
-            //     }
-
-            // });
-
-            total._sum.payTotal === null ? total._sum.payTotal = 0 : total._sum.payTotal + 0;
-
-            const cash = await prisma.supplyPayment.aggregate({
-                where: {
-                    AND: [
-                        {
-                            fk_cashCut: Number(req.params.id)
-
-                        },
-                        {
-
-                            payMethod: 'cash'
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    payTotal: true
-                }
-            });
-            cash._sum.payTotal === null ? cash._sum.payTotal = 0 : cash._sum.payTotal + 0;
-
-            const credit = await prisma.supplyPayment.aggregate({
-                where: {
-                    AND: [
-                        {
-                            fk_cashCut: Number(req.params.id),
-
-                        },
-                        {
-
-                            payMethod: 'credit',
-                        },
-
-                    ],
-                },
-                _sum: {
-                    payTotal: true
-                }
-            });
-
-
-            credit._sum.payTotal === null ? credit._sum.payTotal = 0 : credit._sum.payTotal + 0;
-
-            const ordersPayed = await prisma.supplyPayment.findMany({
-
-                where: {
-                    fk_cashCut: Number(req.params.id)
-                }, select: {
-                    SupplyOrder: {
-                        select: {
-                            id_supplyOrder: true
-                        },
-                    },
-                },
-            });
-
-            const orders = Object.values(ordersPayed).map(ord => ord.SupplyOrder.id_supplyOrder);
-            console.log(orders)
-
-            const totalJabon = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "jabon"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalJabon._sum.subtotal === null ? totalJabon._sum.subtotal = 0 : totalJabon._sum.subtotal + 0;
-
-
-            const totalSuavitel = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "suavitel"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalSuavitel._sum.subtotal === null ? totalSuavitel._sum.subtotal = 0 : totalSuavitel._sum.subtotal + 0;
-
-            const totalPinol = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "pinol"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalPinol._sum.subtotal === null ? totalPinol._sum.subtotal = 0 : totalPinol._sum.subtotal + 0;
-
-            const totalDesengrasante = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "desengrasante"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalDesengrasante._sum.subtotal === null ? totalDesengrasante._sum.subtotal = 0 : totalDesengrasante._sum.subtotal + 0;
-
-            const totalCloro = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "cloro"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalCloro._sum.subtotal === null ? totalCloro._sum.subtotal = 0 : totalCloro._sum.subtotal + 0;
-
-            const totalSanitizante = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "sanitizante"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalSanitizante._sum.subtotal === null ? totalSanitizante._sum.subtotal = 0 : totalSanitizante._sum.subtotal + 0;
-
-            const totalBolsa = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "bolsa"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalBolsa._sum.subtotal === null ? totalBolsa._sum.subtotal = 0 : totalBolsa._sum.subtotal + 0;
-
-            const totalReforzado = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "reforzado"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalReforzado._sum.subtotal === null ? totalReforzado._sum.subtotal = 0 : totalReforzado._sum.subtotal + 0;
-
-            const totalGanchos = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "ganchos"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalGanchos._sum.subtotal === null ? totalGanchos._sum.subtotal = 0 : totalGanchos._sum.subtotal + 0;
-
-            const totalWC = await prisma.supplyOrderDetail.aggregate({
-
-                where: {
-                    AND: [
-
-                        {
-                            Supply: {
-                                category: "wc"
-                            }
-                        },
-                        {
-                            SupplyOrder: {
-                                id_supplyOrder: {
-                                    in: orders,
-                                },
-                            },
-                        }
-
-                    ],
-                },
-
-                _sum: {
-                    subtotal: true,
-                },
-
-            });
-
-            totalWC._sum.subtotal === null ? totalWC._sum.subtotal = 0 : totalWC._sum.subtotal + 0;
-
-
-
-            const totalOtros = (parseFloat(total._sum.payTotal.toFixed(2)) - totalJabon._sum.subtotal - totalSuavitel._sum.subtotal - totalPinol._sum.subtotal - totalDesengrasante._sum.subtotal -
-                totalCloro._sum.subtotal - totalSanitizante._sum.subtotal - totalBolsa._sum.subtotal - totalReforzado._sum.subtotal - totalGanchos._sum.subtotal - totalWC._sum.subtotal);
-
-
-
-            console.log(totalJabon._sum.subtotal, totalSuavitel._sum.subtotal, totalPinol._sum.subtotal, totalDesengrasante._sum.subtotal, totalCloro._sum.subtotal, totalSanitizante._sum.subtotal,
-                totalBolsa._sum.subtotal, totalReforzado._sum.subtotal, totalGanchos._sum.subtotal, totalWC._sum.subtotal);
-            //const categoriesPayed=Object.values(ordersPayed).map(ord => ord.order.id_order);
-
-            const today = new Date().toJSON();
-            const time = new Date().toJSON();
-            const totalIncome = parseFloat(total._sum.payTotal.toFixed(2));
-
-            response =
-            {
-                "totalCashSupply": cash._sum.payTotal,
-                "totalCreditSupply": credit._sum.payTotal,
-                "totalIncomeSupply": totalIncome,
-                "totalJabon": totalJabon._sum.subtotal,
-                "totalSuavitel": totalSuavitel._sum.subtotal,
-                "totalPinol": totalPinol._sum.subtotal,
-                "totalDesengrasante": totalDesengrasante._sum.subtotal,
-                "totalCloro": totalCloro._sum.subtotal,
-                "totalSanitizante": totalSanitizante._sum.subtotal,
-                "totalBolsa": totalBolsa._sum.subtotal,
-                "totalReforzado": totalReforzado._sum.subtotal,
-                "totalGanchos": totalGanchos._sum.subtotal,
-                "totalWC": totalWC._sum.subtotal,
-                "totalOtros": totalOtros,
-                "ordersPayedSupply": orders.length,
-                "cashCutD": today,
-                "workShift": workShift.workShift
-
-            }
-
-            // console.log(total);
-            // console.log(cash);
-            // console.log(credit);
             const closeCash = await prisma.supplyCashCut.update({
 
                 where: {
 
                     id_supplyCashCut: Number(req.params.id)
                 },
-                data: {
-                    "totalCash": cash._sum.payTotal,
-                    "totalCredit": credit._sum.payTotal,
-                    "totalIncome": totalIncome,
-                    "totalJabon": totalJabon._sum.subtotal,
-                    "totalSuavitel": totalSuavitel._sum.subtotal,
-                    "totalPinol": totalPinol._sum.subtotal,
-                    "totalDesengrasante": totalDesengrasante._sum.subtotal,
-                    "totalCloro": totalCloro._sum.subtotal,
-                    "totalSanitizante": totalSanitizante._sum.subtotal,
-                    "totalBolsa": totalBolsa._sum.subtotal,
-                    "totalReforzado": totalReforzado._sum.subtotal,
-                    "totalGanchos": totalGanchos._sum.subtotal,
-                    "totalWC": totalWC._sum.subtotal,
-                    "totalOtros": totalOtros,
-                    "ordersPayed": orders.length,
-                    "cashCutD": today,
-                    "workShift": workShift.workShift,
-                    "cashCutStatus": "closed",
-                    "cashCutD": today,
-                    "cashCutT": time
-                }
+                data: suppliesCashCut
             });
 
         } else {
             response = await prisma.supplyCashCut.findFirst({
 
                 where: {
-
                     id_supplyCashCut: Number(req.params.id)
                 },
             });
         }
-
-
-
-
 
         res.status(200).json(response);
     } catch (e) {
@@ -1043,41 +339,25 @@ export const closeCashCut = async (req, res) => {
     }
 }
 
-export const getCashCutStatus = async (req, res) => {
+export const getSupplyCashCutStatus = async (req, res) => {
     try {
-        const lastCashCut = await prisma.supplyCashCut.aggregate({
+        const lastCashCut = await prisma.supplyCashCut.findFirst({
 
-            _max: {
-                id_supplyCashCut: true,
-            }
+            take: -1
 
         });
 
+        let lastCashCutStatus = new Object();
 
-        let lastCashCutStatus;
+        if (lastCashCut === null) {
 
-        if (lastCashCut._max.id_cashCut === null) {
-
-            lastCashCutStatus = {
-                cashCutStatus: "closed",
-                id_cashCut: 0,
-            }
-
+            lastCashCutStatus.cashCutStatus = "closed"
+            lastCashCutStatus.id_cashCu = 0
         }
         else {
 
-            lastCashCutStatus = await prisma.supplyCashCut.findUnique({
-
-                where: {
-                    id_supplyCashCut: lastCashCut._max.id_supplyCashCut,
-                },
-
-                select: {
-                    cashCutStatus: true,
-                    id_supplyCashCut: true,
-                }
-
-            })
+            lastCashCutStatus.cashCutStatus = lastCashCut.cashCutStatus;
+            lastCashCutStatus.id_supplyCashCut = lastCashCut.id_supplyCashCut;
 
         }
 
@@ -1090,30 +370,18 @@ export const getCashCutStatus = async (req, res) => {
     }
 }
 
-export const getLastCashCut = async (req, res) => {
+export const getSupplyLastCashCut = async (req, res) => {
     try {
-        const lastCashCutId = await prisma.supplyCashCut.aggregate({
 
-            _max: {
-                id_supplyCashCut: true,
-            }
-        });
+        const lastSupplyCashCut = await prisma.supplyCashCut.findFirst({
 
-        const cashCutStatus = await prisma.supplyCashCut.findFirst({
-
-            where: {
-                id_supplyCashCut: lastCashCutId._max.id_cashCut
-            },
-
-            select: {
-                cashCutStatus: true,
-            },
+            take: -1
 
         });
 
         const response = {
-            "id_cashCut ": lastCashCutId._max.id_supplyCashCut,
-            "cashCutStatus": cashCutStatus.cashCutStatus
+            "id_cashCut ": lastSupplyCashCut.id_supplyCashCut,
+            "cashCutStatus": lastSupplyCashCut.cashCutStatus
         };
 
 

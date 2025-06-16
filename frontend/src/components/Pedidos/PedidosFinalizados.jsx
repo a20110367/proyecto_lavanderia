@@ -16,6 +16,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 
 function PedidosGeneral() {
   const [pedidos, setPedidos] = useState([]);
@@ -233,7 +234,7 @@ function PedidosGeneral() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos General</strong>
+          <strong className="title-strong">Pedidos Finalizadas</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">
@@ -286,13 +287,17 @@ function PedidosGeneral() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>
-                Fecha de <br />
-                Entrega
+                Fecha <br />
+                Programada              
               </th>
               <th>
+                Fecha de <br />
+                Entregado
+              </th>
+              {/* <th>
                 Forma de <br />
                 Pago
-              </th>
+              </th> */}
               <th>Estatus</th>
               <th>Observaciones</th>
               <th></th>
@@ -344,8 +349,11 @@ function PedidosGeneral() {
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                    {pedido.deliveryDetail ? formatDate(pedido.deliveryDetail.deliveryDate) : "-"}
                   </td>
+                  {/* <td className="py-3 px-6">
+                    {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                  </td> */}
                   <td className="py-3 px-6 font-bold">
                     {pedido.orderStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">

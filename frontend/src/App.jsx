@@ -35,7 +35,7 @@ import SupplyPOS from './components/PuntoVenta/SupplyPOS'
 
 //PEDIDOS
 import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
-import PedidosGeneral from "./components/Pedidos/PedidosGeneral"
+import PedidosFinalizados from "./components/Pedidos/PedidosFinalizados"
 import PedidosAlmacenados from "./components/Pedidos/PedidosAlmacenados"
 
 //SIDEBAR
@@ -58,9 +58,6 @@ import HistorialCaja from "./components/Cajas/HistorialCaja"
 import CajaPedidos from "./components/Cajas/CajaPedidos"
 import CorteCaja from "./components/Cajas/CorteCaja"
 import Retiro from "./components/Cajas/Retiro"
-import CajaChica from "./components/Cajas/CajaChica"
-import Reembolso from "./components/Cajas/Reembolso"
-import Reportes from "./components/Cajas/Reportes"
 
 //COLA PEDIDOS
 import EntregaLavanderia from "./components/Lavanderia/EntregaLavanderia"
@@ -100,8 +97,15 @@ import AddProductos from "./components/Productos/AddProductos"
 import EditProductos from "./components/Productos/EditProductos"
 import BuscarPedidos from "./components/Pedidos/BuscarPedidos"
 import HistorialCajaProductos from "./components/Cajas/HistorialCajaProductos";
-import ReportesProductos from "./components/Cajas/ReportesProductos";
 import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
+
+// ADMINISTRACION
+// import ReportesProductos from "./components/Administracion/ReportesProductos";
+import Reportes from "./components/Administracion/Reportes"
+import Cancelacion from "./components/Administracion/Cancelacion";
+import HistorialOrdenesCanceladas from "./components/Administracion/CancelHistoryOrder"
+import CajaChica from "./components/Administracion/CajaChica"
+import Reembolso from "./components/Administracion/Reembolso"
 
 function App() {
     const { cookies } = useAuth();
@@ -139,7 +143,9 @@ function App() {
                     <Route path="/HistorialCajaProductos" element={<HistorialCajaProductos />} />
                     <Route path="/HistorialCajaPlanchado" element={<HistorialCajaPlanchado />} />
                     <Route path="/reportes" element={<Reportes />} />
-                    <Route path="/reportesProductos" element={<ReportesProductos />} />
+                    {/* <Route path="/reportesProductos" element={<ReportesProductos />} /> */}
+                    <Route path="/cancelacion" element={<Cancelacion/>}/>
+                    <Route path="/historialOrdenesCanceladas" element={<HistorialOrdenesCanceladas/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
                     <Route path="/reembolso" element={<Reembolso />} />
@@ -179,7 +185,7 @@ function App() {
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
-                    <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
+                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
                     
                     {/**Encargo varios */}
                     <Route path="/pedidosVarios" element={<PedidosVarios/>}/>

@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 function Logout() {
 
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { cookies, logout } = useAuth();
 
     useEffect(() => {
         validate()
@@ -17,6 +17,9 @@ function Logout() {
         try {
             const res = await api.get("/cashCutStatus")
             if (res.data.cashCutStatus === 'closed') {
+                await api.post('/log/write', {
+                    logEntry: `INFO AUTH.JSX : ${cookies.username} has logged OUT`
+                })
                 logout()
             } else if (res.data.cashCutStatus === 'open') {
                 Swal.fire({

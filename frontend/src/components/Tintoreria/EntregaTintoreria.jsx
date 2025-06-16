@@ -24,6 +24,7 @@ function EntregaTintoreria() {
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
+  const [amount, setAmount] = useState(0.0);
   const [cobroInfo, setCobroInfo] = useState({
     metodoPago: "cash",
     fechaPago: moment(),
@@ -80,6 +81,29 @@ function EntregaTintoreria() {
     setCurrentPage(0);
   };
 
+  const calculateTotalCredit = () => {
+    let pivot = 0.0
+    selectedPedido.ServiceOrderDetail.forEach(item => 
+      pivot =  parseFloat(pivot + (item.LaundryService.priceCredit * item.units)))
+      // console.log(pivot)
+      // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateTotal = () => {
+    let pivot = 0
+    selectedPedido.ServiceOrderDetail.forEach(item => 
+      pivot = parseFloat(pivot + (item.DrycleanService.price * item.units)))
+      // console.log(pivot)
+      // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateSubtotal = (service) => {
+    console.log(cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit * service.units : service.DrycleanService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit * service.units : service.DrycleanService.price * service.units
+  };
+
   const handleCobrar = (pedido) => {
     if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
@@ -93,6 +117,11 @@ function EntregaTintoreria() {
     }
     console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
+    setAmount(pedido.totalPrice)
+    setCobroInfo({
+      metodoPago: "cash",
+      fechaPago: moment(),
+    });
     setVisible(true);
   };
 
@@ -102,6 +131,7 @@ function EntregaTintoreria() {
       ...cobroInfo,
       [name]: value,
     });
+    value === 'credit' ? calculateTotalCredit() : calculateTotal()
   };
 
   const handleGuardarCobro = async (pedido) => {
@@ -134,7 +164,7 @@ function EntregaTintoreria() {
           payDate: cobroInfo.fechaPago.toISOString(),
           payTime: cobroInfo.fechaPago.toISOString(),
           fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          payTotal: pedido.totalPrice,
+          payTotal: amount,
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
@@ -150,7 +180,8 @@ function EntregaTintoreria() {
           description: service.DrycleanService.description
             ? service.DrycleanService.description
             : "ERROR",          
-          totalPrice: service.subtotal,
+          price: cobroInfo.metodoPago === 'credit' ? service.DrycleanService.priceCredit : service.DrycleanService.price,
+          totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });
       });
@@ -172,12 +203,19 @@ function EntregaTintoreria() {
       // };
       // orderTicket(order);
 
+      setFkPayment(res.data.id_payment);
+      console.log(res.data.id_payment);
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
+      });
+      setFilteredPedidos(updatedFilteredPedidos);
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
         payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
+        subtotal: amount,
         casher: pedido.user.name,
         client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
@@ -193,12 +231,6 @@ function EntregaTintoreria() {
       await api.post('/generateTicket', {
         order: order,
       })
-      setFkPayment(res.data.id_payment);
-      console.log(res.data.id_payment);
-      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-        return order.id_order !== pedido.id_order;
-      });
-      setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
       console.log(err);
     }

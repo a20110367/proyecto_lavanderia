@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { FaAsterisk } from "react-icons/fa";
 import {
   faCheck,
   faTimes,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 
@@ -88,15 +90,27 @@ function EditClient() {
         pass: "",
       });
 
-      setSuccess(true);
-      setName("");
-
-      navigate("/clients");
+      if(res.status === 200){
+        setSuccess(true);
+        setName("");
+        setFirstLN("");
+        setSecondLN("");
+        setEmail("");
+        setPhone("");
+        navigate("/clients");
+      }
+      
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No hay respuesta del servidor");
       } else if (err.response?.status === 409) {
-        setErrMsg("Nombre de usuario ya existente");
+        err.response.data.p && err.response.data.m 
+        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.p
+        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+        : err.response.data.m
+        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+        : console.log("Como llego aqui")
       } else {
         setErrMsg("Fallo en la actualización");
       }
@@ -153,6 +167,7 @@ function EditClient() {
                 aria-describedby="namenote"
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el nombre del cliente"
               />
 
               <label className="form-lbl" htmlFor="firstName">
@@ -170,6 +185,7 @@ function EditClient() {
                 aria-describedby="firstNamenote"
                 onFocus={() => setFirstNameFocus(true)}
                 onBlur={() => setFirstNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 1er Apellido del cliente"
               />
 
               <label className="form-lbl" htmlFor="secondName">
@@ -188,6 +204,7 @@ function EditClient() {
                 aria-describedby="secondNamenote"
                 onFocus={() => setSecondNameFocus(true)}
                 onBlur={() => setSecondNameFocus(false)}
+                placeholder="REQUERIDO | Ingrese el 2do Apellido del cliente"
               />
 
               {/* Email */}
@@ -205,12 +222,13 @@ function EditClient() {
                 aria-invalid={validEmail ? "false" : "true"}
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}
+                placeholder="OPCIONAL | Ingrese el Correo del cliente"
               />
 
 
               {/* Teléfono */}
-              <label className="form-lbl" htmlFor="phone">
-                Teléfono:
+              <label className="form-lbl flex place-items-center" htmlFor="phone">
+                Teléfono: <FaAsterisk size={10} className="ml-3 text-red-500"/>
               </label>
               <input
                 className="form-input"
@@ -220,6 +238,7 @@ function EditClient() {
                 value={phone}
                 required
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                placeholder="REQUERIDO | Ingrese el telefono del cliente"
               />
               <div className="float-right">
                 {/* Botón para actualizar */}

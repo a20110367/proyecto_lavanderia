@@ -87,7 +87,7 @@ const items1 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("Pedidos Finalizados", "/pedidosGeneral"),
+    getItem("Pedidos Finalizados", "/pedidosFinalizados"),
 
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
@@ -125,18 +125,22 @@ const items1 = [
       "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
-    getItem("Reembolsos", "/reembolso"),
-    getItem("Caja Chica", "/cajaChica"),
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
-  ]),
-  getItem("Equipos", "", <HiWrenchScrewdriver style={iconStyle} />, [
-    getItem("Activar Equipos", "/activarEquipos"),
-    getItem("Administrar Equipos", "/equipos"),
-    getItem("Administrar Planchas", "/planchas"),
   ]),
 
-  getItem("Usuarios", "/users", <HiUsers style={iconStyle} />),
+  getItem("Equipos", "/", <HiWrenchScrewdriver style={iconStyle} />, [
+    getItem("Activar Equipos", "/activarEquipos"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Administrar</span>
+      <span style={{ lineHeight: 1 }}>Equipos</span>
+    </div>, "/equipos"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Administrar</span>
+      <span style={{ lineHeight: 1 }}>Planchas</span>
+    </div>, "/planchas"),
+  ]),
+
+
+  getItem("Empleados", "/users", <HiUsers style={iconStyle} />),
 
   getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />, [
     getItem("Encargo Ropa", "/servicesLavanderia"),
@@ -146,6 +150,22 @@ const items1 = [
     getItem("Encargo Varios", "/servicesVarios"),
     getItem("Productos", "/productos"),
   ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+    getItem("Reportes", "/reportes"),
+    // getItem("Reportes Productos", "/reportesProductos"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Cancelación de</span>
+      <span style={{ lineHeight: 1 }}>Servicios</span>
+    </div>, "/cancelacion"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Historial de</span>
+      <span style={{ lineHeight: 1 }}>Cancelaciones</span>
+    </div>, "/historialOrdenesCanceladas"),
+    getItem("Reembolsos", "/reembolso"),
+    getItem("Caja Chica", "/cajaChica"),
+  ]),
+
   { type: "divider", style: { margin: "140px " } },
 
   // getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />),
@@ -205,7 +225,7 @@ const items2 = [
     getItem("Planchado", "/pedidosPlanchado"),
     getItem("Tintoreria", "/pedidosTintoreria"),
     getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("Peidos Finalizados", "/pedidosGeneral"),
+    getItem("Peidos Finalizados", "/pedidosFinalizados"),
     getItem("Almacenados", "/pedidosAlmacenados"),
   ]),
   getItem(
@@ -246,16 +266,18 @@ const items2 = [
       "/historialCajaPlanchado"
     ),
     getItem("Retiro de caja", "/retiro"),
-    getItem("Reembolsos", "/reembolso"),
-    getItem("Caja Chica", "/cajaChica"),
-    getItem("Reportes Servicios", "/reportes"),
-    getItem("Reportes Productos", "/reportesProductos"),
   ]),
 
-  getItem("Equipos", "/equipos", <HiWrenchScrewdriver style={iconStyle} />, [
+  getItem("Equipos", "/", <HiWrenchScrewdriver style={iconStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
-    getItem("Administrar Equipos", "/equipos"),
-    getItem("Administrar Planchas", "/planchas"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Administrar</span>
+      <span style={{ lineHeight: 1 }}>Equipos</span>
+    </div>, "/equipos"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Administrar</span>
+      <span style={{ lineHeight: 1 }}>Planchas</span>
+    </div>, "/planchas"),
   ]),
 
   getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />, [
@@ -265,6 +287,21 @@ const items2 = [
     getItem("Tintoreria", "/servicesTintoreria"),
     getItem("Encargo Varios", "/servicesVarios"),
     getItem("Productos", "/productos"),
+  ]),
+
+  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+    getItem("Reportes", "/reportes"),
+    // getItem("Reportes Productos", "/reportesProductos"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Cancelación de</span>
+      <span style={{ lineHeight: 1 }}>Servicios</span>
+    </div>, "/cancelacion"),
+    getItem(<div style={{ display: "flex", flexDirection: "column" }}>
+      <span style={{ lineHeight: 1 }}>Historial de</span>
+      <span style={{ lineHeight: 1 }}>Cancelaciones</span>
+    </div>, "/historialOrdenesCanceladas"),
+    getItem("Reembolsos", "/reembolso"),
+    getItem("Caja Chica", "/cajaChica"),
   ]),
 
   { type: "divider", style: { margin: "140px " } },

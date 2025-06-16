@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Select } from "antd";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
 
 function AddServiceAutoservicio() {
@@ -11,13 +13,15 @@ function AddServiceAutoservicio() {
   const weightRef = useRef();
 
   const [description, setDescription] = useState("");
+  const keywordsNeeded = "(Autoservicio)";
   const [price, setPrice] = useState(0);
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState(0);
   const [category, setCategory] = useState("Autoservicio");
   const [service, setService] = useState('lavadora')
+  const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Autoservicio debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
@@ -26,13 +30,14 @@ function AddServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
-      setErrMsg("Error, solo puedes añadir servicios de 'autoservicio' (debe contener la palabra autoservicio).");
+      setErrMsg("Error, La Descripción de Autoservicio debe contenar alguna de estas palabras: ");
       return;
     }
     try {
       await api.post("/servicesSelfService", {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         weight: parseInt(weight),
         cycleTime: parseInt(time),
         machineType: service,
@@ -86,28 +91,46 @@ function AddServiceAutoservicio() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">
-                    {errMsg}
-                  </p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex items-center">
+                <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
-                step="0.1"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex items-center">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -168,7 +191,7 @@ function AddServiceAutoservicio() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Autoservicio"

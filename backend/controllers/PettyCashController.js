@@ -1,11 +1,23 @@
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
+moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 
 
 export const getPettyCash = async (req, res) => {
+
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.pettyCash.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
             select: {
                 amount: true,
                 balance: true,

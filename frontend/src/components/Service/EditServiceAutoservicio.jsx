@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Select } from "antd";
 const { Option } = Select;
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function EditServiceAutoservicio() {
@@ -13,6 +15,7 @@ function EditServiceAutoservicio() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [priceCredit, setPriceCredit] = useState(0);
   const [time, setTime] = useState(0);
   const [weight, setWeight] = useState();
   const [category, setCategory] = useState("Autoservicio");
@@ -29,6 +32,7 @@ function EditServiceAutoservicio() {
       const response = await api.get(`/servicesSelfService/${id}`);
       setDescription(response.data.description);
       setPrice(response.data.price);
+      setPriceCredit(response.data.priceCredit || 0);
       setCategory("Autoservicio");
       setTime(response.data.cycleTime);
       setWeight(response.data.weight);
@@ -51,6 +55,7 @@ function EditServiceAutoservicio() {
       await api.patch(`/servicesUpdateSelfService/${id}`, {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         weight: parseInt(weight),
         cycleTime: parseInt(time),
         machineType: service,
@@ -84,13 +89,14 @@ function EditServiceAutoservicio() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 ref={descriptionRef}
                 autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
+                disabled
                 required
               />
 
@@ -104,16 +110,32 @@ function EditServiceAutoservicio() {
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex items-center">
+                <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
                 id="price"
-                ref={priceRef}
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex items-center">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -186,7 +208,7 @@ function EditServiceAutoservicio() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Autoservicio"

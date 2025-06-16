@@ -9,7 +9,8 @@ import {
     createOrderMany,
     updateOrder,
     deleteOrder,
-    deleteOrderAll
+    deleteOrderAll,
+    updateCancelledSupplyOrder
 } from "../controllers/SupplyOrderController.js";
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.post('/supplyOrder', createOrder);
 router.post('/supplyOrderMany', createOrderMany);
 
 router.patch('/supplyOrder/:id', updateOrder);
+router.patch('/cancelSupplyOrder/:id', updateCancelledSupplyOrder);
 
 router.delete('/supplyOrder/:id', deleteOrder);
 router.delete('/supplyOrderDeleteAll', deleteOrderAll)

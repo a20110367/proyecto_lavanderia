@@ -1168,3 +1168,10 @@ GET    http://localhost:5000/createWorkshiftBalances
 
 GET    http://localhost:5000/lastWorkshiftBalances
 ###
+
+POST http://localhost:5000/generate/order/canceled
+Content-Type: application/json
+
+{
+  "logEntry":"ERROR console 20  : Errors stick out"
+}

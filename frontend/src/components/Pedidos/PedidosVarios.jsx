@@ -30,10 +30,11 @@ function PedidosVarios() {
   const [loading, setLoading] = useState(false);
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const handlePageChange = (selectedPage) => {
+  const [forcePage, setForcePage] = useState(0);
+const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
-
   const fetcher = async () => {
     const response = await api.get("/otherQueue");
     return response.data;
@@ -124,6 +125,7 @@ function PedidosVarios() {
         fk_idStaffMember: cookies.token,
       });
       showNotification(`Pedido iniciado`);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -173,6 +175,7 @@ function PedidosVarios() {
           warning: false,
         });
       }
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -341,6 +344,7 @@ function PedidosVarios() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
 

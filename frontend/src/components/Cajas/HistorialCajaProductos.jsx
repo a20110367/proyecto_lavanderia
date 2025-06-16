@@ -27,6 +27,7 @@ function HistorialCajaProductos() {
   const fetchCashCuts = async () => {
     try {
       const response = await api.get("/supplyCashCuts");
+      console.log(response.data)
       return response.data;
     } catch (error) {
       console.error("Error fetching cash cuts:", error);
@@ -170,21 +171,21 @@ function HistorialCajaProductos() {
       );
       pdf.text(
         `Total Tarjeta: ${
-          selectedCorte.totalCredit ? `$${selectedCorte.totalCredit}` : "$0"
+          selectedCorte.totalSuppliesCredit ? `$${selectedCorte.totalSuppliesCredit}` : "$0"
         }`,
         10,
         220
       );
       pdf.text(
         `Total Efectivo: ${
-          selectedCorte.totalCash ? `$${selectedCorte.totalCash}` : "$0"
+          selectedCorte.totalSuppliesCash ? `$${selectedCorte.totalSuppliesCash}` : "$0"
         }`,
         10,
         230
       );
       pdf.text(
         `Total Ingresos: ${
-          selectedCorte.totalIncome ? `$${selectedCorte.totalIncome}` : "$0"
+          selectedCorte.totalSuppliesIncome ? `$${selectedCorte.totalSuppliesIncome}` : "$0"
         }`,
         10,
         240
@@ -305,6 +306,10 @@ function HistorialCajaProductos() {
                   ORDENES <br />
                   PAGADAS
                 </th>
+                <th>
+                  INGRESOS <br />
+                  TOTALES
+                </th>
                 <th>USUARIO</th>
                 <th>TURNO</th>
                 <th></th>
@@ -327,13 +332,17 @@ function HistorialCajaProductos() {
                     <td className="">{formatDate(corte.cashCutD)}</td>
                     
                     <td className="">
-                      ${corte.totalCash ? corte.totalCash : 0}
+                      ${corte.totalSuppliesCash ? corte.totalSuppliesCash : 0}
                     </td>
                     <td className="">
-                      ${corte.totalCredit ? corte.totalCredit : 0}
+                      ${corte.totalSuppliesCredit ? corte.totalSuppliesCredit : 0}
                     </td>
                     <td className="">
-                      {corte.ordersPayed ? corte.ordersPayed : 0}
+                      {corte.ordersPayedSupply ? corte.ordersPayedSupply : 0}
+                    </td>
+
+                    <td className="text-blue-500 font-bold">
+                      ${corte.totalSuppliesIncome ? corte.totalSuppliesIncome : 0}
                     </td>
 
                     <td className="">
@@ -490,17 +499,17 @@ function HistorialCajaProductos() {
                   <span className="font-bold">
                     Ingreso de productos con Efectivo:
                   </span>{" "}
-                  ${selectedCorte.totalCash ? selectedCorte.totalCash : 0}
+                  ${selectedCorte.totalSuppliesCash ? selectedCorte.totalSuppliesCash : 0}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">
                     Ingreso de productos con Tarjeta:
                   </span>{" "}
-                  ${selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
+                  ${selectedCorte.totalSuppliesCredit ? selectedCorte.totalSuppliesCredit : 0}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Ingreso total de productos:</span>{" "}
-                  ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
+                  ${selectedCorte.totalSuppliesIncome ? selectedCorte.totalSuppliesIncome : 0}
                 </p>
               </div>
             </div>

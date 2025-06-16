@@ -193,6 +193,7 @@ function HistorialCajaPlanchado() {
       }
     }
   };
+              console.log(filteredCortes)
 
   return (
     <div className="text-center mt-4">
@@ -349,7 +350,7 @@ function HistorialCajaPlanchado() {
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha de cierre:</span>{" "}
-                  {formatDate(selectedCorte.startingDay)}
+                  {formatDate(selectedCorte.endDay)}
                 </p>
                 <br />
               </div>

@@ -411,7 +411,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTextSize(2, 2);
                 printer.bold(true)
                 printer.println('No. de Orden:')
-                printer.setTextSize(7, 7);
+                printer.setTextSize(4, 4);
                 printer.println(`${order.id_order}-${count + 1}`)
                 printer.setTextSize(2, 2);
                 printer.bold(false)
@@ -430,7 +430,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.newLine()
                 printer.setTypeFontB();
                 printer.setTextSize(3, 2);
-                printer.println(`Total de Elementos:`)
+                printer.println(`No. de Servicios`)
                 printer.setTextNormal();
                 printer.newLine()
                 printer.setTextSize(3, 2);
@@ -463,8 +463,16 @@ const printOrderDetailIronTicket = async (order) => {
         let count = 0;
         let quant = 0;
 
+        let individualPieces = 0;
+
         const totalPackages = parseInt(order.pieces / 6) + parseInt(order.pieces % 6 != 0 ? 1 : 0);
         order.cart.forEach(async (detail, index) => {
+
+            if (detail.pieces < 6 && order.serviceType === "planchado") {
+                individualPieces += detail.quantity;
+                return true;
+            }
+
             for (let i = 0; i < detail.quantity; i++) {
                 // CUARTO APROACH 
                 //EXTRAS
@@ -482,7 +490,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(2, 2);
                     printer.bold(true)
                     printer.println('No. de Orden:')
-                    printer.setTextSize(7, 7);
+                    printer.setTextSize(4, 4);
                     printer.println(`${order.id_order}-${count + 1}`)
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
@@ -530,8 +538,8 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextSize(2, 2);
                         printer.bold(true)
                         printer.println('No. de Orden:')
-                        printer.setTextSize(7, 7);
-                        printer.println(`${order.id_order} - ${count + 1}`)
+                        printer.setTextSize(4, 4);
+                        printer.println(`${order.id_order}-${count + 1}`)
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
@@ -572,6 +580,47 @@ const printOrderDetailIronTicket = async (order) => {
                 count++;
             }
         })
+
+        if (individualPieces > 0) {
+            printer.drawLine()
+            printer.setTextSize(2, 2);
+            printer.bold(true)
+            printer.println('No. de Orden:')
+            printer.setTextSize(4, 4);
+            printer.println(`${order.id_order}-${count + 1}`)
+            printer.setTextSize(2, 2);
+            printer.println(`Piezas: ${individualPieces}`)
+            printer.newLine()
+            printer.println(`Paquete: ${totalPackages}`)
+            printer.newLine()
+            printer.bold(false)
+            printer.newLine()
+            // printer.newLine()
+            // printer.setTextNormal();
+            printer.setTextDoubleHeight();
+            printer.println('Cliente:')
+            printer.println(`${order.client}`)
+            printer.newLine()
+            printer.println('Descripcion:')
+            printer.println(`PIEZAS INDIVIDUALES`)
+            printer.newLine()
+            printer.println(`Cantidad: ${totalPackages} - ${totalPackages}`)
+            printer.newLine()
+            printer.setTypeFontB();
+            printer.setTextSize(3, 2);
+            printer.println(`Total de Piezas:`)
+            printer.setTextNormal();
+            printer.newLine()
+            printer.setTextSize(3, 2);
+            printer.println(order.pieces)
+            printer.setTextDoubleHeight();
+            if (order.notes) {
+                printer.newLine()
+                printer.println(`Observaciones:`)
+                printer.println(`${order.notes}`)
+            }
+            printer.cut();
+        }
 
 
         // // TERCER APROACH
@@ -886,6 +935,7 @@ export const cashCutTicket = async (req, res) => {
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
 
             printer.newLine()
+            printer.println(`No. de Piezas de Planchado Hechas: ${services.ironPiecesDone ? services.ironPiecesDone : '0'}`)
             printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.setTextDoubleHeight();
@@ -897,8 +947,8 @@ export const cashCutTicket = async (req, res) => {
             printer.setTextDoubleHeight();
             printer.drawLine()
             printer.setTextNormal()
-            if (cashCut.ordersCancelled) {
-                printer.println(`Ordenes Canceladas: ${cashCut.ordersCancelled ? cashCut.ordersCancelled : '0'}`)
+            if (services.canceledOrders) {
+                printer.println(`Ordenes Canceladas: ${services.canceledOrders ? services.canceledOrders : '0'}`)
                 printer.println(`Monto Total de Ordenes Canceladas: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
             }
             printer.setTextDoubleHeight();
@@ -1042,13 +1092,12 @@ export const generatePartialCashCutTicket = async (req, res) => {
 
             printer.setTextNormal()
             printer.newLine()
-            printer.println(`Piezas de Planchado Hechas: ${cashCut.ironPiecesDone}`)
-            printer.println(`Dinero en Caja Chica: ${cashCut.pettyCashBalance}`)
+            printer.println(`Piezas de Planchado Hechas: ${services.ironPiecesDone}`)
             printer.newLine()
 
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
-            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome  ? '-' + cashCut.creditIncome : '0'}`)
+            printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome ? cashCut.creditIncome : '0'}`)
             printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
             printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
             printer.setTextDoubleHeight();
@@ -1074,12 +1123,12 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Total Encargo Varios: ${services.others}`)
 
             printer.newLine()
-        
+
             printer.println(`Ingreso en Efectivo: ${services.totalCash}`)
             printer.println(`Ingreso en Tarjeta: ${services.totalCredit}`)
             printer.setTextDoubleHeight();
             printer.newLine()
-            printer.println(`Total (Suma de los Servicios): ${services.totalServiceBalance}`)
+            printer.println(`Total (Suma de los Servicios): ${services.totalIncome}`)
             printer.setTextNormal()
 
             printer.setTextQuadArea()
@@ -1732,10 +1781,10 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(canceled.id_canceled);
         printer.newLine();
         printer.println(`FECHA DE CANCELACIÓN`)
-        printer.println(moment().format("DD/MM/YYYY - HH:MM"));
+        printer.println(moment().format("DD/MM/YYYY - HH:mm"));
         printer.newLine();
         printer.println(`No. de Orden CANCELADA:`);
-        printer.setTextSize(7, 7);
+        printer.setTextSize(4, 4);
         printer.println(canceled.id_order);
 
         printer.setTextNormal();
@@ -1782,6 +1831,17 @@ export const printCanceledOrder = async (req, res) => {
         res.status(400).json({ msg: err.message })
     }
 }
+
+export const printCanceledOrder1 = async (req, res) => {
+    try {
+        console.log(moment().format("DD/MM/YYYY - HH:MM"));
+        res.status(200).json({ msg:moment().format("DD/MM/YYYY - HH:mm") })
+    } catch (err) {
+        console.error(err)
+        res.status(400).json({ msg: err.message })
+    }
+}
+
 
 const n2word = (number) => {
     try {

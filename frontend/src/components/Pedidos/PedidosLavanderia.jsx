@@ -36,6 +36,7 @@ function PedidosLavanderia() {
   const [notificationMessage, setNotificationMessage] = useState(false);
   const [combinedWash, setCombinedWash] = useState(false);
   const [combinedDry, setCombinedDry] = useState(false);
+  const [forcePage, setForcePage] = useState(0);
   // const [lastDryMachine, setLastDryMachine] = useState({
   //   id_machine: 0,
   //   machineNumber: 0,
@@ -82,6 +83,7 @@ function PedidosLavanderia() {
   const endIndex = startIndex + itemsPerPage;
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
   const [showDryerSelection, setShowDryerSelection] = useState(false);
 
@@ -235,6 +237,7 @@ function PedidosLavanderia() {
       setAvailableMachines(allMachines);
       setSelectedWashMachine(null);
       setSelectedPedido(pedido);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -264,7 +267,7 @@ function PedidosLavanderia() {
       //   freeForUse: false,
       // });
 
-      !combinedWash ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
+      !combinedWash ? modifyCombinedWash(selectedWashMachine) : console.log("NOT TOGETHER");
       // lastWashMachine.machineNumber === 0 || lastWashMachine != selectedWashMachine ? localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine)) : console.log("NOT TOGETHER");
 
       const updatedPedidos = pedidos.map((p) =>
@@ -399,7 +402,7 @@ function PedidosLavanderia() {
     //   freeForUse: false,
     // });
 
-    !combinedDry ? localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine)) : console.log("TOGETHER");
+    !combinedDry ? modifyCombinedDry(selectedDryMachine) : console.log("TOGETHER");
 
     await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
       combinedWash: await selectedPedido.combinedWash,
@@ -408,6 +411,7 @@ function PedidosLavanderia() {
       fk_idDryMachine: selectedDryMachine.id_machine,
       fk_idStaffMember: cookies.token,
     });
+    setForcePage(0);
   } catch (error) {
     console.error("Error al confirmar la secadora:", error);
   }
@@ -474,6 +478,7 @@ const handleClothesLineDry = (pedido) => {
         });
       }
     });
+    setForcePage(0);
   } catch (err) {
     console.error(err);
   }
@@ -554,6 +559,7 @@ const handleFinishProcess = async (pedido) => {
         showNotification(`Tarea del Pedido finalizada correctamente`);
       }
     }
+    setForcePage(0);
   } catch (err) {
     console.log(err);
   }
@@ -569,6 +575,15 @@ const hideDryerModal = async () => {
   setShowDryerSelection(false);
 };
 
+const modifyCombinedWash = async (selectedWashMachine) => {
+  localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine))
+  setLastWashMachine(selectedWashMachine);
+}
+
+const modifyCombinedDry = async (selectedDryMachine) => {
+  localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine))
+  setLastDryMachine(selectedDryMachine);
+}
 return (
   <div>
     <div className="mb-3">
@@ -771,6 +786,7 @@ return (
         previousLabel="Anterior"
         nextLabel="Siguiente"
         breakLabel="..."
+        forcePage = {(forcePage || 0)}
         pageCount={Math.ceil(
           filteredPedidos.filter(
             (pedido) =>

@@ -24,11 +24,12 @@ function Reembolso() {
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
-
+  const [forcePage, setForcePage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const fetcher = async () => {
@@ -156,10 +157,7 @@ function Reembolso() {
           date: date,
         }
 
-        await api.post('/generateCashWithdrawalTicket', {
-          cashWithdrawal: cashWithdrawal,
-        })
-
+        
         const nuevoReembolso = {
           id_cashWithdrawal: res.data.id_cashWithdrawal,
           cashWithdrawalType: "refound",
@@ -173,6 +171,12 @@ function Reembolso() {
         setFilteredReembolsos([...reembolsos, nuevoReembolso]);
 
         setVisible(false);
+
+        setForcePage(0);
+
+        await api.post('/generateCashWithdrawalTicket', {
+          cashWithdrawal: cashWithdrawal,
+        })
       }
     }
     catch (err) {
@@ -337,6 +341,7 @@ function Reembolso() {
           previousLinkClassName="prevOrNextLinkClassName"
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
+          forcePage = {(forcePage || 0)}
           activeLinkClassName="activeLinkClassName"
         />
       </div>

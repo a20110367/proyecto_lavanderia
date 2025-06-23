@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
@@ -19,6 +19,7 @@ import {
 import moment from "moment";
 
 function PedidosGeneral() {
+  const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
   const [selectedPedidos, setSelectedPedidos] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -249,6 +250,9 @@ function PedidosGeneral() {
           <div className="absolute top-2.5 left-2.5 text-gray-400">
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
+        </div>
+        <div>
+          <p className="text-center mr-8 text-xl font-semibold text-red-600">PEDIDOS CON FECHA MAYOR A 3 MESES SE MANDAN A  <Link to={"/pedidosAlmacenados"}className="text-purple-600 underline font-bold hover:text-purple-400">{"->"} PEDIDOS ALMACENADOS {"<-"}</Link></p>
         </div>
         <button className="btn-primary text-xs" onClick={() => notifyAll()}>
           Notificar a todos los Clientes

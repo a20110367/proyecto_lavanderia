@@ -8,15 +8,15 @@ async function seed() {
             [
                 {
                     "id_user": 1,
-                    "name": "Axel",
-                    "email": "a20110341@ceti.mx",
-                    "phone": "3321543206",
-                    "pass": "0117",
+                    "name": "Israel",
+                    "email": "israelramirezq@gmail.com",
+                    "phone": "3313839768",
+                    "pass": "SuperMan",
                     "role": "admin",
                     "created": "2023-11-20T19:23:47.340Z",
-                    "firstLN": "Vergara",
-                    "secondLN": "Flores",
-                    "username": "rojo",
+                    "firstLN": "Ramirez",
+                    "secondLN": "Quintero",
+                    "username": "admin",
                     "updatedAt": "2023-11-20T19:21:25.500Z",
                     "deleted": false
                 },
@@ -36,30 +36,16 @@ async function seed() {
                 },
                 {
                     "id_user": 3,
-                    "name": "Israel",
-                    "email": "a20110367@ceti.mx",
-                    "phone": "3313839768",
+                    "name": "Rafael",
+                    "email": "solucioneslegalesintegrales@hotmail.com",
+                    "phone": "3312918941",
                     "pass": "1010",
                     "role": "admin",
                     "created": "2023-11-20T19:23:47.340Z",
-                    "firstLN": "Ramirez",
-                    "secondLN": "Quintero",
-                    "username": "isra",
+                    "firstLN": "Zamora",
+                    "secondLN": "Falcon",
+                    "username": "Rafael",
                     "updatedAt": "2023-11-20T19:24:56.409Z",
-                    "deleted": false
-                },
-                {
-                    "id_user": 4,
-                    "name": "juanito",
-                    "email": "pyrop59@gmail.com",
-                    "phone": "1234567890",
-                    "pass": "1234",
-                    "role": "employee",
-                    "created": "2023-11-20T19:24:56.409Z",
-                    "firstLN": "perez",
-                    "secondLN": "perez",
-                    "username": "juanito",
-                    "updatedAt": "2023-11-20T19:24:07.948Z",
                     "deleted": false
                 }
             ],
@@ -73,11 +59,11 @@ async function seed() {
             [
                 {
                     "id_staffMember": 1,
-                    "name": "Axel",
-                    "email": "a20110341@ceti.mx",
-                    "phone": "3321543206",
-                    "firstLN": "Vergara",
-                    "secondLN": "Flores",
+                    "name": "Israel",
+                    "email": "israelramirezq@gmail.com",
+                    "phone": "3313839768",
+                    "firstLN": "Ramirez",
+                    "secondLN": "Quintero",
                     "deleted": false
                 },
                 {
@@ -91,11 +77,11 @@ async function seed() {
                 },
                 {
                     "id_staffMember": 3,
-                    "name": "Israel",
-                    "email": "a20110367@ceti.mx",
-                    "phone": "3313839768",
-                    "firstLN": "Ramirez",
-                    "secondLN": "Quintero",
+                    "name": "Rafael",
+                    "email": "solucioneslegalesintegrales@hotmail.com",
+                    "phone": "3312918941",
+                    "firstLN": "Zamora",
+                    "secondLN": "Falcon",
                     "deleted": false
                 },
                 {
@@ -150,149 +136,6 @@ async function seed() {
                     "secondLN": "Publico",
                     "username": "",
                     "deleted": false
-                },
-                {
-                    "id_client": 2,
-                    "name": "Janito",
-                    "email": "a20110367@ceti.mx",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "Lopez",
-                    "secondLN": "Perez",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 3,
-                    "name": "cliente2",
-                    "email": "mail2@mail2.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "cliente2",
-                    "secondLN": "cliente2",
-                    "username": "cliente2",
-                    "deleted": false
-                },
-                {
-                    "id_client": 4,
-                    "name": "cliente3",
-                    "email": "mail3@mail3.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "cliente3",
-                    "secondLN": "cliente3",
-                    "username": "cliente3",
-                    "deleted": false
-                },
-                {
-                    "id_client": 5,
-                    "name": "cliente4",
-                    "email": "mail4@mail4.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "cliente4",
-                    "secondLN": "cliente4",
-                    "username": "cliente4",
-                    "deleted": false
-                },
-                {
-                    "id_client": 6,
-                    "name": "pedro",
-                    "email": "mailito@mailito.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "perez",
-                    "secondLN": "perez",
-                    "username": "pedro",
-                    "deleted": false
-                },
-                {
-                    "id_client": 7,
-                    "name": "juan",
-                    "email": "mail@mail2.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "x",
-                    "secondLN": "x",
-                    "username": "juan",
-                    "deleted": false
-                },
-                {
-                    "id_client": 8,
-                    "name": "juan2",
-                    "email": "mail43@mail.com",
-                    "phone": "3321817496",
-                    "pass": "",
-                    "firstLN": "picada",
-                    "secondLN": "papas",
-                    "username": "juan2",
-                    "deleted": false
-                },
-                {
-                    "id_client": 9,
-                    "name": "Pepe ",
-                    "email": "yujiitadori@gmail.com",
-                    "phone": "3321817496",
-                    "pass": "",
-                    "firstLN": "Flores",
-                    "secondLN": "Coria",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 10,
-                    "name": "Cliente encargo",
-                    "email": "makizenin@gmail.com",
-                    "phone": "3385697406",
-                    "pass": "",
-                    "firstLN": "Flores",
-                    "secondLN": "Mora",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 11,
-                    "name": "cosa",
-                    "email": "mailmailmail@mail.com",
-                    "phone": "3313839768",
-                    "pass": "",
-                    "firstLN": "cosa",
-                    "secondLN": "cosa",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 12,
-                    "name": "Cliente Tintoreria",
-                    "email": "akame@gmail.com",
-                    "phone": "8896157602",
-                    "pass": "",
-                    "firstLN": "Akame",
-                    "secondLN": "Ga kill",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 13,
-                    "name": "juan",
-                    "email": "orsted@gmail.com",
-                    "phone": "7756982164",
-                    "pass": "",
-                    "firstLN": "x",
-                    "secondLN": "x",
-                    "username": null,
-                    "deleted": false
-                },
-                {
-                    "id_client": 14,
-                    "name": "Juan Pablo",
-                    "email": "juanito@juanito.com",
-                    "phone": "3338431799",
-                    "pass": "",
-                    "firstLN": "De la cruz",
-                    "secondLN": "Perez",
-                    "username": null,
-                    "deleted": false
                 }
             ],
     });
@@ -313,7 +156,7 @@ async function seed() {
                     "created": "2024-11-30T01:31:04.955Z",
                     "updatedAt": "2025-03-07T01:07:52.186Z",
                     "serialNumber": "N/A",
-                    "ipAddress": "192.168.137.59"
+                    "ipAddress": null
                 },
                 {
                     "id_machine": 2,
@@ -328,7 +171,7 @@ async function seed() {
                     "created": "2024-11-30T01:31:04.955Z",
                     "updatedAt": "2025-03-19T02:57:53.460Z",
                     "serialNumber": "N/A",
-                    "ipAddress": "192.168.137.103"
+                    "ipAddress": null
                 },
                 {
                     "id_machine": 3,
@@ -388,7 +231,7 @@ async function seed() {
                     "created": "2024-11-30T01:31:04.955Z",
                     "updatedAt": "2025-03-19T03:09:24.494Z",
                     "serialNumber": "N/A",
-                    "ipAddress": "192.168.137.96"
+                    "ipAddress": null
                 },
                 {
                     "id_machine": 7,
@@ -403,7 +246,7 @@ async function seed() {
                     "created": "2024-11-30T01:31:04.955Z",
                     "updatedAt": "2025-03-07T01:07:52.186Z",
                     "serialNumber": "N/A",
-                    "ipAddress": "192.168.137.173"
+                    "ipAddress": null
                 },
                 {
                     "id_machine": 8,
@@ -418,7 +261,7 @@ async function seed() {
                     "created": "2024-11-30T01:31:04.955Z",
                     "updatedAt": "2025-03-07T01:03:53.841Z",
                     "serialNumber": "N/A",
-                    "ipAddress": "192.168.137.39"
+                    "ipAddress": null
                 },
                 {
                     "id_machine": 9,
@@ -807,7 +650,7 @@ async function seed() {
                     "freeForUse": true,
                     "status": "available",
                     "pieces": 150,
-                    "description": "Plancha 2",
+                    "description": "Plancha 1",
                     "notes": "",
                     "serialNumber": "N/A",
                 },
@@ -817,7 +660,7 @@ async function seed() {
                     "freeForUse": true,
                     "status": "available",
                     "pieces": 150,
-                    "description": "Maldita Pobreza",
+                    "description": "Plancha 2",
                     "notes": "",
                     "serialNumber": "N/A",
                 },
@@ -827,7 +670,7 @@ async function seed() {
                     "freeForUse": true,
                     "status": "unavailable",
                     "pieces": 123,
-                    "description": "X3 NFC",
+                    "description": "Plancha 3",
                     "notes": "",
                     "serialNumber": "N/A",
                 },
@@ -837,7 +680,7 @@ async function seed() {
                     "freeForUse": true,
                     "status": "unavailable",
                     "pieces": 130,
-                    "description": "Alpha",
+                    "description": "Plancha 4",
                     "notes": "",
                     "serialNumber": "N/A",
                 }
@@ -849,36 +692,36 @@ async function seed() {
             [
                 {
                     "id_service": 1,
-                    "description": "Lavado Encargo 1 a 6 kg",
+                    "description": "Lav. Encargo 1 a 6 kg",
                     "price": 145,
                     "priceCredit": 140,
                     "washWeight": 6,
                     "washCycleTime": 30,
                     "dryWeight": 6,
                     "dryCycleTime": 30,
-                    "id_category": 2,
+                    "category_id": 2,
                 },
                 {
                     "id_service": 2,
-                    "description": "Lavado Encargo 6.1 a 12 kg",
+                    "description": "Lav. Encargo 6.1 a 12 kg",
                     "price": 182,
                     "priceCredit": 180,
                     "washWeight": 12,
                     "washCycleTime": 30,
                     "dryWeight": 12,
                     "dryCycleTime": 30,
-                    "id_category": 2,
+                    "category_id": 2,
                 },
                 {
                     "id_service": 3,
-                    "description": "Lavado Encargo 12.1 a 16 kg",
+                    "description": "Lav. Encargo 12.1 a 16 kg",
                     "price": 230,
                     "priceCredit": 225,
                     "washWeight": 16,
                     "washCycleTime": 30,
                     "dryWeight": 16,
                     "dryCycleTime": 30,
-                    "id_category": 2,
+                    "category_id": 2,
                 }
             ],
     });
@@ -892,7 +735,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 2,
@@ -900,7 +743,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 3,
@@ -908,7 +751,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 4,
@@ -916,7 +759,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 5,
@@ -924,7 +767,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 6,
@@ -932,7 +775,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 7,
@@ -940,7 +783,7 @@ async function seed() {
                     "price": 95,
                     "priceCredit": 95,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 8,
@@ -948,7 +791,7 @@ async function seed() {
                     "price": 120,
                     "priceCredit": 120,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 9,
@@ -956,7 +799,7 @@ async function seed() {
                     "price": 85,
                     "priceCredit": 85,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 10,
@@ -964,7 +807,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 11,
@@ -972,7 +815,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 12,
@@ -980,7 +823,7 @@ async function seed() {
                     "price": 110,
                     "priceCredit": 110,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 13,
@@ -988,7 +831,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 14,
@@ -996,7 +839,7 @@ async function seed() {
                     "price": 55,
                     "priceCredit": 55,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 15,
@@ -1004,7 +847,7 @@ async function seed() {
                     "price": 70,
                     "priceCredit": 70,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 16,
@@ -1012,7 +855,7 @@ async function seed() {
                     "price": 110,
                     "priceCredit": 110,
                     "pieces": 2,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 17,
@@ -1020,7 +863,7 @@ async function seed() {
                     "price": 90,
                     "priceCredit": 90,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 18,
@@ -1028,7 +871,7 @@ async function seed() {
                     "price": 120,
                     "priceCredit": 120,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 19,
@@ -1036,7 +879,7 @@ async function seed() {
                     "price": 700,
                     "priceCredit": 700,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 20,
@@ -1044,7 +887,7 @@ async function seed() {
                     "price": 200,
                     "priceCredit": 200,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 21,
@@ -1052,7 +895,7 @@ async function seed() {
                     "price": 200,
                     "priceCredit": 200,
                     "pieces": 2,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 22,
@@ -1060,7 +903,7 @@ async function seed() {
                     "price": 280,
                     "priceCredit": 280,
                     "pieces": 3,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 23,
@@ -1068,7 +911,7 @@ async function seed() {
                     "price": 135,
                     "priceCredit": 135,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 24,
@@ -1076,7 +919,7 @@ async function seed() {
                     "price": 165,
                     "priceCredit": 165,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 25,
@@ -1084,7 +927,7 @@ async function seed() {
                     "price": 150,
                     "priceCredit": 150,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 26,
@@ -1092,7 +935,7 @@ async function seed() {
                     "price": 250,
                     "priceCredit": 250,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 27,
@@ -1100,7 +943,7 @@ async function seed() {
                     "price": 110,
                     "priceCredit": 110,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 28,
@@ -1108,7 +951,7 @@ async function seed() {
                     "price": 170,
                     "priceCredit": 170,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 29,
@@ -1116,7 +959,7 @@ async function seed() {
                     "price": 75,
                     "priceCredit": 75,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 },
                 {
                     "id_service": 30,
@@ -1124,7 +967,7 @@ async function seed() {
                     "price": 90,
                     "priceCredit": 90,
                     "pieces": 1,
-                    "id_category": 4,
+                    "category_id": 4,
                 }
             ]
     });
@@ -1140,7 +983,7 @@ async function seed() {
                     "weight": 10,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 2,
@@ -1150,7 +993,7 @@ async function seed() {
                     "weight": 13,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 3,
@@ -1160,7 +1003,7 @@ async function seed() {
                     "weight": 18,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 4,
@@ -1170,7 +1013,7 @@ async function seed() {
                     "weight": 24,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 5,
@@ -1180,7 +1023,7 @@ async function seed() {
                     "weight": 27,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 6,
@@ -1190,7 +1033,7 @@ async function seed() {
                     "weight": 10,
                     "cycleTime": 30,
                     "machineType": "secadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 7,
@@ -1200,7 +1043,7 @@ async function seed() {
                     "weight": 13,
                     "cycleTime": 30,
                     "machineType": "secadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 8,
@@ -1210,7 +1053,7 @@ async function seed() {
                     "weight": 18,
                     "cycleTime": 30,
                     "machineType": "secadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 9,
@@ -1220,7 +1063,7 @@ async function seed() {
                     "weight": 23,
                     "cycleTime": 30,
                     "machineType": "secadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 },
                 {
                     "id_service": 10,
@@ -1230,7 +1073,7 @@ async function seed() {
                     "weight": 10,
                     "cycleTime": 30,
                     "machineType": "lavadora",
-                    "id_category": 1,
+                    "category_id": 1,
                 }
             ],
     });
@@ -1240,30 +1083,39 @@ async function seed() {
             [
                 {
                     "id_service": 1,
-                    "description": "Planchado Docena 12pzs",
+                    "description": "Planchado Docena 12 pzas",
                     "price": 120,
                     "priceCredit": 115,
                     "pieces": 12,
                     "cycleTime": 30,
-                    "id_category": 3,
+                    "category_id": 3,
                 },
                 {
                     "id_service": 2,
+                    "description": "Planchado 6 pzas",
+                    "price": 11,
+                    "priceCredit": 10,
+                    "pieces": 1,
+                    "cycleTime": 10,
+                    "category_id": 3,
+                },
+                {
+                    "id_service": 3,
                     "description": "Planchado Pieza Sencilla",
                     "price": 11,
                     "priceCredit": 10,
                     "pieces": 1,
                     "cycleTime": 10,
-                    "id_category": 3,
+                    "category_id": 3,
                 },
                 {
-                    "id_service": 3,
+                    "id_service": 4,
                     "description": "Planchado Docena Promocion Miercoles",
                     "price": 99,
                     "priceCredit": 95,
                     "pieces": 12,
                     "cycleTime": 50,
-                    "id_category": 3,
+                    "category_id": 3,
                 }
             ]
     });
@@ -1276,20 +1128,6 @@ async function seed() {
                     "description": "Lavado de tenis",
                     "price": 40,
                     "priceCredit": 35,
-                    "category_id": 5,
-                },
-                {
-                    "id_service": 3,
-                    "description": "Lavado de colcha",
-                    "price": 150,
-                    "priceCredit": 140,
-                    "category_id": 5,
-                },
-                {
-                    "id_service": 6,
-                    "description": "Lavado Prueba",
-                    "price": 5,
-                    "priceCredit": 5,
                     "category_id": 5,
                 }
             ],
@@ -1310,7 +1148,7 @@ async function seed() {
     await prisma.cashCut.create({
         data: {
             "fk_user": 1,
-            "total": 0,
+            "totalServiceBalance": 0,
             "created": "2024-11-29T02:08:23.190Z",
             "updatedAt": "2024-11-29T02:10:17.130Z",
             "cashCutD": "2024-11-29T00:00:00.000Z",
@@ -1322,15 +1160,15 @@ async function seed() {
             "ordersCancelled": 0,
             "ironPiecesDone": 0,
             "totalAutoservicio": 0,
-            "totalCash": 0,
+            "totalServiceCash": 0,
             "totalCashWithdrawal": 0,
-            "totalCredit": 0,
+            "totalServiceCredit": 0,
             "totalEncargo": 0,
             "totalOtros": 0,
             "totalPlanchado": 0,
             "totalTintoreria": 0,
             "totalOtrosEncargo": 0,
-            "totalIncome": 0,
+            "totalServiceIncome": 0,
             "totalCancelations": 0,
             "pettyCashBalance": 0,
             "workShift": "morning"
@@ -1341,7 +1179,6 @@ async function seed() {
 
         data: {
             "fk_user": 1,
-            "total": 0,
             "created": "2024-11-29T02:15:19.814Z",
             "updatedAt": "2024-11-29T02:15:19.814Z",
             "cashCutD": "2024-11-29T00:00:00.000Z",
@@ -1349,7 +1186,7 @@ async function seed() {
             "id_supplyCashCut": 1,
             "cashCutStatus": "closed",
             "initialCash": 0,
-            "ordersPayed": 0,
+            "ordersPayedSupply": 0,
             "totalJabon": 0,
             "totalSuavitel": 0,
             "totalPinol": 0,
@@ -1361,12 +1198,30 @@ async function seed() {
             "totalGanchos": 0,
             "totalWC": 0,
             "totalOtros": 0,
-            "totalCredit": 0,
-            "totalCash": 0,
-            "totalIncome": 0,
+            "totalSuppliesCredit": 0,
+            "totalSuppliesCash": 0,
+            "totalSuppliesIncome": 0,
             "workShift": "morning"
         }
 
+    });
+
+    await prisma.workshiftBalance.create({
+        data:
+        {
+            "id_workshifBalance": 1,
+            "id_supplyCashCut": 1,
+            "id_cashCut": 1,
+            "cashIncome": 0,
+            "creditIncome": 0,      
+            "withdrawal": 0,
+            "cancellations": 0,
+            "initialCash": 0,       
+            "totalCashBalace": 0,
+            "totalIncome":0,
+            "created": "2024-11-29T02:15:19.814Z",
+            "updatedAt": "2024-11-29T02:15:19.814Z"
+        }
     });
 
     await prisma.pettyCash.create({
@@ -1387,54 +1242,70 @@ async function seed() {
             [
                 {
                     "id_supply": 1,
-                    "description": "Jabon Liquido",
-                    "price": 10,
+                    "description": "Jabon Chico",
+                    "price": 6,
                     "category": "jabon",
                     "unit": "mililitros",
                     "value": 100
                 },
                 {
                     "id_supply": 2,
-                    "description": "Suavitel",
-                    "price": 10,
+                    "description": "Jabon Grande",
+                    "price": 12,
+                    "category": "jabon",
+                    "unit": "mililitros",
+                    "value": 200
+                },
+                {
+                    "id_supply": 3,
+                    "description": "Suavitel Chico",
+                    "price": 6,
                     "category": "suavitel",
                     "unit": "mililitros",
                     "value": 100
                 },
                 {
-                    "id_supply": 3,
-                    "description": "Pinol",
-                    "price": 10,
-                    "category": "pinol",
-                    "unit": "piezas",
-                    "value": 100
-                },
-                {
                     "id_supply": 4,
-                    "description": "Desengrasante",
-                    "price": 10,
-                    "category": "desengrasante",
+                    "description": "Suavitel Grande",
+                    "price": 12,
+                    "category": "suavitel",
                     "unit": "mililitros",
-                    "value": 100
+                    "value": 200
                 },
                 {
                     "id_supply": 5,
-                    "description": "Cloro",
-                    "price": 10,
-                    "category": "cloro",
+                    "description": "Pinol Chico",
+                    "price": 6,
+                    "category": "pinol",
                     "unit": "mililitros",
                     "value": 100
                 },
                 {
                     "id_supply": 6,
-                    "description": "Sanitizante",
-                    "price": 10,
-                    "category": "sanitizante",
+                    "description": "Pinol Grande",
+                    "price": 12,
+                    "category": "pinol",
+                    "unit": "mililitros",
+                    "value": 200
+                },
+                {
+                    "id_supply": 7,
+                    "description": "Cloro Chico",
+                    "price": 6,
+                    "category": "cloro",
                     "unit": "mililitros",
                     "value": 100
                 },
                 {
-                    "id_supply": 7,
+                    "id_supply": 8,
+                    "description": "Cloro Grande",
+                    "price": 12,
+                    "category": "cloro",
+                    "unit": "mililitros",
+                    "value": 100
+                },
+                {
+                    "id_supply": 9,
                     "description": "Bolsa",
                     "price": 10,
                     "category": "bolsa",
@@ -1442,23 +1313,15 @@ async function seed() {
                     "value": 1
                 },
                 {
-                    "id_supply": 8,
-                    "description": "Reforzado",
-                    "price": 10,
-                    "category": "reforzado",
-                    "unit": "mililitros",
-                    "value": 100
-                },
-                {
-                    "id_supply": 9,
-                    "description": "Ganchos",
+                    "id_supply": 10,
+                    "description": "Gancho",
                     "price": 10,
                     "category": "ganchos",
                     "unit": "piezas",
                     "value": 1
                 },
                 {
-                    "id_supply": 10,
+                    "id_supply": 11,
                     "description": "WC",
                     "price": 10,
                     "category": "wc",
@@ -1466,37 +1329,29 @@ async function seed() {
                     "value": 1
                 },
                 {
-                    "id_supply": 11,
-                    "description": "Varios",
-                    "price": 10,
-                    "category": "otros",
-                    "unit": "piezas",
-                    "value": 1
-                },
-                {
                     "id_supply": 12,
-                    "description": "Otros",
-                    "price": 10,
-                    "category": "otros",
+                    "description": "Afloja Mugre",
+                    "price": 11,
+                    "category": "jabon",
                     "unit": "piezas",
                     "value": 1
                 },
                 {
                     "id_supply": 13,
-                    "description": "Jabon Grande",
-                    "price": 20,
+                    "description": "Ultra Monia",
+                    "price": 11,
                     "category": "jabon",
-                    "unit": "mililitros",
-                    "value": 200
+                    "unit": "piezas",
+                    "value": 1
                 },
                 {
                     "id_supply": 14,
-                    "description": "Jabon Jumbo",
-                    "price": 30,
+                    "description": "Oximugre",
+                    "price": 12,
                     "category": "jabon",
-                    "unit": "mililitros",
-                    "value": 300
-                }
+                    "unit": "piezas",
+                    "value": 1
+                },
             ]
 
     });

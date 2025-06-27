@@ -81,7 +81,7 @@ function EditClient() {
 
 
     try {
-      await api.patch(`/clients/${id}`, {
+      const res =await api.patch(`/clients/${id}`, {
         name: name,
         firstLN: firstLN,
         secondLN: secondLN,
@@ -218,7 +218,7 @@ function EditClient() {
                 autoComplete="off"
                 onChange={(e) => setEmail(e.target.value)}
                 value={email}
-                required
+                //required
                 aria-invalid={validEmail ? "false" : "true"}
                 onFocus={() => setEmailFocus(true)}
                 onBlur={() => setEmailFocus(false)}

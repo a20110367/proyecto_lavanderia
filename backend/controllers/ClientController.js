@@ -70,7 +70,18 @@ export const createClient = async (req, res) => {
 
         const mailValidation = await prisma.client.findFirst({
             where: {
-                email: email
+                AND:[
+                    {
+                        email: email
+                    },
+                    
+                    {
+                        NOT:{
+                            email:""
+                        }  
+                    },
+                ],
+                
             },
             select: {
                 id_client: true
@@ -131,9 +142,6 @@ export const updateClient = async (req, res) => {
 
         const phoneValidation = await prisma.client.findFirst({
             where: {
-                NOT: {
-                    id_client: Number(req.params.id)
-                },
                 phone: phone
             },
 
@@ -144,10 +152,18 @@ export const updateClient = async (req, res) => {
 
         const mailValidation = await prisma.client.findFirst({
             where: {
-                NOT: {
-                    id_client: Number(req.params.id)
-                },
-                email: email
+
+                AND:[
+                    {
+                        email: email
+                    },
+                    
+                    {
+                        NOT:{
+                            email:""
+                        }  
+                    },
+                ],
             },
             select: {
                 id_client: true

@@ -52,7 +52,9 @@ export const getClientsByPhone = async (req, res) => {
 }
 
 export const createClient = async (req, res) => {
-    const { email, phone } = req.body;
+    let { email, phone, name, firstLN, secondLN } = req.body;
+
+    //if(email==="")email=null;
 
     try {
 
@@ -70,18 +72,18 @@ export const createClient = async (req, res) => {
 
         const mailValidation = await prisma.client.findFirst({
             where: {
-                AND:[
+                AND: [
                     {
                         email: email
                     },
-                    
+
                     {
-                        NOT:{
-                            email:""
-                        }  
+                        NOT: {
+                            email: ""
+                        }
                     },
                 ],
-                
+
             },
             select: {
                 id_client: true
@@ -108,7 +110,13 @@ export const createClient = async (req, res) => {
         } else {
 
             const clientNew = await prisma.client.create({
-                data: req.body
+                data: {
+                    email: email,
+                    phone: phone,
+                    name: name,
+                    firstLN: firstLN,
+                    secondLN: secondLN
+                }
 
             });
 
@@ -135,7 +143,9 @@ export const createClientMany = async (req, res) => {
 }
 
 export const updateClient = async (req, res) => {
-    const { email, phone } = req.body;
+    let { email, phone, name, firstLN, secondLN } = req.body;
+
+    // if(email==="")email=null;
 
     try {
         let response;
@@ -153,15 +163,15 @@ export const updateClient = async (req, res) => {
         const mailValidation = await prisma.client.findFirst({
             where: {
 
-                AND:[
+                AND: [
                     {
                         email: email
                     },
-                    
+
                     {
-                        NOT:{
-                            email:""
-                        }  
+                        NOT: {
+                            email: ""
+                        }
                     },
                 ],
             },
@@ -170,19 +180,19 @@ export const updateClient = async (req, res) => {
             }
         });
 
-        if (phoneValidation && mailValidation) {
+        if (phoneValidation && mailValidation && phoneValidation.id_client !== Number(req.params.id)) {
             response = {
                 "m": "m",
                 "p": "p"
             }
 
             res.status(409).json(response);
-        } else if (phoneValidation) {
+        } else if (phoneValidation && phoneValidation.id_client !== Number(req.params.id)) {
             response = {
                 "p": "p"
             }
             res.status(409).json(response);
-        } else if (mailValidation) {
+        } else if (mailValidation && mailValidation.id_client !== Number(req.params.id)) {
             response = {
                 "m": "m",
             }
@@ -192,7 +202,14 @@ export const updateClient = async (req, res) => {
                 where: {
                     id_client: Number(req.params.id)
                 },
-                data: req.body
+                data: {
+                    email: email,
+                    phone: phone,
+                    name: name,
+                    firstLN: firstLN,
+                    secondLN: secondLN
+                }
+
             });
             res.status(200).json(client);
         }

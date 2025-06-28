@@ -34,7 +34,7 @@ export const sendMessage = async (req, res) => {
         //     html: output,
         // });
 
-        console.log("Mail Message sent:  %s", info.messageId);
+        // console.log("Mail Message sent:  %s", info.messageId);
 
         restAPI.message.sendMessage(tel + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
@@ -74,7 +74,7 @@ export const notifyAll = async (req, res) => {
             //     html: output,
             // });
 
-            console.log("Mail Message sent:  %s", info.messageId);
+            // console.log("Mail Message sent:  %s", info.messageId);
 
             restAPI.message.sendMessage(tel+"@c.us", null , message).then((data) => {
                 console.log("Whatsapp Message sent:  %s", data);
@@ -446,7 +446,7 @@ export const sendWarningCanceledOrder = async (req, res) => {
     try {
 
         //OWNER
-        restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
+        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')
@@ -467,7 +467,7 @@ export const sendWarningReceiptReprinted = async (req, res) => {
     try {
 
         //OWNER
-        restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, message).then((data) => {
+        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')
@@ -493,7 +493,7 @@ export const sendRecoveredPwd = async (res) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
 
-        restAPI.message.sendMessage(process.env.OWNER_PHONE + "@c.us", null, messageOwner).then((data) => {
+        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, messageOwner).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')

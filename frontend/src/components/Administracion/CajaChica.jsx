@@ -263,10 +263,6 @@ function CajaChica() {
           movementDate: date
         }
 
-        await api.post('/generatePettyCashTicket', {
-          pettyCash: pettyCash,
-        })
-
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
           pettyCashType: "withdrawal",
@@ -298,6 +294,10 @@ function CajaChica() {
           warning: true,
         });
         console.log("NOTIFICACIÓN ENVIADA...");
+
+        await api.post('/generatePettyCashTicket', {
+          pettyCash: pettyCash,
+        })
       } catch (err) {
         console.log(err);
       }
@@ -371,20 +371,17 @@ function CajaChica() {
         </thead>
         <tbody>
           {filteredRetiros
-            .slice()
-            .reverse()
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).reverse()
             .map((pettyCash) => (
               <tr className="bg-white border-b" key={pettyCash.id_movement}>
                 <td className="py-3 px-1 text-center">
                   {pettyCash.id_movement}
                 </td>
                 <td
-                  className={`font-semibold ${
-                    pettyCash.pettyCashType === "withdrawal"
+                  className={`font-semibold ${pettyCash.pettyCashType === "withdrawal"
                       ? "text-red-500"
                       : "text-green-500"
-                  }`}
+                    }`}
                 >
                   {pettyCash.pettyCashType === "withdrawal" ? (
                     <>
@@ -405,11 +402,10 @@ function CajaChica() {
                 <td className="py-3 px-6">{pettyCash.cause}</td>
                 <td className="py-3 px-6">{pettyCash.user.name} {pettyCash.user.firsLN} {pettyCash.user.secondLN}</td>
                 <td
-                  className={`py-3 px-6 ${
-                    pettyCash.pettyCashType === "withdrawal"
+                  className={`py-3 px-6 ${pettyCash.pettyCashType === "withdrawal"
                       ? "text-red-500"
                       : "text-green-500"
-                  }`}
+                    }`}
                 >
                   {pettyCash.pettyCashType === "withdrawal" ? (
                     <>

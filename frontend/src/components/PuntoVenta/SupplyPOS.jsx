@@ -223,7 +223,7 @@ export default function PuntoVenta() {
         },
         products: arrayProducts,
       });
-      console.log(res);
+      // console.log(res);
       // orderTicket(order);
       const idOrder = res.data.supplyOrder.id_supplyOrder;
       console.log(idOrder);
@@ -244,14 +244,17 @@ export default function PuntoVenta() {
         payMethod: payMethod,
         subtotal: totalWithDiscount,
         casher: cookies.username,
+        numberOfItems: noOfItems,
         client:
           res.data.supplyOrder.client.name +
           " " +
           res.data.supplyOrder.client.firstLN +
           " " +
           res.data.supplyOrder.client.secondLN,
-        receptionDate: purchaseDate.toISOString(),
-        receptionTime: purchaseDate.toISOString(),
+        receptionDate: purchaseDate,
+        receptionTime: purchaseDate,
+        scheduledDeliveryDate: deliveryDate,
+        scheduledDeliveryTime: deliveryDate,
         serviceType: serviceType,
         cart: cart,
       };

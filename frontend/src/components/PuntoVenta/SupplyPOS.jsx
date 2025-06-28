@@ -218,7 +218,7 @@ export default function PuntoVenta() {
           payForm: payForm,
           payStatus: payStatus,
           fk_user: cookies.token,
-          receptionDate: purchaseDate.toISOString(),
+          receptionDate: purchaseDate,
           numberOfItems: noOfItems,
         },
         products: arrayProducts,
@@ -231,8 +231,8 @@ export default function PuntoVenta() {
         await api.post("/supplyPayment", {
           fk_idOrder: idOrder,
           payMethod: payMethod,
-          payDate: purchaseDate.toISOString(),
-          payTime: purchaseDate.toISOString(),
+          payDate: purchaseDate,
+          payTime: purchaseDate,
           fk_cashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
           payTotal: calculateSubtotal(),
         });

@@ -1,5 +1,7 @@
 import { CashCutStatus, PrismaClient } from "@prisma/client";
 import { response } from "express";
+import moment from "moment";
+moment.locale('es-mx');
 
 const prisma = new PrismaClient();
 
@@ -197,8 +199,18 @@ export const calculateSupplyCashCut = async (suppliesCashCut_id) => {
 
 //CRUD GENERAL
 export const getSupplyCashCuts = async (req, res) => {
+
+    let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
+
     try {
         const response = await prisma.supplyCashCut.findMany({
+
+            where: {
+                created: {
+                    gte: new Date(lastDate)
+                },
+            },
+
             include: {
                 user: {
                     select: {

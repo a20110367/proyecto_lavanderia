@@ -8,11 +8,12 @@ moment.locale('es-mx');
 
 export const sendMessage = async (req, res) => {
     const { id_order, name, email, tel, message, subject, text, warning } = req.body
+    let phone = tel
     let output = ''
-    warning ?
-        output = `
-        <h2>${message}</h2>
-    ` :
+    if (warning) {
+        phone = process.env.SUPERVISION_PHONE
+        output = `<h2>${message}</h2>`
+    } else {
         output = `
         <h3>Detalles del Pedido:</h3>
         <ul>  
@@ -21,9 +22,8 @@ export const sendMessage = async (req, res) => {
             <li>Correo Electronico: ${email}</li>            
         </ul>
         <h3>Cuerpo</h3>
-        <p>${message}</p>
-    `
-
+        <p>${message}</p>`
+    }
     try {
         // const info = await transporter.sendMail({
         //     from: `"${subject}👻" <${process.env.MAIL}>`, // sender address
@@ -36,7 +36,7 @@ export const sendMessage = async (req, res) => {
 
         // console.log("Mail Message sent:  %s", info.messageId);
 
-        restAPI.message.sendMessage(tel + "@c.us", null, message).then((data) => {
+        restAPI.message.sendMessage(phone + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
     } catch (err) {
@@ -49,19 +49,19 @@ export const notifyAll = async (req, res) => {
     const { filteredOrder } = req.body
     for (const order of filteredOrder) {
         const message = `Tu pedido con el folio: ${order.id_order} está listo, Ya puedes pasar a recogerlo.`
-    //     const subject = `Tu Ropa esta Lista ${order.client.name}`
-    //     const text = `Tu ropa esta lista, esperamos que la recojas a su brevedad`
+        //     const subject = `Tu Ropa esta Lista ${order.client.name}`
+        //     const text = `Tu ropa esta lista, esperamos que la recojas a su brevedad`
 
-    //     const output = `
-    //     <h3>Detalles del Pedido:</h3>
-    //     <ul>  
-    //         <li>Folio: ${order.id_order}</li> 
-    //         <li>Nombre: ${order.client.name}</li>
-    //         <li>Correo Electronico: ${order.client.email}</li>            
-    //     </ul>
-    //     <h3>Cuerpo</h3>
-    //     <p>${message}</p>
-    // `
+        //     const output = `
+        //     <h3>Detalles del Pedido:</h3>
+        //     <ul>  
+        //         <li>Folio: ${order.id_order}</li> 
+        //         <li>Nombre: ${order.client.name}</li>
+        //         <li>Correo Electronico: ${order.client.email}</li>            
+        //     </ul>
+        //     <h3>Cuerpo</h3>
+        //     <p>${message}</p>
+        // `
 
         try {
             // const info = await transporter.sendMail({
@@ -75,9 +75,9 @@ export const notifyAll = async (req, res) => {
 
             // console.log("Mail Message sent:  %s", info.messageId);
 
-            restAPI.message.sendMessage("521"+order.client.phone+"@c.us", null , message).then((data) => {
+            restAPI.message.sendMessage("521" + order.client.phone + "@c.us", null, message).then((data) => {
                 console.log("Whatsapp Message sent:  %s", data);
-            });    
+            });
         } catch (err) {
             console.log(err)
             return res.status(400).json({ message: 'Algo salio mal!' })

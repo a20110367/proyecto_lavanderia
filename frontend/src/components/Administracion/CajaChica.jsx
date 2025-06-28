@@ -282,8 +282,6 @@ function CajaChica() {
         await api.post("/sendMessage", {
           id_order: nuevoRetiro.id_movement,
           name: "Rafa",
-          email: "a20110341@ceti.mx",
-          tel: "5213313839768",
           message: `Se ha realizado un RETIRO en la CAJA CHICA
           Monto: ${monto},
           Motivo: ${motivo}.

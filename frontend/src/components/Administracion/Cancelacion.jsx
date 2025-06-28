@@ -225,9 +225,7 @@ function Cancelacion() {
         </thead>
         <tbody>
           {cancelaciones
-            .slice()
-            .reverse()
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).reverse()
             .map((cancelacion) => (
               <tr
                 className="bg-white border-b"

@@ -39,8 +39,8 @@ model User {
 model Client {
   id_client Int      @id @default(autoincrement())
   name      String
-  email     String   @unique
-  phone     String //volver unico antes de meter a produccion
+  email     String?   
+  phone     String   @unique //volver unico antes de meter a produccion
   pass      String?
   created   DateTime @default(now())
   firstLN   String
@@ -143,7 +143,7 @@ model IronService {
   machineType MachineType @default(plancha)
   description String      @unique
   price       Float
-  priceCredit Float       @default(1.00)
+  priceCredit Float
   pieces      Int
   cycleTime   Int? //este elemento se podria eliminar
   token_id    Int?
@@ -160,7 +160,7 @@ model SelfService {
   id_service  Int         @id @default(autoincrement())
   description String      @unique
   price       Float
-  priceCredit Float       @default(1.00)
+  priceCredit Float
   weight      Int
   cycleTime   Int?
   machineType MachineType
@@ -179,7 +179,7 @@ model LaundryService {
   id_service    Int      @id @default(autoincrement())
   description   String   @unique
   price         Float
-  priceCredit   Float    @default(1.00)
+  priceCredit   Float
   washWeight    Int
   washCycleTime Int?
   dryWeight     Int
@@ -199,7 +199,7 @@ model DrycleanService {
   id_service  Int      @id @default(autoincrement())
   description String   @unique
   price       Float
-  priceCredit Float    @default(1.00)
+  priceCredit Float
   pieces      Int
   token_id    Int?
   category_id Int
@@ -217,7 +217,7 @@ model OtherService {
   id_service  Int      @id @default(autoincrement())
   description String   @unique
   price       Float
-  priceCredit Float    @default(1.00)
+  priceCredit Float
   token_id    Int?
   category_id Int
   created     DateTime @default(now())
@@ -282,9 +282,9 @@ model ServiceOrderDetail {
   fk_drycleanService    Int?
   fk_otherService       Int?
   payMethod             PayMethod @default(cash)
-  serviceDescription    String    @default("General") //prefrentemente quitar el default
-  priceCash             Float     @default(1.00) //prefrentemente quitar el default
-  priceCredit           Float     @default(1.00) //prefrentemente quitar el default
+  serviceDescription    String //@default("General") //prefrentemente quitar el default
+  priceCash             Float //@default(1.00) //prefrentemente quitar el default
+  priceCredit           Float //@default(1.00) //prefrentemente quitar el default
   cancelled             Boolean   @default(false)
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
@@ -321,9 +321,9 @@ model CancelledServiceOrderDetail {
   fk_ironService                 Int?
   fk_drycleanService             Int?
   fk_otherService                Int?
-  serviceDescription             String   @default("General") //prefrentemente quitar el default
-  priceCash                      Float    @default(1.00) //prefrentemente quitar el default
-  priceCredit                    Float    @default(1.00) //prefrentemente quitar el default
+  serviceDescription             String //@default("General") //prefrentemente quitar el default
+  priceCash                      Float //@default(1.00) //prefrentemente quitar el default
+  priceCredit                    Float //@default(1.00) //prefrentemente quitar el default
 
   serviceOrder    ServiceOrder     @relation(fields: [fk_serviceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
   LaundryService  LaundryService?  @relation(fields: [fk_laundryService], references: [id_service])
@@ -341,8 +341,8 @@ model LaundryQueue {
   fk_washDetail     Int?
   fk_dryDetail      Int?
   token_id          Int?
-  combinedWash    Boolean @default(false)
-  combinedDry     Boolean @default(false)
+  combinedWash      Boolean       @default(false)
+  combinedDry       Boolean       @default(false)
   serviceStatus     ServiceStatus @default(pending)
 
   serviceOrder   ServiceOrder    @relation(fields: [fk_idServiceOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
@@ -487,7 +487,7 @@ model StaffMember {
 
 model CashCut {
   fk_user             Int
-  totalServiceBalance               Float?
+  totalServiceBalance Float?
   created             DateTime      @default(now())
   updatedAt           DateTime      @updatedAt
   cashCutD            DateTime?     @db.Date
@@ -561,30 +561,30 @@ model PettyCash {
 }
 
 model SupplyCashCut {
-  fk_user            Int
+  fk_user             Int
   //total              Float?
-  created            DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  cashCutD           DateTime?     @db.Date
-  cashCutT           DateTime?     @db.Time(0)
-  id_supplyCashCut   Int           @id @default(autoincrement())
-  cashCutStatus      CashCutStatus @default(open)
-  initialCash        Float?        @default(0)
-  ordersPayedSupply        Int?
-  totalJabon         Float?
-  totalSuavitel      Float?
-  totalPinol         Float?
-  totalDesengrasante Float?
-  totalCloro         Float?
-  totalSanitizante   Float?
-  totalBolsa         Float?
-  totalReforzado     Float?
-  totalGanchos       Float?
-  totalWC            Float?
-  totalOtros         Float?        @default(0)
-  totalSuppliesCredit        Float?
-  totalSuppliesCash          Float?
-  totalSuppliesIncome        Float?
+  created             DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  cashCutD            DateTime?     @db.Date
+  cashCutT            DateTime?     @db.Time(0)
+  id_supplyCashCut    Int           @id @default(autoincrement())
+  cashCutStatus       CashCutStatus @default(open)
+  initialCash         Float?        @default(0)
+  ordersPayedSupply   Int?
+  totalJabon          Float?
+  totalSuavitel       Float?
+  totalPinol          Float?
+  totalDesengrasante  Float?
+  totalCloro          Float?
+  totalSanitizante    Float?
+  totalBolsa          Float?
+  totalReforzado      Float?
+  totalGanchos        Float?
+  totalWC             Float?
+  totalOtros          Float?        @default(0)
+  totalSuppliesCredit Float?
+  totalSuppliesCash   Float?
+  totalSuppliesIncome Float?
 
   workShift     WorkShift       @default(morning)
   user          User            @relation(fields: [fk_user], references: [id_user], onDelete: Cascade, onUpdate: Cascade)
@@ -632,7 +632,7 @@ model SupplyOrderDetail {
   units                Int      @default(1)
   subtotal             Float    @default(0.00)
   price                Float    @default(0.00)
-  supplyDescription    String   @default("General") //prefrentemente quitar el default
+  supplyDescription    String //@default("General") //prefrentemente quitar el default
   created              DateTime @default(now())
   updatedAt            DateTime @updatedAt
   fk_supplyOrder       Int
@@ -687,13 +687,13 @@ model WorkshiftBalance {
   id_workshifBalance Int   @id @default(autoincrement())
   id_supplyCashCut   Int
   id_cashCut         Int
-  cashIncome         Float  //Ingresos en efectivo, servicios + productos
-  creditIncome       Float  //Ingresos en tarjeta de credito, servicios + productos
-  withdrawal         Float  //Retiros de caja que se hacen en efectivo
-  cancellations      Float  //Cancelaciones que tambien se hacen en efectivo si el servicio ya estaba pagado
-  initialCash        Float  //Fondo de caja pero que no es parte de las ganacias
-  totalCashBalace    Float  //Dinero que queda en caja si se suma el ingreso en efectivo y se restan los retiros
-  totalIncome        Float  //Ingresos netos, sumar ingresos y se restan retiros y cancelaciones
+  cashIncome         Float //Ingresos en efectivo, servicios + productos
+  creditIncome       Float //Ingresos en tarjeta de credito, servicios + productos
+  withdrawal         Float //Retiros de caja que se hacen en efectivo
+  cancellations      Float //Cancelaciones que tambien se hacen en efectivo si el servicio ya estaba pagado
+  initialCash        Float //Fondo de caja pero que no es parte de las ganacias
+  totalCashBalace    Float //Dinero que queda en caja si se suma el ingreso en efectivo y se restan los retiros
+  totalIncome        Float //Ingresos netos, sumar ingresos y se restan retiros y cancelaciones
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt

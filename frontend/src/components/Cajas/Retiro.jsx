@@ -121,15 +121,15 @@ function Retiro() {
 
         console.log(res)
 
-        const cashWithdrawal = {
-          cashWithdrawalType: "withdrawal",
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          casher: cookies.username,
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-        }
+        // const cashWithdrawal = {
+        //   cashWithdrawalType: "withdrawal",
+        //   id_cashWithdrawal: res.data.id_cashWithdrawal,
+        //   fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        //   casher: cookies.username,
+        //   amount: parseInt(monto),
+        //   cause: motivo,
+        //   date: date,
+        // }
 
         await api.post('/log/write', {
           logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
@@ -142,6 +142,20 @@ function Retiro() {
           date: date,
           user: { name: cookies.username },
         };
+
+        await api.post("/sendMessage", {
+          id_order: nuevoRetiro.id_cashWithdrawal,
+          name: "Rafa",
+          message: `Se ha realizado un RETIRO de CAJA
+          Monto: ${monto},
+          Motivo: ${motivo}.
+          Cajero: ${cookies.username}
+          Fecha: ${formatDate(date)}`,
+          subject: "Se ha realizado un RETIRO de CAJA",
+          text: `Se ha realizado un RETIRO de CAJA con monto de: ${monto}`,
+          warning: true,
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
 
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);

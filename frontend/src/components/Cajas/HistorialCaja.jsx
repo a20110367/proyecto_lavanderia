@@ -267,12 +267,11 @@ function HistorialCaja() {
             </thead>
             <tbody>
               {filteredCortes
-                .slice()
-                .reverse()
+                
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
-                )
+                ).reverse()
                 .map((corte) => (
                   <tr className="bg-white border-b" key={corte.id_cashCut}>
                     <td className="">{corte.id_cashCut}</td>

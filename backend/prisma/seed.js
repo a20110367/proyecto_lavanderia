@@ -13,11 +13,9 @@ async function seed() {
                     "phone": "3313839768",
                     "pass": "SuperMan",
                     "role": "admin",
-                    "created": "2023-11-20T19:23:47.340Z",
                     "firstLN": "Ramirez",
                     "secondLN": "Quintero",
                     "username": "admin",
-                    "updatedAt": "2023-11-20T19:21:25.500Z",
                     "deleted": false
                 },
                 {
@@ -27,11 +25,9 @@ async function seed() {
                     "phone": "3321817496",
                     "pass": "3358",
                     "role": "admin",
-                    "created": "2023-11-20T19:23:47.340Z",
                     "firstLN": "Rodriguez",
                     "secondLN": "Reynoso",
                     "username": "saul",
-                    "updatedAt": "2023-11-20T19:21:25.880Z",
                     "deleted": false
                 },
                 {
@@ -41,11 +37,9 @@ async function seed() {
                     "phone": "3312918941",
                     "pass": "1010",
                     "role": "admin",
-                    "created": "2023-11-20T19:23:47.340Z",
                     "firstLN": "Zamora",
                     "secondLN": "Falcon",
                     "username": "Rafael",
-                    "updatedAt": "2023-11-20T19:24:56.409Z",
                     "deleted": false
                 }
             ],
@@ -153,8 +147,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-07T01:07:52.186Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -168,8 +160,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-19T02:57:53.460Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -183,8 +173,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-02-19T01:22:13.218Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -198,8 +186,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "30",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-19T03:08:36.737Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -213,8 +199,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-02-19T01:22:15.038Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -228,8 +212,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-19T03:09:24.494Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -243,8 +225,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-07T01:07:52.186Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -258,8 +238,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-07T01:03:53.841Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -273,8 +251,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-07T01:12:54.009Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -288,8 +264,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2024-11-30T01:31:04.955Z",
-                    "updatedAt": "2025-03-07T01:07:52.186Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -303,8 +277,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:43:49.557Z",
-                    "updatedAt": "2025-03-19T02:43:49.557Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -318,8 +290,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:43:49.926Z",
-                    "updatedAt": "2025-03-19T02:43:49.926Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -333,8 +303,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:44:15.782Z",
-                    "updatedAt": "2025-03-19T02:44:15.782Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -348,8 +316,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:45:57.707Z",
-                    "updatedAt": "2025-03-19T02:45:57.707Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -363,8 +329,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:46:15.973Z",
-                    "updatedAt": "2025-03-19T02:46:15.973Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -378,8 +342,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:47:23.217Z",
-                    "updatedAt": "2025-03-19T02:47:23.217Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -393,8 +355,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:48:12.293Z",
-                    "updatedAt": "2025-03-19T02:48:12.293Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -408,8 +368,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:50:02.555Z",
-                    "updatedAt": "2025-03-19T02:50:02.555Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -423,8 +381,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:50:44.933Z",
-                    "updatedAt": "2025-03-19T02:50:44.933Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -438,8 +394,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T02:50:58.662Z",
-                    "updatedAt": "2025-03-19T02:50:58.662Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -453,8 +407,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:09:55.422Z",
-                    "updatedAt": "2025-03-19T03:09:55.422Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -468,8 +420,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:10:30.007Z",
-                    "updatedAt": "2025-03-19T03:10:30.007Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -483,8 +433,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:11:21.976Z",
-                    "updatedAt": "2025-03-19T03:11:21.976Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -498,8 +446,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:11:44.838Z",
-                    "updatedAt": "2025-03-19T03:11:44.838Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -513,8 +459,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:12:06.256Z",
-                    "updatedAt": "2025-03-19T03:12:06.256Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -528,8 +472,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:12:46.375Z",
-                    "updatedAt": "2025-03-19T03:12:46.375Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -543,8 +485,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:13:27.431Z",
-                    "updatedAt": "2025-03-19T03:13:27.431Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -558,8 +498,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:15:03.411Z",
-                    "updatedAt": "2025-03-19T03:15:03.411Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -573,8 +511,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:15:38.085Z",
-                    "updatedAt": "2025-03-19T03:15:38.085Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -588,8 +524,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:15:52.940Z",
-                    "updatedAt": "2025-03-19T03:15:52.940Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -603,8 +537,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:16:09.222Z",
-                    "updatedAt": "2025-03-19T03:16:09.222Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -618,8 +550,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:16:58.398Z",
-                    "updatedAt": "2025-03-19T03:16:58.398Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -633,8 +563,6 @@ async function seed() {
                     "status": "available",
                     "freeForUse": true,
                     "notes": "",
-                    "created": "2025-03-19T03:17:17.928Z",
-                    "updatedAt": "2025-03-19T03:17:17.928Z",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 }
@@ -1149,9 +1077,7 @@ async function seed() {
         data: {
             "fk_user": 1,
             "totalServiceBalance": 0,
-            "created": "2024-11-29T02:08:23.190Z",
-            "updatedAt": "2024-11-29T02:10:17.130Z",
-            "cashCutD": "2024-11-29T00:00:00.000Z",
+            "cashCutD": "2025-06-20T00:00:00.000Z",
             "cashCutT": "1970-01-01T02:06:18.000Z",
             "id_cashCut": 1,
             "cashCutStatus": "closed",
@@ -1179,9 +1105,7 @@ async function seed() {
 
         data: {
             "fk_user": 1,
-            "created": "2024-11-29T02:15:19.814Z",
-            "updatedAt": "2024-11-29T02:15:19.814Z",
-            "cashCutD": "2024-11-29T00:00:00.000Z",
+            "cashCutD": "2025-06-20T00:00:00.000Z",
             "cashCutT": "1970-01-01T02:15:20.000Z",
             "id_supplyCashCut": 1,
             "cashCutStatus": "closed",
@@ -1219,8 +1143,6 @@ async function seed() {
             "initialCash": 0,
             "totalCashBalace": 0,
             "totalIncome": 0,
-            "created": "2024-11-29T02:15:19.814Z",
-            "updatedAt": "2024-11-29T02:15:19.814Z"
         }
     });
 

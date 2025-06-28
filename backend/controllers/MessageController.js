@@ -48,7 +48,6 @@ export const sendMessage = async (req, res) => {
 export const notifyAll = async (req, res) => {
     const { filteredOrder } = req.body
     for (const order of filteredOrder) {
-        console.log(order.id_order)
         const message = `Tu pedido con el folio: ${order.id_order} está listo, Ya puedes pasar a recogerlo.`
     //     const subject = `Tu Ropa esta Lista ${order.client.name}`
     //     const text = `Tu ropa esta lista, esperamos que la recojas a su brevedad`
@@ -76,7 +75,7 @@ export const notifyAll = async (req, res) => {
 
             // console.log("Mail Message sent:  %s", info.messageId);
 
-            restAPI.message.sendMessage(tel+"@c.us", null , message).then((data) => {
+            restAPI.message.sendMessage("521"+order.client.phone+"@c.us", null , message).then((data) => {
                 console.log("Whatsapp Message sent:  %s", data);
             });    
         } catch (err) {

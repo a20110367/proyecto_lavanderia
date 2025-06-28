@@ -1840,7 +1840,10 @@ export const updateCancelledOrder = async (req, res) => {
                 fk_selfService: true,
                 fk_ironService: true,
                 fk_drycleanService: true,
-                fk_otherService: true
+                fk_otherService: true,
+                serviceDescription: true,
+                priceCash: true,
+                priceCredit: true
             },
         });
 

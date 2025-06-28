@@ -742,7 +742,7 @@ GET http://localhost:5000/lastCashCut
 GET http://localhost:5000/cashCuts/
 
 ###
-GET  http://localhost:5000/calculateCashCut/10
+GET  http://localhost:5000/calculateCashCut/7
 
 ###
 
@@ -1157,7 +1157,7 @@ GET  http://localhost:5000/refunds
 GET  http://localhost:5000/workshiftBalances
 ### 
 
-GET  http://localhost:5000/workshiftBalances/2
+GET  http://localhost:5000/workshiftBalances/7
 ### 
 
 GET  http://localhost:5000/activeWorkshiftBalances

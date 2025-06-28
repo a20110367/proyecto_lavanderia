@@ -270,8 +270,6 @@ function HistorialCajaPlanchado() {
             </thead>
             <tbody>
               {filteredCortes
-                .slice()
-                .reverse()
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage

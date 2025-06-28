@@ -26,7 +26,7 @@ export const sendMessage = async (req, res) => {
 
     try {
         // const info = await transporter.sendMail({
-        //     from: `"${subject}👻" <pyrop59@gmail.com>`, // sender address
+        //     from: `"${subject}👻" <${process.env.MAIL}>`, // sender address
         //     to: email, // list of receivers
         //     subject: subject, // Subject line
         //     text: text, // plain text body
@@ -66,7 +66,7 @@ export const notifyAll = async (req, res) => {
 
         try {
             // const info = await transporter.sendMail({
-            //     from: `"${subject}👻" <pyrop59@gmail.com>`, // sender address
+            //     from: `"${subject}👻" <${process.env.MAIL}>`, // sender address
             //     to: order.client.email, // list of receivers
             //     subject: subject, // Subject line
             //     text: text, // plain text body
@@ -389,8 +389,8 @@ export const sendReport = async (req, res) => {
 
     try {
         const info = await transporter.sendMail({
-            from: `"Reporte del ${startDate} al ${endDate}." <pyrop59@gmail.com>`, // sender address
-            to: 'proveedores.tyc@gmail.com', // list of receivers
+            from: `"Reporte del ${startDate} al ${endDate}." <${process.env.MAIL}>`, // sender address
+            to: process.env.OWNER_MAIL, // list of receivers
             subject: `Reporte del ${startDate} al ${endDate}.`, // Subject line
             text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
             attachments: [{
@@ -414,8 +414,8 @@ export const sendCashCut = async (req, res) => {
 
     try {
         const info = await transporter.sendMail({
-            from: `"Corte de caja realizado el dia de ${date} a las ${hour}" <pyrop59@gmail.com>`, // sender address
-            to: 'proveedores.tyc@gmail.com', // list of receivers
+            from: `"Corte de caja realizado el dia de ${date} a las ${hour}" <${process.env.MAIL}>`, // sender address
+            to: process.env.OWNER_MAIL, // list of receivers
             subject: `Corte de caja realizado el dia de ${date} a las ${hour}`, // Subject line
             text: 'Revisa este reporte en formato pdf adjunto.', // plain text body
             attachments: [{

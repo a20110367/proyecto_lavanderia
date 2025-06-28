@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { formatDate } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
@@ -16,8 +16,10 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
+import moment from "moment";
 
 function PedidosGeneral() {
+  const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
   const [selectedPedidos, setSelectedPedidos] = useState({});
   const [filtro, setFiltro] = useState("");
@@ -233,7 +235,7 @@ function PedidosGeneral() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Pedidos General</strong>
+          <strong className="title-strong">Pedidos Finalizadas</strong>
         </div>
       </div>
       <div className="flex items-center mb-4">
@@ -248,6 +250,9 @@ function PedidosGeneral() {
           <div className="absolute top-2.5 left-2.5 text-gray-400">
             <HiOutlineSearch fontSize={20} className="text-gray-400" />
           </div>
+        </div>
+        <div>
+          <p className="text-center mr-8 text-xl font-semibold text-red-600">PEDIDOS CON FECHA MAYOR A 3 MESES SE MANDAN A  <Link to={"/pedidosAlmacenados"}className="text-purple-600 underline font-bold hover:text-purple-400">{"->"} PEDIDOS ALMACENADOS {"<-"}</Link></p>
         </div>
         <button className="btn-primary text-xs" onClick={() => notifyAll()}>
           Notificar a todos los Clientes
@@ -286,13 +291,17 @@ function PedidosGeneral() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>
-                Fecha de <br />
-                Entrega
+                Fecha <br />
+                Programada              
               </th>
               <th>
+                Fecha de <br />
+                Entregado
+              </th>
+              {/* <th>
                 Forma de <br />
                 Pago
-              </th>
+              </th> */}
               <th>Estatus</th>
               <th>Observaciones</th>
               <th></th>
@@ -344,8 +353,11 @@ function PedidosGeneral() {
                     {formatDate(pedido.scheduledDeliveryDate)}
                   </td>
                   <td className="py-3 px-6">
-                    {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                    {pedido.deliveryDetail ? formatDate(pedido.deliveryDetail.deliveryDate) : "-"}
                   </td>
+                  {/* <td className="py-3 px-6">
+                    {pedido.payForm === "delivery" ? "Entrega" : "Anticipo"}
+                  </td> */}
                   <td className="py-3 px-6 font-bold">
                     {pedido.orderStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">

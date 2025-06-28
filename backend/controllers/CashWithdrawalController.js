@@ -3,25 +3,25 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 
-export const getCashWithdrawals = async (req, res) =>{
+export const getCashWithdrawals = async (req, res) => {
     try {
         const response = await prisma.cashWithdrawal.findMany({
             include: {
                 user: {
                     select: {
-                        name:true,
+                        name: true,
                     },
                 },
             },
         }
         );
         res.status(200).json(response);
-    }catch(e){
-        res.status(500).json({msg:e.message});
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
     }
 }
 
-export const getActiveCashWithdrawals = async (req, res) =>{
+export const getActiveCashWithdrawals = async (req, res) => {
     try {
 
         let lastDate = (moment().subtract(180, 'days').startOf('day').toISOString())
@@ -37,75 +37,104 @@ export const getActiveCashWithdrawals = async (req, res) =>{
             include: {
                 user: {
                     select: {
-                        name:true,
+                        name: true,
                     },
                 },
             },
         }
         );
         res.status(200).json(response);
-    }catch(e){
-        res.status(500).json({msg:e.message});
+    } catch (e) {
+        res.status(500).json({ msg: e.message });
     }
 }
 
-export const getCashWithdrawalsById = async (req, res) =>{
+export const getCashWithdrawalsById = async (req, res) => {
     try {
         const response = await prisma.cashWithdrawal.findUnique({
             include: {
                 user: {
                     select: {
-                        name:true,
+                        name: true,
                     },
                 },
             },
-            where:{
-                id_cashWithdrawal : Number(req.params.id)
+            where: {
+                id_cashWithdrawal: Number(req.params.id)
             }
         });
         res.status(200).json(response);
-    }catch(e){
-        res.status(404).json({msg:e.message});
+    } catch (e) {
+        res.status(404).json({ msg: e.message });
     }
 }
 
-export const createCashWithdrawal = async (req, res) =>{
-   
+export const createCashWithdrawal = async (req, res) => {
+
     try {
-        const cashWithdrawal = await  prisma.cashWithdrawal.create({
+
+        const cashWithdrawal=await prisma.cashWithdrawal.create({
             data: req.body
         });
 
-        res.status(201).json(cashWithdrawal);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+        res.status(200).json(cashWithdrawal);
+
+        // let cashWithdrawal;
+
+        // const findOrder = await prisma.serviceOrder.findFirst({
+        //     where: {
+        //         id_order: Number(req.body.serviceOrder)
+        //     }
+        // });
+
+        // const validationExistCashWithdrawal = await prisma.cashWithdrawal.findFirst({
+        //     where: {
+        //         serviceOrder: Number(req.body.serviceOrder)
+        //     }
+        // });
+
+
+        // if (validationExistCashWithdrawal == null && findOrder.orderStatus.toString() == "finished") {
+
+        //     const createCashWithdrawal = await prisma.cashWithdrawal.create({
+        //         data: req.body
+        //     });
+
+        //     cashWithdrawal = createCashWithdrawal;
+
+            
+        // cashWithdrawal = null;
+        // res.status(200).json(cashWithdrawal);
+
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 
-export const updateCashWithdrawal =  async (req, res) =>{
+export const updateCashWithdrawal = async (req, res) => {
     try {
         const cashWithdrawal = await prisma.cashWithdrawal.update({
-            where:{
+            where: {
                 id_cashWithdrawal: Number(req.params.id)
             },
-      
-            data:req.body
+
+            data: req.body
         });
         res.status(200).json(cashWithdrawal);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }
 
-export const deleteCashWithdrawal =  async (req, res) =>{
+export const deleteCashWithdrawal = async (req, res) => {
     try {
         const cashWithdrawal = await prisma.cashWithdrawal.delete({
-            where:{
+            where: {
                 id_cashWithdrawal: Number(req.params.id)
             },
         });
         res.status(200).json(cashWithdrawal);
-    }catch(e){
-        res.status(400).json({msg:e.message});
+    } catch (e) {
+        res.status(400).json({ msg: e.message });
     }
 }

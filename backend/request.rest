@@ -4,7 +4,7 @@ GET http://localhost:5000/users
 
 ###
 
-GET http://localhost:5000/users/1
+GET http://localhost:5000/users/
 
 ###
 
@@ -240,7 +240,8 @@ Content-Type: application/json
 
 {
     "machineType": "lavadora",
-    "model": "Chingona 3000",
+    "model": "Prueba",
+    "machineNumber": 6,
     "cicleTime": 45,
     "weight": 20,
     "status": "available",
@@ -266,16 +267,17 @@ Content-Type: application/json
 
 
 ###
-PATCH http://localhost:5000/machines/6
+PATCH http://localhost:5000/machines/12
 Content-Type: application/json
 
 {
-    "machineType": "lavadora",
-    "model": "LG",
-    "cicleTime": 35,
-    "weight": 10,
-    "status": "unavailable",
-    "notes": "Se madreo"
+   "machineType": "lavadora",
+    "model": "Prueba",
+    "machineNumber": 7,
+    "cicleTime": 40,
+    "weight": 20,
+    "status": "available",
+    "notes": ""
 }
 ###
 DELETE http://localhost:5000/dryMachines/3
@@ -376,6 +378,18 @@ GET  http://localhost:5000/services
 ###
 
 GET http://localhost:5000/servicesLaundry
+###
+
+GET http://localhost:5000/servicesDryclean
+###
+
+GET http://localhost:5000/servicesSelfService
+###
+
+GET http://localhost:5000/servicesIron
+###
+
+GET http://localhost:5000/servicesOtherService
 ###
 
 
@@ -592,7 +606,7 @@ GET http://localhost:5000/ordersPending
 
 ###
 
-GET http://localhost:5000/orders/186
+GET http://localhost:5000/orders/482
 
 ####
 
@@ -725,17 +739,20 @@ GET http://localhost:5000/lastCashCut
 
 ###
 
-GET http://localhost:5000/cashCuts/1
+GET http://localhost:5000/cashCuts/
 
 ###
-GET  http://localhost:5000/calculateCashCut/48
+GET  http://localhost:5000/calculateCashCut/10
+
+###
+
+GET  http://localhost:5000/calculateParcialCashCut/10
 
 ###
 
 GET  http://localhost:5000/closeCashCut/8
 
 ###
-
 POST http://localhost:5000/cashCuts
 Content-Type: application/json
 
@@ -991,17 +1008,6 @@ GET   http://localhost:5000/newIronControl
 
 ###
 
-# POST http://localhost:5000/ironControl
-# Content-Type: application/json
-
-# {
-#   "piecesToday":0
-# }
-
-# ###
-# PATCH http://localhost:5000/diaryIronControl/1
-
-# ###
 PATCH http://localhost:5000/cahsCutIronControl/10
 Content-Type: application/json
 
@@ -1061,22 +1067,31 @@ Content-Type: application/json
   }
 
 ###
+GET  http://localhost:5000/supplyCashCuts
+###
+GET  http://localhost:5000/getSupplyCashCutStatus
+###
+
 GET   http://localhost:5000/calculateIronCut
 ###
 GET   http://localhost:5000/ironCuts
 ###
 
 #CRUD REPORTES
-GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22
+GET   http://localhost:5000/servicesReport/2024-12-02/2025-01-19
 ###
 
-GET   http://localhost:5000/servicesReport/2023-05-15/2024-12-22/1/1
+GET   http://localhost:5000/servicesReport/2024-12-01/2025-01-19/1/1
 ###
 
-GET   http://localhost:5000/suppliesReport/2024-03-01/2024-03-28
+GET   http://localhost:5000/suppliesReport/2024-12-02/2025-01-19
 ###
 
-GET   http://localhost:5000/suppliesReport/2023-05-15/2024-12-22/2
+GET   http://localhost:5000/suppliesReport/2024-12-02/2025-01-19/2
+###
+
+GET   http://localhost:5000/incomeReport/2025-01-10/2025-01-19
+
 ###
 
 GET http://localhost:5000/orderCancelable
@@ -1103,3 +1118,60 @@ Content-Type: application/json
 PATCH http://localhost:5000/cancelSupplyOrder/53
 
 ###
+
+POST http://localhost:5000/generate/ticket/reprint
+
+###
+GET http://localhost:5000/supplies
+
+#VEr que es lo que nos regresa el order detail
+###
+DELETE http://localhost:5000/supplies/1
+
+
+GET  http://localhost:5000/paymentsTest/434
+
+
+### 
+POST http://localhost:5000/log/write
+Content-Type: application/json
+
+{
+  "logEntry":"ERROR console 20  : Errors stick out"
+}
+
+###
+
+//REFUND CRUD
+GET  http://localhost:5000/validationRefunds/34
+### 
+
+GET  http://localhost:5000/activeRefunds
+###
+
+GET  http://localhost:5000/refunds
+###
+
+//WORKSHIFTBALANCE CRUD
+
+GET  http://localhost:5000/workshiftBalances
+### 
+
+GET  http://localhost:5000/workshiftBalances/2
+### 
+
+GET  http://localhost:5000/activeWorkshiftBalances
+###
+
+GET    http://localhost:5000/createWorkshiftBalances
+###
+
+GET    http://localhost:5000/lastWorkshiftBalances
+###
+
+POST http://localhost:5000/generate/order/canceled
+Content-Type: application/json
+
+{
+  "logEntry":"ERROR console 20  : Errors stick out"
+}

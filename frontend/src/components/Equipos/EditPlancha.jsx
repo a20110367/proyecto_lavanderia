@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   faCheck,
   faTimes,
@@ -24,6 +25,7 @@ function EditEquipo() {
   const [pieces, setPieces] = useState("");
   const [validPieces, setValidPieces] = useState(false);
   const [piecesFocus, serPiecesFocus] = useState(false);
+  const [freeForUse, setFreeForUse] = useState();
 
   const [status, setStatus] = useState("available");
   const [notes, setNotes] = useState("");
@@ -55,6 +57,7 @@ function EditEquipo() {
       const response = await api.get(`/ironStations/${id}`);
       setDescription(response.data.description);
       setMachineType(response.data.machineType);
+      setFreeForUse(response.data.freeForUse)
       setPieces(response.data.pieces.toString());
       setStatus(response.data.status);
       setNotes(response.data.notes);
@@ -73,28 +76,33 @@ function EditEquipo() {
       return;
     }
 
-    try {
-      await api.patch(`/ironStations/${id}`, {
-        description: description,
-        machineType: machineType,
-        pieces: parseInt(pieces),
-        status: status,
-        notes: notes,
-      });
+    if (freeForUse) {
+      try {
+        await api.patch(`/ironStations/${id}`, {
+          description: description,
+          machineType: machineType,
+          pieces: parseInt(pieces),
+          status: status,
+          notes: notes,
+        });
 
-      setSuccess(true);
+        setSuccess(true);
 
-      setDescription("");
-      setPieces("");
-      setNotes("");
-      navigate("/planchas");
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del servidor");
-      } else {
-        setErrMsg("Fallo al actualizar el equipo");
+        setDescription("");
+        setPieces("");
+        setNotes("");
+        navigate("/planchas");
+
+      } catch (err) {
+        if (!err?.response) {
+          setErrMsg("Sin respuesta del servidor");
+        } else {
+          setErrMsg("Fallo al actualizar el equipo");
+        }
+        errRef.current.focus();
       }
-      errRef.current.focus();
+    }else{
+      Swal.fire("No se puede modificar La estación mientras este en uso", "", "warning")
     }
   };
 

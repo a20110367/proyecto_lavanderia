@@ -82,68 +82,92 @@ function Retiro() {
   };
 
   const handleConfirmRetiro = async () => {
-    let isValid = true;
+    try {
+      let isValid = true;
 
-    if (!monto) {
-      setMontoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMontoError("");
-    }
-
-    if (!motivo) {
-      setMotivoError("Este campo es obligatorio");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (!localStorage.getItem("cashCutId")) {
-      setMotivoError("No se ha inicializado la caja");
-      isValid = false;
-    } else {
-      setMotivoError("");
-    }
-
-    if (isValid) {
-      const date = moment().format();
-
-      const res = await api.post("/cashWithdrawals", {
-        cashWithdrawalType: "withdrawal",
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        fk_user: cookies.token,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-      });
-      setVisible(false);
-
-      console.log(res)
-
-      const cashWithdrawal = {
-        cashWithdrawalType: "withdrawal",
-        id_cashWithdrawal: res.data.id_cashWithdrawal,
-        fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        casher: cookies.username,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
+      if (!monto) {
+        setMontoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMontoError("");
       }
 
-      await api.post('/generateCashWithdrawalTicket', {
-        cashWithdrawal: cashWithdrawal,
-      })
+      if (!motivo) {
+        setMotivoError("Este campo es obligatorio");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
 
-      const nuevoRetiro = {
-        id_cashWithdrawal: res.data.id_cashWithdrawal,
-        amount: parseInt(monto),
-        cause: motivo,
-        date: date,
-        user: { name: cookies.username },
-      };
+      if (!localStorage.getItem("cashCutId")) {
+        setMotivoError("No se ha inicializado la caja");
+        isValid = false;
+      } else {
+        setMotivoError("");
+      }
 
-      setRetiros([...retiros, nuevoRetiro]);
-      setFilteredRetiros([...retiros, nuevoRetiro]);
+      if (isValid) {
+        const date = moment().format();
+
+        const res = await api.post("/cashWithdrawals", {
+          cashWithdrawalType: "withdrawal",
+          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+          fk_user: cookies.token,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+        });
+        setVisible(false);
+
+        console.log(res)
+
+        // const cashWithdrawal = {
+        //   cashWithdrawalType: "withdrawal",
+        //   id_cashWithdrawal: res.data.id_cashWithdrawal,
+        //   fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+        //   casher: cookies.username,
+        //   amount: parseInt(monto),
+        //   cause: motivo,
+        //   date: date,
+        // }
+
+        await api.post('/log/write', {
+          logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
+        });
+
+        const nuevoRetiro = {
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+          user: { name: cookies.username },
+        };
+
+        await api.post("/sendMessage", {
+          id_order: nuevoRetiro.id_cashWithdrawal,
+          name: "Rafa",
+          message: `Se ha realizado un RETIRO de CAJA
+          Monto: ${monto},
+          Motivo: ${motivo}.
+          Cajero: ${cookies.username}
+          Fecha: ${formatDate(date)}`,
+          subject: "Se ha realizado un RETIRO de CAJA",
+          text: `Se ha realizado un RETIRO de CAJA con monto de: ${monto}`,
+          warning: true,
+        });
+        console.log("NOTIFICACIÓN ENVIADA...");
+
+        setRetiros([...retiros, nuevoRetiro]);
+        setFilteredRetiros([...retiros, nuevoRetiro]);
+
+        // await api.post('/generateCashWithdrawalTicket', {
+        //   cashWithdrawal: cashWithdrawal,
+        // })
+
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error con la impresora", "Intente y conecter la impresora", "error");
     }
   };
 

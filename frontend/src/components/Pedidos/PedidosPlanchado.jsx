@@ -36,8 +36,10 @@ function PedidosPlanchado() {
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const [forcePage, setForcePage] = useState(0);
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const fetcher = async () => {
@@ -71,7 +73,7 @@ function PedidosPlanchado() {
       }
     });
 
-     const textFiltered = filtered.filter((pedido) => {
+    const textFiltered = filtered.filter((pedido) => {
       const searchTerm = filtro.toLowerCase();
       const searchTermsArray = searchTerm.split(" ");
 
@@ -169,6 +171,7 @@ function PedidosPlanchado() {
 
       setShowMachineName(false);
       // Actualizar datos
+      setForcePage(0);
     } catch (error) {
       console.error("Error al actualizar el pedido:", error);
     }
@@ -213,11 +216,11 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        if(pedido.express){
+        if (pedido.express) {
           await api.patch(`/expressDoneOrderIronControl/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
           })
-        }else{
+        } else {
           await api.patch(`/updateIronRegularOrderDone/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
           });
@@ -244,6 +247,7 @@ function PedidosPlanchado() {
       }
 
       setShowMachineName(false);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -289,7 +293,7 @@ function PedidosPlanchado() {
           >
             En Proceso
           </option>
-          
+
         </select>
       </div>
       <div className="overflow-x-auto">
@@ -397,7 +401,7 @@ function PedidosPlanchado() {
                     )}
                   </td>
                 </tr>
-                
+
               ))}
           </tbody>
         </table>
@@ -407,6 +411,7 @@ function PedidosPlanchado() {
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
+          forcePage = {(forcePage || 0)}
           pageCount={Math.ceil(
             filteredPedidos.filter(
               (pedido) =>
@@ -454,6 +459,7 @@ function PedidosPlanchado() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Estación</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>piezas</th>
@@ -466,7 +472,8 @@ function PedidosPlanchado() {
                 .filter((machine) => machine.status === "available")
                 .map((machine) => (
                   <tr key={machine.id_ironStation}>
-                    <td>
+                    <td className="font-bold text-yellow-500">{machine.id_ironStation}</td>
+                    <td className="text-yellow-500">
                       {machine.machineType === "plancha"
                         ? "Plancha"
                         : machine.machineType}
@@ -475,9 +482,8 @@ function PedidosPlanchado() {
                     <td>{machine.description}</td>
                     <td>{machine.pieces}</td>
                     <td
-                      className={`${
-                        machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
                     >
                       {machine.freeForUse ? "Libre" : "Ocupado"}
                     </td>

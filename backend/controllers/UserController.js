@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { sendRecoveredPwd } from './MessageController.js'
 
 const prisma = new PrismaClient();
 
@@ -30,7 +31,37 @@ export const authUser = async (req, res) => {
 
             res.status(200).json(response)
         } else {
-            res.status(401).json({ msg: 'INVALID CREDENTIALS'})
+            res.status(401).json({ msg: 'INVALID CREDENTIALS' })
+        }
+    } catch (e) {
+        res.status(500).json({ msg: e.message })
+    }
+}
+
+export const recoverPwd = async (req, res) => {
+
+    const { username, email, phone } = req.body;
+    try {
+        const check = await prisma.user.findFirst({
+            select: {
+                username: true,
+                pass: true,
+                phone: true,
+            },
+            where: {
+                username: username,
+                email: email,
+                phone: phone,
+            }
+
+        });
+
+        if (check != null) {
+            const response = { ...check, userExist: true };
+            sendRecoveredPwd(response);
+            res.status(200).json(response)
+        } else {
+            res.status(401).json(false)
         }
     } catch (e) {
         res.status(500).json({ msg: e.message })
@@ -39,7 +70,14 @@ export const authUser = async (req, res) => {
 
 export const getUsers = async (req, res) => {
     try {
-        const response = await prisma.user.findMany();
+        const response = await prisma.user.findMany({
+            where: {
+                deleted: false,
+                NOT: {
+                    username: "admin"
+                }
+            }
+            });
         res.status(200).json(response);
     } catch (e) {
         res.status(500).json({ msg: e.message });
@@ -48,11 +86,16 @@ export const getUsers = async (req, res) => {
 
 export const getUsersById = async (req, res) => {
     try {
-        const response = await prisma.user.findUnique({
+        let response
+        const user = await prisma.user.findUnique({
             where: {
                 id_user: Number(req.params.id)
             }
         });
+        response = user;
+        if (user.deleted == true)
+            response = null
+
         res.status(200).json(response);
     } catch (e) {
         res.status(404).json({ msg: e.message });
@@ -62,38 +105,64 @@ export const getUsersById = async (req, res) => {
 export const createUser = async (req, res) => {
     const { username, name, firstLN, secondLN, email, phone, pass, role } = req.body;
     try {
-        const user = await prisma.user.create({
-            data: req.body
-            // data:{
-            //     username: userName,
-            //     name: name,
-            //     firstLN: firstLN,
-            //     secondLN: secondLN,
-            //     email: email,                
-            //     phone: phone,            
-            //     pass: pass,
-            //     role: role
-            // }
-        });
 
-        const staffMember = await prisma.staffMember.create({
-            data: {
-                name: name,
-                firstLN: firstLN,
-                secondLN: secondLN,
-                email: email,
+        let response
+        const phoneValidation = await prisma.user.findFirst({
+            where: {
                 phone: phone
-            }
+            },
 
+            select: {
+                id_user: true
+            }
         });
 
-        const response = {
+        const mailValidation = await prisma.user.findFirst({
+            where: {
+                email: email
+            },
+            select: {
+                id_user: true
+            }
+        });
 
-            "user": user,
-            "staffMember": staffMember
+        if (phoneValidation && mailValidation) {
+            response = {
+                m: "m",
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (phoneValidation) {
+            response = {
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (mailValidation) {
+            response = {
+                m: "m",
+            }
+            res.status(409).json(response);
+        } else {
+            const user = await prisma.user.create({
+                data: req.body
+            });
+            const staffMember = await prisma.staffMember.create({
+                data: {
+                    name: name,
+                    firstLN: firstLN,
+                    secondLN: secondLN,
+                    email: email,
+                    phone: phone
+                }
+
+            });
+            response = {
+                "user": user,
+                "staffMember": staffMember
+            }
+            res.status(201).json(response);
         }
 
-        res.status(201).json(response);
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }
@@ -103,17 +172,9 @@ export const createUserMany = async (req, res) => {
     //const {username, name, firstLN, secondLN, email, phone, pass, role} = req.body;
     try {
         const user = await prisma.user.createMany({
+
             data: req.body
-            // data:{
-            //     username: userName,
-            //     name: name,
-            //     firstLN: firstLN,
-            //     secondLN: secondLN,
-            //     email: email,                
-            //     phone: phone,            
-            //     pass: pass,
-            //     role: role
-            // }
+
         });
         res.status(201).json(user);
     } catch (e) {
@@ -123,25 +184,62 @@ export const createUserMany = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
-    //const {userName, name, firstLN, secondLN, email, phone, pass, role} = req.body;
+    const { email, phone } = req.body;
     try {
-        const user = await prisma.user.update({
+
+        let response
+        const phoneValidation = await prisma.user.findFirst({
             where: {
-                id_user: Number(req.params.id)
+                NOT: {
+                    id_user: Number(req.params.id)
+                },
+                phone: phone,
             },
-            // data:{
-            //     username: userName,
-            //     name: name,
-            //     firstLN: firstLN,
-            //     secondLN: secondLN,
-            //     email: email,                
-            //     phone: phone,            
-            //     pass: pass,
-            //     role: role
-            // }
-            data: req.body
+
+            select: {
+                id_user: true
+            }
         });
-        res.status(200).json(user);
+
+        const mailValidation = await prisma.user.findFirst({
+            where: {
+                NOT: {
+                    id_user: Number(req.params.id)
+                },
+                email: email
+            },
+            select: {
+                id_user: true
+            }
+        });
+
+        if (phoneValidation && mailValidation) {
+            response = {
+                m: "m",
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (phoneValidation) {
+            response = {
+                p: "p"
+            }
+            res.status(409).json(response);
+        } else if (mailValidation) {
+            response = {
+                m: "m",
+            }
+            res.status(409).json(response);
+        } else {
+            const user = await prisma.user.update({
+                where: {
+                    id_user: Number(req.params.id)
+                },
+
+                data: req.body
+            });
+            res.status(200).json(user);
+        }
+
     } catch (e) {
         res.status(400).json({ msg: e.message });
     }

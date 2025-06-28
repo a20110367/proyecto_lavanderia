@@ -24,6 +24,7 @@ function EntregaLavanderia() {
   const [selectedPedido, setSelectedPedido] = useState(null);
   const [visible, setVisible] = useState(false);
   const [filteredPedidos, setFilteredPedidos] = useState([]);
+  const [amount, setAmount] = useState(0.0);
   const [cobroInfo, setCobroInfo] = useState({
     metodoPago: "cash",
     fechaPago: moment(),
@@ -56,6 +57,29 @@ function EntregaLavanderia() {
     filterPedidos(event.target.value);
   };
 
+  const calculateTotalCredit = () => {
+    let pivot = 0.0
+    selectedPedido.ServiceOrderDetail.forEach(item =>
+      pivot = parseFloat(pivot + (item.LaundryService.priceCredit * item.units)))
+    // console.log(pivot)
+    // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateTotal = () => {
+    let pivot = 0
+    selectedPedido.ServiceOrderDetail.forEach(item =>
+      pivot = parseFloat(pivot + (item.LaundryService.price * item.units)))
+    // console.log(pivot)
+    // pivot += 0.1;
+    setAmount(pivot)
+  };
+
+  const calculateSubtotal = (service) => {
+    console.log(cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units)
+    return cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit * service.units : service.LaundryService.price * service.units
+  };
+
   const filterPedidos = (filterText) => {
     const filtered = pedidos.filter((pedido) => {
       const searchTerm = filtro.toLowerCase();
@@ -68,7 +92,7 @@ function EntregaLavanderia() {
           .includes(term)
       );
       return (
-        isMatch||
+        isMatch ||
         (pedido.user &&
           pedido.user.name &&
           pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||
@@ -92,6 +116,11 @@ function EntregaLavanderia() {
     }
     console.log("Pedido seleccionado para cobrar:", pedido);
     setSelectedPedido(pedido);
+    setAmount(pedido.totalPrice)
+    setCobroInfo({
+      metodoPago: "cash",
+      fechaPago: moment(),
+    });
     setVisible(true);
   };
 
@@ -101,6 +130,7 @@ function EntregaLavanderia() {
       ...cobroInfo,
       [name]: value,
     });
+    value === 'credit' ? calculateTotalCredit() : calculateTotal()
   };
 
   const handleGuardarCobro = async (pedido) => {
@@ -133,7 +163,7 @@ function EntregaLavanderia() {
           payDate: cobroInfo.fechaPago.toISOString(),
           payTime: cobroInfo.fechaPago.toISOString(),
           fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          payTotal: pedido.totalPrice,
+          payTotal: amount,
         },
         deliveryDetail: {
           fk_userCashier: cookies.token,
@@ -144,16 +174,18 @@ function EntregaLavanderia() {
       });
       ///////////////////////////// TICKET //////////////////////////////////
       const cart = [];
+
       pedido.ServiceOrderDetail.forEach(service => {
         cart.push({
           description: service.LaundryService.description
             ? service.LaundryService.description
-            : "ERROR",          
-          totalPrice: service.subtotal,
+            : "ERROR",
+          totalPrice: calculateSubtotal(service),
+          price: cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit : service.LaundryService.price,
           quantity: service.units,
         });
       });
-      
+
       // const order = {
       //   id_order: pedido.id_order,
       //   payForm: pedido.payForm,
@@ -171,12 +203,17 @@ function EntregaLavanderia() {
       // };
       // orderTicket(order);
 
+      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
+        return order.id_order !== pedido.id_order;
+      });
+      setFilteredPedidos(updatedFilteredPedidos);
+
       const order = {
         id_order: pedido.id_order,
         payForm: pedido.payForm,
         payStatus: "paid",
         payMethod: cobroInfo.metodoPago,
-        subtotal: pedido.totalPrice,
+        subtotal: amount,
         casher: pedido.user.name,
         client: pedido.client.name + ' ' + pedido.client.firstLN + ' ' + pedido.client.secondLN,
         receptionDate: pedido.receptionDate,
@@ -192,10 +229,6 @@ function EntregaLavanderia() {
       await api.post('/generateTicket', {
         order: order,
       })
-      const updatedFilteredPedidos = filteredPedidos.filter(function (order) {
-        return order.id_order !== pedido.id_order;
-      });
-      setFilteredPedidos(updatedFilteredPedidos);
     } catch (err) {
       console.log(err);
     }
@@ -274,42 +307,42 @@ function EntregaLavanderia() {
       console.log(pedido);
       setTimeout(() => {
         setEntregando(false);
-      //   const doc = new jsPDF();
-      //   doc.text(`Detalles del Pedido`, 10, 10);
-      //   doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN} `, 10, 20);
-      //   doc.text(
-      //     `Pedido: ${
-      //       pedido.ServiceOrderDetail.find(
-      //         (service) => service.id_serviceOrderDetail
-      //       ) != undefined
-      //         ? pedido.ServiceOrderDetail.length
-      //         : 0
-      //     }`,
-      //     10,
-      //     30
-      //   );
-      //   doc.text(`Estatus: Entregado`, 10, 40);
-      //   doc.text(
-      //     `Método de Pago: ${
-      //       pedido.payment
-      //   ? pedido.payment.payMethod === "cash"
-      //     ? "Efectivo"
-      //     : pedido.payment.payMethod === "credit"
-      //       ? "Tarjeta"
-      //       : "N/A"
-      //       :"N/A"
-      //     }`,
-      //     10,
-      //     50
-      //   );
-      //   doc.text(
-      //     `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
-      //     10,
-      //     60
-      //   );
-      //   doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
-      //   doc.save(`pedido_${pedido.id_order}.pdf`);
-       }, 1500);
+        //   const doc = new jsPDF();
+        //   doc.text(`Detalles del Pedido`, 10, 10);
+        //   doc.text(`Cliente: ${pedido.client.name} ${pedido.client.firstLN} ${pedido.client.secondLN} `, 10, 20);
+        //   doc.text(
+        //     `Pedido: ${
+        //       pedido.ServiceOrderDetail.find(
+        //         (service) => service.id_serviceOrderDetail
+        //       ) != undefined
+        //         ? pedido.ServiceOrderDetail.length
+        //         : 0
+        //     }`,
+        //     10,
+        //     30
+        //   );
+        //   doc.text(`Estatus: Entregado`, 10, 40);
+        //   doc.text(
+        //     `Método de Pago: ${
+        //       pedido.payment
+        //   ? pedido.payment.payMethod === "cash"
+        //     ? "Efectivo"
+        //     : pedido.payment.payMethod === "credit"
+        //       ? "Tarjeta"
+        //       : "N/A"
+        //       :"N/A"
+        //     }`,
+        //     10,
+        //     50
+        //   );
+        //   doc.text(
+        //     `Fecha de Pago: ${formatDate(pedido.scheduledDeliveryDate)}`,
+        //     10,
+        //     60
+        //   );
+        //   doc.text(`Total: $${pedido.totalPrice}`, 10, 70);
+        //   doc.save(`pedido_${pedido.id_order}.pdf`);
+      }, 1500);
     }
   };
 
@@ -364,8 +397,8 @@ function EntregaLavanderia() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="th2 font-medium text-gray-900">
-                  {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
-                    </td>
+                    {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
+                  </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
                     {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
@@ -378,11 +411,10 @@ function EntregaLavanderia() {
                     {formatDate(pedido.receptionDate)}
                   </td>
                   <td
-                    className={`py-3 px-6 ${
-                      pedido.payStatus === "unpaid"
+                    className={`py-3 px-6 ${pedido.payStatus === "unpaid"
                         ? "text-red-600"
                         : "text-green-600"
-                    }`}
+                      }`}
                   >
                     {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">
@@ -490,7 +522,7 @@ function EntregaLavanderia() {
             </p>
             <p>
               <strong>Estatus:</strong> Adeudo - <strong>Monto:</strong> $
-              {selectedPedido?.totalPrice}
+              {amount}
             </p>
             <div className="mb-2">
               <strong>Método de Pago:</strong>{" "}

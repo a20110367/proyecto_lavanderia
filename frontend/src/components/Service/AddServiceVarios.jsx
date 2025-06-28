@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function AddServiceVarios() {
@@ -10,14 +12,16 @@ function AddServiceVarios() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [category, setCategory] = useState("Varios");
+  const [priceCredit, setPriceCredit] = useState(0);
 
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("La Descripción de Servicios Varios debe contenar alguna de estas palabras: ");
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
+  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
+  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,7 +31,7 @@ function AddServiceVarios() {
     );
 
     if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de Encargo Varios.");
+      setErrMsg("Error, La Descripción de Servicios Varios debe contenar alguna de estas palabras: ");
       return;
     }
 
@@ -39,6 +43,7 @@ function AddServiceVarios() {
     try {
       await api.post("/servicesOtherService", {
         description: description,
+        priceCredit: parseFloat(priceCredit),
         price: parseFloat(price),
         category_id: 5,
       });
@@ -87,26 +92,46 @@ function AddServiceVarios() {
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500 ">{errMsg}</p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex items-center">
+                <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
-                step="0.1"
                 id="price"
-                ref={priceRef}
+
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex items-center">
+                <IoCard size={32} className="text-blue-700 mr-4" />
+                <label className="form-lbl" htmlFor="priceCredit">
+                  Precio de Tarjeta:
+                </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -114,7 +139,7 @@ function AddServiceVarios() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Varios"

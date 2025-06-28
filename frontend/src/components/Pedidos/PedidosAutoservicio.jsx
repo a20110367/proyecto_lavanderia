@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
+import { GiWashingMachine } from "react-icons/gi";
+import { BiSolidDryer } from "react-icons/bi";
 import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
@@ -44,9 +46,11 @@ function PedidosAutoservicio() {
   const [errMsg, setErrMsg] = useState("");
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+  const [forcePage, setForcePage] = useState(0);
   const { cookies } = useAuth();
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
 
   const checkShelly = async (machine) => {
@@ -106,6 +110,8 @@ function PedidosAutoservicio() {
         return pedido.serviceStatus === filtroEstatus;
       }
     });
+
+    console.log(data)
 
     const textFiltered = filtered.filter((pedido) => {
       const searchTerm = filtro.toLowerCase();
@@ -252,6 +258,7 @@ function PedidosAutoservicio() {
 
       setShowMachineName(false);
       showNotification(`Pedido iniciado en ${selectedMachine.model}`);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al actualizar el pedido o la máquina:", error);
     }
@@ -301,6 +308,7 @@ function PedidosAutoservicio() {
       });
 
       setShowMachineName(false);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -358,6 +366,7 @@ function PedidosAutoservicio() {
               <th>Cliente</th>
               <th>Detalles</th>
               <th>Fecha de Entrega</th>
+              <th>Equipo</th>
               <th>Estatus</th>
               {/* <th>Tiempo Restante</th> */}
               <th>Observaciones</th>
@@ -387,6 +396,38 @@ function PedidosAutoservicio() {
                   <td className="py-3 px-6">
                     {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
                   </td>
+
+                  <td className="py-3 px-7 text-black">{
+                    pedido.machine ?
+                    <div>
+                  {pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress"  && pedido.machine ?
+                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                        {/* {pedido.machine.ipAddress ? 
+                        <div>
+                          <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
+                          <p className="font-semibold">Restante: <span className="font-normal">{}20min</span></p> 
+                        </div>
+                        : ""} */}
+                        </div>
+                    </div>  :
+                    pedido.machine.machineType === "secadora" && pedido.serviceStatus === "inProgress" && pedido.machine ?
+                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                        {/* {pedido.machine.ipAddress ? 
+                        <div>
+                          <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
+                          <p className="font-semibold">Restante: <span className="font-normal">{}15min</span></p> 
+                        </div>
+                        : ""} */}
+                      </div>
+                    </div> : "-" } </div> : "-"}
+                  </td>
+
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
                       <span className="text-gray-600 pl-1">
@@ -473,6 +514,7 @@ function PedidosAutoservicio() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
 
@@ -496,7 +538,7 @@ function PedidosAutoservicio() {
             Cancelar
           </button>,
         ]}
-        width={800}
+        width={1000}
         style={{ padding: "20px" }}
       >
         <div>
@@ -504,6 +546,7 @@ function PedidosAutoservicio() {
           <table className="w-full text-center">
             <thead className="bg-gray-200">
               <tr>
+                <th>No. de Equipo</th>
                 <th>Tipo de Máquina</th>
                 <th>Modelo</th>
                 <th>Tiempo de Ciclo</th>
@@ -517,13 +560,12 @@ function PedidosAutoservicio() {
                 .filter((machine) => machine.status === "available")
                 .filter((machine) => {
                   if (selectedPedido && selectedPedido.SelfService) {
-                    const serviceDescription =
-                      selectedPedido.SelfService.description.toLowerCase();
-                    if (serviceDescription.includes("lavado")) {
+                    const serviceDescription = selectedPedido.SelfService.description.toLowerCase();
+                    if (selectedPedido.SelfService.machineType == 'lavadora' ) {
                       return machine.machineType
                         .toLowerCase()
                         .includes("lavadora");
-                    } else if (serviceDescription.includes("secado")) {
+                    } else if (selectedPedido.SelfService.machineType == 'secadora') {
                       return machine.machineType
                         .toLowerCase()
                         .includes("secadora");
@@ -533,7 +575,8 @@ function PedidosAutoservicio() {
                 })
                 .map((machine) => (
                   <tr key={machine.id_machine}>
-                    <td>{machine.machineType}</td>
+                    <td className={machine.machineType === "lavadora" ? "font-bold text-blue-600" : "font-bold text-green-500"}>{machine.machineNumber}</td>
+                    <td className={machine.machineType === "lavadora" ? "text-blue-600" : "text-green-500"}>{machine.machineType}</td>
                     <td>{machine.model}</td>
                     <td>{machine.cicleTime}</td>
                     <td>{machine.weight}</td>

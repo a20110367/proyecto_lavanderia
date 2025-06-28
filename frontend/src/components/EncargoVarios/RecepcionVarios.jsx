@@ -116,7 +116,7 @@ function RecepcionVarios() {
           <table className="w-full table-auto">
             <thead className="text-xs text-gray-700 uppercase bg-gray-200">
               <tr>
-                <th className="">No. Cliente</th>
+                {/* <th className="">No. Cliente</th> */}
                 <th className="">Nombre</th>
                 <th className="">Teléfono</th>
                 <th className="">Correo</th>
@@ -132,7 +132,7 @@ function RecepcionVarios() {
                 )
                 .map((client, index) => (
                   <tr className="bg-white border-b" key={index}>
-                    <td className="py-3 px-1 text-center">{index + 1}</td>
+                    {/* <td className="py-3 px-1 text-center">{index + 1}</td> */}
                     <td className="th2 font-medium text-gray-900">
                     {client.name} {client.firstLN} {client.secondLN}
                     </td>

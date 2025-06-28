@@ -115,7 +115,7 @@ function EditProductos() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 autoComplete="off"
@@ -123,6 +123,7 @@ function EditProductos() {
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
+                disabled
               />
 
               {errMsg && (
@@ -139,10 +140,11 @@ function EditProductos() {
                 Categoria:
               </label>
               <select
-                className="form-input"
+                className="form-input bg-gray-200"
                 id="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
+                disabled
               >
                 <option value="jabon">Jabon</option>
                 <option value="suavitel">Suavitel</option>
@@ -158,13 +160,14 @@ function EditProductos() {
               </select>
 
               <label className="form-lbl" htmlFor="unit">
-                Medida:
+                Unidad de Medida: <span className="text-sm text-blue-600">Como se mide el Producto.</span>
               </label>
               <select
-                className="form-input"
+                className="form-input bg-gray-200"
                 id="unit"
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
+                disabled
               >
                 <option value="mililitros">Mililitros</option>
                 <option value="gramos">Gramos</option>
@@ -172,7 +175,7 @@ function EditProductos() {
               </select>
 
               <label className="form-lbl" htmlFor="valor">
-                Unidad:
+                Cantidad: <span className="text-sm text-blue-600">Cual es la cantidad del Producto.</span>
               </label>
               <input
                 className="form-input"

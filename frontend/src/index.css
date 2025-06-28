@@ -52,13 +52,13 @@
 
 }
 
-thead th {
-  @apply text-sm; /* Font size (0.875rem) */
-  @apply h-10; /* Maximum height (customize as needed) */
-  @apply whitespace-nowrap; /* Prevent line breaks */
-  @apply overflow-hidden;
-  @apply overflow-ellipsis; /* Show ellipsis when content overflows */
-}
+  thead th {
+    @apply text-sm; /* Font size (0.875rem) */
+    @apply h-10; /* Maximum height (customize as needed) */
+    @apply whitespace-nowrap; /* Prevent line breaks */
+    @apply overflow-hidden;
+    @apply overflow-ellipsis; /* Show ellipsis when content overflows */
+  }
 
 
   th {
@@ -88,8 +88,6 @@ thead th {
   tr:last-child td:last-child {
     @apply rounded-br-lg;
   }
-
-
 @layer components {
   /*-------------------- CONTAINERS ---------------*/
   .fc {
@@ -138,7 +136,7 @@ thead th {
   }
 
   .HeadContent {
-    @apply rounded-md bg-gray-800 border-b border-solid shadow-md p-4;
+    @apply rounded-md bg-gray-800 border-b border-solid shadow-md p-4 w-fit;
   }
 
   .form-input {
@@ -244,6 +242,14 @@ thead th {
     @apply font-semibold text-2xl ml-3 text-OxfordBlue;
   }
 
+  .text-cash {
+    @apply text-green-700 font-semibold
+  }
+
+  .text-card {
+    @apply text-blue-700 font-semibold
+  }
+
   /* strongs */
   .title-strong {
     @apply pr-2 text-2xl font-semibold text-Cerulean;
@@ -291,7 +297,15 @@ thead th {
   }
 
   .err-icon {
-    @apply ml-3 text-red-500;
+    @apply mx-2 text-red-500;
+  }
+
+  .err-container {
+    @apply flex w-fit;
+  }
+
+  .err-msg {
+    @apply w-fit text-red-500;
   }
 
   .title-tr {
@@ -391,7 +405,7 @@ thead th {
   }
 
   .side-menu {
-    @apply max-h-[calc(100vh-64px)] overflow-y-auto sticky top-16 z-50;
+    @apply max-h-[calc(100vh-64px)] overflow-y-auto sticky top-16 z-50 flex-wrap;
   }
 
   .content {
@@ -407,7 +421,7 @@ thead th {
   }
 
   .side-menu::-webkit-scrollbar-thumb {
-    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue
+    @apply bg-Cerulean rounded-md border-solid border-NonPhotoblue hover:bg-NonPhotoblue;
   }
 
   /*-------------------------------------------- PAGINATOR ----------------------------------------*/
@@ -459,17 +473,21 @@ thead th {
     @apply fill-white
   }
   .st10 {
-    @apply fill-FireBrick
+    @apply fill-FireBrick;
   }
   .svg-container {
-    @apply bg-OxfordBlue w-full h-full
+    @apply bg-OxfordBlue w-full h-full;
   }
   .login-container {
-    @apply w-screen h-screen grid-cols-2 grid place-items-center
+    @apply w-screen h-screen grid-cols-2 grid place-items-center;
   }
 
   .swal-wide{
     @apply w-3/5 !important;
     @apply h-screen !important;
+  }
+
+  .serviceCheckbox {
+    @apply mx-2 p-6 transform w-6 h-6;
   }
 }

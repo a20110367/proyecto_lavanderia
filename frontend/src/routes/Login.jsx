@@ -1,15 +1,33 @@
 import React from "react";
 import IMAGES from "../images/images";
-import { useState } from "react";
+import { Modal, Button, DatePicker, Result } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheck,
+  faTimes,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/auth/auth";
+import Swal from "sweetalert2";
+import api from "../api/api";
 
 export default function Login() {
 
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
+  const [validPhone, setValidPhone] = useState(false);
   const [err, setErr] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { login } = useAuth();
+
+  const regexEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+  const regexPhone = /^(\(\+?\d{2,3}\)[\*|\s|\-|\.]?(([\d][\*|\s|\-|\.]?){6})(([\d][\s|\-|\.]?){2})?|(\+?[\d][\s|\-|\.]?){8}(([\d][\s|\-|\.]?){2}(([\d][\s|\-|\.]?){2})?)?)$/;
 
   const loginSubmit = (e) => {
     e.preventDefault();
@@ -19,6 +37,41 @@ export default function Login() {
       setErr('Rellene los campos vacios')
     }
   }
+
+  const recoverPwd = async () => {
+    if (validEmail || validPhone) {
+      try {
+        const res = await api.post('/user/recoverPassword', {
+          username: user,
+          email: email,
+          phone: phone,
+        })
+
+        await api.post('/log/write', {
+          logEntry: `INFO Login.jsx : ${user} has recovered his password`
+        });
+
+        if (res.data) {
+          Swal.fire('La contraseña ha sido recuperada con exito', 'Revisa tu telefono celular, ya que la contraseña fue enviada atraves de la aplicación Whatsapp', 'success')
+          setIsModalOpen(false);
+        }
+      } catch (err) {
+        Swal.fire('El usuario ingresado no existe dentro de la base de datos', 'Revisa los datos y vuelve a ingresarlos nuevamente', 'question')
+      }
+    }else{
+      Swal.fire('El correo electronico o telefono estan mal escritos', 'Revisa los datos y vuelve a ingresarlos nuevamente', 'error')
+    }
+  }
+
+  useEffect(() => {
+    // setValidEmail(email.trim().length > 0);
+    setValidEmail(regexEmail.test(email));
+  }, [email]);
+
+  useEffect(() => {
+    // setValidEmail(email.trim().length > 0);
+    setValidPhone(regexPhone.test(phone));
+  }, [phone]);
 
   return (
     // <div className="responsive-bg">
@@ -119,9 +172,6 @@ export default function Login() {
                   Recordarme por 12 Horas
                 </label>
               </div> */}
-              <button className="link">
-                Olvidaste tu Contraseña
-              </button>
               <img
                 src={IMAGES.caprelogo}
                 alt={`LOGO DE LA LAVANDERIA`}
@@ -131,11 +181,98 @@ export default function Login() {
                 <button type="submit" className="btn-login w-3/4 text-base " >
                   Iniciar sesion
                 </button>
+                <button className="link" onClick={() => setIsModalOpen(true)}>
+                Olvidaste tu Contraseña
+              </button>
               </div>
             </div>
           </form>
         </div>
       </div>
+
+      <Modal title={`Recuperación de Contraseña`} open={isModalOpen} width={500} onCancel={() => setIsModalOpen(false)}
+        footer={[
+          <Button
+            onClick={() => setIsModalOpen(false)}
+            className="btn-cancel-modal text-white ml-4 text-center font-bold align-middle"
+            key="close"
+          >
+            Cerrar
+          </Button>,]}>
+        <div className="flex justify-center w-full" style={{ height: "500px" }}>
+          <div className="flex flex-col items-center justify-center">
+            <div className="w-96">
+              <label className="form-lbl" htmlFor="phone">
+                Usuario:
+              </label>
+              <input
+                className="form-input mb-4"
+                type="text"
+                id="user4Recover"
+                onChange={(e) => setUser(e.target.value)}
+                value={user}
+                required
+                placeholder="Ingrese su nombre de usuario"
+              />
+
+              <label className="form-lbl" htmlFor="phone">
+                Telefono:
+                {validPhone ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="ml-3 text-red-500"
+                  />
+                )}
+              </label>
+              <input
+                className="form-input mb-4"
+                type="number"
+                id="phone"
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
+                required
+                pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                placeholder="Ingrese su numero de telefono"
+              />
+
+              <label className="form-lbl" htmlFor="email">
+                Email:
+                {validEmail ? (
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    className="ml-3 text-green-500"
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className="ml-3 text-red-500"
+                  />
+                )}
+              </label>
+              <input
+                className="form-input mb-4"
+                type="email"
+                id="email"
+                autoComplete="off"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+                required
+                aria-invalid={validEmail ? "false" : "true"}
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
+                placeholder="Ingrese su correo electronico"
+              />
+
+              <button onClick={() => recoverPwd()} className="btn-back text-xl bg-OxfordBlue">Recuperar contraseña</button>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

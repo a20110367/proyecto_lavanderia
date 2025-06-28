@@ -4,6 +4,9 @@ import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 // Dialogs
@@ -75,6 +78,18 @@ function ServicesPlanchado() {
     deleteService(serviceId);
   };
 
+  const checkIfCashCutIsOpen = (service, p) => {
+    if(p === 'm'){
+      !localStorage.getItem('cashCutId') 
+      ? navigate(`/editServicePlanchado/${service.id_service}`)
+      : Swal.fire("No se puede modificar el servicio mientras la caja este abierta", "", "warning")
+    }else{
+      !localStorage.getItem('cashCutId') 
+      ? handleClickOpen( service.description, service.id_service)
+      : Swal.fire("No se puede eliminar el servicio mientras la caja este abierta", "", "warning")
+    }
+  }
+
   return (
     <div>
       <div className="title-container">
@@ -97,7 +112,8 @@ function ServicesPlanchado() {
                 <th>Descripción</th>
                 <th>Piezas</th>
                 <th>Categoria</th>
-                <th>Precio</th>
+                <th><div className="flex"><BsCashCoin size={25} className="text-green-700 mr-3"/>Precio Efectivo</div></th>
+                <th><div className="flex"><IoCard size={25} className="text-blue-700 mr-3"/>Precio Tarjeta</div></th>
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -109,17 +125,16 @@ function ServicesPlanchado() {
                 )
                 .map((service, index) => (
                   <tr key={service.id_service}>
-                    <td>{index + 1}</td>
+                    <td>{service.id_service}</td>
                     <td>{service.description}</td>
                     <td>{service.pieces}</td>
                     <td>{service.Category.categoryDescription}</td>
-                    <td>${service.price}</td>
+                    <td className="text-cash">${service.price}</td>
+                    <td className="text-card">${service.priceCredit}</td>     
                     <td>
                       <button
                         onClick={() =>
-                          navigate(
-                            `/editServicePlanchado/${service.id_service}`
-                          )
+                          checkIfCashCutIsOpen(service, 'm')
                         }
                         className="btn-edit"
                       >
@@ -127,10 +142,7 @@ function ServicesPlanchado() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(
-                            service.description,
-                            service.id_service
-                          )
+                          checkIfCashCutIsOpen(service, 'd')
                         }
                         className="btn-cancel"
                       >

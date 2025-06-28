@@ -138,10 +138,14 @@ function ActivarEquipos() {
                         : machine.id_ironStation + "-" + machine.machineType
                     }
                   >
-                    <td>{index + 1}</td>
+                    <td
+                    className={`font-bold ${machine.machineType === "lavadora"
+                      ? "text-blue-500"
+                      : "text-green-500"
+                      }`}>{machine.machineNumber}</td>
                     <td
                       className={`font-semibold ${machine.machineType === "lavadora"
-                        ? "text-dodgerBlue"
+                        ? "text-blue-500"
                         : "text-green-500"
                         }`}
                     >

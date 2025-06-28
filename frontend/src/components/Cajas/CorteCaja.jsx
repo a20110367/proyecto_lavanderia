@@ -24,6 +24,7 @@ function CorteCaja() {
   const [selectedCorte, setSelectedCorte] = useState(null);
   const [corteActivo, setCorteActivo] = useState(false);
   const navigate = useNavigate();
+  const [blockButton, setBlockButton] = useState(false);
 
   const { cookies } = useAuth();
 
@@ -74,6 +75,23 @@ function CorteCaja() {
     }
   };
 
+  /* ------------------------------ REPRINT ------------------------------------*/
+
+  const handleReprintTicket = async () => {
+    try {
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has reprinted a receipt`
+      });
+      await api.post('/warning/reprint', {
+        casher: cookies.username,
+      });
+      await api.post('/generate/ticket/reprint');
+    } catch (err) {
+      Swal.fire("No existe ticket en la cola", "Recuerda que solo puedes reimprimir una sola vez", "warning", "#034078");
+      console.error(err);
+    }
+  };
+
   /* ------------------------------ FULL CASHCUT ------------------------------------*/
 
   const handleConfirmCorteCaja = async () => {
@@ -99,75 +117,81 @@ function CorteCaja() {
     }
 
     try {
-      setWorkShift(moment().hours() < 12 ? "morning" : "evening");
+      setBlockButton(true);
+
+      const workShift = moment().hours() < 12 ? "morning" : "evening";
+
+      setWorkShift(workShift);
 
       const response = await api.get(`/closeCashCut/${cashCutId}`);
-      const supplyResponse = await api.get(
-        `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
-      );
+      // const supplyResponse = await api.get(
+      //   `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
+      // );
 
-      const corte = response.data;
-      const corteSupply = supplyResponse.data;
+      const servicesRes = response.data.serviceCashCut;
+      const suppliesRes = response.data.suppliesCashCut;
+      const generalRes = response.data.workshiftBalance;
 
-      const nuevoCorte = {
-        ...corte,
-        id_cashCut: parseInt(localStorage.getItem("cashCutId")),
+      const workshiftBalance = {
+        id_cashCut: cashCutId,
         id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
-        ...corteSupply,
-      };
-
-      const cashCut = {
         casher: cookies.username,
-        cashCutId: nuevoCorte.id_cashCut,
-        workShift: nuevoCorte.workShift,
-        initialCash: nuevoCorte.initialCash,
-        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total,
-        cashCutD: nuevoCorte.cashCutD,
-        cashCutT: nuevoCorte.cashCutT,
+        cashCutId: generalRes.id_cashCut,
+        workShift: workShift,
+        initialCash: generalRes.initialCash,
+        total: generalRes.totalIncome,
+        cashCutD: response.data.cashCutD,
+        cashCutT: response.data.cashCutT,
+        totalCancelations: generalRes.cancellations,
+        totalwithdrawal: generalRes.withdrawal,
+        creditIncome: generalRes.creditIncome,
+        cashIncome: generalRes.cashIncome
       };
 
-      const services = {
-        numberOfItems: nuevoCorte.ordersPayed,
-        selfService: nuevoCorte.totalAutoservicio,
-        laundry: nuevoCorte.totalEncargo,
-        iron: nuevoCorte.totalPlanchado,
-        dryCleaning: nuevoCorte.totalTintoreria,
-        others: nuevoCorte.totalOtrosEncargo,
-        totalIncome: nuevoCorte.totalIncome,
-        totalCash: nuevoCorte.totalCash,
-        totalCredit: nuevoCorte.totalCredit,
+      const serviceCashCut = {
+        numberOfItems: servicesRes.ordersPayed,
+        selfService: servicesRes.totalAutoservicio,
+        laundry: servicesRes.totalEncargo,
+        iron: servicesRes.totalPlanchado,
+        dryCleaning: servicesRes.totalTintoreria,
+        others: servicesRes.totalOtrosEncargo,
+        totalIncome: servicesRes.totalServiceIncome,
+        totalCash: servicesRes.totalServiceCash,
+        totalCredit: servicesRes.totalServiceCredit,
+        canceledOrders: servicesRes.ordersCancelled,
+        totalCancelations: servicesRes.totalCancelations,
+        totalCashWithdrawal: servicesRes.totalCashWithdrawal,
+        ironPiecesDone: servicesRes.ironPiecesDone,
       };
 
-      const products = {
-        numberOfItems: corteSupply.ordersPayedSupply,
-        soap: corteSupply.totalJabon,
-        suavitel: corteSupply.totalSuavitel,
-        pinol: corteSupply.totalPinol,
-        degreaser: corteSupply.totalDesengrasante,
-        chlorine: corteSupply.totalCloro,
-        sanitizer: corteSupply.totalSanitizante,
-        bag: corteSupply.totalBolsa,
-        reinforced: corteSupply.totalReforzado,
-        hook: corteSupply.totalGanchos,
-        wc: corteSupply.totalWC,
-        others: corteSupply.totalOtros,
-        totalIncome: corteSupply.totalIncomeSupply,
-        totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply,
+      const suppliesCashCut = {
+        numberOfItems: suppliesRes.ordersPayedSupply,
+        soap: suppliesRes.totalJabon,
+        suavitel: suppliesRes.totalSuavitel,
+        pinol: suppliesRes.totalPinol,
+        degreaser: suppliesRes.totalDesengrasante,
+        chlorine: suppliesRes.totalCloro,
+        sanitizer: suppliesRes.totalSanitizante,
+        bag: suppliesRes.totalBolsa,
+        reinforced: suppliesRes.totalReforzado,
+        hook: suppliesRes.totalGanchos,
+        wc: suppliesRes.totalWC,
+        others: suppliesRes.totalOtros,
+        totalIncome: suppliesRes.totalSuppliesIncome,
+        totalCash: suppliesRes.totalSuppliesCash,
+        totalCredit: suppliesRes.totalSuppliesCredit,
       };
 
       const pdf = new jsPDF();
       pdf.text(`CORTE DE CAJA TURNO`, 10, 10);
-      pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
-      pdf.text(`FECHA: ${formatDate(nuevoCorte.cashCutD)}`, 10, 30);
-      pdf.text(`HORA: ${formatDate(nuevoCorte.cashCutT)}`, 10, 40);
-      pdf.text(`Usuario: ${cookies.username}`, 10, 50);
+      pdf.text(`ID: ${workshiftBalance.id_cashCut}`, 10, 20);
+      pdf.text(`FECHA: ${formatDate(workshiftBalance.cashCutD)}`, 10, 30);
+      pdf.text(`HORA: ${formatDate(workshiftBalance.cashCutT)}`, 10, 40);
+      pdf.text(`Usuario: ${workshiftBalance.username}`, 10, 50);
       pdf.text(
-        `Turno: ${
-          nuevoCorte.workShift === "morning"
-            ? "Matutino"
-            : nuevoCorte.workShift === "evening"
+        `Turno: ${workshiftBalance.workShift === "morning"
+          ? "Matutino"
+          : workshiftBalance.workShift === "evening"
             ? "Vespertino"
             : "Nocturno"
         }`,
@@ -175,57 +199,57 @@ function CorteCaja() {
         60
       );
 
-      nuevoCorte.initialCash
-        ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 80)
+      workshiftBalance.initialCash
+        ? pdf.text(`Dinero en Fondo: $${workshiftBalance.initialCash}`, 10, 80)
         : pdf.text("Dinero en Fondo: $0", 10, 80);
 
-      nuevoCorte.ordersPayed
-        ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 90)
+      serviceCashCut.ordersPayed
+        ? pdf.text(`Total Servicios Pagados: ${serviceCashCut.ordersPayed}`, 10, 90)
         : pdf.text(`Total Servicios Pagados: 0`, 10, 90);
 
       // Separación
       pdf.text(`Detalles de Ingresos por Servicio:`, 10, 110);
-      nuevoCorte.totalAutoservicio
-        ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 120)
+      serviceCashCut.totalAutoservicio
+        ? pdf.text(`Autoservicio: $${serviceCashCut.totalAutoservicio}`, 10, 120)
         : pdf.text("Autoservicio: $0", 10, 120);
-      nuevoCorte.totalEncargo
-        ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 130)
+      serviceCashCut.totalEncargo
+        ? pdf.text(`Lavado por Encargo: $${serviceCashCut.totalEncargo}`, 10, 130)
         : pdf.text("Lavado por Encargo: $0", 10, 130);
-      nuevoCorte.totalPlanchado
-        ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 140)
+      serviceCashCut.totalPlanchado
+        ? pdf.text(`Planchado: $${serviceCashCut.totalPlanchado}`, 10, 140)
         : pdf.text("Planchado: $0", 10, 140);
 
-      nuevoCorte.totalTintoreria
-        ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 150)
+      serviceCashCut.totalTintoreria
+        ? pdf.text(`Tintorería: $${serviceCashCut.totalTintoreria}`, 10, 150)
         : pdf.text("Tintorería: $0", 10, 150);
 
-      nuevoCorte.totalOtrosEncargo
-        ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 160)
+      serviceCashCut.totalOtrosEncargo
+        ? pdf.text(`Encargo Varios: $${serviceCashCut.totalOtrosEncargo}`, 10, 160)
         : pdf.text("Encargo Varios: $0", 10, 160);
 
-      nuevoCorte.totalIncome
+      serviceCashCut.totalIncome
         ? pdf.text(
-            `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-            10,
-            170
-          )
+          `Total (Suma de los Servicios): $${serviceCashCut.totalIncome}`,
+          10,
+          170
+        )
         : pdf.text("Total (Suma de los Servicios): $0", 10, 170);
       // Separación
-      nuevoCorte.totalCash
-        ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 190)
+      serviceCashCut.totalCash
+        ? pdf.text(`Ingreso en Efectivo: $${serviceCashCut.totalCash}`, 10, 190)
         : pdf.text("Ingreso en Efectivo: $0", 10, 190);
-      nuevoCorte.totalCredit
-        ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 200)
+      serviceCashCut.totalCredit
+        ? pdf.text(`Ingreso en Tarjeta: $${serviceCashCut.totalCredit}`, 10, 200)
         : pdf.text("Ingreso en Tarjeta: $0", 10, 200);
-      nuevoCorte.totalCashWithdrawal
+      serviceCashCut.totalCashWithdrawal
         ? pdf.text(
-            `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
-            10,
-            220
-          )
+          `Retiros Totales: $${serviceCashCut.totalCashWithdrawal}`,
+          10,
+          210
+        )
         : pdf.text("Retiros Totales: $0", 10, 210);
-      nuevoCorte.total
-        ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 220)
+      serviceCashCut.total
+        ? pdf.text(`Final Total en Caja: $${serviceCashCut.total}`, 10, 220)
         : pdf.text("Final Total en Caja: $0", 10, 220);
 
       if (
@@ -236,37 +260,37 @@ function CorteCaja() {
         pdf.addPage();
         pdf.text(`Detalles de Suministros:`, 10, 10);
         pdf.text(
-          `Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`,
+          `Total Pedidos Pagados: ${suppliesCashCut.ordersPayedSupply}`,
           10,
           30
         );
-        pdf.text(`Total Jabon $${corteSupply.totalJabon}`, 10, 40);
-        pdf.text(`Total Suavitel $${corteSupply.totalSuavitel}`, 10, 50);
-        pdf.text(`Total Pinol $${corteSupply.totalPinol}`, 10, 60);
+        pdf.text(`Total Jabon $${suppliesCashCut.totalJabon}`, 10, 40);
+        pdf.text(`Total Suavitel $${suppliesCashCut.totalSuavitel}`, 10, 50);
+        pdf.text(`Total Pinol $${suppliesCashCut.totalPinol}`, 10, 60);
         pdf.text(
-          `Total Desengrasante $${corteSupply.totalDesengrasante}`,
+          `Total Desengrasante $${suppliesCashCut.totalDesengrasante}`,
           10,
           70
         );
-        pdf.text(`Total Cloro $${corteSupply.totalCloro}`, 10, 80);
-        pdf.text(`Total Sanitizante $${corteSupply.totalSanitizante}`, 10, 90);
-        pdf.text(`Total Bolsa $${corteSupply.totalBolsa}`, 10, 100);
-        pdf.text(`Total Reforzado $${corteSupply.totalReforzado}`, 10, 110);
-        pdf.text(`Total Ganchos $${corteSupply.totalGanchos}`, 10, 120);
-        pdf.text(`Total WC $${corteSupply.totalWC}`, 10, 130);
-        pdf.text(`Total Otros $${corteSupply.totalOtros}`, 10, 140);
-        pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
-        pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
-        pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
+        pdf.text(`Total Cloro $${suppliesCashCut.totalCloro}`, 10, 80);
+        pdf.text(`Total Sanitizante $${suppliesCashCut.totalSanitizante}`, 10, 90);
+        pdf.text(`Total Bolsa $${suppliesCashCut.totalBolsa}`, 10, 100);
+        pdf.text(`Total Reforzado $${suppliesCashCut.totalReforzado}`, 10, 110);
+        pdf.text(`Total Ganchos $${suppliesCashCut.totalGanchos}`, 10, 120);
+        pdf.text(`Total WC $${suppliesCashCut.totalWC}`, 10, 130);
+        pdf.text(`Total Otros $${suppliesCashCut.totalOtros}`, 10, 140);
+        pdf.text(`Total Tarjeta $${suppliesCashCut.totalCreditSupply}`, 10, 160);
+        pdf.text(`Total Efectivo $${suppliesCashCut.totalCashSupply}`, 10, 170);
+        pdf.text(`Total Ingresos $${suppliesCashCut.totalIncomeSupply}`, 10, 180);
       }
 
       // pdf.save(`corte_de_caja_Turno_${cookies.username}.pdf`);
 
-      await api.post("/generateCashCutTicket", {
-        cashCut: cashCut,
-        services: services,
-        products: products,
-      });
+      const nuevoCorte = {
+        suppliesCashCut: suppliesCashCut,
+        serviceCashCut: serviceCashCut,
+        workshiftBalance: workshiftBalance
+      }
 
       setLastCashCut(nuevoCorte);
       setCortes([nuevoCorte]);
@@ -279,12 +303,23 @@ function CorteCaja() {
 
       setDialogVisible(false);
 
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made a cash cut`
+      });
+
       const out = pdf.output("datauristring");
       await api.post("/sendCashCut", {
         date: moment().format("DD-MM-YYYY"),
         hour: moment().format("LT"),
         pdf: out.split("base64,")[1],
       });
+
+      await api.post("/generateCashCutTicket", {
+        cashCut: workshiftBalance,
+        services: serviceCashCut,
+        products: suppliesCashCut,
+      });
+
     } catch (err) {
       console.log(err);
     }
@@ -329,187 +364,82 @@ function CorteCaja() {
 
       setWorkShift(moment().hours() < 12 ? "morning" : "evening");
 
-      const response = await api.get(`/calculateCashCut/${cashCutId}`);
-      const supplyResponse = await api.get(
-        `/calculateSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
-      );
+      const response = await api.get(`/calculateParcialCashCut/${cashCutId}`);
 
-      const corteSupply = supplyResponse.data;
-      const corte = response.data;
-
-      const nuevoCorte = {
-        ...corte,
-        id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
-        id_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        ...corteSupply,
-      };
-
-      // const pdf = new jsPDF();
-      // pdf.text(`CORTE DE CAJA PARCIAL  `, 10, 10);
-      // pdf.text(`ID: ${nuevoCorte.id_cashCut}`, 10, 20);
-      // pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      // pdf.text(
-      //   `Turno: ${
-      //     nuevoCorte.workShift === "morning"
-      //       ? "Matutino"
-      //       : nuevoCorte.workShift === "evening"
-      //       ? "Vespertino"
-      //       : "Nocturno"
-      //   }`,
-      //   10,
-      //   40
-      // );
-
-      // nuevoCorte.initialCash
-      //   ? pdf.text(`Dinero en Fondo: $${nuevoCorte.initialCash}`, 10, 60)
-      //   : pdf.text("Dinero en Fondo: $0", 10, 60);
-      //   nuevoCorte.ordersPayed
-      //   ? pdf.text(`Total Servicios Pagados: ${nuevoCorte.ordersPayed}`, 10, 70)
-      //   :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
-
-      // // Separación
-      // pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
-      // nuevoCorte.totalAutoservicio
-      //   ? pdf.text(`Autoservicio: $${nuevoCorte.totalAutoservicio}`, 10, 100)
-      //   : pdf.text("Autoservicio: $0", 10, 100);
-      // nuevoCorte.totalEncargo
-      //   ? pdf.text(`Lavado por Encargo: $${nuevoCorte.totalEncargo}`, 10, 110)
-      //   : pdf.text("Lavado por Encargo: $0", 10, 110);
-      // nuevoCorte.totalPlanchado
-      //   ? pdf.text(`Planchado: $${nuevoCorte.totalPlanchado}`, 10, 120)
-      //   : pdf.text("Planchado: $0", 10, 120);
-
-      // nuevoCorte.totalTintoreria
-      //   ? pdf.text(`Tintorería: $${nuevoCorte.totalTintoreria}`, 10, 130)
-      //   : pdf.text("Tintorería: $0", 10, 130);
-
-      // nuevoCorte.totalOtrosEncargo
-      //   ? pdf.text(`Encargo Varios: $${nuevoCorte.totalOtrosEncargo}`, 10, 140)
-      //   : pdf.text("Encargo Varios: $0", 10, 140);
-
-      // nuevoCorte.totalIncome
-      //   ? pdf.text(
-      //       `Total (Suma de los Servicios): $${nuevoCorte.totalIncome}`,
-      //       10,
-      //       150
-      //     )
-      //   : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
-      // // Separación
-      // nuevoCorte.totalCash
-      //   ? pdf.text(`Ingreso en Efectivo: $${nuevoCorte.totalCash}`, 10, 170)
-      //   : pdf.text("Ingreso en Efectivo: $0", 10, 170);
-      // nuevoCorte.totalCredit
-      //   ? pdf.text(`Ingreso en Tarjeta: $${nuevoCorte.totalCredit}`, 10, 180)
-      //   : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
-      // nuevoCorte.totalCashWithdrawal
-      //   ? pdf.text(
-      //       `Retiros Totales: $${nuevoCorte.totalCashWithdrawal}`,
-      //       10,
-      //       190
-      //     )
-      //   : pdf.text("Retiros Totales: $0", 10, 190);
-      // nuevoCorte.total
-      //   ? pdf.text(`Final Total en Caja: $${nuevoCorte.total}`, 10, 200)
-      //   : pdf.text("Final Total en Caja: $0", 10, 200);
-
-      // if (
-      //   pdf.internal.getNumberOfPages() > 0 &&
-      //   pdf.internal.getCurrentPageInfo().pageNumber === 1
-      // ) {
-      //   // Si estamos en la página 1 y cerca del final, agregamos una nueva página
-      //   pdf.addPage();
-      //   pdf.text(`Detalles de Suministros:`, 10, 10);
-      //   pdf.text(`Total Pedidos Pagados: ${corteSupply.ordersPayedSupply}`, 10, 30);
-      //   pdf.text(`Total Jabon $${corteSupply.totalJabon}`, 10, 40);
-      //   pdf.text(`Total Suavitel $${corteSupply.totalSuavitel}`, 10, 50);
-      //   pdf.text(`Total Pinol $${corteSupply.totalPinol}`, 10, 60);
-      //   pdf.text(
-      //     `Total Desengrasante $${corteSupply.totalDesengrasante}`,
-      //     10,
-      //     70
-      //   );
-      //   pdf.text(`Total Cloro $${nuevoCorte.totalCloro}`, 10, 80);
-      //   pdf.text(`Total Sanitizante $${corteSupply.totalSanitizante}`, 10, 90);
-      //   pdf.text(`Total Bolsa $${corteSupply.totalBolsa}`, 10, 100);
-      //   pdf.text(`Total Reforzado $${corteSupply.totalReforzado}`, 10, 110);
-      //   pdf.text(`Total Ganchos $${corteSupply.totalGanchos}`, 10, 120);
-      //   pdf.text(`Total WC $${corteSupply.totalWC}`, 10, 130);
-      //   pdf.text(`Total Otros $${corteSupply.totalOtros}`, 10, 140);
-      //   pdf.text(`Total Tarjeta $${corteSupply.totalCreditSupply}`, 10, 160);
-      //   pdf.text(`Total Efectivo $${corteSupply.totalCashSupply}`, 10, 170);
-      //   pdf.text(`Total Ingresos $${corteSupply.totalIncomeSupply}`, 10, 180);
-
-      // }
-
-      // pdf.save(`corte_de_caja_Parcial_${cookies.username}.pdf`);
-
-      setCortes([nuevoCorte]);
-      setPartialCorteDialogVisible(false);
-
-      // const partialCashCut = {
-      //   cashCutId: nuevoCorte.id_cashCut,
-      //   casher: cookies.username,
-      //   workShift: nuevoCorte.workShift,
-      //   date: moment().format("DD/MM/YYYY"),
-      //   initialCash: initialCash ? initialCash : 0,
-      //   selfService: nuevoCorte.totalAutoservicio,
-      //   laundry: nuevoCorte.totalEncargo,
-      //   iron: nuevoCorte.totalPlanchado,
-      //   dryCleaning: nuevoCorte.totalTintoreria,
-      //   others: nuevoCorte.totalOtrosEncargo,
-      //   totalIncome: nuevoCorte.totalIncome,
-      //   totalCash: nuevoCorte.totalCash,
-      //   totalCredit: nuevoCorte.totalCredit,
-      //   totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-      //   total: nuevoCorte.total,
+      //   ...corte,
+      //   id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
+      //   id_cashCut: parseInt(localStorage.getItem("cashCutId")),
+      //   ...corteSupply,
       // };
 
-      const cashCut = {
+      // setCortes([nuevoCorte]);
+      setPartialCorteDialogVisible(false);
+
+      const servicesRes = response.data.serviceCashCut;
+      const suppliesRes = response.data.suppliesCashCut;
+      const generalRes = response.data.workshiftBalance;
+
+      const workshiftBalance = {
+        id_cashCut: cashCutId,
+        id_supplyCashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
         casher: cookies.username,
-        cashCutId: nuevoCorte.id_cashCut,
-        workShift: nuevoCorte.workShift,
-        initialCash: nuevoCorte.initialCash,
-        totalCashWithdrawal: nuevoCorte.totalCashWithdrawal,
-        total: nuevoCorte.total,
-        cashCutD: nuevoCorte.cashCutD,
-        cashCutT: nuevoCorte.cashCutT,
+        cashCutId: generalRes.id_cashCut,
+        workShift: workShift,
+        initialCash: generalRes.initialCash,
+        totalIncome: generalRes.totalIncome,
+        cashCutD: response.data.cashCutD,
+        cashCutT: response.data.cashCutT,
+        totalCancelations: generalRes.cancellations,
+        totalwithdrawal: generalRes.withdrawal,
+        creditIncome: generalRes.creditIncome,
+        cashIncome: generalRes.cashIncome,
+        totalCashBalance: generalRes.totalCashBalance,
       };
 
-      const services = {
-        numberOfItems: nuevoCorte.ordersPayed,
-        selfService: nuevoCorte.totalAutoservicio,
-        laundry: nuevoCorte.totalEncargo,
-        iron: nuevoCorte.totalPlanchado,
-        dryCleaning: nuevoCorte.totalTintoreria,
-        others: nuevoCorte.totalOtrosEncargo,
-        totalIncome: nuevoCorte.totalIncome,
-        totalCash: nuevoCorte.totalCash,
-        totalCredit: nuevoCorte.totalCredit,
+      const serviceCashCut = {
+        numberOfItems: servicesRes.ordersPayed,
+        selfService: servicesRes.totalAutoservicio,
+        laundry: servicesRes.totalEncargo,
+        iron: servicesRes.totalPlanchado,
+        dryCleaning: servicesRes.totalTintoreria,
+        others: servicesRes.totalOtrosEncargo,
+        totalIncome: servicesRes.totalServiceIncome,
+        totalCash: servicesRes.totalServiceCash,
+        totalCredit: servicesRes.totalServiceCredit,
+        canceledOrders: servicesRes.ordersCancelled,
+        totalCancelations: servicesRes.totalCancelations,
+        totalCashWithdrawal: servicesRes.totalCashWithdrawal,
+        ironPiecesDone: servicesRes.ironPiecesDone,
       };
 
-      const products = {
-        numberOfItems: corteSupply.ordersPayedSupply,
-        soap: corteSupply.totalJabon,
-        suavitel: corteSupply.totalSuavitel,
-        pinol: corteSupply.totalPinol,
-        degreaser: corteSupply.totalDesengrasante,
-        chlorine: corteSupply.totalCloro,
-        sanitizer: corteSupply.totalSanitizante,
-        bag: corteSupply.totalBolsa,
-        reinforced: corteSupply.totalReforzado,
-        hook: corteSupply.totalGanchos,
-        wc: corteSupply.totalWC,
-        others: corteSupply.totalOtros,
-        totalIncome: corteSupply.totalIncomeSupply,
-        totalCash: corteSupply.totalCashSupply,
-        totalCredit: corteSupply.totalCreditSupply,
+      const suppliesCashCut = {
+        numberOfItems: suppliesRes.ordersPayedSupply,
+        soap: suppliesRes.totalJabon,
+        suavitel: suppliesRes.totalSuavitel,
+        pinol: suppliesRes.totalPinol,
+        degreaser: suppliesRes.totalDesengrasante,
+        chlorine: suppliesRes.totalCloro,
+        sanitizer: suppliesRes.totalSanitizante,
+        bag: suppliesRes.totalBolsa,
+        reinforced: suppliesRes.totalReforzado,
+        hook: suppliesRes.totalGanchos,
+        wc: suppliesRes.totalWC,
+        others: suppliesRes.totalOtros,
+        totalIncome: suppliesRes.totalSuppliesIncome,
+        totalCash: suppliesRes.totalSuppliesCash,
+        totalCredit: suppliesRes.totalSuppliesCredit,
       };
+
+      await api.post('/log/write', {
+        logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made an partial cash cut`
+      });
 
       await api.post("/generatePartialCashCutTicket", {
-        cashCut: cashCut,
-        services: services,
-        products: products,
+        cashCut: workshiftBalance,
+        services: serviceCashCut,
+        products: suppliesCashCut,
       });
+
     } catch (err) {
       console.error(err);
     }
@@ -517,163 +447,81 @@ function CorteCaja() {
 
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
-    if (selectedCorte) {
-      // pdf.text(`Detalles del Corte`, 10, 10);
-      // pdf.text(`ID: ${selectedCorte.id_cashCut}`, 10, 20);
-      // pdf.text(`Usuario: ${cookies.username}`, 10, 30);
-      // pdf.text(
-      //   `Turno: ${
-      //     selectedCorte.workShift === "morning"
-      //       ? "Matutino"
-      //       : selectedCorte.workShift === "evening"
-      //       ? "Vespertino"
-      //       : "Nocturno"
-      //   }`,
-      //   10,
-      //   40
-      // );
+    try {
+      if (selectedCorte) {
+        console.log(selectedCorte);
+        const cashCut = {
+          casher: cookies.username,
+          cashCutId: selectedCorte.workshiftBalance.cashCutId,
+          workShift: selectedCorte.workshiftBalance.workShift,
+          initialCash: selectedCorte.workshiftBalance.initialCash,
+          totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+          totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
+          total: selectedCorte.workshiftBalance.total,
+          cashCutD: selectedCorte.workshiftBalance.cashCutD,
+          cashCutT: selectedCorte.workshiftBalance.cashCutT,
+          creditIncome: selectedCorte.workshiftBalance.creditIncome,
+          cashIncome: selectedCorte.workshiftBalance.cashIncome
+        };
 
-      // selectedCorte.initialCash
-      //   ? pdf.text(`Dinero en Fondo: $${selectedCorte.initialCash}`, 10, 60)
-      //   : pdf.text("Dinero en Fondo: $0", 10, 60);
-      //   selectedCorte.ordersPayed
-      //   ? pdf.text(`Total Servicios Pagados: ${selectedCorte.ordersPayed}`, 10, 70)
-      //   :  pdf.text(`Total Servicios Pagados: 0`, 10, 70);
+        const services = {
+          numberOfItems: selectedCorte.serviceCashCut.numberOfItems,
+          selfService: selectedCorte.serviceCashCut.selfService,
+          laundry: selectedCorte.serviceCashCut.laundry,
+          iron: selectedCorte.serviceCashCut.iron,
+          dryCleaning: selectedCorte.serviceCashCut.dryCleaning,
+          others: selectedCorte.serviceCashCut.others,
+          totalIncome: selectedCorte.serviceCashCut.totalIncome,
+          totalCash: selectedCorte.serviceCashCut.totalCash,
+          totalCredit: selectedCorte.serviceCashCut.totalCredit,
+          totalCashWithdrawal: selectedCorte.serviceCashCut.totalCashWithdrawal,
+          totalCancelations: selectedCorte.serviceCashCut.totalCancelations,
+          canceledOrders: selectedCorte.serviceCashCut.canceledOrders,
+          ironPiecesDone: selectedCorte.serviceCashCut.ironPiecesDone,
+        };
 
-      // // Separación
-      // pdf.text(`Detalles de Ingresos por Servicio:`, 10, 90);
-      // selectedCorte.totalAutoservicio
-      //   ? pdf.text(`Autoservicio: $${selectedCorte.totalAutoservicio}`, 10, 100)
-      //   : pdf.text("Autoservicio: $0", 10, 100);
-      //   selectedCorte.totalEncargo
-      //   ? pdf.text(`Lavado por Encargo: $${selectedCorte.totalEncargo}`, 10, 110)
-      //   : pdf.text("Lavado por Encargo: $0", 10, 110);
-      //   selectedCorte.totalPlanchado
-      //   ? pdf.text(`Planchado: $${selectedCorte.totalPlanchado}`, 10, 120)
-      //   : pdf.text("Planchado: $0", 10, 120);
+        const products = {
+          numberOfItems: selectedCorte.suppliesCashCut.numberOfItems,
+          soap: selectedCorte.suppliesCashCut.soap,
+          suavitel: selectedCorte.suppliesCashCut.suavitel,
+          pinol: selectedCorte.suppliesCashCut.pinol,
+          degreaser: selectedCorte.suppliesCashCut.degreaser,
+          chlorine: selectedCorte.suppliesCashCut.chlorine,
+          sanitizer: selectedCorte.suppliesCashCut.sanitizer,
+          bag: selectedCorte.suppliesCashCut.bag,
+          reinforced: selectedCorte.suppliesCashCut.reinforced,
+          hook: selectedCorte.suppliesCashCut.hook,
+          wc: selectedCorte.suppliesCashCut.wc,
+          others: selectedCorte.suppliesCashCut.others,
+          totalIncome: selectedCorte.suppliesCashCut.totalIncome,
+          totalCash: selectedCorte.suppliesCashCut.totalCash,
+          totalCredit: selectedCorte.suppliesCashCut.totalCredit,
+        };
 
-      //   selectedCorte.totalTintoreria
-      //   ? pdf.text(`Tintorería: $${selectedCorte.totalTintoreria}`, 10, 130)
-      //   : pdf.text("Tintorería: $0", 10, 130);
-
-      //   selectedCorte.totalOtrosEncargo
-      //   ? pdf.text(`Encargo Varios: $${selectedCorte.totalOtrosEncargo}`, 10, 140)
-      //   : pdf.text("Encargo Varios: $0", 10, 140);
-
-      //   selectedCorte.totalIncome
-      //   ? pdf.text(
-      //       `Total (Suma de los Servicios): $${selectedCorte.totalIncome}`,
-      //       10,
-      //       150
-      //     )
-      //   : pdf.text("Total (Suma de los Servicios): $0", 10, 150);
-      // // Separación
-      // selectedCorte.totalCash
-      //   ? pdf.text(`Ingreso en Efectivo: $${selectedCorte.totalCash}`, 10, 170)
-      //   : pdf.text("Ingreso en Efectivo: $0", 10, 170);
-      //   selectedCorte.totalCredit
-      //   ? pdf.text(`Ingreso en Tarjeta: $${selectedCorte.totalCredit}`, 10, 180)
-      //   : pdf.text("Ingreso en Tarjeta: $0", 10, 180);
-      //   selectedCorte.totalCashWithdrawal
-      //   ? pdf.text(
-      //       `Retiros Totales: $${selectedCorte.totalCashWithdrawal}`,
-      //       10,
-      //       190
-      //     )
-      //   : pdf.text("Retiros Totales: $0", 10, 190);
-      //   selectedCorte.total
-      //   ? pdf.text(`Final Total en Caja: $${selectedCorte.total}`, 10, 200)
-      //   : pdf.text("Final Total en Caja: $0", 10, 200);
-
-      // if (
-      //   pdf.internal.getNumberOfPages() > 0 &&
-      //   pdf.internal.getCurrentPageInfo().pageNumber === 1
-      // ) {
-      //   // Si estamos en la página 1 y cerca del final, agregamos una nueva página
-      //   pdf.addPage();
-      //   pdf.text(`Detalles de Suministros:`, 10, 10);
-      //   pdf.text(`Total Pedidos Pagados: ${selectedCorte.ordersPayedSupply}`, 10, 30);
-      //   pdf.text(`Total Jabon $${selectedCorte.totalJabon}`, 10, 40);
-      //   pdf.text(`Total Suavitel $${selectedCorte.totalSuavitel}`, 10, 50);
-      //   pdf.text(`Total Pinol $${selectedCorte.totalPinol}`, 10, 60);
-      //   pdf.text(
-      //     `Total Desengrasante $${selectedCorte.totalDesengrasante}`,
-      //     10,
-      //     70
-      //   );
-      //   pdf.text(`Total Cloro $${selectedCorte.totalCloro}`, 10, 80);
-      //   pdf.text(`Total Sanitizante $${selectedCorte.totalSanitizante}`, 10, 90);
-      //   pdf.text(`Total Bolsa $${selectedCorte.totalBolsa}`, 10, 100);
-      //   pdf.text(`Total Reforzado $${selectedCorte.totalReforzado}`, 10, 110);
-      //   pdf.text(`Total Ganchos $${selectedCorte.totalGanchos}`, 10, 120);
-      //   pdf.text(`Total WC $${selectedCorte.totalWC}`, 10, 130);
-      //   pdf.text(`Total Otros $${selectedCorte.totalOtros}`, 10, 140);
-      //   pdf.text(`Total Tarjeta $${selectedCorte.totalCreditSupply}`, 10, 160);
-      //   pdf.text(`Total Efectivo $${selectedCorte.totalCashSupply}`, 10, 170);
-      //   pdf.text(`Total Ingresos $${selectedCorte.totalIncomeSupply}`, 10, 180);
-
-      // }
-
-      // pdf.save("detalle_corte.pdf");
-
-      const cashCut = {
-        casher: cookies.username,
-        cashCutId: selectedCorte.id_cashCut,
-        workShift: selectedCorte.workShift,
-        initialCash: selectedCorte.initialCash,
-        totalCashWithdrawal: selectedCorte.totalCashWithdrawal,
-        total: selectedCorte.total,
-        cashCutD: selectedCorte.cashCutD,
-        cashCutT: selectedCorte.cashCutT,
-      };
-
-      const services = {
-        numberOfItems: selectedCorte.ordersPayed,
-        selfService: selectedCorte.totalAutoservicio,
-        laundry: selectedCorte.totalEncargo,
-        iron: selectedCorte.totalPlanchado,
-        dryCleaning: selectedCorte.totalTintoreria,
-        others: selectedCorte.totalOtrosEncargo,
-        totalIncome: selectedCorte.totalIncome,
-        totalCash: selectedCorte.totalCash,
-        totalCredit: selectedCorte.totalCredit,
-      };
-
-      const products = {
-        numberOfItems: selectedCorte.ordersPayedSupply,
-        soap: selectedCorte.totalJabon,
-        suavitel: selectedCorte.totalSuavitel,
-        pinol: selectedCorte.totalPinol,
-        degreaser: selectedCorte.totalDesengrasante,
-        chlorine: selectedCorte.totalCloro,
-        sanitizer: selectedCorte.totalSanitizante,
-        bag: selectedCorte.totalBolsa,
-        reinforced: selectedCorte.totalReforzado,
-        hook: selectedCorte.totalGanchos,
-        wc: selectedCorte.totalWC,
-        others: selectedCorte.totalOtros,
-        totalIncome: selectedCorte.totalIncomeSupply,
-        totalCash: selectedCorte.totalCashSupply,
-        totalCredit: selectedCorte.totalCreditSupply,
-      };
-
-      await api.post("/generateCashCutTicket", {
-        cashCut: cashCut,
-        services: services,
-        products: products,
-      });
+        await api.post("/generateCashCutTicket", {
+          cashCut: cashCut,
+          services: services,
+          products: products,
+        });
+      }
+    } catch (err) {
+      console.log(err)
+      Swal.fire('Impresora Desconectada', 'Revise la conexión a la impresora', 'error');
     }
   };
 
   const handleConfirmCortePiezas = async () => {
-    try{
+    try {
       const res = await api.get('/calculateIronCut')
-      if(res){
-        const ironCut = { ...res.data, casher: cookies.username}
-        await api.post('/generateIronCutTicket',{
+      if (res) {
+        await api.post('/log/write', {
+          logEntry: `INFO CorteCaja.jsx : ${cookies.username} has made an iron cash cut`
+        });
+        const ironCut = { ...res.data, casher: cookies.username }
+        await api.post('/generateIronCutTicket', {
           ironCut: ironCut
         })
-      }else{
+      } else {
         Swal.fire({
           icon: "error",
           title: "Ya se hizo el Corte de Planchado",
@@ -682,7 +530,7 @@ function CorteCaja() {
         });
       }
       setDialogVisiblePlancha(false);
-    }catch(err){
+    } catch (err) {
       console.error(err)
     }
   }
@@ -721,6 +569,16 @@ function CorteCaja() {
           >
             Corte de Planchado
           </button>
+
+          <p className="text-xl mt-4">
+            ¿Desea reimprimir el ultimo ticket?
+          </p>
+          <button
+            onClick={handleReprintTicket}
+            className="mt-4 mr-2 bg-IndigoDye font-bold text-white p-3 rounded-md shadow-lg hover:bg-PennBlue hover:scale-105 transition-transform transform active:scale-95 focus:outline-none text-base"
+          >
+            Reimprimir
+          </button>
         </div>
       </div>
       {mostrarTabla && (
@@ -747,7 +605,7 @@ function CorteCaja() {
                   TOTALES
                 </th>
                 <th>
-                  RETIROS <br />
+                  EGRESOS <br />
                   TOTALES
                 </th>
                 <th>
@@ -759,27 +617,28 @@ function CorteCaja() {
             </thead>
             {/* TOTAL INCOME = (totalCash + totalCredit) - totalCashWithdrawal*/}
             <tbody>
+              {console.log(Cortes)}
               {Cortes.map((corte) => (
-                <tr className="bg-white border-b" key={corte.id_cashCut}>
-                  <td className="py-3 px-1 text-center">{corte.id_cashCut}</td>
-                  <td className="py-3 px-6">{formatDate(corte.cashCutD)}</td>
+                <tr className="bg-white border-b" key={corte.workshiftBalance.id_cashCut}>
+                  <td className="py-3 px-1 text-center  font-bold">{corte.workshiftBalance.id_cashCut}</td>
+                  <td className="py-3 px-6">{formatDate(corte.workshiftBalance.cashCutD)}</td>
                   <td className="py-3 px-6">
-                    ${corte.initialCash ? corte.initialCash : 0}
+                    ${corte.workshiftBalance.initialCash ? corte.workshiftBalance.initialCash : 0}
                   </td>
                   <td className="py-3 px-6">
-                    ${corte.totalCash ? corte.totalCash : 0}
+                    ${corte.workshiftBalance.cashIncome ? corte.workshiftBalance.cashIncome : 0}
                   </td>
                   <td className="py-3 px-6">
-                    ${corte.totalCredit ? corte.totalCredit : 0}
+                    ${corte.workshiftBalance.creditIncome ? corte.workshiftBalance.creditIncome : 0}
                   </td>
-                  <td className="py-3 px-6">
-                    ${corte.totalIncome ? corte.totalIncome : 0}
+                  <td className="py-3 px-6 text-green-600">
+                    {corte.workshiftBalance.creditIncome || corte.workshiftBalance.cashIncome ? "+$" + (corte.workshiftBalance.cashIncome + corte.workshiftBalance.creditIncome) : 0}
                   </td>
-                  <td className="py-3 px-6">
-                    ${corte.totalCashWithdrawal ? corte.totalCashWithdrawal : 0}
+                  <td className="py-3 px-6 text-red-500">
+                    {corte.workshiftBalance.totalCancelations || corte.workshiftBalance.totalwithdrawal ? "-$" + (corte.workshiftBalance.totalCancelations + corte.workshiftBalance.totalwithdrawal) : "$0"}
                   </td>
-                  <td className="py-3 px-6">
-                    ${corte.total ? corte.total : 0}
+                  <td className="py-3 px-6 text-blue-500">
+                    ${corte.workshiftBalance.total ? corte.workshiftBalance.total : 0}
                   </td>
                   <td className="py-3 px-6">
                     <button
@@ -800,12 +659,14 @@ function CorteCaja() {
         open={dialogVisible}
         onOk={handleConfirmCorteCaja}
         onCancel={() => setDialogVisible(false)}
+        maskClosable={!blockButton}
         width={400}
         footer={[
           <Button
             key="confirmar"
             onClick={handleConfirmCorteCaja}
             className="btn-print text-white"
+            disabled={blockButton}
           >
             Confirmar
           </Button>,
@@ -813,6 +674,7 @@ function CorteCaja() {
             key="cancelar"
             onClick={() => setDialogVisible(false)}
             className="btn-cancel-modal text-white"
+            disabled={blockButton}
           >
             Cancelar
           </Button>,
@@ -893,24 +755,25 @@ function CorteCaja() {
           </Button>,
         ]}
       >
+        {console.log(selectedCorte)}
         {selectedCorte && (
           <div className="flex">
             {/* Primera Columna */}
             <div className="w-1/2">
               <p className="text-lg">
                 <span className="font-bold">ID:</span>{" "}
-                {selectedCorte.id_cashCut}
+                {selectedCorte.workshiftBalance.id_cashCut}
               </p>
-              <p className="text-lg text-white">
+              <p className="text-lg">
                 <span className="font-bold">Usuario:</span> {cookies.username}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Turno:</span>{" "}
-                {selectedCorte.workShift === "morning"
+                {selectedCorte.workshiftBalance.workShift === "morning"
                   ? "Matutino"
-                  : selectedCorte.workShift === "evening"
-                  ? "Vespertino"
-                  : ""}
+                  : selectedCorte.workshiftBalance.workShift === "evening"
+                    ? "Vespertino"
+                    : ""}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Fecha:</span>{" "}
@@ -929,160 +792,147 @@ function CorteCaja() {
               </p>
               <p className="text-lg">
                 <span className="font-bold">Autoservicio:</span> $
-                {selectedCorte.totalAutoservicio
-                  ? selectedCorte.totalAutoservicio
+                {selectedCorte.serviceCashCut.selfService
+                  ? selectedCorte.serviceCashCut.selfService
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Lavado por Encargo:</span> $
-                {selectedCorte.totalEncargo ? selectedCorte.totalEncargo : 0}
+                {selectedCorte.serviceCashCut.laundry ? selectedCorte.serviceCashCut.laundry : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Planchado:</span> $
-                {selectedCorte.totalPlanchado
-                  ? selectedCorte.totalPlanchado
+                {selectedCorte.serviceCashCut.iron
+                  ? selectedCorte.serviceCashCut.iron
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Tintorería:</span> $
-                {selectedCorte.totalTintoreria
-                  ? selectedCorte.totalTintoreria
+                {selectedCorte.serviceCashCut.dryCleaning
+                  ? selectedCorte.serviceCashCut.dryCleaning
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Encargo Varios:</span> $
-                {selectedCorte.totalOtrosEncargo
-                  ? selectedCorte.totalOtrosEncargo
+                {selectedCorte.serviceCashCut.others
+                  ? selectedCorte.serviceCashCut.others
                   : 0}
               </p>
-              <p className="text-lg">
+              <p className="text-2xl">
                 <span className="font-bold">
                   Total (Suma de los Servicios):
                 </span>{" "}
-                ${selectedCorte.totalIncome ? selectedCorte.totalIncome : 0}
-              </p>
-              <br />
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingresos totales de servicios:
-                </span>
+                ${selectedCorte.serviceCashCut.totalIncome ? selectedCorte.serviceCashCut.totalIncome : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Servicios Pagados: </span>
-                {selectedCorte.ordersPayed}
+                {selectedCorte.serviceCashCut.numberOfItems}
               </p>
               <p className="text-lg">
-                <span className="font-bold">Dinero en Fondo:</span> $
-                {selectedCorte.initialCash ? selectedCorte.initialCash : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Ingreso en Efectivo:</span> $
-                {selectedCorte.totalCash ? selectedCorte.totalCash : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Ingreso en Tarjeta:</span> $
-                {selectedCorte.totalCredit ? selectedCorte.totalCredit : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Retiros Totales:</span> $
-                {selectedCorte.totalCashWithdrawal
-                  ? selectedCorte.totalCashWithdrawal
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">Final Total en Caja:</span> $
-                {selectedCorte.total ? selectedCorte.total : 0}
+                <span className="font-bold ">Piezas de Planchado hechas: </span>
+                {selectedCorte.serviceCashCut.ironPiecesDone
+                  ? (selectedCorte.serviceCashCut.ironPiecesDone + " Piezas")
+                  : "0 Piezas"}
               </p>
             </div>
-            {/* Tercera Columna */}
+            {/* Segunda Columna */}
             <div className="w-1/2">
               <p className="text-lg">
                 <span className="font-bold">Ingreso de Productos:</span>
               </p>
               <p className="text-lg">
                 <span className="font-bold">Jabón:</span> $
-                {selectedCorte.totalJabon ? selectedCorte.totalJabon : 0}
+                {selectedCorte.suppliesCashCut.soap ? selectedCorte.suppliesCashCut.soap : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Suavitel:</span> $
-                {selectedCorte.totalSuavitel ? selectedCorte.totalSuavitel : 0}
+                {selectedCorte.suppliesCashCut.suavitel ? selectedCorte.suppliesCashCut.suavitel : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Pinol:</span> $
-                {selectedCorte.totalPinol ? selectedCorte.totalPinol : 0}
+                {selectedCorte.suppliesCashCut.pinol ? selectedCorte.suppliesCashCut.pinol : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Desengrasante:</span> $
-                {selectedCorte.totalDesengrasante
-                  ? selectedCorte.totalDesengrasante
+                {selectedCorte.suppliesCashCut.degreaser
+                  ? selectedCorte.suppliesCashCut.degreaser
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Cloro:</span> $
-                {selectedCorte.totalCloro ? selectedCorte.totalCloro : 0}
+                {selectedCorte.suppliesCashCut.chlorine ? selectedCorte.suppliesCashCut.chlorine : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Sanitizante:</span> $
-                {selectedCorte.totalSanitizante
-                  ? selectedCorte.totalSanitizante
+                {selectedCorte.suppliesCashCut.sanitizer
+                  ? selectedCorte.suppliesCashCut.sanitizer
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Bolsa:</span> $
-                {selectedCorte.totalBolsa ? selectedCorte.totalBolsa : 0}
+                {selectedCorte.suppliesCashCut.bag ? selectedCorte.suppliesCashCut.bag : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Reforzado:</span> $
-                {selectedCorte.totalReforzado
-                  ? selectedCorte.totalReforzado
+                {selectedCorte.suppliesCashCut.reinforced
+                  ? selectedCorte.suppliesCashCut.reinforced
                   : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Ganchos:</span> $
-                {selectedCorte.totalGanchos ? selectedCorte.totalGanchos : 0}
+                {selectedCorte.suppliesCashCut.hook ? selectedCorte.suppliesCashCut.hook : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">WC:</span> $
-                {selectedCorte.totalWC ? selectedCorte.totalWC : 0}
+                {selectedCorte.suppliesCashCut.wc ? selectedCorte.suppliesCashCut.wc : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Otros:</span> $
-                {selectedCorte.totalOtros ? selectedCorte.totalOtros : 0}
-              </p>
-              <br />
-
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingresos totales de productos:
-                </span>
+                {selectedCorte.suppliesCashCut.others ? selectedCorte.suppliesCashCut.others : 0}
               </p>
               <p className="text-lg">
                 <span className="font-bold">Ordenes Pagadas: </span>
-                {selectedCorte.ordersPayedSupply}
+                {selectedCorte.suppliesCashCut.numberOfItems}
               </p>
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingreso de productos con Efectivo:
-                </span>{" "}
-                $
-                {selectedCorte.totalCashSupply
-                  ? selectedCorte.totalCashSupply
-                  : 0}
-              </p>
-              <p className="text-lg">
-                <span className="font-bold">
-                  Ingreso de productos con Tarjeta:
-                </span>{" "}
-                $
-                {selectedCorte.totalCreditSupply
-                  ? selectedCorte.totalCreditSupply
-                  : 0}
-              </p>
-              <p className="text-lg">
+              <p className="text-2xl">
                 <span className="font-bold">Ingreso total de productos:</span> $
-                {selectedCorte.totalIncomeSupply
-                  ? selectedCorte.totalIncomeSupply
+                {selectedCorte.suppliesCashCut.totalIncome
+                  ? selectedCorte.suppliesCashCut.totalIncome
                   : 0}
+              </p>
+
+              <p className="text-2xl font-bold text-blue-700"> ▋▋▋ DETALLES GENERALES  ▋▋▋</p>
+              <p className="text-lg">
+                <span className="font-bold">Dinero en Fondo:</span> $
+                {selectedCorte.workshiftBalance.initialCash ? selectedCorte.workshiftBalance.initialCash : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ingresos de Efectivo:</span> $
+                {selectedCorte.workshiftBalance.cashIncome
+                  ? (selectedCorte.workshiftBalance.cashIncome)
+                  : 0}
+              </p>
+              <p className="text-lg">
+                <span className="font-bold">Ingresos de Tarjeta:</span> $
+                {selectedCorte.workshiftBalance.creditIncome
+                  ? (selectedCorte.workshiftBalance.creditIncome)
+                  : 0}
+              </p>
+              <p className="text-lg text-red-600">
+                <span className="font-bold">Retiros Totales:</span> $
+                {selectedCorte.serviceCashCut.totalCashWithdrawal
+                  ? ("-" + selectedCorte.serviceCashCut.totalCashWithdrawal)
+                  : 0}
+              </p>
+              <p className="text-lg text-red-600">
+                <span className="font-bold ">Reembolsos Totales:</span> $
+                {selectedCorte.serviceCashCut.totalCancelations
+                  ? ("-" + selectedCorte.serviceCashCut.totalCancelations)
+                  : 0}
+              </p>
+              <p className="text-2xl ">
+                <span className="font-bold">Final Total en Caja:</span> $
+                {selectedCorte.workshiftBalance.total ? selectedCorte.workshiftBalance.total : 0}
               </p>
             </div>
           </div>

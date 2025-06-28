@@ -4,6 +4,7 @@ import useSWR, { useSWRConfig } from "swr";
 import ReactPaginate from "react-paginate";
 import { BsFillTrashFill } from "react-icons/bs"
 import { AiFillEdit } from "react-icons/ai"
+import Swal from "sweetalert2";
 import api from '../../api/api'
 
 // Dialogs
@@ -64,13 +65,19 @@ function Equipos() {
     setFiltroTipo(event.target.value);
   };
 
+  const isFree = (machine) => {    
+    machine.freeForUse ? 
+    navigate(`/editEquipo/${machine.id_machine}`) :
+    Swal.fire("No se puede modificar el equipo mientras este en uso", "", "warning")
+  }
+
   return (
     <div>
       <div className="title-container">
         <strong className="title-strong">Equipos</strong>
       </div>
       <div className="w-full pt-4">
-         <div className="flex justify-between items-center w-full pt-4">
+        <div className="flex justify-between items-center w-full pt-4">
           <button className="btn-primary" onClick={() => navigate("/addEquipo")}>
             Añadir Nueva Maquina
           </button>
@@ -84,7 +91,7 @@ function Equipos() {
             </option>
             <option
               value="lavadora"
-              className="text-dodgerBlue font-semibold text-base"
+              className="text-blue-600 font-semibold text-base"
             >
               Lavadoras
             </option>
@@ -122,10 +129,16 @@ function Equipos() {
                 )
                 .map((machine, index) => (
                   <tr key={machine.id_machine}>
-                    <td>{index + 1}</td>
+                    <td className={`font-semibold ${machine.machineType === "lavadora"
+                          ? "text-blue-600"
+                          : machine.machineType === "plancha"
+                            ? "text-yellow-500"
+                            : "text-green-500"
+                        }`}>
+                          {machine.machineNumber}</td>
                     <td
                       className={`font-semibold ${machine.machineType === "lavadora"
-                          ? "text-dodgerBlue"
+                          ? "text-blue-600"
                           : machine.machineType === "plancha"
                             ? "text-yellow-500"
                             : "text-green-500"
@@ -158,7 +171,7 @@ function Equipos() {
                     <td>
                       <button
                         onClick={() =>
-                          navigate(`/editEquipo/${machine.id_machine}`)
+                          isFree(machine)
                         }
                         className="btn-edit"
                       >
@@ -166,7 +179,7 @@ function Equipos() {
                       </button>
                       <button
                         onClick={() =>
-                          handleClickOpen(machine.model, machine.id_machine)
+                          machine.freeForUse ? handleClickOpen(machine.model, machine.id_machine) :  Swal.fire("No se puede eliminar el equipo mientras este en uso", "", "warning")
                         }
                         className="btn-cancel"
                       >

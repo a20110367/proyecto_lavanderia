@@ -193,6 +193,7 @@ function HistorialCajaPlanchado() {
       }
     }
   };
+              console.log(filteredCortes)
 
   return (
     <div className="text-center mt-4">
@@ -269,12 +270,10 @@ function HistorialCajaPlanchado() {
             </thead>
             <tbody>
               {filteredCortes
-                .slice()
-                .reverse()
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
-                )
+                ).reverse()
                 .map((corte) => (
                   <tr
                     className="bg-white border-b"
@@ -349,7 +348,7 @@ function HistorialCajaPlanchado() {
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha de cierre:</span>{" "}
-                  {formatDate(selectedCorte.startingDay)}
+                  {formatDate(selectedCorte.endDay)}
                 </p>
                 <br />
               </div>

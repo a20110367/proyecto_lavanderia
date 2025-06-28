@@ -5,60 +5,41 @@ import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { useAuth } from "../../hooks/auth/auth";
 import ReactPaginate from "react-paginate";
-import { formatDate } from "../../utils/format";
 import useSWR from "swr";
 import Swal from "sweetalert2";
 import api from "../../api/api";
 
 function Cancelacion() {
+
   const navigate = useNavigate();
   const [cancelaciones, setCancelaciones] = useState([]);
-  const [filteredCancelaciones, setFilteredCancelaciones] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [visible, setVisible] = useState(false);
-  const [numeroPedido, setNumeroPedido] = useState("");
-  const [monto, setMonto] = useState("");
-  const [motivo, setMotivo] = useState("");
+  const [canceledOrder, setCanceledOrder] = useState()
+  const [orderId, setOrderId] = useState(0);
+  const [cause, setCause] = useState("");
+  const [amount, setAmount] = useState(0);
   const { cookies } = useAuth();
   const [numeroPedidoError, setNumeroPedidoError] = useState("");
-  const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
-
-  const [prueba, setPrueba] = useState([]);
-
+  // const [forcePage, setForcePage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10; // Cantidad de elementos a mostrar por página
   const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    // setForcePage(selectedPage.selected);
   };
-
-
-  // const fetch = async (data) => {
-  //   const res = await data.map(
-  //     (obj) => obj.payStatus = api.get(`/orders/${obj.serviceOrder}`).then(json => setPrueba({...prueba, json}))
-
-
-  //   )
-  //   console.log(res)
-  //   return res;
-  // }
 
   const fetcher = async () => {
-    const response = await api.get("/cashWithdrawals");
-    // return await fetch(response.data);
+    const response = await api.get("/orderCancelable");
     return response.data;
   };
-  const { data } = useSWR("cashWithdrawals", fetcher);
+  const { data } = useSWR("orderCancelable", fetcher);
+  // console.log(data)
 
   useEffect(() => {
     if (data) {
-      const cancelacionesFiltrados = data.map(
-        (cancelacion) => cancelacion.cashWithdrawalType === "refound" ? {...cancelacion, payStatus: 'paid'} : cancelacion
-      );
-
-      setCancelaciones(cancelacionesFiltrados);
-      setFilteredCancelaciones(cancelacionesFiltrados);
-      console.log(cancelacionesFiltrados)
+      setCancelaciones(data);
     }
   }, [data]);
 
@@ -66,24 +47,17 @@ function Cancelacion() {
     const searchTerm = event.target.value.toLowerCase();
     const filtered = cancelaciones.filter(
       (cancelacion) => {
-        const formattedDate = moment(cancelacion.date).format("DD/MM/YYYY");
         return (
-          cancelacion.id_cashWithdrawal.toString().toLowerCase().includes(searchTerm) ||
-          cancelacion.amount.toString().toLowerCase().includes(searchTerm) ||
-          cancelacion.cause.toLowerCase().includes(searchTerm) ||
-          formattedDate.toLowerCase().includes(searchTerm)
+          cancelacion.id_order.toString().toLowerCase().includes(searchTerm) ||
+          cancelacion.cliente.name.toLowerCase().includes(searchTerm)
         );
       });
     setFiltro(event.target.value);
-    setFilteredCancelaciones(filtered);
+    setCancelaciones(filtered);
     setCurrentPage(0);
   };
 
-  const handleReembolsar = () => {
-
-  }
-
-  const handleCancelacion = () => {
+  const handleCancelacion = (cancelacion) => {
     if (!localStorage.getItem("cashCutId")) {
       Swal.fire({
         icon: "warning",
@@ -94,15 +68,15 @@ function Cancelacion() {
       navigate("/inicioCaja");
       return;
     }
+    console.log(cancelacion)
+    setOrderId(cancelacion.id_order);
+    if (cancelacion.payStatus === "paid") {
+      setAmount(cancelacion.amount)
+    } else {
+      setAmount(0)
+    }
+    setCanceledOrder(cancelacion)
     setVisible(true);
-  };
-
-  const handleMontoInput = () => {
-    setMontoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
-  };
-
-  const handleNpedidoInput = () => {
-    setNumeroPedidoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
   };
 
   const handleMotivoInput = () => {
@@ -114,23 +88,28 @@ function Cancelacion() {
       // Validación de campos obligatorios
       let isValid = true;
 
-      if (!numeroPedido) {
+      if (!orderId) {
         setNumeroPedidoError("Este campo es obligatorio");
         isValid = false;
       } else {
         setNumeroPedidoError("");
       }
 
-      if (!monto) {
-        setMontoError("Este campo es obligatorio");
-        isValid = false;
-      } else {
-        setMontoError("");
-      }
-
-      if (!motivo) {
+      if (!cause) {
         setMotivoError("Este campo es obligatorio");
+        Swal.fire({
+          icon: "error",
+          title: "Es necesario ingresar el motivo",
+          text: "No puedes cancelar sin escribir un motivo",
+          confirmButtonColor: "#034078",
+        });
         isValid = false;
+        await api.post('/sendWarning', {
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY'),
+          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
+        })
       } else {
         setMotivoError("");
       }
@@ -142,61 +121,73 @@ function Cancelacion() {
         setMotivoError("");
       }
 
+
+
       if (isValid) {
-        const date = moment().format();
-
-        const res = await api.post("/cashWithdrawals", {
-          cashWithdrawalType: "refound",
-          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          fk_user: cookies.token,
-          serviceOrder: parseInt(numeroPedido),
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-        });
-
-        await api.patch(`/cancelOrder/${numeroPedido}`);
-
-        const cashWithdrawal = {
-          cashWithdrawalType: "refound",
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          serviceOrder: parseInt(numeroPedido),
-          casher: cookies.username,
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
+        if (!canceledOrder.express) {
+          if ((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0) {
+            localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
+          } else {
+            localStorage.setItem("numberOfPieces", 0)
+          }
         }
 
-        await api.post('/generateCashWithdrawalTicket', {
-          cashWithdrawal: cashWithdrawal,
+        setVisible(false);
+        // FILTER THE DELETED ELEMENT
+        const updatedCanceled = cancelaciones.filter((item) => item.id_order != orderId)
+        // console.log(updatedCanceled)
+        setCancelaciones(updatedCanceled)
+
+        Swal.fire({
+          title: "Orden Cancelada con Exito!",
+          text: "Se elimino con exito la orden además de notificar al dueño.",
+          icon: "success"
+        });
+
+        const cancelRes = await api.patch("/cancelOrder", {
+          id_order: orderId,
+          cause: cause,
         })
 
-        const nuevaCancelacion = {
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          cashWithdrawalType: "refound",
-          serviceOrder: parseInt(numeroPedido),
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-        };
+        await api.post('/log/write', {
+          logEntry: `WARNING Cancelacion.jsx : ${cookies.username} has canceled an order of $${canceledOrder.totalPrice} with id: ${cancelRes.data.id_cancelledOrder}`
+        });
 
-        setCancelaciones([...cancelaciones, nuevaCancelacion]);
-        setFilteredCancelaciones([...cancelaciones, nuevaCancelacion]);
+        // setForcePage(0);
 
-        setVisible(false);
+        const res = await api.get(`/orders/${orderId}`);
+
+        await api.post('/generate/order/canceled', {
+          canceled: {
+            id_canceled: cancelRes.data.id_cancelledOrder,
+            type: cancelRes.data.CancellationTypes,
+            id_order: orderId,
+            cause: cause,
+            casher: cookies.username,
+            amount: canceledOrder.totalPrice,
+            order: await res.data,
+          }
+        })
+
+        await api.post('/sendWarning', {
+          canceledOrder: canceledOrder,
+          casher: cookies.username,
+          date: moment().format('DD/MM/YYYY'),
+          cause: cause
+        })
+        setCause("");
+
       }
     }
     catch (err) {
-      console.log(err)
+      console.error(err)
     }
   };
 
   const handleClose = () => {
     setVisible(false);
-    setMonto("");
-    setMotivo("");
-    setNumeroPedido("")
+    setCause("");
+    setOrderId("")
   };
 
   return (
@@ -220,51 +211,44 @@ function Cancelacion() {
           </div>
         </div>
       </div>
-      <div className="mt-3 mb-3">
-        <button onClick={handleCancelacion} className="btn-primary">
-          Registrar Reembolso / Cancelación
-        </button>
-      </div>
-      <table className="w-full text-sm text-left text-gray-500">
+      <table className="w-full text-sm text-left text-gray-500 mt-8">
         <thead className="text-xs text-gray-700 uppercase bg-gray-200">
           <tr>
-            <th>No. Cancelación</th>
-            <th>Número de Pedido</th>
-            <th>Estatus</th>
-            <th>Monto</th>
-            <th>Motivo</th>
-            <th>Fecha</th>
+            <th>No. Orden</th>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Estatus del Pago</th>
+            <th>Estatus de la Orden</th>
+            <th>Cajero</th>
             <th>Opciones</th>
           </tr>
         </thead>
         <tbody>
-          {filteredCancelaciones
-            .slice()
-            .reverse()
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
+          {cancelaciones
+            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage).reverse()
             .map((cancelacion) => (
               <tr
                 className="bg-white border-b"
-                key={cancelacion.id_cashWithdrawal}
+                key={cancelacion.id_order}
               >
                 <td className="py-3 px-1 text-center">
-                  {cancelacion.id_cashWithdrawal}
+                  {cancelacion.id_order}
                 </td>
-                <td className="py-3 px-6">{cancelacion.serviceOrder}</td>
-                <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGAO' : 'NO PAGAO'}</td>
-                <td className="py-3 px-6">{"$" + cancelacion.amount}</td>
-                <td className="py-3 px-6">{cancelacion.cause}</td>
-                <td className="py-3 px-6">{formatDate(cancelacion.date)}</td>
+                <td className="py-3 px-6">{cancelacion.client.name + ' ' + cancelacion.client.firstLN + ' ' + cancelacion.client.secondLN}</td>
+                <td className="py-3 px-6 font-bold">{"$" + cancelacion.totalPrice}</td>
+                <td className="py-3 px-6">{cancelacion.payStatus === 'paid' ? 'PAGADO' : 'NO PAGADO'}</td>
+                <td className="py-3 px-6">{cancelacion.orderStatus === "pending" ? "Pendiente" : cancelacion.orderStatus}</td>
+                <td className="py-3 px-6">{cancelacion.user.name + ' ' + cancelacion.user.firstLN + ' ' + cancelacion.user.secondLN}</td>
                 <td>
                   <button
                     onClick={() =>
-                      navigate(`/editEquipo/${machine.id_machine}`)
+                      handleCancelacion(cancelacion)
                     }
                     className={`py-3 px-6 ${cancelacion.payStatus === 'paid'
                       ? "btn-back w-11/12 p-0 m-0"
                       : "btn-payment w-11/12 p-0 m-0"
-                    }`}
-                    >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
+                      }`}
+                  >{cancelacion.payStatus === 'paid' ? 'Reembolsar' : 'Cancelar'}
                   </button></td>
               </tr>
             ))}
@@ -295,43 +279,20 @@ function Cancelacion() {
       >
         <form>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Número de Pedido:
-            </label>
-            <Input
-              type="number"
-              value={numeroPedido}
-              onChange={(e) => setNumeroPedido(e.target.value)}
-              placeholder="Ingrese el número de pedido"
-              onInput={handleNpedidoInput}
-            />
-            <p className="text-red-500">{numeroPedidoError}</p>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Monto:
-            </label>
-            <Input
-              type="number"
-              value={monto}
-              onChange={(e) => setMonto(e.target.value)}
-              placeholder="Ingrese el monto"
-              addonBefore="$"
-              onInput={handleMontoInput}
-            />
-            <p className="text-red-500">{montoError}</p>
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            <label className="block text-gray-700 text-sm font-bold mb-2 ">
               Motivo:
             </label>
             <Input
-              value={motivo}
-              onChange={(e) => setMotivo(e.target.value)}
+              value={cause}
+              onChange={(e) => setCause(e.target.value)}
               placeholder="Ingrese el motivo"
               onInput={handleMotivoInput}
             />
             <p className="text-red-500">{motivoError}</p>
+          </div>
+          <div className="text-right mr-8">
+            <p className="font-bold">Número de Orden: <span className="font-normal text-4xl">{orderId}</span></p>
+            {amount > 0 ? <p className="font-bold">Dinero a Regresar:<span className="font-normal text-2xl"> ${amount}</span></p> : ''}
           </div>
         </form>
       </Modal>
@@ -340,7 +301,7 @@ function Cancelacion() {
           previousLabel={"Anterior"}
           nextLabel={"Siguiente"}
           breakLabel={"..."}
-          pageCount={Math.ceil(filteredCancelaciones.length / itemsPerPage)}
+          pageCount={Math.ceil(cancelaciones.length / itemsPerPage)}
           marginPagesDisplayed={2}
           pageRangeDisplayed={2}
           onPageChange={handlePageChange}
@@ -350,6 +311,7 @@ function Cancelacion() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          // forcePage = {(forcePage || 0)}
         />
       </div>
     </div>

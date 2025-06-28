@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
+import { IoCard } from "react-icons/io5";
+import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
 
 function EditServiceLavanderia() {
@@ -8,6 +10,7 @@ function EditServiceLavanderia() {
 
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [priceCredit, setPriceCredit] = useState(0);
   const [washCycleTime, setWashCycleTime] = useState(0);
   const [washWeight, setWashWeight] = useState(0);
   const [dryCycleTime, setDryCycleTime] = useState(0);
@@ -21,15 +24,18 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado","tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas" ];
+  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
+  const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
 
 
   useEffect(() => {
     const getServiceById = async () => {
       try {
         const response = await api.get(`/servicesLaundry/${id}`);
+        // console.log(response.data)
         setDescription(response.data.description || "");
         setPrice(response.data.price || 0);
+        setPriceCredit(response.data.priceCredit || 0);
         setCategory("Encargo");
         setWashCycleTime(response.data.washCycleTime || 0);
         setWashWeight(response.data.washWeight || 0);
@@ -39,11 +45,11 @@ function EditServiceLavanderia() {
         console.error("Error fetching service:", error);
       }
     };
-  
+
     getServiceById();
   }, [id]);
-  
-  
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +59,7 @@ function EditServiceLavanderia() {
     );
 
     if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes editar servicios de lavandería.");
+      setErrMsg("Error, La Descripción de Encargo debe contenar alguna de estas palabras: ");
       return;
     }
 
@@ -63,18 +69,19 @@ function EditServiceLavanderia() {
     }
 
     const hasForbiddenKeyword = forbiddenKeyword.some((keyword) =>
-    description.toLowerCase().includes(keyword)
-  );
+      description.toLowerCase().includes(keyword)
+    );
 
-  if (hasForbiddenKeyword) {
-    setErrMsg("Error, no puedes añadir servicios Varios.");
-    return;
-  }
+    if (hasForbiddenKeyword) {
+      setErrMsg("Error, no puedes añadir servicios Varios.");
+      return;
+    }
 
     try {
       await api.patch(`/servicesUpdateLaundry/${id}`, {
         description: description,
         price: parseFloat(price),
+        priceCredit: parseFloat(priceCredit),
         washWeight: parseInt(washWeight),
         washCycleTime: parseInt(washCycleTime),
         category_id: 2,
@@ -107,35 +114,55 @@ function EditServiceLavanderia() {
                 Descripción:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="description"
                 autoComplete="off"
                 onChange={(e) => setDescription(e.target.value)}
                 value={description}
                 required
+                disabled
               />
 
               {errMsg && (
-                <div className="error-message flex items-center mt-2 space-x-2">
-                  <AiOutlineExclamationCircle
-                    className="text-red-500"
-                    style={{ fontSize: "1rem" }}
-                  />
-                  <p className="errmsg text-red-500">{errMsg}</p>
+                <div>
+                  <div className="err-container">
+                    <AiOutlineExclamationCircle
+                      className="err-icon"
+                      style={{ fontSize: "1rem" }}
+                    />
+                    <p className="err-msg">{errMsg}</p>
+                  </div>
+                  <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
               )}
 
-              <label className="form-lbl" htmlFor="price">
-                Precio Unitario:
-              </label>
+              <div className="flex items-center">
+              <BsCashCoin size={32} className="text-green-700 mr-4 mt-2"/>
+                <label className="form-lbl" htmlFor="price">
+                  Precio Efectivo:
+                </label>
+              </div>
               <input
                 className="form-input"
                 type="number"
                 id="price"
-
                 onChange={(e) => setPrice(e.target.value)}
                 value={price}
+                required
+              />
+              <div className="flex items-center">
+                <IoCard size={32} className="text-blue-700 mr-4"/>
+              <label className="form-lbl" htmlFor="priceCredit">
+                Precio de Tarjeta:
+              </label>
+              </div>
+              <input
+                className="form-input"
+                type="number"
+                id="priceCredit"
+                onChange={(e) => setPriceCredit(e.target.value)}
+                value={priceCredit}
                 required
               />
 
@@ -193,7 +220,7 @@ function EditServiceLavanderia() {
                 Categoría:
               </label>
               <input
-                className="form-input"
+                className="form-input bg-gray-200"
                 type="text"
                 id="category"
                 value="Encargo"

@@ -4,7 +4,7 @@ import { Modal, Checkbox } from "antd";
 import useSWR from "swr";
 import ReactPaginate from "react-paginate";
 import api from "../../api/api";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatTime } from "../../utils/format";
 import { useAuth } from "../../hooks/auth/auth";
 
 import {
@@ -30,10 +30,11 @@ function PedidosVarios() {
   const [loading, setLoading] = useState(false);
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const handlePageChange = (selectedPage) => {
+  const [forcePage, setForcePage] = useState(0);
+const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
+    setForcePage(selectedPage.selected);
   };
-
   const fetcher = async () => {
     const response = await api.get("/otherQueue");
     return response.data;
@@ -124,6 +125,7 @@ function PedidosVarios() {
         fk_idStaffMember: cookies.token,
       });
       showNotification(`Pedido iniciado`);
+      setForcePage(0);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     } finally {
@@ -173,6 +175,7 @@ function PedidosVarios() {
           warning: false,
         });
       }
+      setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
     }
@@ -258,7 +261,8 @@ function PedidosVarios() {
                   </td>
 
                   <td className="py-3 px-6">
-                    {formatDate(pedido.serviceOrder.scheduledDeliveryDate)}
+                  <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
+                  <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.serviceStatus === "pending" ? (
@@ -340,6 +344,7 @@ function PedidosVarios() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
+          forcePage = {(forcePage || 0)}
         />
       </div>
 

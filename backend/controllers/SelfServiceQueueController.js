@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-
+//Al parecer no se usa ese archivo
 ///Revisar comprotamiento y dependencias
 export const getSelfServiceWashQueue = async (req, res) =>{
     try {

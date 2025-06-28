@@ -15,6 +15,8 @@ import {
     deleteSelfServiceDryQueue
 } from "../controllers/SelfServiceQueueController.js";
 
+//Este archivo no se usa, revisar si se eliminan 
+
 const router = express.Router();
 
 router.get('/selfServiceWashQueue', getSelfServiceWashQueue);

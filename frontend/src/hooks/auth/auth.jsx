@@ -30,6 +30,11 @@ export const UserProvider = ({ children }) => {
             localStorage.setItem('lastIronControl', newIronControl.data.ironControl.id_ironControl)
             localStorage.setItem('numberOfPieces', newIronControl.data.ironControl.piecesToday)
             localStorage.setItem('maxCapacity', newIronControl.data.ironingCapacity.pieces)
+
+            await api.post('/log/write', {
+                logEntry: `INFO AUTH.JSX : ${res.data.username} has logged IN`
+            })
+
             // const now = moment()
             // const lastIronControlDate = moment(lastIronControl)
             // const diff = now.diff(lastIronControlDate, 'days');

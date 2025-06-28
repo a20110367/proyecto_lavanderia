@@ -6,13 +6,16 @@ import {
     createPaymentAdvance,
     createPaymentDelivery,
     updatePayment,
-    deletePayment
+    deletePayment,
+    testPayment
 } from "../controllers/PaymentController.js";
 
 const router = express.Router();
 
 router.get('/payments', getPayments);
 router.get('/payments/:id', getPaymentsById);
+router.get('/paymentsTest/:id', testPayment);
+
 
 router.post('/payments', createPayment);
 router.post('/paymentsDelivery', createPaymentDelivery);

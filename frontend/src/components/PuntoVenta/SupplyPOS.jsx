@@ -200,13 +200,15 @@ export default function PuntoVenta() {
         units: detail.quantity,
         subtotal: detail.quantity * detail.price,
         fk_supplyId: detail.id_supply,
+        price: detail.price,
+        description: detail.description,
       })
     );
 
     const subTotal = calculateSubtotal();
 
     const totalWithDiscount =
-      payMethod === "credit" ? subTotal - subTotal * 0.05 : subTotal;
+      payMethod === "credit" ? subTotal - (subTotal * 0) : subTotal;
 
     try {
       const res = await api.post(postUrl, {
@@ -216,12 +218,12 @@ export default function PuntoVenta() {
           payForm: payForm,
           payStatus: payStatus,
           fk_user: cookies.token,
-          receptionDate: purchaseDate.toISOString(),
+          receptionDate: purchaseDate,
           numberOfItems: noOfItems,
         },
         products: arrayProducts,
       });
-      console.log(res);
+      // console.log(res);
       // orderTicket(order);
       const idOrder = res.data.supplyOrder.id_supplyOrder;
       console.log(idOrder);
@@ -229,8 +231,8 @@ export default function PuntoVenta() {
         await api.post("/supplyPayment", {
           fk_idOrder: idOrder,
           payMethod: payMethod,
-          payDate: purchaseDate.toISOString(),
-          payTime: purchaseDate.toISOString(),
+          payDate: purchaseDate,
+          payTime: purchaseDate,
           fk_cashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
           payTotal: calculateSubtotal(),
         });
@@ -242,14 +244,17 @@ export default function PuntoVenta() {
         payMethod: payMethod,
         subtotal: totalWithDiscount,
         casher: cookies.username,
+        numberOfItems: noOfItems,
         client:
           res.data.supplyOrder.client.name +
           " " +
           res.data.supplyOrder.client.firstLN +
           " " +
           res.data.supplyOrder.client.secondLN,
-        receptionDate: purchaseDate.toISOString(),
-        receptionTime: purchaseDate.toISOString(),
+        receptionDate: purchaseDate,
+        receptionTime: purchaseDate,
+        scheduledDeliveryDate: deliveryDate,
+        scheduledDeliveryTime: deliveryDate,
         serviceType: serviceType,
         cart: cart,
       };
@@ -499,8 +504,8 @@ export default function PuntoVenta() {
                         <Select
                           style={{ width: "100%", fontSize: "16px" }}
                           onChange={(value) => setPayMethod(value)}
-                          value={serviceType === "productos" ? "cash" : payMethod}
-                          disabled = { serviceType === 'productos'}
+                          value={payMethod}
+                          // disabled = { serviceType === 'productos'}
                         >
                           <Option value="credit">Tarjeta</Option>
                           <Option value="cash">Efectivo</Option>

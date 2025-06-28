@@ -35,7 +35,7 @@ import SupplyPOS from './components/PuntoVenta/SupplyPOS'
 
 //PEDIDOS
 import PedidosLavanderia from "./components/Pedidos/PedidosLavanderia"
-import PedidosGeneral from "./components/Pedidos/PedidosGeneral"
+import PedidosFinalizados from "./components/Pedidos/PedidosFinalizados"
 import PedidosAlmacenados from "./components/Pedidos/PedidosAlmacenados"
 
 //SIDEBAR
@@ -103,8 +103,9 @@ import HistorialCajaPlanchado from "./components/Cajas/HistorialCajaPlanchado";
 // import ReportesProductos from "./components/Administracion/ReportesProductos";
 import Reportes from "./components/Administracion/Reportes"
 import Cancelacion from "./components/Administracion/Cancelacion";
+import HistorialOrdenesCanceladas from "./components/Administracion/CancelHistoryOrder"
 import CajaChica from "./components/Administracion/CajaChica"
-import Reembolso from "./components/Administracion/Reembolso"
+// import Reembolso from "./components/Administracion/Reembolso"
 
 function App() {
     const { cookies } = useAuth();
@@ -144,9 +145,10 @@ function App() {
                     <Route path="/reportes" element={<Reportes />} />
                     {/* <Route path="/reportesProductos" element={<ReportesProductos />} /> */}
                     <Route path="/cancelacion" element={<Cancelacion/>}/>
+                    <Route path="/historialOrdenesCanceladas" element={<HistorialOrdenesCanceladas/>}/>
                     <Route path="/retiro" element={<Retiro />} />
                     <Route path="/cajaChica" element={<CajaChica />} />
-                    <Route path="/reembolso" element={<Reembolso />} />
+                    {/* <Route path="/reembolso" element={<Reembolso />} /> */}
                     <Route path="/cajaPedidos" element={<CajaPedidos />} />
 
                     {/* Services */}
@@ -183,7 +185,7 @@ function App() {
                     <Route path="/entregaLavanderia" element={<EntregaLavanderia />} />
                     <Route path="/recepcionLavanderia" element={<RecepcionLavanderia />} />
                     <Route path="/pedidosPlanchado" element={<PedidosPlanchado />} />
-                    <Route path="/pedidosGeneral" element={<PedidosGeneral />} />
+                    <Route path="/pedidosFinalizados" element={<PedidosFinalizados />} />
                     
                     {/**Encargo varios */}
                     <Route path="/pedidosVarios" element={<PedidosVarios/>}/>

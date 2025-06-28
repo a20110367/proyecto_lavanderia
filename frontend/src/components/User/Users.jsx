@@ -79,7 +79,7 @@ function Users() {
                 <th>Rol</th>
                 <th>Email</th>
                 <th>Telefono</th>
-                <th>Contraseña</th>
+                {/* <th>Contraseña</th> */}
                 <th>Opciones</th>
               </tr>
             </thead>
@@ -109,7 +109,7 @@ function Users() {
                     </td>
                     <td>{user.email}</td>
                     <td>{user.phone}</td>
-                    <td>{user.pass}</td>
+                    {/* <td>{user.pass}</td> */}
                     <td>
                       <button
                         onClick={() => navigate(`/editUser/${user.id_user}`)}
@@ -117,12 +117,12 @@ function Users() {
                       >
                         <AiFillEdit/>
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => handleClickOpen(user.name, user.id_user)}
                         className="btn-cancel"
                       >
                         <BsFillTrashFill/>
-                      </button>
+                      </button> */}
                       <Dialog
                         open={open}
                         onClose={handleClose}

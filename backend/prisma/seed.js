@@ -1093,7 +1093,7 @@ async function seed() {
                 {
                     "id_service": 2,
                     "description": "Planchado 6 pzas",
-                    "price": 11,
+                    "price": 66,
                     "priceCredit": 10,
                     "pieces": 1,
                     "cycleTime": 10,
@@ -1213,12 +1213,12 @@ async function seed() {
             "id_supplyCashCut": 1,
             "id_cashCut": 1,
             "cashIncome": 0,
-            "creditIncome": 0,      
+            "creditIncome": 0,
             "withdrawal": 0,
             "cancellations": 0,
-            "initialCash": 0,       
+            "initialCash": 0,
             "totalCashBalace": 0,
-            "totalIncome":0,
+            "totalIncome": 0,
             "created": "2024-11-29T02:15:19.814Z",
             "updatedAt": "2024-11-29T02:15:19.814Z"
         }
@@ -1230,7 +1230,7 @@ async function seed() {
             "amount": 0,
             "balance": 0,
             "id_movement": 1,
-            "movementDate": "1970-01-01T00:00:00.000Z",
+            "movementDate": "2024-11-29T02:15:19.814Z",
             "cause": "inicial",
             "fk_user": 1,
             "pettyCashType": "withdrawal"

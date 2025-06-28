@@ -64,7 +64,7 @@ function AddClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validName || !validFirstName || !validSecondName || !validEmail) {
+    if (!validName || !validFirstName || !validSecondName /*|| !validEmail*/) {
       setErrMsg("Invalid Entry");
       return;
     }
@@ -294,8 +294,8 @@ function AddClient() {
                   disabled={
                     !validName ||
                     !validFirstName ||
-                    !validSecondName ||
-                    !validEmail
+                    !validSecondName //||
+                    //!validEmail
                   }
                 >
                   Registrar Cliente

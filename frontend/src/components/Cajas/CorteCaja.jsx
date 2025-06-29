@@ -457,7 +457,7 @@ function CorteCaja() {
           cashCutId: selectedCorte.workshiftBalance.cashCutId,
           workShift: selectedCorte.workshiftBalance.workShift,
           initialCash: selectedCorte.workshiftBalance.initialCash,
-          totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+          totalwithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
           totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
           total: selectedCorte.workshiftBalance.total,
           cashCutD: selectedCorte.workshiftBalance.cashCutD,

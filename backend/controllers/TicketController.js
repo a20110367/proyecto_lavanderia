@@ -936,7 +936,7 @@ export const cashCutTicket = async (req, res) => {
 
             printer.newLine()
             printer.println(`No. de Piezas de Planchado Hechas: ${services.ironPiecesDone ? services.ironPiecesDone : '0'}`)
-            printer.println(`Retiros Totales: ${cashCut.totalCashWithdrawal ? '-' + cashCut.totalCashWithdrawal : '0'}`)
+            printer.println(`Retiros Totales: ${cashCut.totalwithdrawal ? '-' + cashCut.totalwithdrawal : '0'}`)
             printer.println(`Dinero en Fondo: ${cashCut.initialCash}`)
             printer.setTextDoubleHeight();
             printer.newLine()
@@ -1099,7 +1099,7 @@ export const generatePartialCashCutTicket = async (req, res) => {
             printer.println(`Ingreso en Efectivo: ${cashCut.cashIncome}`)
             printer.println(`Ingreso en Tarjeta: ${cashCut.creditIncome ? cashCut.creditIncome : '0'}`)
             printer.println(`Retiros Totales: ${cashCut.withdrawal ? '-' + cashCut.withdrawal : '0'}`)
-            printer.println(`Cancelaciones Totales: ${cashCut.cancellations ? '-' + cashCut.cancellations : '0'}`)
+            printer.println(`Cancelaciones Totales: ${cashCut.totalCancelations ? '-' + cashCut.totalCancelations : '0'}`)
             printer.setTextDoubleHeight();
             printer.newLine()
             printer.println(`Efectivo Total en Caja: ${cashCut.totalCashBalance}`)

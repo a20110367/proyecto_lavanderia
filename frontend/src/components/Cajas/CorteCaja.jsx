@@ -128,6 +128,8 @@ function CorteCaja() {
       //   `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
       // );
 
+      console.log(response.data)
+
       const servicesRes = response.data.serviceCashCut;
       const suppliesRes = response.data.suppliesCashCut;
       const generalRes = response.data.workshiftBalance;

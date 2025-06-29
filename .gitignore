@@ -7,3 +7,7 @@ backend/.gitignore
 backend/controllers/utils/mailer.js
 backend/.env
 backend/logs/*.log
+INICIARBACK.bat
+INICIARFRONT.bat
+SLBackend.ps1
+SLFrontend.ps1

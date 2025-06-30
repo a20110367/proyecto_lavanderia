@@ -447,11 +447,14 @@ function CorteCaja() {
     }
   };
 
+  console.log(selectedCorte)
+
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
     try {
       if (selectedCorte) {
         console.log(selectedCorte);
+
         const cashCut = {
           casher: cookies.username,
           cashCutId: selectedCorte.workshiftBalance.cashCutId,

@@ -119,7 +119,17 @@ function Retiro() {
         });
         setVisible(false);
 
-        console.log(res)
+        
+        const nuevoRetiro = {
+          id_cashWithdrawal: res.data.id_cashWithdrawal,
+          amount: parseInt(monto),
+          cause: motivo,
+          date: date,
+          user: { name: cookies.username },
+        };
+
+        setRetiros([...retiros, nuevoRetiro]);
+        setFilteredRetiros([...retiros, nuevoRetiro]);
 
         // const cashWithdrawal = {
         //   cashWithdrawalType: "withdrawal",
@@ -135,14 +145,6 @@ function Retiro() {
           logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
         });
 
-        const nuevoRetiro = {
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-          user: { name: cookies.username },
-        };
-
         await api.post("/sendMessage", {
           id_order: nuevoRetiro.id_cashWithdrawal,
           name: "Rafa",
@@ -156,9 +158,6 @@ function Retiro() {
           warning: true,
         });
         console.log("NOTIFICACIÓN ENVIADA...");
-
-        setRetiros([...retiros, nuevoRetiro]);
-        setFilteredRetiros([...retiros, nuevoRetiro]);
 
         // await api.post('/generateCashWithdrawalTicket', {
         //   cashWithdrawal: cashWithdrawal,

@@ -750,7 +750,7 @@ GET  http://localhost:5000/calculateParcialCashCut/10
 
 ###
 
-GET  http://localhost:5000/closeCashCut/8
+GET  http://localhost:5000/closeCashCut/9
 
 ###
 POST http://localhost:5000/cashCuts

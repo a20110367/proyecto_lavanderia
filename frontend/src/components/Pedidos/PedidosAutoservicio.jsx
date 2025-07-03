@@ -286,6 +286,7 @@ function PedidosAutoservicio() {
           : p
       );
       setPedidos(updatedPedidos);
+      setFilteredPedidos(updatedPedidos);
 
       // Actualizar en la base de datos el estado de la máquina a "freeForUse"
       await api.patch(`/machines/${selectedMachine.fk_idMachine}`, {

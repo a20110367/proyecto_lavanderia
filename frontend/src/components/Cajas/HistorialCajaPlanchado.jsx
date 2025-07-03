@@ -12,7 +12,7 @@ import moment from "moment";
 import { BsFillLightningFill } from "react-icons/bs";
 
 function HistorialCajaPlanchado() {
- 
+
   const [Cortes, setCortes] = useState([]);
   const [filteredCortes, setFilteredCortes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -73,57 +73,49 @@ function HistorialCajaPlanchado() {
 
       pdf.text(`SERVICIOS POR ESTACION:`, 10, 60);
       pdf.text(
-        `Estacion 1 Regular: ${
-          selectedCorte.station1R ? `${selectedCorte.station1R}` : "0"
+        `Estacion 1 Regular: ${selectedCorte.station1R ? `${selectedCorte.station1R}` : "0"
         }`,
         10,
         80
       );
       pdf.text(
-        `Estacion 1 Express: ${
-          selectedCorte.totalSuavitel ? `${selectedCorte.totalSuavitel}` : "0"
+        `Estacion 1 Express: ${selectedCorte.totalSuavitel ? `${selectedCorte.totalSuavitel}` : "0"
         }`,
         10,
         90
       );
       pdf.text(
-        `Estacion 2 Regular: ${
-          selectedCorte.station2R ? `${selectedCorte.station2R}` : "0"
+        `Estacion 2 Regular: ${selectedCorte.station2R ? `${selectedCorte.station2R}` : "0"
         }`,
         10,
         100
       );
       pdf.text(
-        `Estacion 2 Express: ${
-          selectedCorte.station2E ? `${selectedCorte.station2E}` : "0"
+        `Estacion 2 Express: ${selectedCorte.station2E ? `${selectedCorte.station2E}` : "0"
         }`,
         10,
         120
       );
       pdf.text(
-        `Estacion 3 Regular: ${
-          selectedCorte.station3R ? `${selectedCorte.station3R}` : "0"
+        `Estacion 3 Regular: ${selectedCorte.station3R ? `${selectedCorte.station3R}` : "0"
         }`,
         10,
         130
       );
       pdf.text(
-        `Estacion 3 Express: ${
-          selectedCorte.station3E ? `${selectedCorte.station3E}` : "0"
+        `Estacion 3 Express: ${selectedCorte.station3E ? `${selectedCorte.station3E}` : "0"
         }`,
         10,
         140
       );
       pdf.text(
-        `Estacion 4 Regular: ${
-          selectedCorte.station4R ? `${selectedCorte.station4R}` : "0"
+        `Estacion 4 Regular: ${selectedCorte.station4R ? `${selectedCorte.station4R}` : "0"
         }`,
         10,
         150
       );
       pdf.text(
-        `Estacion 4 Express: ${
-          selectedCorte.station4E ? `${selectedCorte.station4E}` : "0"
+        `Estacion 4 Express: ${selectedCorte.station4E ? `${selectedCorte.station4E}` : "0"
         }`,
         10,
         160
@@ -193,7 +185,7 @@ function HistorialCajaPlanchado() {
       }
     }
   };
-              console.log(filteredCortes)
+  console.log(filteredCortes)
 
   return (
     <div className="text-center mt-4">
@@ -270,10 +262,11 @@ function HistorialCajaPlanchado() {
             </thead>
             <tbody>
               {filteredCortes
+                .slice().reverse()
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
-                ).reverse()
+                )
                 .map((corte) => (
                   <tr
                     className="bg-white border-b"
@@ -384,9 +377,9 @@ function HistorialCajaPlanchado() {
                 <p className="text-lg">
                   <span className="font-bold">
                     Prendas Express por Plancha: <BsFillLightningFill
-                    className="text-yellow-300 inline-block"
-                    size={20}
-                  />
+                      className="text-yellow-300 inline-block"
+                      size={20}
+                    />
                   </span>
                 </p>
                 <p className="text-lg">

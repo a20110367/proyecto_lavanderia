@@ -67,10 +67,9 @@ function HistorialCajaProductos() {
       pdf.text(`HORA: ${moment(selectedCorte.cashCutT).format('HH:mm')}`, 10, 40);
       pdf.text(`Usuario: ${selectedCorte.user.name}`, 10, 50);
       pdf.text(
-        `Turno: ${
-          selectedCorte.workShift === "morning"
-            ? "Matutino"
-            : selectedCorte.workShift === "evening"
+        `Turno: ${selectedCorte.workShift === "morning"
+          ? "Matutino"
+          : selectedCorte.workShift === "evening"
             ? "Vespertino"
             : "Nocturno"
         }`,
@@ -78,114 +77,99 @@ function HistorialCajaProductos() {
         60
       );
 
-    
+
       pdf.text(
-        `Ordenes Pagadas: ${
-          selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
+        `Ordenes Pagadas: ${selectedCorte.ordersPayed ? `${selectedCorte.ordersPayed}` : "0"
         }`,
         10,
         80
       );
       pdf.text(
-        `Total Jabon: ${
-          selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
+        `Total Jabon: ${selectedCorte.totalJabon ? `$${selectedCorte.totalJabon}` : "$0"
         }`,
         10,
         100
       );
       pdf.text(
-        `Total Suavitel: ${
-          selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
+        `Total Suavitel: ${selectedCorte.totalSuavitel ? `$${selectedCorte.totalSuavitel}` : "$0"
         }`,
         10,
         110
       );
       pdf.text(
-        `Total Pinol: ${
-          selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
+        `Total Pinol: ${selectedCorte.totalPinol ? `$${selectedCorte.totalPinol}` : "$0"
         }`,
         10,
         120
       );
       pdf.text(
-        `Total Desengrasante: ${
-          selectedCorte.totalDesengrasante
-            ? `$${selectedCorte.totalDesengrasante}`
-            : "$0"
+        `Total Desengrasante: ${selectedCorte.totalDesengrasante
+          ? `$${selectedCorte.totalDesengrasante}`
+          : "$0"
         }`,
         10,
         130
       );
       pdf.text(
-        `Total Cloro: ${
-          selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
+        `Total Cloro: ${selectedCorte.totalCloro ? `$${selectedCorte.totalCloro}` : "$0"
         }`,
         10,
         140
       );
       pdf.text(
-        `Total Sanitizante: ${
-          selectedCorte.totalSanitizante
-            ? `$${selectedCorte.totalSanitizante}`
-            : "$0"
+        `Total Sanitizante: ${selectedCorte.totalSanitizante
+          ? `$${selectedCorte.totalSanitizante}`
+          : "$0"
         }`,
         10,
         150
       );
       pdf.text(
-        `Total Bolsa: ${
-          selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
+        `Total Bolsa: ${selectedCorte.totalBolsa ? `$${selectedCorte.totalBolsa}` : "$0"
         }`,
         10,
         160
       );
       pdf.text(
-        `Total Reforzado: ${
-          selectedCorte.totalReforzado
-            ? `$${selectedCorte.totalReforzado}`
-            : "$0"
+        `Total Reforzado: ${selectedCorte.totalReforzado
+          ? `$${selectedCorte.totalReforzado}`
+          : "$0"
         }`,
         10,
         170
       );
       pdf.text(
-        `Total Ganchos: ${
-          selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
+        `Total Ganchos: ${selectedCorte.totalGanchos ? `$${selectedCorte.totalGanchos}` : "$0"
         }`,
         10,
         180
       );
       pdf.text(
-        `Total WC: ${
-          selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
+        `Total WC: ${selectedCorte.totalWC ? `$${selectedCorte.totalWC}` : "$0"
         }`,
         10,
         190
       );
       pdf.text(
-        `Total Otros: ${
-          selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
+        `Total Otros: ${selectedCorte.totalOtros ? `$${selectedCorte.totalOtros}` : "$0"
         }`,
         10,
         200
       );
       pdf.text(
-        `Total Tarjeta: ${
-          selectedCorte.totalSuppliesCredit ? `$${selectedCorte.totalSuppliesCredit}` : "$0"
+        `Total Tarjeta: ${selectedCorte.totalSuppliesCredit ? `$${selectedCorte.totalSuppliesCredit}` : "$0"
         }`,
         10,
         220
       );
       pdf.text(
-        `Total Efectivo: ${
-          selectedCorte.totalSuppliesCash ? `$${selectedCorte.totalSuppliesCash}` : "$0"
+        `Total Efectivo: ${selectedCorte.totalSuppliesCash ? `$${selectedCorte.totalSuppliesCash}` : "$0"
         }`,
         10,
         230
       );
       pdf.text(
-        `Total Ingresos: ${
-          selectedCorte.totalSuppliesIncome ? `$${selectedCorte.totalSuppliesIncome}` : "$0"
+        `Total Ingresos: ${selectedCorte.totalSuppliesIncome ? `$${selectedCorte.totalSuppliesIncome}` : "$0"
         }`,
         10,
         240
@@ -317,10 +301,11 @@ function HistorialCajaProductos() {
             </thead>
             <tbody>
               {filteredCortes
+                .slice().reverse()
                 .slice(
                   currentPage * itemsPerPage,
                   (currentPage + 1) * itemsPerPage
-                ).reverse()
+                )
                 .map((corte) => (
                   <tr
                     className="bg-white border-b"
@@ -328,7 +313,7 @@ function HistorialCajaProductos() {
                   >
                     <td className="">{corte.id_supplyCashCut}</td>
                     <td className="">{formatDate(corte.cashCutD)}</td>
-                    
+
                     <td className="">
                       ${corte.totalSuppliesCash ? corte.totalSuppliesCash : 0}
                     </td>
@@ -352,8 +337,8 @@ function HistorialCajaProductos() {
                       {corte.workShift === "morning"
                         ? "Matutino"
                         : corte.workShift === "evening"
-                        ? "Vespertino"
-                        : "Nocturno"}
+                          ? "Vespertino"
+                          : "Nocturno"}
                     </td>
                     <td className="min-w-[60px]">
                       <button
@@ -410,18 +395,18 @@ function HistorialCajaProductos() {
                   {selectedCorte.workShift === "morning"
                     ? "Matutino"
                     : selectedCorte.workShift === "evening"
-                    ? "Vespertino"
-                    : ""}
+                      ? "Vespertino"
+                      : ""}
                 </p>
                 <p className="text-lg">
                   <span className="font-bold">Fecha:</span>{" "}
                   {formatDate(selectedCorte.cashCutD)}
                 </p>
                 <p className="text-lg">
-                    <span className="font-bold">Hora:</span>{" "}
-                    {moment(selectedCorte.cashCutT).format('HH:mm')}
-                  </p>
-                
+                  <span className="font-bold">Hora:</span>{" "}
+                  {moment(selectedCorte.cashCutT).format('HH:mm')}
+                </p>
+
                 <p className="text-lg">
                   <span className="font-bold">Ordenes Pagadas: </span>
                   {selectedCorte.ordersPayed}

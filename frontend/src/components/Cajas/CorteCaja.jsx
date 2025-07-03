@@ -128,6 +128,8 @@ function CorteCaja() {
       //   `/closeSupplyCashCut/${localStorage.getItem("id_supplyCashCut")}`
       // );
 
+      console.log(response.data)
+
       const servicesRes = response.data.serviceCashCut;
       const suppliesRes = response.data.suppliesCashCut;
       const generalRes = response.data.workshiftBalance;
@@ -445,17 +447,20 @@ function CorteCaja() {
     }
   };
 
+  console.log(selectedCorte)
+
   const handleModalPrint = async () => {
     // const pdf = new jsPDF();
     try {
       if (selectedCorte) {
         console.log(selectedCorte);
+
         const cashCut = {
           casher: cookies.username,
           cashCutId: selectedCorte.workshiftBalance.cashCutId,
           workShift: selectedCorte.workshiftBalance.workShift,
           initialCash: selectedCorte.workshiftBalance.initialCash,
-          totalCashWithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
+          totalwithdrawal: selectedCorte.workshiftBalance.totalwithdrawal,
           totalCancelations: selectedCorte.workshiftBalance.totalCancelations,
           total: selectedCorte.workshiftBalance.total,
           cashCutD: selectedCorte.workshiftBalance.cashCutD,

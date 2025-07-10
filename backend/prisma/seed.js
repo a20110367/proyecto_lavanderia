@@ -185,7 +185,7 @@ async function seed() {
                     "weight": 23,
                     "status": "available",
                     "freeForUse": true,
-                    "notes": "30",
+                    "notes": "",
                     "serialNumber": "N/A",
                     "ipAddress": null
                 },
@@ -1023,7 +1023,7 @@ async function seed() {
                     "description": "Planchado 6 pzas",
                     "price": 66,
                     "priceCredit": 10,
-                    "pieces": 1,
+                    "pieces": 6,
                     "cycleTime": 10,
                     "category_id": 3,
                 },

@@ -12,3 +12,5 @@ INICIARBACK.bat
 INICIARFRONT.bat
 SLBackend.ps1
 SLFrontend.ps1
+Sistema_Inicio/*.*
+.gitignore

@@ -111,7 +111,7 @@ export const generateTicket = async (req, res) => {
 
         order.cart.map(detail => {
             let price = 0;
-            if (detail.payMethod == 'credit' && order.serviceType != 'productos') {
+            if (order.payMethod == 'credit' && order.serviceType != "productos") {
                 price = detail.priceCredit
             } else {
                 price = detail.price;
@@ -120,7 +120,7 @@ export const generateTicket = async (req, res) => {
                 { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
                 { text: detail.description, align: "CENTER", width: 0.5 },
                 { text: '$' + price, align: 'RIGHT', width: 0.15 },
-                { text: '$' + price * detail.amount, align: "RIGHT", width: 0.15 }
+                { text: '$' + (price * detail.quantity), align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
@@ -332,7 +332,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         order.cart.map(detail => {
             let price = 0;
-            if (detail.payMethod == 'credit' && order.serviceType  != 'productos') {
+            if (order.payMethod == 'credit' && order.serviceType != "productos") {
                 price = detail.priceCredit
             } else {
                 price = detail.price;
@@ -341,7 +341,7 @@ const printTicketFromBackend = async (orderParameter) => {
                 { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
                 { text: detail.description, align: "CENTER", width: 0.5 },
                 { text: '$' + price, align: 'RIGHT', width: 0.15 },
-                { text: '$' + price * detail.amount, align: "RIGHT", width: 0.15 }
+                { text: '$' + (price * detail.quantity), align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 

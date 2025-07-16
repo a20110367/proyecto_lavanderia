@@ -68,7 +68,7 @@ function EntregaVarios() {
           .includes(term)
       );
       return (
-        isMatch||
+        isMatch ||
         (pedido.user &&
           pedido.user.name &&
           pedido.user.name.toLowerCase().includes(filterText.toLowerCase())) ||
@@ -81,19 +81,19 @@ function EntregaVarios() {
 
   const calculateTotalCredit = () => {
     let pivot = 0.0
-    selectedPedido.ServiceOrderDetail.forEach(item => 
-      pivot =  parseFloat(pivot + (item.OtherService.priceCredit * item.units)))
-      // console.log(pivot)
-      // pivot += 0.1;
+    selectedPedido.ServiceOrderDetail.forEach(item =>
+      pivot = parseFloat(pivot + (item.OtherService.priceCredit * item.units)))
+    // console.log(pivot)
+    // pivot += 0.1;
     setAmount(pivot)
   };
 
   const calculateTotal = () => {
     let pivot = 0
-    selectedPedido.ServiceOrderDetail.forEach(item => 
+    selectedPedido.ServiceOrderDetail.forEach(item =>
       pivot = parseFloat(pivot + (item.OtherService.price * item.units)))
-      // console.log(pivot)
-      // pivot += 0.1;
+    // console.log(pivot)
+    // pivot += 0.1;
     setAmount(pivot)
   };
 
@@ -178,8 +178,9 @@ function EntregaVarios() {
         cart.push({
           description: service.OtherService.description
             ? service.OtherService.description
-            : "ERROR",          
-          price: cobroInfo.metodoPago === 'credit' ? service.OtherService.priceCredit : service.OtherService.price,
+            : "ERROR",
+          price: service.OtherService.price,
+          priceCredit: service.OtherService.priceCredit,
           totalPrice: calculateSubtotal(service),
           quantity: service.units,
         });
@@ -312,10 +313,10 @@ function EntregaVarios() {
                 <tr className="bg-white border-b" key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="th2 font-medium text-gray-900">
-                  {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
-                    </td>
+                    {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
+                  </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
+                    {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "varios"
@@ -326,11 +327,10 @@ function EntregaVarios() {
                     {formatDate(pedido.receptionDate)}
                   </td>
                   <td
-                    className={`py-3 px-6 ${
-                      pedido.payStatus === "unpaid"
+                    className={`py-3 px-6 ${pedido.payStatus === "unpaid"
                         ? "text-red-600"
                         : "text-green-600"
-                    }`}
+                      }`}
                   >
                     {pedido.payStatus === "unpaid" ? (
                       <span className="text-red-600 pl-1">

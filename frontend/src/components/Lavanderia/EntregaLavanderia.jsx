@@ -181,7 +181,8 @@ function EntregaLavanderia() {
             ? service.LaundryService.description
             : "ERROR",
           totalPrice: calculateSubtotal(service),
-          price: cobroInfo.metodoPago === 'credit' ? service.LaundryService.priceCredit : service.LaundryService.price,
+          price: service.LaundryService.price,
+          priceCredit: service.LaundryService.priceCredit,
           quantity: service.units,
         });
       });

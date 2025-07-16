@@ -39,24 +39,25 @@ function ServicesVarios() {
   if (!data) return <h2>Loading...</h2>;
 
   // Filtrar servicios relacionados con lavandería
-  const filteredData = data.filter((service) => {
-    const description = service.description.toLowerCase();
-    const exclusionKeywords = [
-      "autoservicio",
-      "auto servicio",
-      "autoservicios",
-      "auto servicios",
-      "planchado",
-      "plancha",
-      "tintoreria"
-    ];
-    const excludeService = exclusionKeywords.some((keyword) =>
-      new RegExp(keyword, "i").test(description)
-    );
-    return (
-      !excludeService
-    );
-  });
+  const filteredData = data;
+  // const filteredData = data.filter((service) => {
+  //   const description = service.description.toLowerCase();
+  //   const exclusionKeywords = [
+  //     "autoservicio",
+  //     "auto servicio",
+  //     "autoservicios",
+  //     "auto servicios",
+  //     "planchado",
+  //     "plancha",
+  //     "tintoreria"
+  //   ];
+  //   const excludeService = exclusionKeywords.some((keyword) =>
+  //     new RegExp(keyword, "i").test(description)
+  //   );
+  //   return (
+  //     !excludeService
+  //   );
+  // });
 
   const deleteService = async (serviceId) => {
     await api.delete(`/servicesOtherService/${serviceId}`);

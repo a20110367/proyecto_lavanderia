@@ -17,8 +17,8 @@ function EditServiceVarios() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
+  // const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
+  // const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
 
   useEffect(() => {
     const getServiceById = async () => {
@@ -39,24 +39,24 @@ function EditServiceVarios() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasLavanderiaKeyword = lavanderiaKeywords.some((keyword) =>
-      description.toLowerCase().includes(keyword)
-    );
+    // const hasLavanderiaKeyword = lavanderiaKeywords.some((keyword) =>
+    //   description.toLowerCase().includes(keyword)
+    // );
 
-    if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, solo puedes editar servicios de lavandería.");
-      return;
-    }
+    // if (!hasLavanderiaKeyword) {
+    //   setErrMsg("Error, solo puedes editar servicios de lavandería.");
+    //   return;
+    // }
 
     if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }
 
-    if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
-      return;
-    }
+    // if (description.toLowerCase().includes(forbiddenKeyword)) {
+    //   setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
+    //   return;
+    // }
 
     try {
       await api.patch(`/servicesUpdateOtherService/${id}`, {

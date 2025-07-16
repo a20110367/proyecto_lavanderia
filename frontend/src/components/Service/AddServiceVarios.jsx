@@ -19,26 +19,26 @@ function AddServiceVarios() {
 
   const navigate = useNavigate();
 
-  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
-  const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
-  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
+  // const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
+  // const forbiddenKeyword = ["autoservicio", "planchado", "tintoreria"];
+  // const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasLavanderiaKeyword = lavanderiaKeywords.some((keyword) =>
-      description.toLowerCase().includes(keyword)
-    );
+    // const hasLavanderiaKeyword = lavanderiaKeywords.some((keyword) =>
+    //   description.toLowerCase().includes(keyword)
+    // );
 
-    if (!hasLavanderiaKeyword) {
-      setErrMsg("Error, La Descripción de Servicios Varios debe contenar alguna de estas palabras: ");
-      return;
-    }
+    // if (!hasLavanderiaKeyword) {
+    //   setErrMsg("Error, La Descripción de Servicios Varios debe contenar alguna de estas palabras: ");
+    //   return;
+    // }
 
-    if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
-      return;
-    }
+    // if (description.toLowerCase().includes(forbiddenKeyword)) {
+    //   setErrMsg("Error, no puedes añadir servicios de 'autoservicio'.");
+    //   return;
+    // }
 
     try {
       await api.post("/servicesOtherService", {
@@ -90,7 +90,7 @@ function AddServiceVarios() {
                 value={description}
                 required
               />
-
+{/* 
               {errMsg && (
                 <div>
                   <div className="err-container">
@@ -102,7 +102,7 @@ function AddServiceVarios() {
                   </div>
                   <p className="err-msg font-bold">{keywordsNeeded}</p>
                 </div>
-              )}
+              )} */}
 
               <div className="flex items-center">
                 <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />

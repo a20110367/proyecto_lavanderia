@@ -403,7 +403,7 @@ function Signup() {
                 <button
                   className="btn-primary mx-2"
                   disabled={
-                    !validUserName || !validPwd || !validMatch ? true : false
+                    !validUserName || !validMatch ? true : false
                   }
                 >
                   Añadir Empleado

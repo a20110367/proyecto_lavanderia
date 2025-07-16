@@ -81,12 +81,12 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // if button enabled with JS hack
-    const v1 = USER_REGEX.test(userName);
-    const v2 = PWD_REGEX.test(pwd);
-    if (!v1 || !v2) {
-      setErrMsg("Invalid Entry");
-      return;
-    }
+    // const v1 = USER_REGEX.test(userName);
+    // const v2 = PWD_REGEX.test(pwd);
+    // if (!v1 || !v2) {
+    //   setErrMsg("Invalid Entry");
+    //   return;
+    // }
     try {
       const res = await Axios.post("http://localhost:5000/users", {
         name: name,
@@ -276,14 +276,14 @@ function Signup() {
 
               <label className="form-lbl" htmlFor="password">
                 Contraseña:
-                {validPwd ? (
+                {/* {validPwd ? (
                   <FontAwesomeIcon
                     icon={faCheck}
                     className="ml-3 text-green-500"
                   />
                 ) : (
                   <FontAwesomeIcon icon={faTimes} className="err-icon" />
-                )}
+                )} */}
               </label>
               <input
                 className="form-input"
@@ -292,13 +292,13 @@ function Signup() {
                 onChange={(e) => setPwd(e.target.value)}
                 value={pwd}
                 required
-                aria-invalid={validPwd ? "false" : "true"}
+                // aria-invalid={validPwd ? "false" : "true"}
                 aria-describedby="pwdnote"
                 onFocus={() => setPwdFocus(true)}
                 onBlur={() => setPwdFocus(false)}
               />
 
-              <div className="group">
+              {/* <div className="group">
                 <p
                   id="pwdnote"
                   className={`instructions ${pwdFocus && !validPwd ? "block" : "hidden"
@@ -322,18 +322,18 @@ function Signup() {
                   <span aria-label="percent">=</span>
                   <span aria-label="percent">*</span>
                 </p>
-              </div>
+              </div> */}
 
               <label className="form-lbl" htmlFor="confirm_pwd">
                 Confirmar Contraseña:
-                {validMatch && matchPwd ? (
+                {/* {validMatch && matchPwd ? (
                   <FontAwesomeIcon
                     icon={faCheck}
                     className="ml-3 text-green-500"
                   />
                 ) : (
                   <FontAwesomeIcon icon={faTimes} className="err-icon" />
-                )}
+                )} */}
               </label>
               <input
                 className="form-input"
@@ -342,7 +342,7 @@ function Signup() {
                 onChange={(e) => setMatchPwd(e.target.value)}
                 value={matchPwd}
                 required
-                aria-invalid={validMatch ? "false" : "true"}
+                // aria-invalid={validMatch ? "false" : "true"}
                 aria-describedby="confirmnote"
                 onFocus={() => setMatchFocus(true)}
                 onBlur={() => setMatchFocus(false)}

@@ -38,25 +38,7 @@ function ServicesLavanderia() {
   const { data } = useSWR("servicesLaundry", fetcher);
   if (!data) return <h2>Loading...</h2>;
 
-  // Filtrar servicios relacionados con lavandería
-  const filteredData = data.filter((service) => {
-    const description = service.description.toLowerCase();
-    const exclusionKeywords = [
-      "autoservicio",
-      "auto servicio",
-      "autoservicios",
-      "auto servicios",
-    ];
-    const excludeService = exclusionKeywords.some((keyword) =>
-      new RegExp(keyword, "i").test(description)
-    );
-    return (
-      (description.includes("lavado") ||
-        description.includes("lavados") ||
-        description.includes("lavanderia")) &&
-      !excludeService
-    );
-  });
+  const filteredData = data;
 
   const deleteService = async (serviceId) => {
     await api.delete(`/servicesLaundry/${serviceId}`);

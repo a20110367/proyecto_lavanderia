@@ -184,9 +184,10 @@ export const generateTicket = async (req, res) => {
 
 
 
-        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
+        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio' && order.serviceType != 'tintoreria') {
             if (order.extraTickets) {
-                if (order.serviceType != 'planchado' && order.serviceType != 'tintoreria') {
+                // if (order.serviceType != 'planchado' && order.serviceType != 'tintoreria') {
+                if (order.serviceType != 'planchado') {
                     printOrderDetailTicket(order)
                 } else {
                     printOrderDetailIronTicket(order)
@@ -195,6 +196,10 @@ export const generateTicket = async (req, res) => {
         }
 
         printTicketFromBackend(order)
+        if (order.serviceType === 'tintoreria'){
+            printer.clear()
+            printTicketFromBackend(order)
+        }
         // }
 
         // printer.bold(true);                                         // Set text bold

@@ -216,6 +216,8 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
+        console.log(pedido)
+
         if (pedido.express) {
           await api.patch(`/expressDoneOrderIronControl/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
@@ -225,8 +227,7 @@ function PedidosPlanchado() {
             pieces: pedido.ironPieces,
           });
         }
-
-        showNotification(
+showNotification(
           "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
         );
         await api.post("/sendMessage", {
@@ -244,6 +245,7 @@ function PedidosPlanchado() {
           text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
           warning: false,
         });
+        console.log("NOTIFICACIÓN ENVIADA...");
       }
 
       setShowMachineName(false);

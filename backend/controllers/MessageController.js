@@ -36,7 +36,7 @@ export const sendMessage = async (req, res) => {
 
         // console.log("Mail Message sent:  %s", info.messageId);
 
-        restAPI.message.sendMessage(phone + "@c.us", null, message).then((data) => {
+        await restAPI.message.sendMessage(phone + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
     } catch (err) {
@@ -75,7 +75,7 @@ export const notifyAll = async (req, res) => {
 
             // console.log("Mail Message sent:  %s", info.messageId);
 
-            restAPI.message.sendMessage("521" + order.client.phone + "@c.us", null, message).then((data) => {
+            await restAPI.message.sendMessage("521" + order.client.phone + "@c.us", null, message).then((data) => {
                 console.log("Whatsapp Message sent:  %s", data);
             });
         } catch (err) {

@@ -20,6 +20,7 @@ import encargoImg from "../images/encargo.jpg";
 import autoservicioImg from "../images/autoservicio.jpg";
 import planchadoImg from "../images/planchado.jpg";
 import tintoreriaImg from "../images/tintoreria.jpg";
+import autoServicioSecadora from "../images/imgsecadora.jpg"
 import variosImg from "../images/varios.jpeg";
 
 export default function PuntoVenta() {
@@ -30,6 +31,10 @@ export default function PuntoVenta() {
   const maxIronCapacity = parseInt(localStorage.getItem('maxCapacity'));
   const [cart, setCart] = useState([]);
   const [filtro, setFiltro] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const handleFiltroTipoChange = (event) => {
+    setFiltroTipo(event.target.value);
+  };
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
   const [img, setImg] = useState([
@@ -40,6 +45,7 @@ export default function PuntoVenta() {
   const categoryImages = {
     encargo: encargoImg,
     autoservicio: autoservicioImg,
+    autoServicioSecadora: autoServicioSecadora,
     planchado: planchadoImg,
     tintoreria: tintoreriaImg,
     varios: variosImg,
@@ -166,7 +172,7 @@ export default function PuntoVenta() {
   const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
   // console.log(data)
-  console.log(cart)
+  // console.log(cart)
 
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
@@ -295,7 +301,7 @@ export default function PuntoVenta() {
     window.history.back();
   };
 
-  console.log(cart)
+  // console.log(cart)
 
   const saveOrderAndGenerateTicket = async (ironDate) => {
     const arrayService = [];
@@ -484,53 +490,62 @@ export default function PuntoVenta() {
     }
   };
 
-  const filteredServices = shouldShowAllServices
-    ? data
-    : data.filter((service) => {
-      // Aquí aplicamos las condiciones para filtrar los servicios
-      if (
-        serviceType === "encargo" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("planchado") &&
-        !service.description.toLowerCase().includes("tintoreria") &&
-        !service.description.toLowerCase().includes("varios")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "planchado" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "tintoreria" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("lavado") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "varios" &&
-        !service.description.toLowerCase().includes("autoservicio") &&
-        !service.description.toLowerCase().includes("encargo") &&
-        !service.description.toLowerCase().includes("tintoreria") &&
-        !service.description.toLowerCase().includes("planchado")
-      ) {
-        return true;
-      }
-      if (
-        serviceType === "autoservicio" &&
-        service.description.toLowerCase().includes("autoservicio")
-      ) {
-        return true;
-      }
-      return false;
-    });
+  let filteredServices
+
+  if (categoryId === 1) {
+    filteredServices = filtroTipo
+      ? data.filter((service) => service.machineType === filtroTipo)
+      : data;
+  } else {
+    filteredServices = shouldShowAllServices
+      ? data
+      : data.filter((service) => {
+        // Aquí aplicamos las condiciones para filtrar los servicios
+        if (
+          serviceType === "encargo" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("planchado") &&
+          !service.description.toLowerCase().includes("tintoreria") &&
+          !service.description.toLowerCase().includes("varios")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "planchado" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "tintoreria" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("lavado") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        if (
+          serviceType === "varios" &&
+          !service.description.toLowerCase().includes("autoservicio") &&
+          !service.description.toLowerCase().includes("encargo") &&
+          !service.description.toLowerCase().includes("tintoreria") &&
+          !service.description.toLowerCase().includes("planchado")
+        ) {
+          return true;
+        }
+        // if (
+        //   serviceType === "autoservicio" &&
+        //   service.description.toLowerCase().includes("autoservicio")
+        // ) {
+        //   return true;
+        // }
+        return false;
+      });
+
+  }
 
   const handleOnChange = () => {
     if (cart.length === 0) {
@@ -619,6 +634,29 @@ export default function PuntoVenta() {
         <div className="absolute top-2.5 left-2.5 text-gray-400">
           <HiOutlineSearch fontSize={20} className="text-gray-400" />
         </div>
+        {categoryId === 1 ? (<div className="flex justify-between items-center w-full pt-1">
+          <select
+            className="select-category"
+            value={filtroTipo}
+            onChange={handleFiltroTipoChange}
+          >
+            <option className="text-base font-semibold" value="">
+              Todos
+            </option>
+            <option
+              value="lavadora"
+              className="text-blue-600 font-semibold text-base"
+            >
+              Lavadoras
+            </option>
+            <option
+              value="secadora"
+              className="text-green-500 font-semibold text-base"
+            >
+              Secadoras
+            </option>
+          </select>
+        </div>) : ("")}
       </div>
       <div className="container pt-4">
         <div className="row">
@@ -635,15 +673,28 @@ export default function PuntoVenta() {
                     key={service.id_service}
                     className="bg-white rounded-lg shadow-lg"
                   >
-                    <img
-                      src={
-                        categoryImages[
-                        service.Category.categoryDescription.toLowerCase()
-                        ]
-                      }
-                      alt={`Imagen de ${service.description}`}
-                      className="img-pos"
-                    />
+                    {categoryId === 1 ?
+                      (<img
+                        src={service.machineType === 'lavadora' ?
+                          categoryImages[
+                          service.Category.categoryDescription.toLowerCase()
+                          ] : categoryImages["autoServicioSecadora"]
+                        }
+                        alt={`Imagen de ${service.description}`}
+                        className="img-pos"
+                      />)
+                      :
+                      (<img
+                        src={
+                          categoryImages[
+                          service.Category.categoryDescription.toLowerCase()
+                          ]
+                        }
+                        alt={`Imagen de ${service.description}`}
+                        className="img-pos"
+                      />)
+                    }
+
                     <div className="p-3">
                       <h3 className="text-xl font-semibold">
                         {service.description}

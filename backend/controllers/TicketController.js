@@ -110,11 +110,17 @@ export const generateTicket = async (req, res) => {
         // }).join('')
 
         order.cart.map(detail => {
+            let price = 0;
+            if (detail.payMethod == 'credit' && order.serviceType != 'productos') {
+                price = detail.priceCredit
+            } else {
+                price = detail.price;
+            }
             printer.tableCustom([
                 { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
                 { text: detail.description, align: "CENTER", width: 0.5 },
-                { text: '$' + detail.price, align: 'RIGHT', width: 0.15 },
-                { text: '$' + detail.totalPrice, align: "RIGHT", width: 0.15 }
+                { text: '$' + price, align: 'RIGHT', width: 0.15 },
+                { text: '$' + price * detail.amount, align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
@@ -196,7 +202,7 @@ export const generateTicket = async (req, res) => {
         }
 
         printTicketFromBackend(order)
-        if (order.serviceType === 'tintoreria'){
+        if (order.serviceType === 'tintoreria') {
             printer.clear()
             printTicketFromBackend(order)
         }
@@ -325,11 +331,17 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.newLine()
 
         order.cart.map(detail => {
+            let price = 0;
+            if (detail.payMethod == 'credit' && order.serviceType  != 'productos') {
+                price = detail.priceCredit
+            } else {
+                price = detail.price;
+            }
             printer.tableCustom([
                 { text: detail.quantity, align: "LEFT", bold: true, width: 0.1 },
                 { text: detail.description, align: "CENTER", width: 0.5 },
-                { text: '$' + detail.price, align: 'RIGHT', width: 0.15 },
-                { text: '$' + detail.totalPrice, align: "RIGHT", width: 0.15 }
+                { text: '$' + price, align: 'RIGHT', width: 0.15 },
+                { text: '$' + price * detail.amount, align: "RIGHT", width: 0.15 }
             ]);
         }).join('')
 
@@ -1840,7 +1852,7 @@ export const printCanceledOrder = async (req, res) => {
 export const printCanceledOrder1 = async (req, res) => {
     try {
         console.log(moment().format("DD/MM/YYYY - HH:MM"));
-        res.status(200).json({ msg:moment().format("DD/MM/YYYY - HH:mm") })
+        res.status(200).json({ msg: moment().format("DD/MM/YYYY - HH:mm") })
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message })

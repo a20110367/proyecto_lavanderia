@@ -748,8 +748,10 @@ export default function PuntoVenta() {
                         alt={`Imagen de ${service.description}`}
                         className="h-16 w-16 object-cover rounded-lg mr-2"
                       />
-                      {service.description} x {service.quantity} - $
-                      {service.price * service.quantity}
+                      <p>
+                      {service.description}  X<span className="text-lg font-bold"> {service.quantity} </span> - <span className="text-lg font-bold"> $
+                      {service.price * service.quantity}</span>
+                      </p>
                     </div>
                     <button
                       className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded ml-2"

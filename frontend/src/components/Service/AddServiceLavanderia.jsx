@@ -29,7 +29,7 @@ function AddServiceLavanderia() {
   const navigate = useNavigate();
 
   const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
-  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
+  const forbiddenKeyword = ["autoservicio", "planchado"];
 
   const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
 

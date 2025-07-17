@@ -24,7 +24,7 @@ function EditServiceLavanderia() {
   const { id } = useParams();
 
   const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
-  const forbiddenKeyword = ["autoservicio", "planchado", "tenis", "tennis", "edredon", "colcha", "toalla", "colchas", "toallas"];
+  const forbiddenKeyword = ["autoservicio", "planchado"];
   const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
 
 

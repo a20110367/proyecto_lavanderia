@@ -130,9 +130,11 @@ export const generateTicket = async (req, res) => {
         // printer.print("Hello World");                               // Append text
         // printer.println("Hello World");  
 
+        printer.setTextSize(2, 2);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
+        printer.setTextNormal();
         printer.println(n2word(order.subtotal))
 
         printer.alignLeft()
@@ -349,9 +351,11 @@ const printTicketFromBackend = async (orderParameter) => {
 
         printer.drawLine();
 
+        printer.setTextSize(2, 2);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
+        printer.setTextNormal();
         printer.println(n2word(order.subtotal))
 
         printer.alignLeft()
@@ -430,6 +434,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.println('No. de Orden:')
                 printer.setTextSize(4, 4);
                 printer.println(`${order.id_order}-${count + 1}`)
+                printer.setTextSize(3, 3);
+                printer.println(order.payStatus === 'paid' ? "PAGADO" : "NO PAGADO")
                 printer.setTextSize(2, 2);
                 printer.bold(false)
                 printer.newLine()
@@ -438,7 +444,9 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTextSize(4, 4);
                 // printer.setTextQuadArea()
                 printer.println('Cliente:')
-                printer.println(`${order.client}`)
+                printer.println(`${order.clientName}`)
+                printer.println(`${order.clientFirstLN}`)
+                printer.println(`${order.clientSecondLN}`)
                 printer.setTextDoubleHeight();
                 printer.newLine()
                 printer.println('Descripcion:')
@@ -510,6 +518,8 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println('No. de Orden:')
                     printer.setTextSize(4, 4);
                     printer.println(`${order.id_order}-${count + 1}`)
+                    printer.setTextSize(3, 3);
+                    printer.println(order.payStatus === 'paid' ? "PAGADO" : "NO PAGADO")
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
                     printer.newLine()
@@ -522,7 +532,9 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(4, 4);
                     // printer.setTextQuadArea()
                     printer.println('Cliente:')
-                    printer.println(`${order.client}`)
+                    printer.println(`${order.clientName}`)
+                    printer.println(`${order.clientFirstLN}`)
+                    printer.println(`${order.clientSecondLN}`)
                     printer.setTextDoubleHeight();
                     printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
@@ -559,6 +571,8 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println('No. de Orden:')
                         printer.setTextSize(4, 4);
                         printer.println(`${order.id_order}-${count + 1}`)
+                        printer.setTextSize(3, 3);
+                        printer.println(order.payStatus === 'paid' ? "PAGADO" : "NO PAGADO")
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
@@ -607,6 +621,8 @@ const printOrderDetailIronTicket = async (order) => {
             printer.println('No. de Orden:')
             printer.setTextSize(4, 4);
             printer.println(`${order.id_order}-${count + 1}`)
+            printer.setTextSize(3, 3);
+            printer.println(order.payStatus === 'paid' ? "PAGADO" : "NO PAGADO")
             printer.setTextSize(2, 2);
             printer.println(`Piezas: ${individualPieces}`)
             printer.newLine()

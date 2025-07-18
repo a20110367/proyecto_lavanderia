@@ -389,6 +389,9 @@ export default function PuntoVenta() {
           res.data.serviceOrder.client.firstLN +
           " " +
           res.data.serviceOrder.client.secondLN,
+        clientName: res.data.serviceOrder.client.name,
+        clientFirstLN: res.data.serviceOrder.client.firstLN,
+        clientSecondLN: res.data.serviceOrder.client.secondLN,
         receptionDate: purchaseDate,
         receptionTime: purchaseDate,
         scheduledDeliveryDate: deliveryDate,

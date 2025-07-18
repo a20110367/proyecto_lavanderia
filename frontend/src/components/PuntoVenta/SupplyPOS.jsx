@@ -388,8 +388,8 @@ export default function PuntoVenta() {
                 ))}
               </ul>
               <div className="flex mt-4 justify-between text-lg">
-                <div>
-                  <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
+                <div className="font-bold text-3xl">
+                  <strong >Subtotal:</strong> <p className="font-normal">${calculateSubtotal()}{" "}</p>
                   {/*+ calculateProductTotal()*/}
                 </div>
               </div>
@@ -462,10 +462,10 @@ export default function PuntoVenta() {
                   </div>
 
                   <div>
-                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                    <p className="font-bold text-3xl">
                       Subtotal:
                     </p>
-                    <p style={{ fontSize: "16px" }}>
+                    <p className="text-3xl">
                       ${calculateSubtotal()} {/**+ calculateProductTotal() */}
                     </p>
                   </div>

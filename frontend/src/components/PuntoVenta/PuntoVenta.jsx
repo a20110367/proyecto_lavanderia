@@ -764,8 +764,8 @@ export default function PuntoVenta() {
               </ul>
 
               <div className="flex mt-4 justify-between text-lg">
-                <div>
-                  <strong>Subtotal:</strong> ${calculateSubtotal()}{" "}
+                <div className="font-bold text-3xl">
+                  <strong >Subtotal:</strong> <p className="font-normal">${calculateSubtotal()}{" "}</p>
                   {/*+ calculateProductTotal()*/}
                 </div>
                 {categoryId === 3 ? (
@@ -850,8 +850,8 @@ export default function PuntoVenta() {
                       <DatePicker
                         selected={moment(deliveryDate).toDate()}
                         showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={15}
+                        timeFormat="h:mm aa"
+                        timeIntervals={60}
                         dateFormat={customDateFormat}
                         onChange={(date) => {
                           setDeliveryDate(moment(date));
@@ -903,10 +903,10 @@ export default function PuntoVenta() {
                   </div>
 
                   <div>
-                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                    <p className="font-bold text-3xl">
                       Subtotal:
                     </p>
-                    <p style={{ fontSize: "16px" }}>
+                    <p className="text-3xl">
                       ${payMethod === 'credit' ? calculateSubtotalCredit() : calculateSubtotal()} {/**+ calculateProductTotal() */}
                     </p>
                   </div>

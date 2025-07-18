@@ -96,7 +96,7 @@ function PedidosLavanderia() {
   };
 
   const { data } = useSWR("laundryQueue", fetcher);
-  console.log(data)
+  // console.log(data)
 
   useEffect(() => {
     if (data) {
@@ -222,7 +222,6 @@ function PedidosLavanderia() {
   };
 
   const handleStartProcess = async (pedido) => {
-    console.log(pedido)
     try {
       setLoading(true);
 
@@ -418,6 +417,7 @@ function PedidosLavanderia() {
 };
 
 const handleClothesLineDry = (pedido) => {
+  setSelectedPedido(pedido)
   try {
     Swal.fire('OCUPA TENDER LA ROPA', 'Estas prendas son tendidas a mano', 'info').then(async (results) => {
       if (results.isConfirmed) {
@@ -426,7 +426,7 @@ const handleClothesLineDry = (pedido) => {
         const [machinesResponse] = await Promise.all([api.get("/machines")]);
         const availableMachines = [...machinesResponse.data];
         const res = await api.get(
-          `/laundryQueueById/${selectedPedido.id_laundryEvent}`
+          `/laundryQueueById/${pedido.id_laundryEvent}`
         );
         const selectedWashMachine = res.data.WashDetail;
 
@@ -434,11 +434,11 @@ const handleClothesLineDry = (pedido) => {
         if (selectedWashMachine) {
           // Actualizar el estado del pedido a "inProgressDry"
           const updatedPedido = {
-            ...selectedPedido,
+            ...pedido,
             serviceStatus: "inProgressDry",
           };
           const updatedPedidos = pedidos.map((p) =>
-            p.id_laundryEvent === selectedPedido.id_laundryEvent
+            p.id_laundryEvent === pedido.id_laundryEvent
               ? {
                 ...updatedPedido,
                 DryDetail: {
@@ -472,7 +472,7 @@ const handleClothesLineDry = (pedido) => {
         await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
           combinedWash: pedido.combinedWash,
           combinedDry: combinedDry,
-          fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
+          fk_idWashMachine: await pedido.WashDetail.Machine.id_machine,
           fk_idDryMachine: null,
           fk_idStaffMember: cookies.token,
         });
@@ -500,11 +500,11 @@ const handleFinishProcess = async (pedido) => {
       availableMachines = [...machinesResponse.data];
       const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
       selectedDryMachine = res.data.DryDetail;
-    }
+    } 
 
     // Liberar la secadora seleccionada
-    if (selectedDryMachine) {
-      if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
+    if (selectedDryMachine != null) {
+      if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
         const updatedDryers = availableMachines.map((machine) =>
           machine.id_machine === selectedDryMachine.fk_idDryMachine
             ? { ...machine, freeForUse: true }
@@ -516,7 +516,7 @@ const handleFinishProcess = async (pedido) => {
       // También actualizar la base de datos
       const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
         combinedDry: pedido.combinedDry,
-        fk_idDryMachine: selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null,
+        fk_idDryMachine: (selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null),
         fk_idStaffMember: cookies.token,
       });
 
@@ -886,7 +886,7 @@ return (
                 </tr>
               ))}
             {lastWashMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Lavadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Lavadora Anterior</p></td>}
-            {console.log("WASHMACHINE " + lastWashMachine)}
+            {/* {console.log("WASHMACHINE " + lastWashMachine)} */}
             {lastWashMachine.machineNumber != 0 ? (
               <tr key={lastWashMachine.id_machine}>
                 <td className="font-bold text-blue-600">{lastWashMachine.machineNumber}</td>
@@ -1002,7 +1002,7 @@ return (
                 </tr>
               ))}
             {lastDryMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Secadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Secadora Anterior</p></td>}
-            {console.log("DRYMACHINE " + lastDryMachine)}
+            {/* {console.log("DRYMACHINE " + lastDryMachine)} */}
             {lastDryMachine.machineNumber != 0 ? (
               <tr key={lastDryMachine.id_machine}>
                 <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>

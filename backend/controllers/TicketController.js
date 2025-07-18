@@ -443,7 +443,7 @@ const printOrderDetailTicket = async (order) => {
                 // printer.setTextNormal();
                 printer.setTextSize(4, 4);
                 // printer.setTextQuadArea()
-                printer.println('Cliente:')
+                // printer.println('Cliente:')
                 printer.println(`${order.clientName}`)
                 printer.println(`${order.clientFirstLN}`)
                 printer.println(`${order.clientSecondLN}`)
@@ -531,7 +531,7 @@ const printOrderDetailIronTicket = async (order) => {
                     // printer.setTextNormal();
                     printer.setTextSize(4, 4);
                     // printer.setTextQuadArea()
-                    printer.println('Cliente:')
+                    // printer.println('Cliente:')
                     printer.println(`${order.clientName}`)
                     printer.println(`${order.clientFirstLN}`)
                     printer.println(`${order.clientSecondLN}`)
@@ -583,8 +583,10 @@ const printOrderDetailIronTicket = async (order) => {
                         // printer.newLine()
                         // printer.setTextNormal();
                         printer.setTextDoubleHeight();
-                        printer.println('Cliente:')
-                        printer.println(`${order.client}`)
+                        // printer.println('Cliente:')
+                        printer.println(`${order.clientName}`)
+                        printer.println(`${order.clientFirstLN}`)
+                        printer.println(`${order.clientSecondLN}`)
                         printer.newLine()
                         printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
@@ -633,8 +635,10 @@ const printOrderDetailIronTicket = async (order) => {
             // printer.newLine()
             // printer.setTextNormal();
             printer.setTextDoubleHeight();
-            printer.println('Cliente:')
-            printer.println(`${order.client}`)
+            // printer.println('Cliente:')
+            printer.println(`${order.clientName}`)
+            printer.println(`${order.clientFirstLN}`)
+            printer.println(`${order.clientSecondLN}`)
             printer.newLine()
             printer.println('Descripcion:')
             printer.println(`PIEZAS INDIVIDUALES`)

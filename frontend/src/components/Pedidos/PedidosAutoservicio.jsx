@@ -241,9 +241,20 @@ function PedidosAutoservicio() {
 
       turnOnMachine(selectedMachine);
 
+      console.log(selectedMachine)
+
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === selectedPedido.id_serviceEvent
-          ? { ...p, serviceStatus: "inProgress"}
+          ? {
+            ...p,
+            serviceStatus: "inProgress",
+            machine: {
+              model: selectedMachine.model,
+              machineNumber: selectedMachine.machineNumber,
+              machineType: selectedMachine.machineType,
+              id_machine: selectedMachine.id_machine
+            },
+          }
           : p
       );
       setPedidos(updatedPedidos);
@@ -282,7 +293,7 @@ function PedidosAutoservicio() {
       // Actualizar localmente el estado del pedido a "finished"
       const updatedPedidos = pedidos.map((p) =>
         p.id_serviceEvent === pedido.id_serviceEvent
-          ? { ...p, serviceStatus: "finished"}
+          ? { ...p, serviceStatus: "finished" }
           : p
       );
       setPedidos(updatedPedidos);
@@ -355,7 +366,7 @@ function PedidosAutoservicio() {
           >
             En Proceso
           </option>
-          
+
         </select>
       </div>
       <div className="overflow-x-auto">
@@ -400,33 +411,33 @@ function PedidosAutoservicio() {
 
                   <td className="py-3 px-7 text-black">{
                     pedido.machine ?
-                    <div>
-                  {pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress"  && pedido.machine ?
-                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32}/>
-                      <div className="grid-flow-col">
-                        <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.machine.machineNumber}</span></p>
-                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
-                        {/* {pedido.machine.ipAddress ? 
+                      <div>
+                        {pedido.machine.machineType === "lavadora" && pedido.serviceStatus === "inProgress" && pedido.machine ?
+                          <div className="flex"><GiWashingMachine className="text-blue-700" size={32} />
+                            <div className="grid-flow-col">
+                              <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.machine.machineNumber}</span></p>
+                              <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                              {/* {pedido.machine.ipAddress ? 
                         <div>
                           <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
                           <p className="font-semibold">Restante: <span className="font-normal">{}20min</span></p> 
                         </div>
                         : ""} */}
-                        </div>
-                    </div>  :
-                    pedido.machine.machineType === "secadora" && pedido.serviceStatus === "inProgress" && pedido.machine ?
-                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
-                      <div className="grid-flow-col">
-                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.machine.machineNumber}</span></p>
-                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
-                        {/* {pedido.machine.ipAddress ? 
+                            </div>
+                          </div> :
+                          pedido.machine.machineType === "secadora" && pedido.serviceStatus === "inProgress" && pedido.machine ?
+                            <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                              <div className="grid-flow-col">
+                                <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.machine.machineNumber}</span></p>
+                                <p className="font-semibold">Modelo: <span className="font-normal">{pedido.machine.model}</span></p>
+                                {/* {pedido.machine.ipAddress ? 
                         <div>
                           <p className="font-semibold">IP: <span className="font-normal">{pedido.machine.ipAddress}</span></p> 
                           <p className="font-semibold">Restante: <span className="font-normal">{}15min</span></p> 
                         </div>
                         : ""} */}
-                      </div>
-                    </div> : "-" } </div> : "-"}
+                              </div>
+                            </div> : "-"} </div> : "-"}
                   </td>
 
                   <td className="py-3 px-6 font-bold ">
@@ -515,7 +526,7 @@ function PedidosAutoservicio() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
-          forcePage = {(forcePage || 0)}
+          forcePage={(forcePage || 0)}
         />
       </div>
 
@@ -562,7 +573,7 @@ function PedidosAutoservicio() {
                 .filter((machine) => {
                   if (selectedPedido && selectedPedido.SelfService) {
                     const serviceDescription = selectedPedido.SelfService.description.toLowerCase();
-                    if (selectedPedido.SelfService.machineType == 'lavadora' ) {
+                    if (selectedPedido.SelfService.machineType == 'lavadora') {
                       return machine.machineType
                         .toLowerCase()
                         .includes("lavadora");

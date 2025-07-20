@@ -153,7 +153,7 @@ function Clients() {
                   )
                   .map((client, index) => (
                     <tr key={client.id_client}>
-                      <td>{index + 1}</td>
+                      <td>{client.id_client}</td>
                       <td>{client.name}</td>
                       <td>{client.firstLN}</td>
                       <td>{client.secondLN}</td>

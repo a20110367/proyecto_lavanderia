@@ -449,6 +449,7 @@ const handleClothesLineDry = (pedido) => {
                 },
                 LaundryService: {
                   dryWeight: 0,
+                  description: p.LaundryService.description,
                   dryCycleTime: 0,
                 }
               }

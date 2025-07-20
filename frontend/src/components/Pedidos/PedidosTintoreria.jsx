@@ -12,7 +12,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatTime } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import api from "../../api/api";
@@ -33,7 +33,7 @@ function PedidosTintoreria() {
   const startIndex = currentPage * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const [forcePage, setForcePage] = useState(0);
- const handlePageChange = (selectedPage) => {
+  const handlePageChange = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
     setForcePage(selectedPage.selected);
   };
@@ -213,7 +213,7 @@ function PedidosTintoreria() {
           >
             En Proceso
           </option>
-        
+
         </select>
       </div>
       <div className="overflow-x-auto">
@@ -243,10 +243,10 @@ function PedidosTintoreria() {
                 <tr key={pedido.id_order}>
                   <td className="py-3 px-1 text-center">{pedido.id_order}</td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
+                    {pedido.user.name} {pedido.user.firstLN} {pedido.user.secondLN}
                   </td>
                   <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
+                    {pedido.client.name} {pedido.client.firstLN} {pedido.client.secondLN}
                   </td>
                   <td className="py-3 px-6">
                     {pedido.category.categoryDescription === "tintoreria"
@@ -268,7 +268,8 @@ function PedidosTintoreria() {
                       : "0"}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    <p>{formatDate(pedido.scheduledDeliveryDate)}</p>
+                    <p>{formatTime(pedido.scheduledDeliveryTime)}</p>
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (
@@ -346,7 +347,7 @@ function PedidosTintoreria() {
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
           activeLinkClassName="activeLinkClassName"
-          forcePage = {(forcePage || 0)}
+          forcePage={(forcePage || 0)}
         />
       </div>
       <Modal

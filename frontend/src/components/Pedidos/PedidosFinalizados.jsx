@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Modal, Button } from "antd";
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatTime } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import Swal from "sweetalert2";
@@ -350,7 +350,8 @@ function PedidosGeneral() {
                       : "Categoría no definida"}
                   </td>
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    <p>{formatDate(pedido.scheduledDeliveryDate)}</p>
+                    <p>{formatTime(pedido.scheduledDeliveryTime)}</p>
                   </td>
                   <td className="py-3 px-6">
                     {pedido.deliveryDetail ? formatDate(pedido.deliveryDetail.deliveryDate) : "-"}

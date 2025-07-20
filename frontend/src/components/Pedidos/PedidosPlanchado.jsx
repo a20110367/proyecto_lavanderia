@@ -12,7 +12,7 @@ import {
   StopOutlined,
   DropboxOutlined,
 } from "@ant-design/icons";
-import { formatDate } from "../../utils/format";
+import { formatDate, formatTime } from "../../utils/format";
 import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import api from "../../api/api";
@@ -227,7 +227,7 @@ function PedidosPlanchado() {
             pieces: pedido.ironPieces,
           });
         }
-showNotification(
+        showNotification(
           "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
         );
         await api.post("/sendMessage", {
@@ -349,8 +349,10 @@ showNotification(
                   <td className="py-3 px-6">
                     {pedido.ironPieces !== null ? pedido.ironPieces : "0"}
                   </td>
+                  {console.log(pedido)}
                   <td className="py-3 px-6">
-                    {formatDate(pedido.scheduledDeliveryDate)}
+                    <p>{formatDate(pedido.scheduledDeliveryDate)}</p>
+                    <p>{formatTime(pedido.scheduledDeliveryTime)}</p>
                   </td>
                   <td className="py-3 px-6 font-bold ">
                     {pedido.orderStatus === "pending" ? (
@@ -413,7 +415,7 @@ showNotification(
           previousLabel="Anterior"
           nextLabel="Siguiente"
           breakLabel="..."
-          forcePage = {(forcePage || 0)}
+          forcePage={(forcePage || 0)}
           pageCount={Math.ceil(
             filteredPedidos.filter(
               (pedido) =>

@@ -418,7 +418,7 @@ export const getSelfServiceQueue = async (req, res) => {
                                 email: true,
                             },
                         },
-
+                        scheduledDeliveryDate: true,
                         notes: true,
                     },
                 },

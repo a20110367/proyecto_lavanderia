@@ -23,9 +23,10 @@ function EditServiceLavanderia() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const lavanderiaKeywords = ["lavado", "lavados", "lavandería"];
+  const lavanderiaKeywords = ["lavado", "lavandería", "encargo"];
   const forbiddenKeyword = ["autoservicio", "planchado"];
-  const keywordsNeeded = "(Lavado, Lavados, Lavanderia, Encargo)";
+  const keywordsNeeded = "(Lavado, Lavanderia, Encargo)";
+
 
 
   useEffect(() => {
@@ -63,7 +64,7 @@ function EditServiceLavanderia() {
       return;
     }
 
-    if (!description || !price || !washCycleTime) {
+    if (!description || !price || washCycleTime === null) {
       setErrMsg("Todos los campos son obligatorios.");
       return;
     }

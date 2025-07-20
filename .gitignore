@@ -8,6 +8,7 @@ backend/logs
 backend/controllers/utils/mailer.js
 backend/.env
 backend/logs/*.log
+backend/prisma/migrations/
 INICIARBACK.bat
 INICIARFRONT.bat
 SLBackend.ps1

@@ -286,6 +286,8 @@ function PedidosLavanderia() {
           : p
       );
 
+      setForcePage(0);
+
       setPedidos(updatedPedidos);
 
       await api.patch(`/orders/${selectedPedido.fk_idServiceOrder}`, {
@@ -353,106 +355,15 @@ function PedidosLavanderia() {
             DryDetail: {
               Machine: {
                 model: selectedDryMachine.model,
-                  machineNumber: selectedDryMachine.machineNumber,
-                    machineType: selectedDryMachine.machineType,
-                      id_machine: selectedDryMachine.id_machine
+                machineNumber: selectedDryMachine.machineNumber,
+                machineType: selectedDryMachine.machineType,
+                id_machine: selectedDryMachine.id_machine
               },
             },
-        };
-        const updatedPedidos = pedidos.map((p) =>
-          p.id_laundryEvent === selectedPedido.id_laundryEvent
-            ? updatedPedido
-            : p
-        );
-        setPedidos(updatedPedidos);
-
-        const updatedWashers = availableMachines.map((machine) =>
-          machine.id_machine === selectedWashMachine.fk_idWashMachine
-            ? { ...machine, freeForUse: true }
-            : machine
-        );
-        setAvailableMachines(updatedWashers);
-
-        // También actualizar la base de datos
-        // await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
-        //   freeForUse: true,
-        // });
-
-        // await api.patch(
-        //   `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
-        //   {
-        //     fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
-        //     fk_idStaffMember: cookies.token,
-        //   }
-        // );
-      }
-    }
-
-      // Cambiar el estado de la secadora seleccionada a false
-      const updatedDryers = availableMachines.map((machine) =>
-      machine.id_machine === selectedDryMachine.id_machine
-        ? { ...machine, freeForUse: false }
-        : machine
-    );
-    setAvailableMachines(updatedDryers);
-
-    // Actualizar la base de datos
-    // await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
-    //   freeForUse: false,
-    // });
-
-    !combinedDry ? modifyCombinedDry(selectedDryMachine) : console.log("TOGETHER");
-
-    await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
-      combinedWash: await selectedPedido.combinedWash,
-      combinedDry: combinedDry,
-      fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
-      fk_idDryMachine: selectedDryMachine.id_machine,
-      fk_idStaffMember: cookies.token,
-    });
-    setForcePage(0);
-  } catch (error) {
-    console.error("Error al confirmar la secadora:", error);
-  }
-};
-
-const handleClothesLineDry = (pedido) => {
-  setSelectedPedido(pedido)
-  try {
-    Swal.fire('OCUPA TENDER LA ROPA', 'Estas prendas son tendidas a mano', 'info').then(async (results) => {
-      if (results.isConfirmed) {
-        console.log("SECADO A MANO")
-
-        const [machinesResponse] = await Promise.all([api.get("/machines")]);
-        const availableMachines = [...machinesResponse.data];
-        const res = await api.get(
-          `/laundryQueueById/${pedido.id_laundryEvent}`
-        );
-        const selectedWashMachine = res.data.WashDetail;
-
-        // Si hay una lavadora seleccionada, cambiar su estado a true
-        if (selectedWashMachine) {
-          // Actualizar el estado del pedido a "inProgressDry"
-          const updatedPedido = {
-            ...pedido,
-            serviceStatus: "inProgressDry",
           };
           const updatedPedidos = pedidos.map((p) =>
-            p.id_laundryEvent === pedido.id_laundryEvent
-              ? {
-                ...updatedPedido,
-                DryDetail: {
-                  Machine: {
-                    model: "Dummy",
-                    machineNumber: 0,
-                  },
-                },
-                LaundryService: {
-                  dryWeight: 0,
-                  description: p.LaundryService.description,
-                  dryCycleTime: 0,
-                }
-              }
+            p.id_laundryEvent === selectedPedido.id_laundryEvent
+              ? updatedPedido
               : p
           );
           setPedidos(updatedPedidos);
@@ -468,592 +379,686 @@ const handleClothesLineDry = (pedido) => {
           // await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
           //   freeForUse: true,
           // });
+
+          // await api.patch(
+          //   `/finishLaundryQueue/${selectedPedido.id_laundryEvent}`,
+          //   {
+          //     fk_idDryMachine: selectedWashMachine.fk_idWashMachine,
+          //     fk_idStaffMember: cookies.token,
+          //   }
+          // );
         }
-
-        await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
-          combinedWash: pedido.combinedWash,
-          combinedDry: combinedDry,
-          fk_idWashMachine: await pedido.WashDetail.Machine.id_machine,
-          fk_idDryMachine: null,
-          fk_idStaffMember: cookies.token,
-        });
-      }
-    });
-    setForcePage(0);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-const handleFinishProcess = async (pedido) => {
-  try {
-    if (!pedido) {
-      console.error("El pedido seleccionado es indefinido.");
-      return;
-    }
-
-    setShowMachineName(false);
-
-    let selectedDryMachine = 0;
-    let availableMachines = "some";
-    if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
-      const [machinesResponse] = await Promise.all([api.get("/machines")]);
-      availableMachines = [...machinesResponse.data];
-      const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
-      selectedDryMachine = res.data.DryDetail;
-    } 
-
-    // Liberar la secadora seleccionada
-    if (selectedDryMachine != null) {
-      if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
-        const updatedDryers = availableMachines.map((machine) =>
-          machine.id_machine === selectedDryMachine.fk_idDryMachine
-            ? { ...machine, freeForUse: true }
-            : machine
-        );
-        setAvailableMachines(updatedDryers);
       }
 
-      // También actualizar la base de datos
-      const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
-        combinedDry: pedido.combinedDry,
-        fk_idDryMachine: (selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null),
+      // Cambiar el estado de la secadora seleccionada a false
+      const updatedDryers = availableMachines.map((machine) =>
+        machine.id_machine === selectedDryMachine.id_machine
+          ? { ...machine, freeForUse: false }
+          : machine
+      );
+      setAvailableMachines(updatedDryers);
+
+      // Actualizar la base de datos
+      // await api.patch(`/machines/${selectedDryMachine.id_machine}`, {
+      //   freeForUse: false,
+      // });
+
+      !combinedDry ? modifyCombinedDry(selectedDryMachine) : console.log("TOGETHER");
+
+      setForcePage(0);
+
+      await api.patch(`/updateDryDetails/${selectedPedido.id_laundryEvent}`, {
+        combinedWash: await selectedPedido.combinedWash,
+        combinedDry: combinedDry,
+        fk_idWashMachine: await selectedPedido.WashDetail.Machine.id_machine,
+        fk_idDryMachine: selectedDryMachine.id_machine,
         fk_idStaffMember: cookies.token,
       });
-
-      // const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
-
-      // Actualizar el estado del pedido a "finish"
-      const updatedPedido = { ...pedido, serviceStatus: "finished" };
-      const updatedPedidos = pedidos.map((p) =>
-        p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
-      );
-      setPedidos(updatedPedidos);
-
-      // if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
-      //   await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
-      //     freeForUse: true,
-      //   });
-      // }
-
-      if (res.data.orderStatus === "finished") {
-        showNotification(
-          "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
-        );
-        await api.post("/sendMessage", {
-          id_order: pedido.fk_idServiceOrder,
-          name:
-            pedido.serviceOrder.client.name +
-            " " +
-            pedido.serviceOrder.client.firstLN +
-            " " +
-            pedido.serviceOrder.client.secondLN,
-          email: pedido.serviceOrder.client.email,
-          tel: "521" + pedido.serviceOrder.client.phone,
-          message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
-          subject: "Tu Ropa esta Lista",
-          text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
-          warning: false,
-        });
-        console.log("NOTIFICACIÓN ENVIADA...");
-      } else {
-        showNotification(`Tarea del Pedido finalizada correctamente`);
-      }
+    } catch (error) {
+      console.error("Error al confirmar la secadora:", error);
     }
-    setForcePage(0);
-  } catch (err) {
-    console.log(err);
+  };
+
+  const handleClothesLineDry = (pedido) => {
+    setSelectedPedido(pedido)
+    try {
+      Swal.fire('OCUPA TENDER LA ROPA', 'Estas prendas son tendidas a mano', 'info').then(async (results) => {
+        if (results.isConfirmed) {
+          console.log("SECADO A MANO")
+
+          const [machinesResponse] = await Promise.all([api.get("/machines")]);
+          const availableMachines = [...machinesResponse.data];
+          const res = await api.get(
+            `/laundryQueueById/${pedido.id_laundryEvent}`
+          );
+          const selectedWashMachine = res.data.WashDetail;
+
+          // Si hay una lavadora seleccionada, cambiar su estado a true
+          if (selectedWashMachine) {
+            // Actualizar el estado del pedido a "inProgressDry"
+            const updatedPedido = {
+              ...pedido,
+              serviceStatus: "inProgressDry",
+            };
+            const updatedPedidos = pedidos.map((p) =>
+              p.id_laundryEvent === pedido.id_laundryEvent
+                ? {
+                  ...updatedPedido,
+                  DryDetail: {
+                    Machine: {
+                      model: "Dummy",
+                      machineNumber: 0,
+                    },
+                  },
+                  LaundryService: {
+                    dryWeight: 0,
+                    description: p.LaundryService.description,
+                    dryCycleTime: 0,
+                  }
+                }
+                : p
+            );
+            setPedidos(updatedPedidos);
+
+            const updatedWashers = availableMachines.map((machine) =>
+              machine.id_machine === selectedWashMachine.fk_idWashMachine
+                ? { ...machine, freeForUse: true }
+                : machine
+            );
+            setAvailableMachines(updatedWashers);
+
+            // También actualizar la base de datos
+            // await api.patch(`/machines/${selectedWashMachine.fk_idWashMachine}`, {
+            //   freeForUse: true,
+            // });
+          }
+
+          setForcePage(0);
+
+          await api.patch(`/updateDryDetails/${pedido.id_laundryEvent}`, {
+            combinedWash: pedido.combinedWash,
+            combinedDry: combinedDry,
+            fk_idWashMachine: await pedido.WashDetail.Machine.id_machine,
+            fk_idDryMachine: null,
+            fk_idStaffMember: cookies.token,
+          });
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
-};
 
-const hideWashModal = async () => {
-  setCombinedWash(false);
-  setShowMachineName(false);
-};
+  const handleFinishProcess = async (pedido) => {
+    try {
+      if (!pedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        return;
+      }
 
-const hideDryerModal = async () => {
-  setCombinedDry(false);
-  setShowDryerSelection(false);
-};
+      setShowMachineName(false);
 
-const modifyCombinedWash = async (selectedWashMachine) => {
-  localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine))
-  setLastWashMachine(selectedWashMachine);
-}
+      let selectedDryMachine = 0;
+      let availableMachines = "some";
+      if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
+        const [machinesResponse] = await Promise.all([api.get("/machines")]);
+        availableMachines = [...machinesResponse.data];
+        const res = await api.get(`/laundryQueueById/${pedido.id_laundryEvent}`);
+        selectedDryMachine = res.data.DryDetail;
+      }
 
-const modifyCombinedDry = async (selectedDryMachine) => {
-  localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine))
-  setLastDryMachine(selectedDryMachine);
-}
-return (
-  <div>
-    <div className="mb-3">
-      <div className="title-container">
-        <strong className="title-strong">Pedidos de Lavanderia</strong>
-      </div>
-    </div>
-    <div className="flex items-center mb-4">
-      <div className="relative w-full">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          className="input-search"
-          value={filtro}
-          onChange={handleFiltroChange}
-        />
-        <div className="absolute top-2.5 left-2.5 text-gray-400">
-          <HiOutlineSearch fontSize={20} className="text-gray-400" />
+      // Liberar la secadora seleccionada
+      if (selectedDryMachine != null) {
+        if (pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) {
+          const updatedDryers = availableMachines.map((machine) =>
+            machine.id_machine === selectedDryMachine.fk_idDryMachine
+              ? { ...machine, freeForUse: true }
+              : machine
+          );
+          setAvailableMachines(updatedDryers);
+        }
+
+        setForcePage(0);
+
+        // También actualizar la base de datos
+        const res = await api.patch(`/finishLaundryQueue/${pedido.id_laundryEvent}`, {
+          combinedDry: pedido.combinedDry,
+          fk_idDryMachine: (selectedDryMachine != 0 ? selectedDryMachine.fk_idDryMachine : null),
+          fk_idStaffMember: cookies.token,
+        });
+
+        // const resOrder = await api.get(`orderStatusById/${pedido.fk_idServiceOrder}`)
+
+        // Actualizar el estado del pedido a "finish"
+        const updatedPedido = { ...pedido, serviceStatus: "finished" };
+        const updatedPedidos = pedidos.map((p) =>
+          p.id_laundryEvent === pedido.id_laundryEvent ? updatedPedido : p
+        );
+        setPedidos(updatedPedidos);
+
+        // if (pedido.LaundryService.dryWeight != 0 || pedido.LaundryService.dryCycleTime != 0) {
+        //   await api.patch(`/machines/${selectedDryMachine.fk_idDryMachine}`, {
+        //     freeForUse: true,
+        //   });
+        // }
+
+        if (res.data.orderStatus === "finished") {
+          showNotification(
+            "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
+          );
+          await api.post("/sendMessage", {
+            id_order: pedido.fk_idServiceOrder,
+            name:
+              pedido.serviceOrder.client.name +
+              " " +
+              pedido.serviceOrder.client.firstLN +
+              " " +
+              pedido.serviceOrder.client.secondLN,
+            email: pedido.serviceOrder.client.email,
+            tel: "521" + pedido.serviceOrder.client.phone,
+            message: `Tu pedido con el folio: ${pedido.fk_idServiceOrder} está listo, Ya puedes pasar a recogerlo.`,
+            subject: "Tu Ropa esta Lista",
+            text: `Tu ropa esta lista, esperamos que la recojas a su brevedad`,
+            warning: false,
+          });
+          console.log("NOTIFICACIÓN ENVIADA...");
+        } else {
+          showNotification(`Tarea del Pedido finalizada correctamente`);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const hideWashModal = async () => {
+    setCombinedWash(false);
+    setShowMachineName(false);
+  };
+
+  const hideDryerModal = async () => {
+    setCombinedDry(false);
+    setShowDryerSelection(false);
+  };
+
+  const modifyCombinedWash = async (selectedWashMachine) => {
+    localStorage.setItem("selectedCombinedWashMachine", JSON.stringify(selectedWashMachine))
+    setLastWashMachine(selectedWashMachine);
+  }
+
+  const modifyCombinedDry = async (selectedDryMachine) => {
+    localStorage.setItem("selectedCombinedDryMachine", JSON.stringify(selectedDryMachine))
+    setLastDryMachine(selectedDryMachine);
+  }
+  return (
+    <div>
+      <div className="mb-3">
+        <div className="title-container">
+          <strong className="title-strong">Pedidos de Lavanderia</strong>
         </div>
       </div>
-      <select
-        className="select-category"
-        value={filtroEstatus}
-        onChange={handleFiltroEstatusChange}
-      >
-        <option className="text-base font-semibold" value="">
-          Todos
-        </option>
-        <option
-          value="pending"
-          className="text-gray-600 font-semibold text-base"
+      <div className="flex items-center mb-4">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar..."
+            className="input-search"
+            value={filtro}
+            onChange={handleFiltroChange}
+          />
+          <div className="absolute top-2.5 left-2.5 text-gray-400">
+            <HiOutlineSearch fontSize={20} className="text-gray-400" />
+          </div>
+        </div>
+        <select
+          className="select-category"
+          value={filtroEstatus}
+          onChange={handleFiltroEstatusChange}
         >
-          Pendientes
-        </option>
-        <option
-          value="inProgressWash"
-          className="text-Cerulean font-semibold text-base"
-        >
-          En Proceso de Lavado
-        </option>
-        <option
-          value="inProgressDry"
-          className="text-yellow-600 font-semibold text-base"
-        >
-          En Proceso de Secado
-        </option>
+          <option className="text-base font-semibold" value="">
+            Todos
+          </option>
+          <option
+            value="pending"
+            className="text-gray-600 font-semibold text-base"
+          >
+            Pendientes
+          </option>
+          <option
+            value="inProgressWash"
+            className="text-Cerulean font-semibold text-base"
+          >
+            En Proceso de Lavado
+          </option>
+          <option
+            value="inProgressDry"
+            className="text-yellow-600 font-semibold text-base"
+          >
+            En Proceso de Secado
+          </option>
 
-      </select>
-    </div>
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm text-left text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-200">
-          <tr>
-            <th>No. Pedido</th>
-            <th>Recibió</th>
-            <th>Cliente</th>
-            <th>Detalles</th>
-            <th>Fecha de Entrega</th>
-            <th>Equipo</th>
-            <th>Estatus</th>
-            <th>Observaciones</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredPedidos
-            .filter(
+        </select>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200">
+            <tr>
+              <th>No. Pedido</th>
+              <th>Recibió</th>
+              <th>Cliente</th>
+              <th>Detalles</th>
+              <th>Fecha de Entrega</th>
+              <th>Equipo</th>
+              <th>Estatus</th>
+              <th>Observaciones</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPedidos
+              .filter(
+                (pedido) =>
+                  pedido.serviceStatus !== "finished" &&
+                  pedido.serviceStatus !== "delivered"
+              ) // Filtrar pedidos que no tienen estado "finished"
+              .slice(startIndex, endIndex)
+              .map((pedido) => (
+                <tr key={pedido.id_laundryEvent}>
+                  <td className="py-3 px-1 text-center">
+                    {pedido.id_description}
+                  </td>
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.serviceOrder.user.name} {pedido.serviceOrder.user.firstLN} {pedido.serviceOrder.user.secondLN}
+                  </td>
+
+                  <td className="py-3 px-6 font-medium text-gray-900">
+                    {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.LaundryService.description}
+                  </td>
+
+                  <td className="py-3 px-6">
+                    <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
+                    <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
+                  </td>
+
+                  <td className="py-3 px-7 text-black">{pedido.serviceStatus === "inProgressWash" && pedido.WashDetail.Machine ?
+                    <div className="flex"><GiWashingMachine className="text-blue-700" size={32} />
+                      <div className="grid-flow-col">
+                        <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.WashDetail.Machine.machineNumber}</span></p>
+                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.WashDetail.Machine.model}</span></p>
+                      </div>
+                    </div> :
+                    pedido.serviceStatus === "inProgressDry" && (pedido.DryDetail.Machine && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) ?
+                      <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
+                        <div className="grid-flow-col">
+                          <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.DryDetail.Machine.machineNumber}</span></p>
+                          <p className="font-semibold">Modelo: <span className="font-normal">{pedido.DryDetail.Machine.model}</span></p>
+                        </div>
+                      </div> :
+                      pedido.serviceStatus === "inProgressDry" && (pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0) ?
+                        <div className="flex"><GiClothesline className="text-red-500" size={32} />
+                          <div className="grid-flow-col">
+                            <p className="ml-2 font-semibold">Secado <span className="font-black text-red-600">Tendido</span></p>
+                          </div>
+                        </div> : "-"}
+                  </td>
+
+                  <td className="py-3 px-6 font-bold ">
+                    {pedido.serviceStatus === "pending" ? (
+                      <span className="text-gray-600 pl-1">
+                        <MinusCircleOutlined /> Pendiente
+                      </span>
+                    ) : pedido.serviceStatus === "stored" ? (
+                      <span className="text-fuchsia-600 pl-1">
+                        <DropboxOutlined /> Almacenado
+                      </span>
+                    ) : pedido.serviceStatus === "inProgressWash" ? (
+                      <span className="text-Cerulean pl-1">
+                        <ClockCircleOutlined /> En Proceso de Lavado
+                      </span>
+                    ) : pedido.serviceStatus === "inProgressDry" ? (
+                      <span className="text-yellow-600 pl-1">
+                        <ClockCircleOutlined /> En Proceso de Secado
+                      </span>
+                    ) : pedido.serviceStatus === "finished" ? (
+                      <span className="text-blue-600 pl-1">
+                        <IssuesCloseOutlined /> Finalizado no entregado
+                      </span>
+                    ) : pedido.serviceStatus === "delivered" ? (
+                      <span className="text-green-600 pl-1">
+                        <CheckCircleOutlined /> Finalizado Entregado
+                      </span>
+                    ) : pedido.serviceStatus === "cancelled" ? (
+                      <span className="text-red-600 pl-1">
+                        <StopOutlined /> Cancelado
+                      </span>
+                    ) : (
+                      <span className="text-gray-600 pl-1">
+                        Estado Desconocido
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {pedido.serviceOrder.notes
+                      ? pedido.serviceOrder.notes
+                      : "No hay notas"}
+                  </td>
+                  <td className="py-3 px-6">
+                    {pedido.serviceStatus === "pending" && (
+                      <button
+                        onClick={() => handleStartProcess(pedido)}
+                        className="btn-primary ml-2 mt-1"
+                      >
+                        Iniciar
+                      </button>
+                    )}
+
+                    {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0 && (
+                      <button
+                        onClick={() => handleClothesLineDry(pedido)}
+                        className="btn-dry ml-2 mt-1"
+                      >
+                        Secado
+                      </button>
+                    )}
+
+                    {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0 && (
+                      <button
+                        onClick={() => handleStartDryerProcess(pedido)}
+                        className="btn-dry ml-2 mt-1"
+                      >
+                        Secado
+                      </button>
+                    )}
+
+                    {pedido.serviceStatus === "inProgressDry" && (
+                      <button
+                        onClick={() => handleFinishProcess(pedido)}
+                        className="btn-finish ml-2 mt-1"
+                      >
+                        Terminar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-center items-center my-8">
+        <ReactPaginate
+          previousLabel="Anterior"
+          nextLabel="Siguiente"
+          breakLabel="..."
+          forcePage={(forcePage || 0)}
+          pageCount={Math.ceil(
+            filteredPedidos.filter(
               (pedido) =>
                 pedido.serviceStatus !== "finished" &&
                 pedido.serviceStatus !== "delivered"
-            ) // Filtrar pedidos que no tienen estado "finished"
-            .slice(startIndex, endIndex)
-            .map((pedido) => (
-              <tr key={pedido.id_laundryEvent}>
-                <td className="py-3 px-1 text-center">
-                  {pedido.id_description}
-                </td>
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.serviceOrder.user.name} {pedido.serviceOrder.user.firstLN} {pedido.serviceOrder.user.secondLN}
-                </td>
+            ).length / itemsPerPage
+          )}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          containerClassName="pagination flex"
+          pageLinkClassName="pageLinkClassName"
+          previousLinkClassName="prevOrNextLinkClassName"
+          nextLinkClassName="prevOrNextLinkClassName"
+          breakLinkClassName="breakLinkClassName"
+          activeLinkClassName="activeLinkClassName"
+        />
+      </div>
 
-                <td className="py-3 px-6 font-medium text-gray-900">
-                  {pedido.serviceOrder.client.name} {pedido.serviceOrder.client.firstLN} {pedido.serviceOrder.client.secondLN}
-                </td>
-                <td className="py-3 px-6">
-                  {pedido.LaundryService.description}
-                </td>
+      <Modal
+        open={showMachineName}
+        onCancel={() => hideWashModal()}
+        footer={[
+          <button
+            key="submit"
+            className="btn-primary"
+            onClick={() => handleConfirmMachineSelection()}
+            disabled={!selectedWashMachine}
+          >
+            Confirmar
+          </button>,
 
-                <td className="py-3 px-6">
-                  <p>{formatDate(pedido.serviceOrder.scheduledDeliveryDate)}</p>
-                  <p>{formatTime(pedido.serviceOrder.scheduledDeliveryTime)}</p>
-                </td>
+          <button
+            key="cancel"
+            className="btn-primary-cancel ml-2"
+            onClick={() => hideWashModal()}
+          >
+            Cancelar
+          </button>,
+        ]}
+        width={1000}
+        style={{
+          body: {
+            height: 400,
+            overflow: "hidden",
+            overflowY: "scroll",
+          },
+        }}
+      >
+        <div>
+          <p className="mb-4 text-xl font-bold">Selecciona una lavadora:</p>
+          <table className="w-full text-center">
+            <thead className="bg-gray-200">
+              <tr>
+                <th>No. de Equipo</th>
+                <th>Tipo de Máquina</th>
+                <th>Modelo</th>
+                <th>Tiempo de Ciclo</th>
+                <th>Peso</th>
+                <th>Estado de la Máquina</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {availableMachines
+                .filter(
+                  (machine) =>
+                    machine.machineType === "lavadora" &&
+                    machine.status === "available"
+                )
+                .map((machine) => (
+                  <tr key={machine.id_machine}>
+                    <td className="font-bold text-blue-600">{machine.machineNumber}</td>
+                    <td className="text-blue-600">{machine.machineType}</td>
+                    <td>{machine.model}</td>
+                    <td>{machine.cicleTime}</td>
+                    <td>{machine.weight}</td>
+                    <td
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
 
-                <td className="py-3 px-7 text-black">{pedido.serviceStatus === "inProgressWash" && pedido.WashDetail.Machine ?
-                  <div className="flex"><GiWashingMachine className="text-blue-700" size={32} />
-                    <div className="grid-flow-col">
-                      <p className="font-semibold">No. Equipo: <span className="font-black text-blue-600">{pedido.WashDetail.Machine.machineNumber}</span></p>
-                      <p className="font-semibold">Modelo: <span className="font-normal">{pedido.WashDetail.Machine.model}</span></p>
-                    </div>
-                  </div> :
-                  pedido.serviceStatus === "inProgressDry" && (pedido.DryDetail.Machine && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0) ?
-                    <div className="flex"><BiSolidDryer className="text-green-500" size={32} />
-                      <div className="grid-flow-col">
-                        <p className="font-semibold">No. Equipo: <span className="font-black text-green-600">{pedido.DryDetail.Machine.machineNumber}</span></p>
-                        <p className="font-semibold">Modelo: <span className="font-normal">{pedido.DryDetail.Machine.model}</span></p>
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_machine}`}
+                          checked={selectedWashMachine === machine}
+                          onChange={() => handleSelectWashMachine(machine)}
+                          className="mb-2"
+                          disabled={!machine.freeForUse}
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
                       </div>
-                    </div> :
-                    pedido.serviceStatus === "inProgressDry" && (pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0) ?
-                      <div className="flex"><GiClothesline className="text-red-500" size={32} />
-                        <div className="grid-flow-col">
-                          <p className="ml-2 font-semibold">Secado <span className="font-black text-red-600">Tendido</span></p>
-                        </div>
-                      </div> : "-"}
-                </td>
-
-                <td className="py-3 px-6 font-bold ">
-                  {pedido.serviceStatus === "pending" ? (
-                    <span className="text-gray-600 pl-1">
-                      <MinusCircleOutlined /> Pendiente
-                    </span>
-                  ) : pedido.serviceStatus === "stored" ? (
-                    <span className="text-fuchsia-600 pl-1">
-                      <DropboxOutlined /> Almacenado
-                    </span>
-                  ) : pedido.serviceStatus === "inProgressWash" ? (
-                    <span className="text-Cerulean pl-1">
-                      <ClockCircleOutlined /> En Proceso de Lavado
-                    </span>
-                  ) : pedido.serviceStatus === "inProgressDry" ? (
-                    <span className="text-yellow-600 pl-1">
-                      <ClockCircleOutlined /> En Proceso de Secado
-                    </span>
-                  ) : pedido.serviceStatus === "finished" ? (
-                    <span className="text-blue-600 pl-1">
-                      <IssuesCloseOutlined /> Finalizado no entregado
-                    </span>
-                  ) : pedido.serviceStatus === "delivered" ? (
-                    <span className="text-green-600 pl-1">
-                      <CheckCircleOutlined /> Finalizado Entregado
-                    </span>
-                  ) : pedido.serviceStatus === "cancelled" ? (
-                    <span className="text-red-600 pl-1">
-                      <StopOutlined /> Cancelado
-                    </span>
-                  ) : (
-                    <span className="text-gray-600 pl-1">
-                      Estado Desconocido
-                    </span>
-                  )}
-                </td>
-                <td>
-                  {pedido.serviceOrder.notes
-                    ? pedido.serviceOrder.notes
-                    : "No hay notas"}
-                </td>
-                <td className="py-3 px-6">
-                  {pedido.serviceStatus === "pending" && (
-                    <button
-                      onClick={() => handleStartProcess(pedido)}
-                      className="btn-primary ml-2 mt-1"
-                    >
-                      Iniciar
-                    </button>
-                  )}
-
-                  {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight == 0 && pedido.LaundryService.dryCycleTime == 0 && (
-                    <button
-                      onClick={() => handleClothesLineDry(pedido)}
-                      className="btn-dry ml-2 mt-1"
-                    >
-                      Secado
-                    </button>
-                  )}
-
-                  {pedido.serviceStatus === "inProgressWash" && pedido.LaundryService.dryWeight != 0 && pedido.LaundryService.dryCycleTime != 0 && (
-                    <button
-                      onClick={() => handleStartDryerProcess(pedido)}
-                      className="btn-dry ml-2 mt-1"
-                    >
-                      Secado
-                    </button>
-                  )}
-
-                  {pedido.serviceStatus === "inProgressDry" && (
-                    <button
-                      onClick={() => handleFinishProcess(pedido)}
-                      className="btn-finish ml-2 mt-1"
-                    >
-                      Terminar
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
-    <div className="flex justify-center items-center my-8">
-      <ReactPaginate
-        previousLabel="Anterior"
-        nextLabel="Siguiente"
-        breakLabel="..."
-        forcePage = {(forcePage || 0)}
-        pageCount={Math.ceil(
-          filteredPedidos.filter(
-            (pedido) =>
-              pedido.serviceStatus !== "finished" &&
-              pedido.serviceStatus !== "delivered"
-          ).length / itemsPerPage
-        )}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={2}
-        onPageChange={handlePageChange}
-        containerClassName="pagination flex"
-        pageLinkClassName="pageLinkClassName"
-        previousLinkClassName="prevOrNextLinkClassName"
-        nextLinkClassName="prevOrNextLinkClassName"
-        breakLinkClassName="breakLinkClassName"
-        activeLinkClassName="activeLinkClassName"
-      />
-    </div>
-
-    <Modal
-      open={showMachineName}
-      onCancel={() => hideWashModal()}
-      footer={[
-        <button
-          key="submit"
-          className="btn-primary"
-          onClick={() => handleConfirmMachineSelection()}
-          disabled={!selectedWashMachine}
-        >
-          Confirmar
-        </button>,
-
-        <button
-          key="cancel"
-          className="btn-primary-cancel ml-2"
-          onClick={() => hideWashModal()}
-        >
-          Cancelar
-        </button>,
-      ]}
-      width={1000}
-      style={{
-        body: {
-          height: 400,
-          overflow: "hidden",
-          overflowY: "scroll",
-        },
-      }}
-    >
-      <div>
-        <p className="mb-4 text-xl font-bold">Selecciona una lavadora:</p>
-        <table className="w-full text-center">
-          <thead className="bg-gray-200">
-            <tr>
-              <th>No. de Equipo</th>
-              <th>Tipo de Máquina</th>
-              <th>Modelo</th>
-              <th>Tiempo de Ciclo</th>
-              <th>Peso</th>
-              <th>Estado de la Máquina</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {availableMachines
-              .filter(
-                (machine) =>
-                  machine.machineType === "lavadora" &&
-                  machine.status === "available"
-              )
-              .map((machine) => (
-                <tr key={machine.id_machine}>
-                  <td className="font-bold text-blue-600">{machine.machineNumber}</td>
-                  <td className="text-blue-600">{machine.machineType}</td>
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
+                    </td>
+                  </tr>
+                ))}
+              {lastWashMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Lavadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Lavadora Anterior</p></td>}
+              {/* {console.log("WASHMACHINE " + lastWashMachine)} */}
+              {lastWashMachine.machineNumber != 0 ? (
+                <tr key={lastWashMachine.id_machine}>
+                  <td className="font-bold text-blue-600">{lastWashMachine.machineNumber}</td>
+                  <td className="text-blue-600">{lastWashMachine.machineType}</td>
+                  <td>{lastWashMachine.model}</td>
+                  <td>{lastWashMachine.cicleTime}</td>
+                  <td>{lastWashMachine.weight}</td>
                   <td
-                    className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                    className={`${lastWashMachine.freeForUse ? "text-green-500" : "text-red-500"
                       }`}
                   >
-                    {machine.freeForUse ? "Libre" : "Ocupado"}
+                    {lastWashMachine.freeForUse ? "Libre" : "Ocupado"}
                   </td>
 
                   <td>
                     <div className="flex flex-col items-center">
                       <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedWashMachine === machine}
-                        onChange={() => handleSelectWashMachine(machine)}
+                        key={`checkbox_${lastWashMachine.id_machine}`}
+                        checked={selectedWashMachine === lastWashMachine}
+                        onChange={() => handleSelectCombinedWashMachine(lastWashMachine)}
+                        // disabled={!selectedWashMachine}
+                        // disabled={combinedWash}
                         className="mb-2"
-                        disabled={!machine.freeForUse}
                       />
                       <span className="text-blue-500">Seleccionar</span>
                     </div>
                   </td>
                 </tr>
-              ))}
-            {lastWashMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Lavadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Lavadora Anterior</p></td>}
-            {/* {console.log("WASHMACHINE " + lastWashMachine)} */}
-            {lastWashMachine.machineNumber != 0 ? (
-              <tr key={lastWashMachine.id_machine}>
-                <td className="font-bold text-blue-600">{lastWashMachine.machineNumber}</td>
-                <td className="text-blue-600">{lastWashMachine.machineType}</td>
-                <td>{lastWashMachine.model}</td>
-                <td>{lastWashMachine.cicleTime}</td>
-                <td>{lastWashMachine.weight}</td>
-                <td
-                  className={`${lastWashMachine.freeForUse ? "text-green-500" : "text-red-500"
-                    }`}
-                >
-                  {lastWashMachine.freeForUse ? "Libre" : "Ocupado"}
-                </td>
-
-                <td>
-                  <div className="flex flex-col items-center">
-                    <Checkbox
-                      key={`checkbox_${lastWashMachine.id_machine}`}
-                      checked={selectedWashMachine === lastWashMachine}
-                      onChange={() => handleSelectCombinedWashMachine(lastWashMachine)}
-                      // disabled={!selectedWashMachine}
-                      // disabled={combinedWash}
-                      className="mb-2"
-                    />
-                    <span className="text-blue-500">Seleccionar</span>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              ""
-            )}
-          </tbody>
-        </table>
-      </div>
-    </Modal>
-
-    <Modal
-      open={showDryerSelection}
-      onCancel={() => hideDryerModal()}
-      footer={[
-        <button
-          key="submit"
-          className="btn-primary"
-          onClick={() => handleConfirmDryerSelection()}
-          disabled={!selectedDryMachine}
-        >
-          Confirmar
-        </button>,
-        <button
-          key="cancel"
-          className="btn-primary-cancel ml-2"
-          onClick={() => hideDryerModal()}
-        >
-          Cancelar
-        </button>,
-      ]}
-      width={1000}
-      style={{
-        body: {
-          height: 400,
-          overflow: "hidden",
-          overflowY: "scroll",
-        },
-      }}
-    >
-      <div>
-        <p className="mb-4 text-xl font-bold">Selecciona una secadora:</p>
-        <table className="w-full text-center border-collapse">
-          <thead className="bg-gray-200">
-            <tr>
-              <th>No. de Equipo</th>
-              <th>Tipo de Máquina</th>
-              <th>Modelo</th>
-              <th>Tiempo de Ciclo</th>
-              <th>Peso</th>
-              <th>Estado de la Máquina</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {availableMachines
-              .filter(
-                (machine) =>
-                  machine.machineType === "secadora" &&
-                  machine.status === "available"
-              )
-              .map((machine) => (
-                <tr key={machine.id_machine}>
-                  <td className="font-bold text-green-500">{machine.machineNumber}</td>
-                  <td className="text-green-500">{machine.machineType}</td>
-                  <td>{machine.model}</td>
-                  <td>{machine.cicleTime}</td>
-                  <td>{machine.weight}</td>
-                  <td
-                    className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
-                      }`}
-                  >
-                    {machine.freeForUse ? "Libre" : "Ocupado"}
-                  </td>
-
-                  <td>
-                    <div className="flex flex-col items-center">
-                      <Checkbox
-                        key={`checkbox_${machine.id_machine}`}
-                        checked={selectedDryMachine === machine}
-                        onChange={() => handleSelectDryMachine(machine)}
-                        className="mb-2"
-                        disabled={!machine.freeForUse}
-                      />
-                      <span className="text-blue-500">Seleccionar</span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            {lastDryMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Secadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Secadora Anterior</p></td>}
-            {/* {console.log("DRYMACHINE " + lastDryMachine)} */}
-            {lastDryMachine.machineNumber != 0 ? (
-              <tr key={lastDryMachine.id_machine}>
-                <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>
-                <td className="text-green-500">{lastDryMachine.machineType}</td>
-                <td>{lastDryMachine.model}</td>
-                <td>{lastDryMachine.cicleTime}</td>
-                <td>{lastDryMachine.weight}</td>
-                <td
-                  className={`${lastDryMachine.freeForUse ? "text-green-500" : "text-red-500"
-                    }`}
-                >
-                  {lastDryMachine.freeForUse ? "Libre" : "Ocupado"}
-                </td>
-
-                <td>
-                  <div className="flex flex-col items-center">
-                    <Checkbox
-                      key={`checkbox_${lastDryMachine.id_machine}`}
-                      checked={selectedDryMachine === lastDryMachine}
-                      onChange={() => handleSelectCombinedDryMachine(lastDryMachine)}
-                      // disabled={combinedDry}
-                      className="mb-2"
-                    />
-                    <span className="text-blue-500">Seleccionar</span>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              ""
-            )}
-          </tbody>
-        </table>
-      </div>
-    </Modal>
-
-    <Modal
-      open={notificationVisible}
-      footer={null}
-      onCancel={() => setNotificationVisible(false)}
-      destroyOnClose
-    >
-      <div className="text-center">
-        <div style={{ fontSize: "36px", color: "#52c41a" }}>
-          <CheckCircleOutlined />
+              ) : (
+                ""
+              )}
+            </tbody>
+          </table>
         </div>
-        <p>{notificationMessage}</p>
-      </div>
-    </Modal>
-  </div>
-);
+      </Modal>
+
+      <Modal
+        open={showDryerSelection}
+        onCancel={() => hideDryerModal()}
+        footer={[
+          <button
+            key="submit"
+            className="btn-primary"
+            onClick={() => handleConfirmDryerSelection()}
+            disabled={!selectedDryMachine}
+          >
+            Confirmar
+          </button>,
+          <button
+            key="cancel"
+            className="btn-primary-cancel ml-2"
+            onClick={() => hideDryerModal()}
+          >
+            Cancelar
+          </button>,
+        ]}
+        width={1000}
+        style={{
+          body: {
+            height: 400,
+            overflow: "hidden",
+            overflowY: "scroll",
+          },
+        }}
+      >
+        <div>
+          <p className="mb-4 text-xl font-bold">Selecciona una secadora:</p>
+          <table className="w-full text-center border-collapse">
+            <thead className="bg-gray-200">
+              <tr>
+                <th>No. de Equipo</th>
+                <th>Tipo de Máquina</th>
+                <th>Modelo</th>
+                <th>Tiempo de Ciclo</th>
+                <th>Peso</th>
+                <th>Estado de la Máquina</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {availableMachines
+                .filter(
+                  (machine) =>
+                    machine.machineType === "secadora" &&
+                    machine.status === "available"
+                )
+                .map((machine) => (
+                  <tr key={machine.id_machine}>
+                    <td className="font-bold text-green-500">{machine.machineNumber}</td>
+                    <td className="text-green-500">{machine.machineType}</td>
+                    <td>{machine.model}</td>
+                    <td>{machine.cicleTime}</td>
+                    <td>{machine.weight}</td>
+                    <td
+                      className={`${machine.freeForUse ? "text-green-500" : "text-red-500"
+                        }`}
+                    >
+                      {machine.freeForUse ? "Libre" : "Ocupado"}
+                    </td>
+
+                    <td>
+                      <div className="flex flex-col items-center">
+                        <Checkbox
+                          key={`checkbox_${machine.id_machine}`}
+                          checked={selectedDryMachine === machine}
+                          onChange={() => handleSelectDryMachine(machine)}
+                          className="mb-2"
+                          disabled={!machine.freeForUse}
+                        />
+                        <span className="text-blue-500">Seleccionar</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              {lastDryMachine.machineNumber != 0 ? <td colSpan={7}><p className="font-bold text-lg text-center">Es Secadora Combinada ?</p></td> : <td colSpan={7}><p className="font-bold  text-lg text-center">No hay Secadora Anterior</p></td>}
+              {/* {console.log("DRYMACHINE " + lastDryMachine)} */}
+              {lastDryMachine.machineNumber != 0 ? (
+                <tr key={lastDryMachine.id_machine}>
+                  <td className="font-bold text-green-500">{lastDryMachine.machineNumber}</td>
+                  <td className="text-green-500">{lastDryMachine.machineType}</td>
+                  <td>{lastDryMachine.model}</td>
+                  <td>{lastDryMachine.cicleTime}</td>
+                  <td>{lastDryMachine.weight}</td>
+                  <td
+                    className={`${lastDryMachine.freeForUse ? "text-green-500" : "text-red-500"
+                      }`}
+                  >
+                    {lastDryMachine.freeForUse ? "Libre" : "Ocupado"}
+                  </td>
+
+                  <td>
+                    <div className="flex flex-col items-center">
+                      <Checkbox
+                        key={`checkbox_${lastDryMachine.id_machine}`}
+                        checked={selectedDryMachine === lastDryMachine}
+                        onChange={() => handleSelectCombinedDryMachine(lastDryMachine)}
+                        // disabled={combinedDry}
+                        className="mb-2"
+                      />
+                      <span className="text-blue-500">Seleccionar</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                ""
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Modal>
+
+      <Modal
+        open={notificationVisible}
+        footer={null}
+        onCancel={() => setNotificationVisible(false)}
+        destroyOnClose
+      >
+        <div className="text-center">
+          <div style={{ fontSize: "36px", color: "#52c41a" }}>
+            <CheckCircleOutlined />
+          </div>
+          <p>{notificationMessage}</p>
+        </div>
+      </Modal>
+    </div>
+  );
 }
 
 export default PedidosLavanderia;

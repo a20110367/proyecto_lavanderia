@@ -73,13 +73,13 @@ export const generateTicket = async (req, res) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true },
-            { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
+            { text: "TIPO PAGO: " + payForm, align: "RIGHT", bold: true }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT", bold: true }
         ]);
 
         printer.drawLine();
@@ -130,7 +130,7 @@ export const generateTicket = async (req, res) => {
         // printer.print("Hello World");                               // Append text
         // printer.println("Hello World");  
 
-        printer.setTextSize(2, 2);
+        printer.setTextSize(3, 3);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
@@ -142,7 +142,9 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.println('Cliente: ' + order.client)
+        printer.setTextSize(2, 2);
+        printer.println('Cliente: ');
+        printer.println(order.client);
         printer.bold(false)
 
         // printer.bold(true)
@@ -177,13 +179,17 @@ export const generateTicket = async (req, res) => {
 
         printer.drawLine();
 
-        printer.println('PROFECO NO. REGISTRO: 4390/2013')
-        printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
+        printer.println('PROFECO NO. REGISTRO: 1761/2024')
+        printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+
+        printer.drawLine();
+        printer.setTextSize(3, 3);
+        printer.println(order.serviceType.toUpperCase())
 
         printer.cut();
         // let execute = await printer.execute()
@@ -312,13 +318,13 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "CATEGORIA: " + order.serviceType.toUpperCase(), align: "LEFT", bold: true },
-            { text: "TIPO PAGO: " + payForm, align: "RIGHT" }
+            { text: "TIPO PAGO: " + payForm, align: "RIGHT", bold: true }
         ]);
 
         printer.setTextNormal();
         printer.tableCustom([                                       // Prints table with custom settings (text, align, width, cols, bold)
             { text: "Cajero: " + order.casher, align: "LEFT", bold: true },
-            { text: "FORMA PAGO: " + payMethod, align: "RIGHT" }
+            { text: "FORMA PAGO: " + payMethod, align: "RIGHT", bold: true }
         ]);
 
         printer.drawLine();
@@ -351,7 +357,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         printer.drawLine();
 
-        printer.setTextSize(2, 2);
+        printer.setTextSize(3, 3);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
@@ -363,7 +369,9 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.println('Cliente: ' + order.client)
+        printer.setTextSize(2, 2);
+        printer.println('Cliente: ');
+        printer.println(order.client);
         printer.bold(false)
 
         // printer.bold(true)
@@ -399,13 +407,17 @@ const printTicketFromBackend = async (orderParameter) => {
 
         printer.drawLine();
 
-        printer.println('PROFECO NO. REGISTRO: 4390/2013')
-        printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
+        printer.println('PROFECO NO. REGISTRO: 1761/2024')
+        printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+
+        printer.drawLine();
+        printer.setTextSize(3, 3);
+        printer.println(order.serviceType.toUpperCase())
 
         printer.cut();
         let execute = await printer.execute()
@@ -467,6 +479,11 @@ const printOrderDetailTicket = async (order) => {
                     printer.println(`Observaciones:`)
                     printer.println(`${order.notes}`)
                 }
+
+                printer.drawLine();
+                printer.setTextSize(3, 3);
+                printer.println(order.serviceType.toUpperCase())
+
                 printer.cut();
                 count++;
                 console.log('Order Detail Printed!')
@@ -555,6 +572,10 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println(`${order.notes}`)
                     }
 
+                    printer.drawLine();
+                    printer.setTextSize(3, 3);
+                    printer.println(order.serviceType.toUpperCase())
+
                     printer.cut();
 
                     console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
@@ -607,6 +628,10 @@ const printOrderDetailIronTicket = async (order) => {
                             printer.println(`${order.notes}`)
                         }
 
+                        printer.drawLine();
+                        printer.setTextSize(3, 3);
+                        printer.println(order.serviceType.toUpperCase())
+
                         printer.cut();
                     }
                     console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
@@ -658,6 +683,9 @@ const printOrderDetailIronTicket = async (order) => {
                 printer.println(`Observaciones:`)
                 printer.println(`${order.notes}`)
             }
+            printer.drawLine();
+            printer.setTextSize(3, 3);
+            printer.println(order.serviceType.toUpperCase())
             printer.cut();
         }
 
@@ -853,14 +881,18 @@ export const reprintOrder = async (req, res) => {
 
         printer.drawLine();
         if (canceled) {
+            printer.setTextSize(3, 3);
             printer.bold(true);                             // Append text with new line
             printer.println('Total: $' + canceled.amount)
             printer.bold(false);
+            printer.setTextNormal();
             printer.println(n2word(canceled.amount))
         } else {
+            printer.setTextSize(3, 3);
             printer.bold(true);                             // Append text with new line
             printer.println('Total: $' + order.totalPrice)
             printer.bold(false);
+            printer.setTextNormal();
             printer.println(n2word(order.totalPrice))
         }
 
@@ -869,7 +901,9 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.println('Cliente: ' + client)
+        printer.setTextSize(2, 2);
+        printer.println('Cliente: ');
+        printer.println(order.client);
         printer.bold(false)
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
@@ -893,13 +927,17 @@ export const reprintOrder = async (req, res) => {
 
         printer.drawLine();
 
-        printer.println('PROFECO NO. REGISTRO: 4390/2013')
-        printer.println('NO. EXPEDIENTE PFC.B.E. 7/005243/20013')
+        printer.println('PROFECO NO. REGISTRO: 1761/2024')
+        printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+
+        printer.drawLine();
+        printer.setTextSize(3, 3);
+        printer.println(order.category.categoryDescription.toUpperCase())
 
         printer.setTextQuadArea();
         printer.println('NO VALIDO COMO')
@@ -1857,6 +1895,10 @@ export const printCanceledOrder = async (req, res) => {
         printer.newLine()
         printer.newLine()
         printer.println('_________________________________')
+
+        printer.drawLine();
+        printer.setTextSize(3, 3);
+        printer.println(canceled.order.category.categoryDescription.toUpperCase())
 
         printer.cut();
 

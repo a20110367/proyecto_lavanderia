@@ -130,7 +130,7 @@ export const generateTicket = async (req, res) => {
         // printer.print("Hello World");                               // Append text
         // printer.println("Hello World");  
 
-        printer.setTextSize(3, 3);
+        printer.setTextSize(2, 2);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
@@ -145,6 +145,7 @@ export const generateTicket = async (req, res) => {
         printer.setTextSize(2, 2);
         printer.println('Cliente: ');
         printer.println(order.client);
+        printer.setTextNormal();
         printer.bold(false)
 
         // printer.bold(true)
@@ -357,7 +358,7 @@ const printTicketFromBackend = async (orderParameter) => {
 
         printer.drawLine();
 
-        printer.setTextSize(3, 3);
+        printer.setTextSize(2, 2);
         printer.bold(true);                             // Append text with new line
         printer.println('Total: $' + order.subtotal)
         printer.bold(false);
@@ -372,7 +373,9 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.setTextSize(2, 2);
         printer.println('Cliente: ');
         printer.println(order.client);
+        printer.setTextNormal();
         printer.bold(false)
+
 
         // printer.bold(true)
         // if (order.pieces === 0 || !order.pieces) {
@@ -888,7 +891,7 @@ export const reprintOrder = async (req, res) => {
             printer.setTextNormal();
             printer.println(n2word(canceled.amount))
         } else {
-            printer.setTextSize(3, 3);
+            printer.setTextSize(2, 2);
             printer.bold(true);                             // Append text with new line
             printer.println('Total: $' + order.totalPrice)
             printer.bold(false);
@@ -904,7 +907,9 @@ export const reprintOrder = async (req, res) => {
         printer.setTextSize(2, 2);
         printer.println('Cliente: ');
         printer.println(order.client);
+        printer.setTextNormal();
         printer.bold(false)
+
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 

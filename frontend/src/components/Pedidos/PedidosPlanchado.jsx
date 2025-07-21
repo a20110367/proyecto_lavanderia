@@ -143,16 +143,16 @@ function PedidosPlanchado() {
     try {
       if (selectedMachine && availableMachines) {
         // Modificar el estado local de la lavadora seleccionada
-        const updatedMachines = availableMachines.map((machine) =>
-          machine.id_ironStation === selectedMachine.id_ironStation
-            ? { ...machine, freeForUse: false }
-            : machine
-        );
-        setAvailableMachines(updatedMachines);
+        // const updatedMachines = availableMachines.map((machine) =>
+        //   machine.id_ironStation === selectedMachine.id_ironStation
+        //     ? { ...machine, freeForUse: false }
+        //     : machine
+        // );
+        // setAvailableMachines(updatedMachines);
 
-        await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
-          freeForUse: false,
-        });
+        // await api.patch(`/ironStations/${selectedMachine.id_ironStation}`, {
+        //   freeForUse: false,
+        // });
         showNotification(`Pedido iniciado en ${selectedMachine.machineType}`);
       }
 
@@ -200,16 +200,16 @@ function PedidosPlanchado() {
         setPedidos(updatedPedidos);
 
         // Modificar el estado local de la lavadora seleccionada
-        const updatedMachines = availableMachines.map((machine) =>
-          machine.id_ironStation === selectedMachine.fk_idIronStation
-            ? { ...machine, freeForUse: true }
-            : machine
-        );
-        setAvailableMachines(updatedMachines);
+        // const updatedMachines = availableMachines.map((machine) =>
+        //   machine.id_ironStation === selectedMachine.fk_idIronStation
+        //     ? { ...machine, freeForUse: true }
+        //     : machine
+        // );
+        // setAvailableMachines(updatedMachines);
 
-        await api.patch(`/ironStations/${selectedMachine.fk_idIronStation}`, {
-          freeForUse: true,
-        });
+        // await api.patch(`/ironStations/${selectedMachine.fk_idIronStation}`, {
+        //   freeForUse: true,
+        // });
 
         await api.patch(`/finishIronQueue/${pedido.id_order}`, {
           fk_idIronStation: selectedMachine.fk_idIronStation,

@@ -906,7 +906,7 @@ export const reprintOrder = async (req, res) => {
         printer.bold(true)
         printer.setTextSize(2, 2);
         printer.println('Cliente: ');
-        printer.println(order.client);
+        printer.println(order.order.client.name);
         printer.setTextNormal();
         printer.bold(false)
 

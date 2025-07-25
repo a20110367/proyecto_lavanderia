@@ -462,7 +462,8 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`${order.clientName}`)
                 printer.println(`${order.clientFirstLN}`)
                 printer.println(`${order.clientSecondLN}`)
-                printer.setTextDoubleHeight();
+                // printer.setTextDoubleHeight();
+                printer.setTextSize(2, 2)
                 printer.newLine()
                 printer.println('Descripcion:')
                 printer.println(`${detail.description}`)
@@ -470,13 +471,18 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`Cantidad: ${count + 1} - ${order.numberOfItems}`)
                 printer.newLine()
                 printer.setTypeFontB();
+                printer.setTextSize(2, 2);
+                printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
+                printer.setTextNormal();
+                printer.drawLine();
                 printer.setTextSize(3, 2);
                 printer.println(`No. de Servicios`)
                 printer.setTextNormal();
                 printer.newLine()
                 printer.setTextSize(3, 2);
                 printer.println(order.numberOfItems)
-                printer.setTextDoubleHeight();
+                // printer.setTextDoubleHeight();
+                printer.setTextSize(2, 2);
                 if (order.notes) {
                     printer.newLine()
                     printer.println(`Observaciones:`)
@@ -486,6 +492,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.drawLine();
                 printer.setTextSize(3, 3);
                 printer.println(order.serviceType.toUpperCase())
+
 
                 printer.cut();
                 count++;
@@ -543,7 +550,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(2, 2);
                     printer.println(`Piezas: 6`)
                     printer.newLine()
-                    printer.println(`Paquete: ${quant + 1}`)
+                    printer.println(`Paquete: ${quant + 1} - ${totalPackages}`)
                     printer.newLine()
                     printer.bold(false)
                     printer.newLine()
@@ -555,12 +562,13 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println(`${order.clientName}`)
                     printer.println(`${order.clientFirstLN}`)
                     printer.println(`${order.clientSecondLN}`)
-                    printer.setTextDoubleHeight();
+                    // printer.setTextDoubleHeight();
+                    printer.setTextSize(2, 2)
                     printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
                     printer.newLine()
-                    printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
-                    printer.newLine()
+                    // printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
+                    // printer.newLine()
                     printer.setTypeFontB();
                     printer.setTextSize(3, 2);
                     printer.println(`Total de Piezas:`)
@@ -568,7 +576,14 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.newLine()
                     printer.setTextSize(3, 2);
                     printer.println(order.pieces)
-                    printer.setTextDoubleHeight();
+                    printer.setTextNormal()
+                    printer.drawLine();
+                    printer.setTextSize(2, 2);
+                    printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
+                    printer.setTextNormal();
+                    printer.drawLine();
+                    // printer.setTextDoubleHeight();
+                    printer.setTextSize(2, 2);
                     if (order.notes) {
                         printer.newLine()
                         printer.println(`Observaciones:`)
@@ -600,22 +615,23 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextSize(2, 2);
                         printer.println(`Piezas: ${pivot1}`)
                         printer.newLine()
-                        printer.println(`Paquete: ${quant + 1}`)
+                        printer.println(`Paquete: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
                         printer.bold(false)
                         printer.newLine()
                         // printer.newLine()
                         // printer.setTextNormal();
-                        printer.setTextDoubleHeight();
+                        // printer.setTextDoubleHeight();
                         // printer.println('Cliente:')
+                        printer.setTextSize(2, 2)
                         printer.println(`${order.clientName}`)
                         printer.println(`${order.clientFirstLN}`)
                         printer.println(`${order.clientSecondLN}`)
                         printer.newLine()
                         printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
-                        printer.newLine()
-                        printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
+                        // printer.newLine()
+                        // printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
                         printer.newLine()
                         printer.setTypeFontB();
                         printer.setTextSize(3, 2);
@@ -624,7 +640,14 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.newLine()
                         printer.setTextSize(3, 2);
                         printer.println(order.pieces)
-                        printer.setTextDoubleHeight();
+                        printer.setTextNormal()
+                        printer.drawLine();
+                        printer.setTextSize(2, 2);
+                        printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
+                        printer.setTextNormal();
+                        printer.drawLine();
+                        // printer.setTextDoubleHeight();
+                        printer.setTextSize(2, 2);
                         if (order.notes) {
                             printer.newLine()
                             printer.println(`Observaciones:`)
@@ -656,22 +679,23 @@ const printOrderDetailIronTicket = async (order) => {
             printer.setTextSize(2, 2);
             printer.println(`Piezas: ${individualPieces}`)
             printer.newLine()
-            printer.println(`Paquete: ${totalPackages}`)
+            printer.println(`Paquete: ${totalPackages} -${totalPackages}`)
             printer.newLine()
             printer.bold(false)
             printer.newLine()
             // printer.newLine()
             // printer.setTextNormal();
-            printer.setTextDoubleHeight();
+            // printer.setTextDoubleHeight();
             // printer.println('Cliente:')
+            printer.setTextSize(2, 2)
             printer.println(`${order.clientName}`)
             printer.println(`${order.clientFirstLN}`)
             printer.println(`${order.clientSecondLN}`)
             printer.newLine()
             printer.println('Descripcion:')
             printer.println(`PIEZAS INDIVIDUALES`)
-            printer.newLine()
-            printer.println(`Cantidad: ${totalPackages} - ${totalPackages}`)
+            // printer.newLine()
+            // printer.println(`Cantidad: ${totalPackages} - ${totalPackages}`)
             printer.newLine()
             printer.setTypeFontB();
             printer.setTextSize(3, 2);
@@ -680,7 +704,14 @@ const printOrderDetailIronTicket = async (order) => {
             printer.newLine()
             printer.setTextSize(3, 2);
             printer.println(order.pieces)
-            printer.setTextDoubleHeight();
+            printer.setTextNormal()
+            printer.drawLine();
+            printer.setTextSize(2, 2);
+            printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
+            printer.setTextNormal();
+            printer.drawLine();
+            // printer.setTextDoubleHeight();
+            printer.setTextSize(2, 2);
             if (order.notes) {
                 printer.newLine()
                 printer.println(`Observaciones:`)
@@ -906,7 +937,7 @@ export const reprintOrder = async (req, res) => {
         printer.bold(true)
         printer.setTextSize(2, 2);
         printer.println('Cliente: ');
-        printer.println(order.order.client.name);
+        printer.println(client);
         printer.setTextNormal();
         printer.bold(false)
 
@@ -1305,7 +1336,7 @@ export const pettyCashTicket = async (req, res) => {
             printer.alignCenter()
             printer.setTextNormal()
             printer.println('Realizo')
-            printer.println('( Nombre y Firma)')
+            printer.println('( Nombre y Firma) del Cajero')
 
             printer.newLine()
             printer.newLine()
@@ -1893,7 +1924,21 @@ export const printCanceledOrder = async (req, res) => {
         printer.alignCenter()
         printer.setTextNormal()
         printer.println('Autorizó')
-        printer.println('( Nombre y Firma)')
+        printer.println('( Nombre y Firma) del Cajero')
+
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.newLine()
+        printer.println('_________________________________')
+
+        printer.drawLine()
+        printer.newLine()
+
+        printer.alignCenter()
+        printer.setTextNormal()
+        printer.println('Autorizó')
+        printer.println('( Nombre y Firma) del Cliente')
 
         printer.newLine()
         printer.newLine()

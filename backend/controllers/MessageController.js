@@ -449,11 +449,11 @@ export const sendWarningCanceledOrder = async (req, res) => {
     try {
 
         //OWNER
-        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
-            console.log("Whatsapp Message sent:  %s", data).catch((reason) => {
-                console.error(reason);
-            });
-        });
+        await restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
+            console.log("Whatsapp Message sent:  %s", data)
+        }).catch((reason) => {
+            console.error(reason);
+        });;
         res.status(200).json('Warning Sent!')
 
         //CLIENTe
@@ -472,7 +472,7 @@ export const sendWarningReceiptReprinted = async (req, res) => {
     try {
 
         //OWNER
-        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
+        await restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, message).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')

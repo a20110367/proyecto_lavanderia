@@ -142,9 +142,9 @@ export const generateTicket = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.setTextSize(2, 2);
+        // printer.setTextSize(2, 2);
         printer.println('Cliente: ');
-        printer.println(order.client);
+        printer.println(order.client.toUpperCase());
         printer.setTextNormal();
         printer.bold(false)
 
@@ -370,9 +370,9 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.setTextSize(2, 2);
+        // printer.setTextSize(2, 2);
         printer.println('Cliente: ');
-        printer.println(order.client);
+        printer.println(order.client.toUpperCase());
         printer.setTextNormal();
         printer.bold(false)
 
@@ -475,11 +475,11 @@ const printOrderDetailTicket = async (order) => {
                 printer.println('F.Entrega: ' + formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))
                 printer.setTextNormal();
                 printer.drawLine();
-                printer.setTextSize(3, 2);
+                // printer.setTextSize(3, 2);
                 printer.println(`No. de Servicios`)
                 printer.setTextNormal();
                 printer.newLine()
-                printer.setTextSize(3, 2);
+                // printer.setTextSize(3, 2);
                 printer.println(order.numberOfItems)
                 // printer.setTextDoubleHeight();
                 printer.setTextSize(2, 2);
@@ -935,9 +935,8 @@ export const reprintOrder = async (req, res) => {
         printer.drawLine();
 
         printer.bold(true)
-        printer.setTextSize(2, 2);
         printer.println('Cliente: ');
-        printer.println(client);
+        printer.println(client.toUpperCase());
         printer.setTextNormal();
         printer.bold(false)
 

@@ -493,6 +493,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))//ISRA
                 printer.setTextNormal();
                 printer.newLine()
+                printer.setTypeFontB();
                 printer.setTextSize(2, 2);
                 printer.println('F.Recepción: ')//ISRA 
                 printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
@@ -614,6 +615,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println(formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))//ISRA
                     printer.setTextNormal();
                     printer.newLine()
+                    printer.setTypeFontB();
                     printer.setTextSize(2, 2);
                     printer.println('F.Recepción: ')//ISRA 
                     printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
@@ -690,6 +692,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println(formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))//ISRA
                         printer.setTextNormal();
                         printer.newLine()
+                        printer.setTypeFontB();
                         printer.setTextSize(2, 2);
                         printer.println('F.Recepción: ')//ISRA 
                         printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
@@ -766,6 +769,7 @@ const printOrderDetailIronTicket = async (order) => {
             printer.println(formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))//ISRA
             printer.setTextNormal();
             printer.newLine()
+            printer.setTypeFontB();
             printer.setTextSize(2, 2);
             printer.println('F.Recepción: ')//ISRA 
             printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA

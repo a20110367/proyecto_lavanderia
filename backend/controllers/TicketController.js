@@ -501,6 +501,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.println(`No. de Servicios`)
                 printer.setTextNormal();
                 printer.newLine()
+                printer.setTextSize(2, 2);
                 // printer.setTextSize(3, 2);
                 printer.println(order.numberOfItems)
                 // printer.setTextDoubleHeight();

@@ -125,6 +125,7 @@ export const generateTicket = async (req, res) => {
         }).join('')
 
         printer.alignCenter()
+        printer.setTypeFontB();
 
         printer.drawLine();
         // printer.print("Hello World");                               // Append text
@@ -1012,6 +1013,7 @@ export const reprintOrder = async (req, res) => {
         printer.println('Cliente: ');
         printer.setTextNormal();
         printer.newLine();
+        printer.setTypeFontB();
         printer.setTextSize(1, 1);
         printer.println(client.toUpperCase());
         printer.setTextNormal();

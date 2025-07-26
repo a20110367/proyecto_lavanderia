@@ -533,7 +533,7 @@ const printOrderDetailTicket = async (order) => {
 
         // printer.cut();
 
-        printer('Order Detail Print done!')
+        console.log('Order Detail Print done!')
     } catch (err) {
         console.log(err)
     }

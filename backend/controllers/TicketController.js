@@ -145,8 +145,12 @@ export const generateTicket = async (req, res) => {
         printer.setTextSize(1, 1);
         printer.setTypeFontB();
         printer.println('Cliente: ');
+        printer.setTextNormal();
+        printer.newLine();
+        printer.setTextSize(1, 1);
         printer.println(order.client.toUpperCase());
         printer.setTextNormal();
+        printer.newLine();
         printer.bold(false)
 
         // printer.bold(true)
@@ -376,8 +380,12 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.setTextSize(1, 1);
         printer.setTypeFontB();
         printer.println('Cliente: ');
+        printer.setTextNormal();
+        printer.newLine();
+        printer.setTextSize(1, 1);
         printer.println(order.client.toUpperCase());
         printer.setTextNormal();
+        printer.newLine();
         printer.bold(false)
 
 
@@ -991,10 +999,13 @@ export const reprintOrder = async (req, res) => {
         printer.setTextSize(1, 1);
         printer.setTypeFontB();
         printer.println('Cliente: ');
+        printer.setTextNormal();
+        printer.newLine();
+        printer.setTextSize(1, 1);
         printer.println(client.toUpperCase());
         printer.setTextNormal();
+        printer.newLine();
         printer.bold(false)
-
 
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 
@@ -1971,6 +1982,7 @@ export const printCanceledOrder = async (req, res) => {
         printer.setTypeFontB();
 
         printer.println(`Cliente: ${canceled.order.client.name + " " + canceled.order.client.firstLN + " " + canceled.order.client.secondLN}`);
+        printer.setTextNormal();
 
         printer.newLine();
 

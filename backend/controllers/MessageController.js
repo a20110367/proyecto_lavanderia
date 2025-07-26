@@ -494,11 +494,11 @@ export const sendRecoveredPwd = async (res) => {
     El usuario *${res.username}* ha recuperado su contraseña`
 
     try {
-        restAPI.message.sendMessage('521' + res.phone + "@c.us", null, messageUser).then((data) => {
+        await restAPI.message.sendMessage('521' + res.phone + "@c.us", null, messageUser).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
 
-        restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, messageOwner).then((data) => {
+        await restAPI.message.sendMessage(process.env.SUPERVISION_PHONE + "@c.us", null, messageOwner).then((data) => {
             console.log("Whatsapp Message sent:  %s", data);
         });
         res.status(200).json('Warning Sent!')

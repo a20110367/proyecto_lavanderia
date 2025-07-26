@@ -496,6 +496,7 @@ const printOrderDetailTicket = async (order) => {
                 printer.setTypeFontB();
                 printer.setTextSize(2, 2);
                 printer.println('F.Recepción: ')//ISRA 
+                printer.newLine()
                 printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
                 printer.setTextNormal();
                 printer.drawLine();
@@ -618,6 +619,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTypeFontB();
                     printer.setTextSize(2, 2);
                     printer.println('F.Recepción: ')//ISRA 
+                    printer.newLine()
                     printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
                     printer.setTextNormal();
                     // printer.setTextDoubleHeight();
@@ -695,6 +697,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTypeFontB();
                         printer.setTextSize(2, 2);
                         printer.println('F.Recepción: ')//ISRA 
+                        printer.newLine()
                         printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
                         printer.setTextNormal();
                         printer.drawLine();
@@ -772,6 +775,7 @@ const printOrderDetailIronTicket = async (order) => {
             printer.setTypeFontB();
             printer.setTextSize(2, 2);
             printer.println('F.Recepción: ')//ISRA 
+            printer.newLine()
             printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
             printer.setTextNormal();
             printer.drawLine();

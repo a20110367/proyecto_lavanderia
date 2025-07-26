@@ -69,6 +69,29 @@ export default function PuntoVenta() {
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
   const [notes, setNotes] = useState("");
+  const [dryCleanDetails, setDryCleanDetails] = useState([
+    {
+      details: "Vestido de Noche",
+      estampado: "MANCHAS",
+      color: "NEGRO",
+      acabado: "S-RAYA",
+      id_dryCleanDetail: 1,
+    },
+    {
+      details: "EL MARTILLETE DEL CONFLICTO DEL PARTIDO NACIONAL FACISTA DEL OBRERO 2DA PARTE",
+      estampado: "CUADROS",
+      color: "AZUL",
+      acabado: "C-RAYA",
+      id_dryCleanDetail: 2
+    }
+  ]);
+
+  const [estampado, setEstampado] = useState({ id_est: 1, description: "MANCHAS" })
+  const [color, setColor] = useState({ id_col: 1, description: "NEGRO" })
+  const [detalles, setDetalles] = useState({ id_det: 1, description: "NEGRO" })
+  const [acabado, setAcabado] = useState({ id_aca: 1, description: "S-RAYA" })
+
+  const [isDryCleanModalVisible, setIsDryCleanModalVisible] = useState(false);
   const [pieces, setPieces] = useState(0);
   const [numberOfPieces, setNumberOfPieces] = useState(
     localStorage.getItem("numberOfPieces")
@@ -609,6 +632,24 @@ export default function PuntoVenta() {
     setFiltro(e.target.value);
   };
 
+  const addDryCleanDetail = () => {
+    const dryCleanDetail = {
+      details: detalles.description,
+      estampado: estampado.description,
+      color: color.description,
+      acabado: acabado.description
+    }
+    setDryCleanDetails([...dryCleanDetails, dryCleanDetail]);
+  }
+
+  const removeDryCleanDetail = (index) => {
+    const removedDryCleanDetail = dryCleanDetails.filter(detail => {
+      return detail.id_dryCleanDetail != index? detail : undefined
+    })
+
+    setDryCleanDetails(removedDryCleanDetail);
+  }
+
   return (
     <div>
       <div className="title-container mb-3">
@@ -752,8 +793,8 @@ export default function PuntoVenta() {
                         className="h-16 w-16 object-cover rounded-lg mr-2"
                       />
                       <p>
-                      {service.description}  X<span className="text-lg font-bold"> {service.quantity} </span> - <span className="text-lg font-bold"> $
-                      {service.price * service.quantity}</span>
+                        {service.description}  X<span className="text-lg font-bold"> {service.quantity} </span> - <span className="text-lg font-bold"> $
+                          {service.price * service.quantity}</span>
                       </p>
                     </div>
                     <button
@@ -829,11 +870,14 @@ export default function PuntoVenta() {
                     </button>,
                   ]}
                 >
-                  <div>
-                    <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                      Le atiende:
-                    </p>
-                    <p style={{ fontSize: "16px" }}>{cookies.username}</p>
+                  <div className="flex content-around w-full align-middle">
+                    <div className="w-1/2">
+                      <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                        Le atiende:
+                      </p>
+                      <p style={{ fontSize: "16px" }}>{cookies.username}</p>
+                    </div>
+                    {categoryId === 4 ? <div className="btn-primary"><button onClick={() => { setIsDryCleanModalVisible(true) }}>AÑADIR DETALLES DE TINTORERIA</button></div> : ""}
                   </div>
                   <div>
                     <div>
@@ -986,6 +1030,54 @@ export default function PuntoVenta() {
               ""
             )}
           </div>
+
+          <Modal
+            open={isDryCleanModalVisible}
+            footer={null}
+            onCancel={() => setIsDryCleanModalVisible(false)}
+            destroyOnClose
+            width={1200}
+          >
+            <div className="text-center">
+              <h1 className="title">DETALLES DE TINTORERIA:</h1>
+              <div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>PRENDA</th>
+                      <th>COLOR</th>
+                      <th>ESTAMPADO</th>
+                      <th>ACABADO</th>
+                      <th>OPCIONES</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dryCleanDetails.map((dryCleanDetail, index) => (
+                      <tr key={dryCleanDetail.id_dryCleanDetail}>
+                        <td className="font-bold text-lg overflow-ellipsis">{dryCleanDetail.details}</td>
+                        <td>{dryCleanDetail.color}</td>
+                        <td>{dryCleanDetail.estampado}</td>
+                        <td>{dryCleanDetail.acabado}</td>
+                        {index + 1 === dryCleanDetails.length ?
+                          <td className="w-1/5">
+                            <div className="grid grid-cols-3 content-evenly text-center text-white text-lg font-bold">
+                              <button className="p-3 bg-gray-800 rounded-lg mx-2" onClick={() => addDryCleanDetail}>+</button>
+                              <button className="mx-2 p-3 rounded-lg bg-gray-800">=</button>
+                            </div>
+                          </td> :
+                          <td className="w-1/5">
+                            <div className="grid grid-cols-3 content-evenly text-center text-white text-lg font-bold">
+                              <button className="p-3 bg-gray-800 rounded-lg mx-2" onClick={() => removeDryCleanDetail(index+1)}>-</button>
+                            </div>
+                          </td>}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </Modal>
+
         </div>
       </div>
     </div>

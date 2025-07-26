@@ -147,6 +147,7 @@ export const generateTicket = async (req, res) => {
         printer.println('Cliente: ');
         printer.setTextNormal();
         printer.newLine();
+        printer.setTypeFontB();
         printer.setTextSize(1, 1);
         printer.println(order.client.toUpperCase());
         printer.setTextNormal();
@@ -382,6 +383,7 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.println('Cliente: ');
         printer.setTextNormal();
         printer.newLine();
+        printer.setTypeFontB();
         printer.setTextSize(1, 1);
         printer.println(order.client.toUpperCase());
         printer.setTextNormal();

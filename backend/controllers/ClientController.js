@@ -53,6 +53,10 @@ export const getClientsByPhone = async (req, res) => {
 
 export const createClient = async (req, res) => {
     let { email, phone, name, firstLN, secondLN } = req.body;
+    name = name.trim().toUpperCase();
+    firstLN = firstLN.trim().toUpperCase();
+    secondLN = secondLN.trim().toUpperCase();
+
 
     //if(email==="")email=null;
 
@@ -144,6 +148,9 @@ export const createClientMany = async (req, res) => {
 
 export const updateClient = async (req, res) => {
     let { email, phone, name, firstLN, secondLN } = req.body;
+    name = name.trim().toUpperCase();
+    firstLN = firstLN.trim().toUpperCase();
+    secondLN = secondLN.trim().toUpperCase();
 
     // if(email==="")email=null;
 

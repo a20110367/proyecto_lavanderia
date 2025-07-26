@@ -1530,7 +1530,8 @@ export const createSelfServiceOrder = async (req, res) => {
             }
 
         });
-        console.log(serviceOrder.id_order);
+        console.log(serviceOrder);
+        
 
         const serviceDetail = req.body.services.map(item => ({
             fk_selfService: item.fk_Service,
@@ -1565,6 +1566,7 @@ export const createSelfServiceOrder = async (req, res) => {
         var series = 1;
         //const{id_service,quantity,price,category_id}=services;
         //id_description: (serviceOrder.id_order.toString() + "-" + (series + 1).toString()
+        if(!(serviceOrder.fk_client === 1)){
         while (serviceQueue.length > i) {
             var j = 0;
             while (serviceQueue.at(i).units > j) {
@@ -1585,8 +1587,9 @@ export const createSelfServiceOrder = async (req, res) => {
 
             i++;
         }
+    }
 
-
+        console.log(selfServiceDetail);
         const response = {
 
             "serviceOrder": serviceOrder,

@@ -2,7 +2,7 @@ import moment from "moment";
 moment.locale('es-mx');
 
 export const formatDate = (dateStr) => {
-    const date = moment(dateStr).format("DD / MM / YYYY")
+    const date = moment.utc(dateStr).format("DD / MM / YYYY")
     return date;
 };
 

@@ -6,6 +6,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
+import Swal from "sweetalert2";
 
 function EditServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -45,6 +46,7 @@ function EditServiceAutoservicio() {
     e.preventDefault();
 
     if (!description.toLowerCase().includes("autoservicio")) {
+      Swal.fire('El nombre del servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra Autoservicio.', 'error')
       setErrMsg(
         "Error, solo puedes editar servicios de 'autoservicio' (debe contener la palabra autoservicio)."
       );

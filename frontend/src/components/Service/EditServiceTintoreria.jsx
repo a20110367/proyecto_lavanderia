@@ -4,6 +4,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
+import Swal from "sweetalert2";
 
 function EditServiceTintoreria() {
   const descriptionRef = useRef();
@@ -48,16 +49,19 @@ function EditServiceTintoreria() {
     );
 
     if (!hasTintoreriaKeyword) {
-      setErrMsg("Error, solo puedes editar servicios de Tintoreria.");
+      setErrMsg("Error, La Descripción de Tintoreria debe contenar alguna de estas palabras: ");
+      Swal.fire('El Nombre servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra: Tintoreria.', 'error')
       return;
     }
 
     if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
+      Swal.fire('Todos los campos son obligatorios', 'Rellene los campos vacios.', 'info')
       return;
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
+      setErrMsg("Error, solo puedes editar servicios de Tintoreria.");
       setErrMsg("Error, no puedes añadir servicios de 'autoservicio, encargo ó lavanderia'.");
       return;
     }
@@ -129,7 +133,7 @@ function EditServiceTintoreria() {
                 value={pieces}
                 required
               />
-              
+
               <div className="flex items-center">
                 <BsCashCoin size={32} className="text-green-700 mr-4 mt-2" />
                 <label className="form-lbl" htmlFor="price">

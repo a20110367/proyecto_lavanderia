@@ -5,6 +5,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
+import Swal from "sweetalert2";
 
 function AddServiceAutoservicio() {
   const descriptionRef = useRef();
@@ -31,6 +32,7 @@ function AddServiceAutoservicio() {
 
     if (!description.toLowerCase().includes("autoservicio")) {
       setErrMsg("Error, La Descripción de Autoservicio debe contenar alguna de estas palabras: ");
+      Swal.fire('El nombre del servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra Autoservicio.', 'error')
       return;
     }
     try {

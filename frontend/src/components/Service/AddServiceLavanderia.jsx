@@ -4,6 +4,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from "../../api/api";
+import Swal from "sweetalert2";
 
 function AddServiceLavanderia() {
   const descriptionRef = useRef();
@@ -43,6 +44,7 @@ function AddServiceLavanderia() {
 
     if (!hasLavanderiaKeyword) {
       setErrMsg("Error, La Descripción de Encargo debe contenar alguna de estas palabras: ");
+      Swal.fire('El Nombre servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra: Lavado O Lavanderia O Encargo .', 'error')
       return;
     }
 

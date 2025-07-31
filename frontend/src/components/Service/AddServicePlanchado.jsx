@@ -4,6 +4,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
+import Swal from "sweetalert2";
 
 function AddServicePlanchado() {
   const descriptionRef = useRef();
@@ -36,12 +37,13 @@ function AddServicePlanchado() {
     );
 
     if (!hasPlanchaduriaKeyword) {
-      setErrMsg("Error, solo puedes añadir servicios de planchaduría.");
+      setErrMsg("Error, La Descripción de Planchado debe contenar alguna de estas palabras: ");
+      Swal.fire('El Nombre servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra: Planchado O Planchados O Planchaduria .', 'error')
       return;
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, La Descripción de Planchado debe contenar alguna de estas palabras: ");
+      setErrMsg("Error, solo puedes añadir servicios de planchaduría.");
       return;
     }
 
@@ -149,7 +151,7 @@ function AddServicePlanchado() {
                 value={price}
                 required
               />
-              
+
               <div className="flex items-center">
                 <IoCard size={32} className="text-blue-700 mr-4" />
                 <label className="form-lbl" htmlFor="priceCredit">

@@ -4,6 +4,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
+import Swal from "sweetalert2";
 
 function EditServicePlanchado() {
   const descriptionRef = useRef();
@@ -48,17 +49,20 @@ function EditServicePlanchado() {
     );
 
     if (!hasPlanchaduriaKeyword) {
-      setErrMsg("Error, solo puedes editar servicios de planchaduria.");
+      setErrMsg("Error, La Descripción de Planchado debe contenar alguna de estas palabras: ");
+      Swal.fire('El Nombre servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra: Planchado O Planchados O Planchaduria .', 'error')
+
       return;
     }
 
     if (!description || !price) {
       setErrMsg("Todos los campos son obligatorios.");
+      Swal.fire('Todos los campos son obligatorios', 'Rellene los campos vacios.', 'info')
       return;
     }
 
     if (description.toLowerCase().includes(forbiddenKeyword)) {
-      setErrMsg("Error, no puedes editar servicios de 'autoservicio'.");
+      setErrMsg("Error, solo puedes editar servicios de planchaduria.");
       return;
     }
 

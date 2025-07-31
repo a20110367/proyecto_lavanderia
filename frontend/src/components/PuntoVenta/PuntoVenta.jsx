@@ -467,52 +467,56 @@ export default function PuntoVenta() {
   }
 
   const handleSave = async () => {
-    setIsSaved(true);
-    setIsModalVisible(false);
 
-    try {
-      if (categoryId === 3) {
-        if (isExpress) {
-          saveOrderAndGenerateTicket()
-          await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
-            pieces: pieces,
-          });
-        } else {
-          if (numberOfPieces + pieces < maxIronCapacity) {
+    if (!isDeliveryDateSelected && categoryId != 1) {
+      Swal.fire('No se ha seleccionado fecha de entrega del pedido', 'Seleccione la fecha de entrega del pedido para continuar', 'info')
+    } else {
+      try {
+        setIsSaved(true);
+        setIsModalVisible(false);
+        if (categoryId === 3) {
+          if (isExpress) {
             saveOrderAndGenerateTicket()
-            await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
+            await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
               pieces: pieces,
             });
           } else {
-            Swal.fire({
-              title: "Se ha superado el No. de Piezas diarias",
-              text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#034078",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Si, generar el pedido!"
-            }).then(async (result) => {
-              if (result.isConfirmed) {
-                Swal.fire({
-                  title: "Pedido Generado!",
-                  text: "Tu pedido ha sido generado con exito.",
-                  icon: "success"
-                });
-                saveOrderAndGenerateTicket(true)
-                await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
-                  pieces: pieces,
-                });
-              }
-            });
-            setIsModalVisible(false);
+            if (numberOfPieces + pieces < maxIronCapacity) {
+              saveOrderAndGenerateTicket()
+              await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
+                pieces: pieces,
+              });
+            } else {
+              Swal.fire({
+                title: "Se ha superado el No. de Piezas diarias",
+                text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#034078",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, generar el pedido!"
+              }).then(async (result) => {
+                if (result.isConfirmed) {
+                  Swal.fire({
+                    title: "Pedido Generado!",
+                    text: "Tu pedido ha sido generado con exito.",
+                    icon: "success"
+                  });
+                  saveOrderAndGenerateTicket(true)
+                  await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
+                    pieces: pieces,
+                  });
+                }
+              });
+              setIsModalVisible(false);
+            }
           }
+        } else {
+          saveOrderAndGenerateTicket()
         }
-      } else {
-        saveOrderAndGenerateTicket()
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -644,7 +648,7 @@ export default function PuntoVenta() {
 
   const removeDryCleanDetail = (index) => {
     const removedDryCleanDetail = dryCleanDetails.filter(detail => {
-      return detail.id_dryCleanDetail != index? detail : undefined
+      return detail.id_dryCleanDetail != index ? detail : undefined
     })
 
     setDryCleanDetails(removedDryCleanDetail);
@@ -832,8 +836,9 @@ export default function PuntoVenta() {
               </div>
               <div className="mt-4 flex justify-between">
                 <button
-                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  className="pos_button"
                   onClick={showModal}
+                  disabled={isSaved}
                 >
                   Guardar Compra
                 </button>
@@ -851,12 +856,12 @@ export default function PuntoVenta() {
                   footer={[
                     <button
                       key="submit"
-                      className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                      className="pos_modal_button"
                       onClick={handleSave}
                       disabled={
                         serviceType === "autoservicio"
                           ? false
-                          : !isDeliveryDateSelected || isSaved
+                          : isSaved
                       }
                     >
                       Guardar
@@ -1067,7 +1072,7 @@ export default function PuntoVenta() {
                           </td> :
                           <td className="w-1/5">
                             <div className="grid grid-cols-3 content-evenly text-center text-white text-lg font-bold">
-                              <button className="p-3 bg-gray-800 rounded-lg mx-2" onClick={() => removeDryCleanDetail(index+1)}>-</button>
+                              <button className="p-3 bg-gray-800 rounded-lg mx-2" onClick={() => removeDryCleanDetail(index + 1)}>-</button>
                             </div>
                           </td>}
                       </tr>

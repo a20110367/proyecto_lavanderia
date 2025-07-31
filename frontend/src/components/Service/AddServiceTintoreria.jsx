@@ -4,6 +4,7 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { IoCard } from "react-icons/io5";
 import { BsCashCoin } from "react-icons/bs";
 import api from '../../api/api'
+import Swal from "sweetalert2";
 
 function AddServiceTintoreria() {
   const descriptionRef = useRef();
@@ -37,6 +38,7 @@ function AddServiceTintoreria() {
 
     if (!hasTintoreriaKeyword) {
       setErrMsg("Error, La Descripción de Tintoreria debe contenar alguna de estas palabras: ");
+      Swal.fire('El Nombre servicio esta Incorrecto', 'El nombre del servicio debe tener la palabra: Tintoreria.', 'error')
       return;
     }
 

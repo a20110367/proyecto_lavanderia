@@ -304,12 +304,12 @@ function AddClient() {
                 <button
                   className="btn-primary"
                   type="submit"
-                  disabled={
-                    !validName ||
-                    !validFirstName ||
-                    !validSecondName //||
-                    //!validEmail
-                  }
+                  // disabled={
+                  //   !validName ||
+                  //   !validFirstName ||
+                  //   !validSecondName //||
+                  //   //!validEmail
+                  // }
                 >
                   Registrar Cliente
                 </button>

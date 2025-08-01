@@ -206,7 +206,7 @@ function AddClient() {
                 autoComplete="off"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
-                required
+                // required
                 aria-invalid={validName ? "false" : "true"}
                 onFocus={() => setNameFocus(true)}
                 onBlur={() => setNameFocus(false)}
@@ -235,7 +235,7 @@ function AddClient() {
                 autoComplete="off"
                 onChange={(e) => setFirstLN(e.target.value)}
                 value={firstLN}
-                required
+                // required
                 aria-invalid={validFirstName ? "false" : "true"}
                 onFocus={() => setFirstNameFocus(true)}
                 onBlur={() => setFirstNameFocus(false)}
@@ -263,7 +263,7 @@ function AddClient() {
                 autoComplete="off"
                 onChange={(e) => setSecondLN(e.target.value)}
                 value={secondLN}
-                required
+                // required
                 aria-invalid={validSecondName ? "false" : "true"}
                 onFocus={() => setSecondNameFocus(true)}
                 onBlur={() => setSecondNameFocus(false)}
@@ -296,7 +296,7 @@ function AddClient() {
                 id="phone"
                 onChange={(e) => setPhone(e.target.value)}
                 value={phone}
-                required
+                // required
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 placeholder="REQUERIDO | Ingrese el telefono del cliente"
               />

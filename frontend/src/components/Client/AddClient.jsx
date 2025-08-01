@@ -64,7 +64,20 @@ function AddClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validName) {
+      Swal.fire('Falta algun dato requerido', 'Ingrese el NOMBRE del cliente.', 'error')
+    }
+
+    if (!validFirstName) {
+      Swal.fire('Falta algun dato requerido', 'Ingrese el 1ER APELLIDO del cliente.', 'error')
+    }
+
+    if (!validSecondName) {
+      Swal.fire('Falta algun dato requerido', 'Ingrese el 2DO APELLIDO del cliente.', 'error')
+    }
+
     if (!validName || !validFirstName || !validSecondName /*|| !validEmail*/) {
+
       setErrMsg("Invalid Entry");
       return;
     }
@@ -78,7 +91,7 @@ function AddClient() {
         phone: phone,
         pass: "",
       });
-      if(res.status === 201){
+      if (res.status === 201) {
         setSuccess(true);
         setName("");
         setFirstLN("");
@@ -109,13 +122,13 @@ function AddClient() {
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 409) {
-        err.response.data.p && err.response.data.m 
-        ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
-        : err.response.data.p
-        ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
-        : err.response.data.m
-        ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
-        : console.log("Como llego aqui")
+        err.response.data.p && err.response.data.m
+          ? Swal.fire("Ese número de telefono y correo estan en uso", "Intenta con uno diferente", "warning")
+          : err.response.data.p
+            ? Swal.fire("Ese número de telefono esta en uso", "Intenta con uno diferente", "warning")
+            : err.response.data.m
+              ? Swal.fire("Ese correo electronico esta en uso", "Intenta con uno diferente", "warning")
+              : console.log("Como llego aqui")
       } else {
         setErrMsg("Registration Failed");
       }
@@ -241,7 +254,7 @@ function AddClient() {
                     icon={faTimes}
                     className="ml-3 text-red-500"
                   />
-                )} 
+                )}
               </label>
               <input
                 className="form-input"
@@ -275,7 +288,7 @@ function AddClient() {
 
               {/* Phone */}
               <label className="form-lbl flex place-items-center" htmlFor="phone">
-                Telefono: <FaAsterisk size={10} className="ml-3 text-red-500"/>
+                Telefono: <FaAsterisk size={10} className="ml-3 text-red-500" />
               </label>
               <input
                 className="form-input"

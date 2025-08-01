@@ -24,7 +24,7 @@ function AddServiceTintoreria() {
 
   const navigate = useNavigate();
 
-  const tintoreriaKeywords = ["Tintoreria"];
+  const tintoreriaKeywords = ["tintoreria"];
   const forbiddenKeyword = ["autoservicio", "autoservicios", "auto servicios", "auto servicio", "planchado", "encargo"];
   const keywordsNeeded = "(Tintoreria)";
 

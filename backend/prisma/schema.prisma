@@ -267,6 +267,7 @@ model ServiceOrder {
 
   CancelledServiceOrder       CancelledServiceOrder?
   CancelledServiceOrderDetail CancelledServiceOrderDetail[]
+  ClothingFinishDetail  ClothingFinishDetail[]
 }
 
 model ServiceOrderDetail {
@@ -697,6 +698,37 @@ model WorkshiftBalance {
 
   created   DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ClothingFinishDetail{
+  id_finishesDetail Int @id @default(autoincrement())
+  fk_idOrder Int
+  clothingDescription String
+  colorDescription  String?
+  printDescription  String?
+  finishDescription String?
+
+  ServiceOrder ServiceOrder    @relation(fields: [fk_idOrder], references: [id_order], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model ClothingType{
+  id_clothing Int @id @default(autoincrement())
+  clothingDescription String @unique
+}
+
+model ClothingColor{
+  id_color Int @id @default(autoincrement())
+  colorDescription String @unique
+}
+
+model ClothingPrint{
+  id_print Int @id @default(autoincrement())
+  printDescription String @unique
+}
+
+model ClothingFinish{
+  id_finish Int @id @default(autoincrement())
+  finishDescription String @unique
 }
 
 enum Unit {

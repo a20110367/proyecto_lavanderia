@@ -31,6 +31,7 @@ import OtherService from './routes/ServiceOtherServiceRoute.js'
 import IronCutRoute from './routes/IronCutRoute.js';
 import RefundRoute from './routes/RefundRoute.js';
 import WorkshiftBalanceRoute from './routes/WorkshiftBalanceRoute.js';
+import DrycleanDetailsRoute from './routes/DrycleanDetailsRoute.js';
 
 import SupplyRoute from "./routes/SupplyRoute.js";
 import SupplyCashCutRoute from "./routes/SupplyCashCutRoute.js";
@@ -86,6 +87,7 @@ app.use(IronCutRoute)
 app.use(Reports)
 app.use(RefundRoute)
 app.use(WorkshiftBalanceRoute)
+app.use(DrycleanDetailsRoute)
 
 app.listen(process.env.APP_PORT, (req, res) => {
     console.log('SERVER RUNNING IN http://localhost:5000');

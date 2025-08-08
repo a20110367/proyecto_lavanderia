@@ -1531,7 +1531,7 @@ export const createSelfServiceOrder = async (req, res) => {
 
         });
         console.log(serviceOrder);
-        
+
 
         const serviceDetail = req.body.services.map(item => ({
             fk_selfService: item.fk_Service,
@@ -1566,28 +1566,43 @@ export const createSelfServiceOrder = async (req, res) => {
         var series = 1;
         //const{id_service,quantity,price,category_id}=services;
         //id_description: (serviceOrder.id_order.toString() + "-" + (series + 1).toString()
-        if(!(serviceOrder.fk_client === 1)){
-        while (serviceQueue.length > i) {
-            var j = 0;
-            while (serviceQueue.at(i).units > j) {
+        if (!(serviceOrder.fk_client === 1)) {
+            while (serviceQueue.length > i) {
+                var j = 0;
+                while (serviceQueue.at(i).units > j) {
 
-                const selfServiceQueue = await prisma.selfServiceQueue.create({
-                    data: {
-                        id_description: (serviceQueue.at(i).fk_idServiceOrder.toString() + "-" + series.toString()),
-                        fk_selfService: serviceQueue.at(i).fk_selfService,
-                        fk_idServiceOrder: serviceQueue.at(i).fk_idServiceOrder,
-                    },
-                });
-                selfServiceDetail.push(selfServiceQueue);
-                j++;
-                series++;
+                    const selfServiceQueue = await prisma.selfServiceQueue.create({
+                        data: {
+                            id_description: (serviceQueue.at(i).fk_idServiceOrder.toString() + "-" + series.toString()),
+                            fk_selfService: serviceQueue.at(i).fk_selfService,
+                            fk_idServiceOrder: serviceQueue.at(i).fk_idServiceOrder,
+                        },
+                    });
+                    selfServiceDetail.push(selfServiceQueue);
+                    j++;
+                    series++;
+                }
+
+
+
+                i++;
             }
-
-
-
-            i++;
         }
-    }
+
+        if (serviceOrder.fk_client === 1) {
+
+            await prisma.serviceOrder.update({
+                where: {
+                    id_order: serviceOrder.id_order
+                },
+
+                data: {
+                    orderStatus: "delivered"
+                }
+
+            });
+
+        }
 
         console.log(selfServiceDetail);
         const response = {

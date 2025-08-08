@@ -1280,6 +1280,158 @@ async function seed() {
 
 }
 
+await prisma.clothingType.createMany({
+
+    data:
+        [
+            {
+                "clothingDescription": "camisa"
+            },
+            {
+                "clothingDescription": "corbata"
+            },
+            {
+                "clothingDescription": "falda"
+            },
+            {
+                "clothingDescription": "falda corta"
+            },
+            {
+                "clothingDescription": "pantalon"
+            },
+            {
+                "clothingDescription": "traje"
+            },
+            {
+                "clothingDescription": "vestido"
+            }
+        ]
+
+});
+
+await prisma.clothingColor.createMany({
+
+    data:
+        [
+            {
+                "colorDescription": "azul"
+            },
+            {
+                "colorDescription": "azul claro"
+            },
+            {
+                "colorDescription": "azul marino"
+            },
+            {
+                "colorDescription": "beige"
+            },
+            {
+                "colorDescription": "blanco"
+            },
+            {
+                "colorDescription": "cafe"
+            },
+            {
+                "colorDescription": "dorado"
+            },
+            {
+                "colorDescription": "fucsia"
+            },
+            {
+                "colorDescription": "hueso"
+            },
+            {
+                "colorDescription": "morado"
+            },
+            {
+                "colorDescription": "mostaza"
+            },
+            {
+                "colorDescription": "naranja"
+            },
+            {
+                "colorDescription": "negro"
+            },
+            {
+                "colorDescription": "rojo"
+            },
+            {
+                "colorDescription": "rosa"
+            },
+            {
+                "colorDescription": "salmon"
+            },
+            {
+                "colorDescription": "tinto"
+            },
+            {
+                "colorDescription": "verde"
+            },
+            {
+                "colorDescription": "verde esmeralda"
+            },
+            {
+                "colorDescription": "verde limon"
+            },
+            {
+                "colorDescription": "verde militar"
+            },
+            {
+                "colorDescription": "verde olivo"
+            }
+        ]
+});
+
+await prisma.clothingPrint.createMany({
+
+    data:
+        [
+            {
+                "printDescription": "al frente"
+            },
+            {
+                "printDescription": "animal"
+            },
+            {
+                "printDescription": "atras"
+            },
+            {
+                "printDescription": "bolitas"
+            },
+            {
+                "printDescription": "cuadros"
+            },
+            {
+                "printDescription": "curvas"
+            },
+            {
+                "printDescription": "flores"
+            },
+            {
+                "printDescription": "rayas hor."
+            },
+            {
+                "printDescription": "rayas ver."
+            }
+        ]
+});
+
+await prisma.clothingFinish.createMany({
+
+    data:
+        [
+            {
+                "finishDescription": "con raya"
+            },
+            {
+                "finishDescription": "raya en medio"
+            },
+            {
+                "finishDescription": "sin raya"
+            }
+        ]
+});
+
 seed()
     .catch((error) => {
         console.error(error);

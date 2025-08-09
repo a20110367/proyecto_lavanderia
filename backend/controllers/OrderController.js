@@ -1589,6 +1589,7 @@ export const createSelfServiceOrder = async (req, res) => {
             }
         }
 
+
         if (serviceOrder.fk_client === 1) {
 
             await prisma.serviceOrder.update({
@@ -2045,7 +2046,19 @@ export const updateCancelledOrder = async (req, res) => {
 
         });
 
-        if (cancelationTypeDefinition === "refund") {
+        const cancelCreditPayment = prisma.payment.update({
+            where: {
+                fk_idOrder: Number(id_order)
+            },
+
+            data: {
+                cancelled: true,
+            }
+
+        })
+
+
+        if (cancelationTypeDefinition === "refund" && paymentData.payMethod === "cash") {
             console.log("que la chingada")
 
             const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue, refound] =
@@ -2063,6 +2076,26 @@ export const updateCancelledOrder = async (req, res) => {
                         refoundPayment])
             cancelledOrder = cancelledOrderRecord;
         }
+
+        if (cancelationTypeDefinition === "refund" && paymentData.payMethod === "credit") {
+            console.log("que la chingada")
+
+            const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue, cancelPayment] =
+                await prisma.$transaction
+                    ([createCancelledOrderDetail,
+                        createCancelledOrderRecord,
+                        updateCancelledOrderDetail,
+                        updateCancelledOrderStatus,
+                        updateIronControl,
+                        cancelLaundryQueue,
+                        cancelSelfServiceQueue,
+                        cancelIronQueue,
+                        cancelDrycleanQueue,
+                        cancelOtherQueue,
+                        cancelCreditPayment])
+            cancelledOrder = cancelledOrderRecord;
+        }
+
         if (cancelationTypeDefinition === "cancellation") {
             console.log("que la chingada2")
             const [cancelledOrderDetail, cancelledOrderRecord, updatedOrderDetail, updatedOrderStatus, updatedIronControl, updatedLaundryQueue, updatedSelfServiceQueue, updatedIronQueue, updatedDrycleanQueue, updatedOtherQueue] =

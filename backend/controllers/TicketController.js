@@ -11,6 +11,7 @@ moment.locale('es-mx');
 console.log('PRINTER WORKING IN ' + process.env.INTERFACE)
 
 let printer
+let counter = 0
 
 process.env.IsPrinterEnable === 'true' ?
     printer = new ThermalPrinter({
@@ -860,7 +861,10 @@ const printOrderDetailIronTicket = async (order) => {
 export const reprintTicket = async (req, res) => {
     try {
         let execute = await printer.execute()
-        printer.clear;
+        if(counter > 2){
+            printer.clear;
+            counter = 0;
+        }
         res.status(200).json('Print done!')
     } catch (err) {
         console.error(err)

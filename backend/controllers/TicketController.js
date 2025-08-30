@@ -27,7 +27,7 @@ process.env.IsPrinterEnable === 'true' ?
 
 export const generateTicket = async (req, res) => {
 
-    const { order } = req.body
+    const { order, finishes } = req.body
 
     let payMethod = ''
     let payStatus = ''
@@ -207,22 +207,26 @@ export const generateTicket = async (req, res) => {
 
 
 
-        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio' && order.serviceType != 'tintoreria') {
+        if (order.serviceType != 'productos' && order.serviceType != 'autoservicio') {
             if (order.extraTickets) {
                 // if (order.serviceType != 'planchado' && order.serviceType != 'tintoreria') {
-                if (order.serviceType != 'planchado') {
+                if (order.serviceType != 'planchado' && order.serviceType != 'tintoreria') {
                     printOrderDetailTicket(order)
+                } else if (order.serviceType === 'tintoreria') {
+                    printFinishesDetailsTicket(order, finishes)
+                    printer.clear()
+                    printFinishesDetailsTicket(order, finishes)
                 } else {
-                    printOrderDetailIronTicket(order)
+                    printOrderDetailIronTicket(order, finishes)
                 }
             }
         }
 
         printTicketFromBackend(order)
-        if (order.serviceType === 'tintoreria') {
-            printer.clear()
-            printTicketFromBackend(order)
-        }
+        // if (order.serviceType === 'tintoreria') {
+        //     printer.clear()
+        //     printTicketFromBackend(order)
+        // }
         // }
 
         // printer.bold(true);                                         // Set text bold
@@ -638,6 +642,15 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextSize(3, 3);
                     printer.println(order.serviceType.toUpperCase())
 
+                    printer.setTypeFontB()//ISRA
+                    finishes.forEach(detail => {
+                        printer.println(detail.clothingDescription)
+                        printer.println(detail.colorDescription)
+                        printer.println(detail.printDescription)
+                        printer.println(detail.finishDescription)
+                        printer.newLine()
+                    })
+
                     printer.cut();
 
                     console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
@@ -716,6 +729,15 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextSize(3, 3);
                         printer.println(order.serviceType.toUpperCase())
 
+                        printer.setTypeFontB()//ISRA
+                        finishes.forEach(detail => {
+                            printer.println(detail.clothingDescription)
+                            printer.println(detail.colorDescription)
+                            printer.println(detail.printDescription)
+                            printer.println(detail.finishDescription)
+                            printer.newLine()
+                        })
+
                         printer.cut();
                     }
                     console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
@@ -793,6 +815,16 @@ const printOrderDetailIronTicket = async (order) => {
             printer.drawLine();
             printer.setTextSize(3, 3);
             printer.println(order.serviceType.toUpperCase())
+
+            printer.setTypeFontB()//ISRA
+            finishes.forEach(detail => {
+                printer.println(detail.clothingDescription)
+                printer.println(detail.colorDescription)
+                printer.println(detail.printDescription)
+                printer.println(detail.finishDescription)
+                printer.newLine()
+            })
+
             printer.cut();
         }
 
@@ -856,12 +888,98 @@ const printOrderDetailIronTicket = async (order) => {
     }
 }
 
+const printFinishesDetailsTicket = async (order, finishes) => {
+    try {
+        printer.drawLine()
+        printer.setTextSize(2, 2);
+        printer.bold(true)
+        printer.println('No. de Orden:')
+        printer.setTextSize(4, 4);
+        printer.println(`${order.id_order}`)
+        printer.setTextSize(3, 3);
+        printer.println(order.payStatus === 'paid' ? "PAGADO" : "NO PAGADO")
+        printer.setTextSize(2, 2);
+        printer.newLine()
+        printer.bold(false)
+        printer.newLine()
+        printer.setTextSize(3, 3)
+        printer.println(`${order.clientName}`)
+        printer.println(`${order.clientFirstLN}`)
+        printer.println(`${order.clientSecondLN}`)
+        printer.newLine()
+        printer.setTextNormal();//ISRA
+        printer.setTypeFontB()//ISRA
+        printer.setTextSize(2, 2);
+
+        printer.bold(true)
+        printer.println(`SERVICIOS:`)
+        printer.bold(false)
+        order.cart.forEach(async (detail, index) => {
+            printer.println('Descripcion:')
+            printer.println(`${detail.description}`)
+        })
+
+        printer.newLine()
+        printer.setTypeFontB();
+        printer.setTextSize(2, 2);
+        printer.println(`Total de Piezas:`)
+        printer.setTextNormal();
+        printer.newLine()
+        printer.setTextSize(3, 2);
+        printer.println(order.pieces)
+        printer.setTextNormal()
+        printer.newLine()
+        printer.setTypeFontB();
+        printer.setTextSize(2, 2);
+        printer.println('F.Entrega: ')//ISRA 
+        printer.newLine()//ISRA
+        printer.println(formatDate(order.scheduledDeliveryDate) + ' Hora:' + formatTicketTime(order.scheduledDeliveryTime))//ISRA
+        printer.setTextNormal();
+        printer.newLine()
+        printer.setTypeFontB();
+        printer.setTextSize(2, 2);
+        printer.println('F.Recepción: ')//ISRA 
+        printer.newLine()
+        printer.println(formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))//ISRA
+        printer.setTextNormal();
+        printer.drawLine();
+        // printer.setTextDoubleHeight();
+        printer.setTypeFontB()//ISRA
+        printer.setTextSize(1, 1);
+        if (order.notes) {
+            printer.newLine()
+            printer.println(`Observaciones:`)
+            printer.println(`${order.notes}`)
+        }
+        printer.setTextSize(1, 1);//ISRA
+        printer.drawLine();
+        printer.setTextSize(3, 3);
+        printer.println(order.serviceType.toUpperCase())
+
+        printer.setTypeFontB()//ISRA
+        finishes.forEach(detail => {
+            printer.println(detail.clothingDescription)
+            printer.println(detail.colorDescription)
+            printer.println(detail.printDescription)
+            printer.println(detail.finishDescription)
+            printer.newLine()
+        })
+        printer.cut();
+
+        console.log(order)
+        printer('Order Finish Details Print done!')
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 // REPRINT ----------------------------------------------------------------------------
 
 export const reprintTicket = async (req, res) => {
     try {
         let execute = await printer.execute()
-        if(counter > 2){
+        counter++;
+        if (counter > 2) {
             printer.clear;
             counter = 0;
         }

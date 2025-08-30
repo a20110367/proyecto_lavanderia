@@ -46,11 +46,7 @@
     @apply max-w-0; /* Max width (prevents overflow) */
     @apply whitespace-pre-line; /* Allow line breaks */
     @apply overflow-hidden; /* Hide overflow */
-    @apply text-center;
   }
-
-
-}
 
   thead th {
     @apply text-sm; /* Font size (0.875rem) */
@@ -88,6 +84,7 @@
   tr:last-child td:last-child {
     @apply rounded-br-lg;
   }
+}
 @layer components {
   /*-------------------- CONTAINERS ---------------*/
   .fc {
@@ -498,5 +495,86 @@
 
   .pos_button {
     @apply bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md disabled:bg-gray-700
+  }
+
+  .select2-search__field {
+    box-sizing: border-box;
+    border: 1px solid #aaa;
+    font-size: 100%;
+    margin-top: 5px;
+    @apply p-4 w-full outline-none font-bold text-lg
+  }
+
+  .dropdown-box {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    position: relative;
+    @apply w-full mx-1
+  }
+
+  .dropdown-box input{
+    width: 100%;
+    border: 1px solid rgb(200 200 200);
+    outline: none;
+    border-radius: 5px;
+    padding: 3px 5px;
+    @apply text-gray-800
+  }
+
+  .dropdown-box .selected-item input {
+    border:1px solid rgb(200, 200, 200);
+  }
+
+  .dropdown-box .selected-item {
+    position: relative;
+  }
+
+
+
+  .dropdown-box .selected-item::after {
+    content: "";
+    width: 3px;
+    border: 2px solid;
+    border-color: transparent rgb(129,129,129) rgb(129,129,129);
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-70%) rotate(45deg);
+  }
+
+  .dropdown-box .selected-item,
+  .dropdown-box .selected-item input {
+      cursor:pointer;
+  }
+
+  .dropdown-box .dropdown-content {
+    box-shadow: 0 5px 15px rgb(0 0 0 / 15%);
+    border-radius: 5px;
+    max-height:150px;
+    overflow: auto;
+    z-index: 99;
+    /* position: absolute; */
+  }
+
+  .search-input {
+    padding: 3px;
+  }
+
+  .dropdown-box .dropdown-content ul {
+    list-style: none;
+  }
+
+  .dropdown-box .dropdown-content ul li {
+    font-size: 20px;
+    padding: 2px 5px;
+    @apply cursor-pointer
+  }
+
+  .dropdown-box .dropdown-content ul li:hover {
+    background-color: rgb(230, 230, 230)
+  }
+
+  .dropdown-box .dropdown-content ul li.active {
+    @apply bg-blue-300 text-blue-900
   }
 }

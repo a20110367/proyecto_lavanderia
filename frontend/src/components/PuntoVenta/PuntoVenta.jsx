@@ -37,11 +37,7 @@ export default function PuntoVenta() {
   };
   const [selectedServiceId, setSelectedServiceId] = useState(null);
   const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(false);
-  const [img, setImg] = useState([
-    "https://www.asociacionaden.com/wp-content/uploads/2021/09/lavar-la-ropa-de-deporte.jpg",
-    "https://www.ocu.org/-/media/ocu/images/home/electrodomesticos/secadora/secadora-eficiencia-tiempo-programa.jpg?rev=ceb8727f-ccca-46dc-a0d1-f4d3e83d8031&hash=D0C547A95C98B9C4704FA36A6B136090",
-    "https://www.sincable.mx/wp-content/uploads/2020/02/centrodeplanchado-0-belchonock-105267335_l-scaled.jpg",
-  ]);
+
   const categoryImages = {
     encargo: encargoImg,
     autoservicio: autoservicioImg,
@@ -69,27 +65,208 @@ export default function PuntoVenta() {
   const [postUrl, setPostUrl] = useState("");
   const [fetch, setFetch] = useState("");
   const [notes, setNotes] = useState("");
-  const [dryCleanDetails, setDryCleanDetails] = useState([
+
+  // DRY CLEAN SERVICES
+  const [dryCleanDetails, setDryCleanDetails] = useState([]);
+  const [finishes, setFinishes] = useState([
     {
-      details: "Vestido de Noche",
-      estampado: "MANCHAS",
-      color: "NEGRO",
-      acabado: "S-RAYA",
-      id_dryCleanDetail: 1,
+      id_finish: 1,
+      finishDescription: "con raya"
     },
     {
-      details: "EL MARTILLETE DEL CONFLICTO DEL PARTIDO NACIONAL FACISTA DEL OBRERO 2DA PARTE",
-      estampado: "CUADROS",
-      color: "AZUL",
-      acabado: "C-RAYA",
-      id_dryCleanDetail: 2
+      id_finish: 3,
+      finishDescription: "raya en medio"
+    },
+    {
+      id_finish: 2,
+      finishDescription: "sin raya"
     }
-  ]);
+  ])
+  const [types, setTypes] = useState([
+    {
+      "id_clothing": 3,
+      "clothingDescription": "camisa"
+    },
+    {
+      "id_clothing": 7,
+      "clothingDescription": "corbata"
+    },
+    {
+      "id_clothing": 5,
+      "clothingDescription": "falda"
+    },
+    {
+      "id_clothing": 8,
+      "clothingDescription": "falda corta"
+    },
+    {
+      "id_clothing": 1,
+      "clothingDescription": "pantalon"
+    },
+    {
+      "id_clothing": 4,
+      "clothingDescription": "traje"
+    },
+    {
+      "id_clothing": 2,
+      "clothingDescription": "vestido"
+    }
+  ])
+  const [colors, setColors] = useState([
+    {
+      "id_color": 24,
+      "colorDescription": "amarillo chinga ojos"
+    },
+    {
+      "id_color": 1,
+      "colorDescription": "azul"
+    },
+    {
+      "id_color": 2,
+      "colorDescription": "azul claro"
+    },
+    {
+      "id_color": 3,
+      "colorDescription": "azul marino"
+    },
+    {
+      "id_color": 8,
+      "colorDescription": "beige"
+    },
+    {
+      "id_color": 14,
+      "colorDescription": "blanco"
+    },
+    {
+      "id_color": 6,
+      "colorDescription": "cafe"
+    },
+    {
+      "id_color": 22,
+      "colorDescription": "dorado"
+    },
+    {
+      "id_color": 13,
+      "colorDescription": "fucsia"
+    },
+    {
+      "id_color": 9,
+      "colorDescription": "hueso"
+    },
+    {
+      "id_color": 21,
+      "colorDescription": "morado"
+    },
+    {
+      "id_color": 20,
+      "colorDescription": "mostaza"
+    },
+    {
+      "id_color": 11,
+      "colorDescription": "naranja"
+    },
+    {
+      "id_color": 5,
+      "colorDescription": "negro"
+    },
+    {
+      "id_color": 4,
+      "colorDescription": "rojo"
+    },
+    {
+      "id_color": 23,
+      "colorDescription": "rojo granada"
+    },
+    {
+      "id_color": 12,
+      "colorDescription": "rosa"
+    },
+    {
+      "id_color": 10,
+      "colorDescription": "salmon"
+    },
+    {
+      "id_color": 7,
+      "colorDescription": "tinto"
+    },
+    {
+      "id_color": 15,
+      "colorDescription": "verde"
+    },
+    {
+      "id_color": 26,
+      "colorDescription": "verde chinga ojos"
+    },
+    {
+      "id_color": 19,
+      "colorDescription": "verde esmeralda"
+    },
+    {
+      "id_color": 17,
+      "colorDescription": "verde limon"
+    },
+    {
+      "id_color": 18,
+      "colorDescription": "verde militar"
+    },
+    {
+      "id_color": 16,
+      "colorDescription": "verde olivo"
+    }
+  ])
+  const [prints, setPrints] = useState([
+    {
+      "id_print": 6,
+      "printDescription": "al frente"
+    },
+    {
+      "id_print": 5,
+      "printDescription": "animal"
+    },
+    {
+      "id_print": 10,
+      "printDescription": "asda"
+    },
+    {
+      "id_print": 7,
+      "printDescription": "atras"
+    },
+    {
+      "id_print": 2,
+      "printDescription": "bolitas"
+    },
+    {
+      "id_print": 3,
+      "printDescription": "cuadros"
+    },
+    {
+      "id_print": 8,
+      "printDescription": "curvas"
+    },
+    {
+      "id_print": 1,
+      "printDescription": "flores"
+    },
+    {
+      "id_print": 4,
+      "printDescription": "rayas hor."
+    },
+    {
+      "id_print": 9,
+      "printDescription": "rayas ver."
+    }
+  ])
 
-  const [estampado, setEstampado] = useState({ id_est: 1, description: "MANCHAS" })
-  const [color, setColor] = useState({ id_col: 1, description: "NEGRO" })
-  const [detalles, setDetalles] = useState({ id_det: 1, description: "NEGRO" })
-  const [acabado, setAcabado] = useState({ id_aca: 1, description: "S-RAYA" })
+  const [finishTemp, setFinishTemp] = useState("");
+  const [typeTemp, setTypeTemp] = useState("");
+  const [colorTemp, setColorTemp] = useState("");
+  const [printTemp, setPrintTemp] = useState("");
+
+  const [searchFinish, setSearchFinish] = useState("")
+  const [searchType, setSearchType] = useState("")
+  const [searchColor, setSearchColor] = useState("")
+  const [searchPrint, setSearchPrint] = useState("")
+  const [catalogD, setCatalogD] = useState()
 
   const [isDryCleanModalVisible, setIsDryCleanModalVisible] = useState(false);
   const [pieces, setPieces] = useState(0);
@@ -154,6 +331,15 @@ export default function PuntoVenta() {
   // };
 
   useEffect(() => {
+    async function fetcherFinishes() {
+      if (serviceType === "tintoreria" || serviceType === 'planchado') {
+        const finishRes = await api.get('/finishesDetailsCatalog')
+        const data = await finishRes.data
+        setCatalogD(data)
+      }
+    }
+
+    // fetcherFinishes().then(response => response.json()).then(data => setFinishes(data))
     // Definir el category_id
     if (serviceType === "autoservicio") {
       setFetch("selfService");
@@ -180,6 +366,8 @@ export default function PuntoVenta() {
       setCategoryId(5);
       setPostUrl("/ordersOtherService");
     }
+
+    fetcherFinishes()
   }, [serviceType]);
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
@@ -194,8 +382,7 @@ export default function PuntoVenta() {
 
   const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
-  // console.log(data)
-  // console.log(cart)
+  if (!catalogD) return <h2>Loading...</h2>;
 
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {
@@ -249,6 +436,7 @@ export default function PuntoVenta() {
     //   }
     // }
   };
+
 
   const removeFromCart = (serviceId) => {
     if (cart.length === 1) {
@@ -379,6 +567,7 @@ export default function PuntoVenta() {
           notes: notes,
         },
         services: arrayService,
+        finishes: catalogD
       });
       // orderTicket(order);
 
@@ -444,6 +633,7 @@ export default function PuntoVenta() {
       // GENERAR EL TICKET
       await api.post("/generateTicket", {
         order: order,
+        finishes: catalogD
       });
 
     } catch (err) {
@@ -637,21 +827,29 @@ export default function PuntoVenta() {
   };
 
   const addDryCleanDetail = () => {
-    const dryCleanDetail = {
-      details: detalles.description,
-      estampado: estampado.description,
-      color: color.description,
-      acabado: acabado.description
+    if (typeTemp != "" && printTemp != "" && colorTemp != "" && finishTemp != "") {
+      const dryCleanDetail = {
+        clothingDescription: typeTemp,
+        printDescription: printTemp,
+        colorDescription: colorTemp,
+        finishDescription: finishTemp
+      }
+
+      setDryCleanDetails([...dryCleanDetails, dryCleanDetail]);
+    } else {
+      Swal.fire('No se ha seleccionado', "Selecciona las opciones vacias", 'error')
     }
-    setDryCleanDetails([...dryCleanDetails, dryCleanDetail]);
   }
 
-  const removeDryCleanDetail = (index) => {
-    const removedDryCleanDetail = dryCleanDetails.filter(detail => {
-      return detail.id_dryCleanDetail != index ? detail : undefined
-    })
+  // const duplicateDryCleanDetail = (detail) => {
+  //   setDryCleanDetails([...dryCleanDetails, detail]);
+  // }
 
-    setDryCleanDetails(removedDryCleanDetail);
+  const removeDryCleanDetail = () => {
+    if (dryCleanDetails.length > 0) {
+      const removed = dryCleanDetails.slice(0, -1)
+      setDryCleanDetails(removed)
+    }
   }
 
   return (
@@ -882,7 +1080,7 @@ export default function PuntoVenta() {
                       </p>
                       <p style={{ fontSize: "16px" }}>{cookies.username}</p>
                     </div>
-                    {categoryId === 4 ? <div className="btn-primary"><button onClick={() => { setIsDryCleanModalVisible(true) }}>AÑADIR DETALLES DE TINTORERIA</button></div> : ""}
+                    {categoryId === 4 || categoryId === 3 ? <div className="btn-primary w-1/2 text-center text-lg cursor-pointer" onClick={() => { setIsDryCleanModalVisible(true) }}><button>AÑADIR DETALLES</button></div> : ""}
                   </div>
                   <div>
                     <div>
@@ -1053,13 +1251,18 @@ export default function PuntoVenta() {
                       <th>COLOR</th>
                       <th>ESTAMPADO</th>
                       <th>ACABADO</th>
-                      <th>OPCIONES</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {dryCleanDetails.map((dryCleanDetail, index) => (
-                      <tr key={dryCleanDetail.id_dryCleanDetail}>
-                        <td className="font-bold text-lg overflow-ellipsis">{dryCleanDetail.details}</td>
+                      <tr key={index}>
+                        <td className="text-2xl">{dryCleanDetail.clothingDescription}</td>
+                        <td className="text-2xl">{dryCleanDetail.colorDescription}</td>
+                        <td className="text-2xl">{dryCleanDetail.printDescription}</td>
+                        <td className="text-2xl">{dryCleanDetail.finishDescription}</td>
+                        <td className="text-2xl font-bold">{index + 1}</td>
+                        {/* <td className="font-bold text-lg overflow-ellipsis">{dryCleanDetail.details}</td>
                         <td>{dryCleanDetail.color}</td>
                         <td>{dryCleanDetail.estampado}</td>
                         <td>{dryCleanDetail.acabado}</td>
@@ -1074,11 +1277,99 @@ export default function PuntoVenta() {
                             <div className="grid grid-cols-3 content-evenly text-center text-white text-lg font-bold">
                               <button className="p-3 bg-gray-800 rounded-lg mx-2" onClick={() => removeDryCleanDetail(index + 1)}>-</button>
                             </div>
-                          </td>}
+                          </td>} */}
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                <div className="flex m-2">
+                  {/*///////// TYPES //////////////*/}
+                  <div className="dropdown-box">
+                    <div className="selected-item">
+                      <input className="select2-search__field" readOnly value={typeTemp} />
+                    </div>
+                    <div className="search-input">
+                      <input type="text" name="type" id="type" onChange={(e) => setSearchType(e.target.value)} />
+                    </div>
+                    <div className="dropdown-content">
+                      <ul>
+                        {catalogD.clothingTypes.filter((detail) =>
+                          detail
+                            .toLowerCase()
+                            .includes(searchType.toLowerCase())
+                        ).map((detail, index) =>
+                          <li key={index} className={detail === typeTemp ? "dropdown-item active" : "dropdown-item"} onClick={() => setTypeTemp(detail)}>{detail}</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  {/*///////// COLOR //////////////*/}
+                  <div className="dropdown-box">
+                    <div className="selected-item">
+                      <input className="select2-search__field" readOnly value={colorTemp} />
+                    </div>
+                    <div className="search-input">
+                      <input type="text" name="color" id="color" onChange={(e) => setSearchColor(e.target.value)} />
+                    </div>
+                    <div className="dropdown-content">
+                      <ul>
+                        {catalogD.clothingsColors.filter((detail) =>
+                          detail
+                            .toLowerCase()
+                            .includes(searchColor.toLowerCase())
+                        ).map((detail, index) =>
+                          <li key={index} className={detail === colorTemp ? "dropdown-item active" : "dropdown-item"} onClick={() => setColorTemp(detail)}>{detail}</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  {/*///////// PRINTS //////////////*/}
+                  <div className="dropdown-box">
+                    <div className="selected-item">
+                      <input className="select2-search__field" readOnly value={printTemp} />
+                    </div>
+                    <div className="search-input">
+                      <input type="text" name="prints" id="prints" onChange={(e) => setSearchPrint(e.target.value)} />
+                    </div>
+                    <div className="dropdown-content">
+                      <ul>
+                        {catalogD.clothingsPrints.filter((detail) =>
+                          detail
+                            .toLowerCase()
+                            .includes(searchPrint.toLowerCase())
+                        ).map((detail, index) =>
+                          <li key={index} className={detail === printTemp ? "dropdown-item active" : "dropdown-item"} onClick={() => setPrintTemp(detail)}>{detail}</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                  {/*///////// FINISHES //////////////*/}
+                  <div className="dropdown-box">
+                    <div className="selected-item">
+                      <input className="select2-search__field" readOnly value={finishTemp} />
+                    </div>
+                    <div className="search-input">
+                      <input type="text" name="finishes" id="finishes" onChange={(e) => setSearchFinish(e.target.value)} />
+                    </div>
+                    <div className="dropdown-content">
+                      <ul>
+                        {catalogD.clothingsFinishes.filter((detail) =>
+                          detail
+                            .toLowerCase()
+                            .includes(searchFinish.toLowerCase())
+                        ).map((detail, index) =>
+                          <li key={index} className={detail === finishTemp ? "dropdown-item active" : "dropdown-item"} onClick={() => setFinishTemp(detail)}>{detail}</li>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="flex h-full">
+                    <button className="p-1 bg-blue-600 m-1 rounded-lg cursor-pointer" onClick={() => addDryCleanDetail()}><AiOutlinePlusCircle size={48} className="text-white" /></button>
+                    <button className="p-1 bg-red-600 m-1 rounded-lg cursor-pointer" onClick={() => removeDryCleanDetail()}><AiOutlineMinusCircle size={48} /></button>
+                  </div>
+
+                </div>
               </div>
             </div>
           </Modal>

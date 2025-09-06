@@ -68,194 +68,6 @@ export default function PuntoVenta() {
 
   // DRY CLEAN SERVICES
   const [dryCleanDetails, setDryCleanDetails] = useState([]);
-  const [finishes, setFinishes] = useState([
-    {
-      id_finish: 1,
-      finishDescription: "con raya"
-    },
-    {
-      id_finish: 3,
-      finishDescription: "raya en medio"
-    },
-    {
-      id_finish: 2,
-      finishDescription: "sin raya"
-    }
-  ])
-  const [types, setTypes] = useState([
-    {
-      "id_clothing": 3,
-      "clothingDescription": "camisa"
-    },
-    {
-      "id_clothing": 7,
-      "clothingDescription": "corbata"
-    },
-    {
-      "id_clothing": 5,
-      "clothingDescription": "falda"
-    },
-    {
-      "id_clothing": 8,
-      "clothingDescription": "falda corta"
-    },
-    {
-      "id_clothing": 1,
-      "clothingDescription": "pantalon"
-    },
-    {
-      "id_clothing": 4,
-      "clothingDescription": "traje"
-    },
-    {
-      "id_clothing": 2,
-      "clothingDescription": "vestido"
-    }
-  ])
-  const [colors, setColors] = useState([
-    {
-      "id_color": 24,
-      "colorDescription": "amarillo chinga ojos"
-    },
-    {
-      "id_color": 1,
-      "colorDescription": "azul"
-    },
-    {
-      "id_color": 2,
-      "colorDescription": "azul claro"
-    },
-    {
-      "id_color": 3,
-      "colorDescription": "azul marino"
-    },
-    {
-      "id_color": 8,
-      "colorDescription": "beige"
-    },
-    {
-      "id_color": 14,
-      "colorDescription": "blanco"
-    },
-    {
-      "id_color": 6,
-      "colorDescription": "cafe"
-    },
-    {
-      "id_color": 22,
-      "colorDescription": "dorado"
-    },
-    {
-      "id_color": 13,
-      "colorDescription": "fucsia"
-    },
-    {
-      "id_color": 9,
-      "colorDescription": "hueso"
-    },
-    {
-      "id_color": 21,
-      "colorDescription": "morado"
-    },
-    {
-      "id_color": 20,
-      "colorDescription": "mostaza"
-    },
-    {
-      "id_color": 11,
-      "colorDescription": "naranja"
-    },
-    {
-      "id_color": 5,
-      "colorDescription": "negro"
-    },
-    {
-      "id_color": 4,
-      "colorDescription": "rojo"
-    },
-    {
-      "id_color": 23,
-      "colorDescription": "rojo granada"
-    },
-    {
-      "id_color": 12,
-      "colorDescription": "rosa"
-    },
-    {
-      "id_color": 10,
-      "colorDescription": "salmon"
-    },
-    {
-      "id_color": 7,
-      "colorDescription": "tinto"
-    },
-    {
-      "id_color": 15,
-      "colorDescription": "verde"
-    },
-    {
-      "id_color": 26,
-      "colorDescription": "verde chinga ojos"
-    },
-    {
-      "id_color": 19,
-      "colorDescription": "verde esmeralda"
-    },
-    {
-      "id_color": 17,
-      "colorDescription": "verde limon"
-    },
-    {
-      "id_color": 18,
-      "colorDescription": "verde militar"
-    },
-    {
-      "id_color": 16,
-      "colorDescription": "verde olivo"
-    }
-  ])
-  const [prints, setPrints] = useState([
-    {
-      "id_print": 6,
-      "printDescription": "al frente"
-    },
-    {
-      "id_print": 5,
-      "printDescription": "animal"
-    },
-    {
-      "id_print": 10,
-      "printDescription": "asda"
-    },
-    {
-      "id_print": 7,
-      "printDescription": "atras"
-    },
-    {
-      "id_print": 2,
-      "printDescription": "bolitas"
-    },
-    {
-      "id_print": 3,
-      "printDescription": "cuadros"
-    },
-    {
-      "id_print": 8,
-      "printDescription": "curvas"
-    },
-    {
-      "id_print": 1,
-      "printDescription": "flores"
-    },
-    {
-      "id_print": 4,
-      "printDescription": "rayas hor."
-    },
-    {
-      "id_print": 9,
-      "printDescription": "rayas ver."
-    }
-  ])
 
   const [finishTemp, setFinishTemp] = useState("");
   const [typeTemp, setTypeTemp] = useState("");
@@ -266,7 +78,20 @@ export default function PuntoVenta() {
   const [searchType, setSearchType] = useState("")
   const [searchColor, setSearchColor] = useState("")
   const [searchPrint, setSearchPrint] = useState("")
-  const [catalogD, setCatalogD] = useState()
+  const [catalogD, setCatalogD] = useState({
+  clothingTypes: [
+    "n/a",
+  ],
+  clothingsColors: [
+    "n/a",
+  ],
+  clothingsPrints: [
+    "n/a",
+  ],
+  clothingsFinishes: [
+    "n/a",
+  ]
+  })
 
   const [isDryCleanModalVisible, setIsDryCleanModalVisible] = useState(false);
   const [pieces, setPieces] = useState(0);
@@ -367,7 +192,7 @@ export default function PuntoVenta() {
       setPostUrl("/ordersOtherService");
     }
 
-    fetcherFinishes()
+    if (serviceType === "tintoreria" || serviceType === 'planchado') { fetcherFinishes() }
   }, [serviceType]);
 
   const [purchaseDate, setPurchaseDate] = useState(moment());
@@ -382,7 +207,7 @@ export default function PuntoVenta() {
 
   const { data } = useSWR(fetch, fetcher);
   if (!data) return <h2>Loading...</h2>;
-  if (!catalogD) return <h2>Loading...</h2>;
+  if (serviceType === "tintoreria" || serviceType === 'planchado') { if (!catalogD) return <h2>Loading...</h2>; }
 
   const addToCart = (serviceId, service) => {
     // if (serviceType === "autoservicio") {

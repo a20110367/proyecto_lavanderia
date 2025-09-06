@@ -567,7 +567,7 @@ export default function PuntoVenta() {
           notes: notes,
         },
         services: arrayService,
-        finishes: catalogD
+        finishes: dryCleanDetails,
       });
       // orderTicket(order);
 
@@ -613,6 +613,7 @@ export default function PuntoVenta() {
         notes: notes,
         cart: cart,
         extraTickets: true,
+        finishes: dryCleanDetails,
       };
 
       localStorage.setItem("lastSelectedClient", clientName);

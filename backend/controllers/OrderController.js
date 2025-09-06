@@ -1698,6 +1698,21 @@ export const createIronServiceOrder = async (req, res) => {
             i++;
         }
 
+        //if (!(req.finishes.length == 0)) {
+
+        const finishes = req.finishes.map((item) => ({
+
+            fk_idOrder: serviceOrder.id_order,
+            clothingDescription: item.clothingDescription,
+            colorDescription: item.colorDescription,
+            printDescription: item.printDescription,
+            finishDescription: item.finishDescription
+        }));
+
+        await prisma.clothingFinishDetail.createMany({
+            data: finishes
+        });
+        //}
 
         const response = {
 
@@ -1791,6 +1806,25 @@ export const createDrycleanServiceOrder = async (req, res) => {
             i++;
         }
 
+        //if (!(req.finishes.length == 0)) {
+
+        console.log(req.body.finishes);
+
+        const finishes = req.body.finishes.map((item) => ({
+
+            fk_idOrder: serviceOrder.id_order,
+            clothingDescription: item.clothingDescription,
+            colorDescription: item.colorDescription,
+            printDescription: item.printDescription,
+            finishDescription: item.finishDescription
+        }));
+
+        console.log(finishes);
+
+        await prisma.clothingFinishDetail.createMany({
+            data: finishes
+        });
+        //}
 
         const response = {
 

@@ -613,7 +613,6 @@ export default function PuntoVenta() {
         notes: notes,
         cart: cart,
         extraTickets: true,
-        finishes: dryCleanDetails,
       };
 
       localStorage.setItem("lastSelectedClient", clientName);
@@ -634,7 +633,7 @@ export default function PuntoVenta() {
       // GENERAR EL TICKET
       await api.post("/generateTicket", {
         order: order,
-        finishes: catalogD
+        finishes: dryCleanDetails
       });
 
     } catch (err) {

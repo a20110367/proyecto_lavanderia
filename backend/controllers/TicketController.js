@@ -641,11 +641,9 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.println(order.serviceType.toUpperCase())
 
                     printer.setTypeFontB()//ISRA
+                    printer.setTextSize(1, 1);
                     finishes.forEach(detail => {
-                        printer.println(detail.clothingDescription)
-                        printer.println(detail.colorDescription)
-                        printer.println(detail.printDescription)
-                        printer.println(detail.finishDescription)
+                        printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
                         printer.newLine()
                     })
 
@@ -728,11 +726,9 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.println(order.serviceType.toUpperCase())
 
                         printer.setTypeFontB()//ISRA
+                        printer.setTextSize(1, 1);
                         finishes.forEach(detail => {
-                            printer.println(detail.clothingDescription)
-                            printer.println(detail.colorDescription)
-                            printer.println(detail.printDescription)
-                            printer.println(detail.finishDescription)
+                            printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
                             printer.newLine()
                         })
 
@@ -815,69 +811,14 @@ const printOrderDetailIronTicket = async (order) => {
             printer.println(order.serviceType.toUpperCase())
 
             printer.setTypeFontB()//ISRA
+            printer.setTextSize(1, 1);
             finishes.forEach(detail => {
-                printer.println(detail.clothingDescription)
-                printer.println(detail.colorDescription)
-                printer.println(detail.printDescription)
-                printer.println(detail.finishDescription)
+                printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
                 printer.newLine()
             })
 
             printer.cut();
         }
-
-
-        // // TERCER APROACH
-        // let multiple = 0;
-        // let pivot = pieces;
-
-        // if(pieces / 6 == 0){
-        //     multiple = (pieces / 6);
-        // }else{
-        //     multiple = (pieces / 6) + 1;
-        // }
-
-        // for(let i = 0 ; i < multiple ; i++){
-        //     if((pivot - 6) >= 0){
-        //         // IMPRIMIR
-        //         System.out.println("SE IMPRIMIO 6 piezas - paquete " + (i + 1));
-        //         pivot -= 6;
-        //     }else if ((pivot - 6) < 0 && pivot != 0 ) {
-        //         System.out.println("SE IMPRIMIERON " + pivot + " piezas - paquete " + (i + 1) );
-        //         // IMPRIMO PIVOT
-        //     }else{
-        //         System.out.println("NO IMPRIMO POR SER 0");
-        //     }
-        // }
-
-        // // SEGUNDO APROACH
-        // let multiple = order.pieces % 6
-        // let pivot = order.pieces
-
-        // for(let i = 0 ; i < multiple ; i++){
-        //     if((pivot - 6) > 0){
-        //         // IMPRIMIR
-        //         pivot -= 6
-        //     }else {
-        //         // IMPRIMO PIVOT
-        //     }
-        // }
-
-        // PRIMER APROACH
-        // for(let i = 0 ; i < order.pieces ; i + 6){
-        //     if(i % 6 == 0 && i != 0){
-        //         //IMPRIMIR NORMAL 6 PIEZAS
-        //     }else if(i % 6 != 0 && (i + 1) != order.pieces){
-        //         //IMPRIME RESTANTES
-        //     }
-        //     printer.cut()
-        // }
-
-        // let execute = await printer.execute()
-
-        // printer.cut();
-
-        // let execute = await printer.execute()
 
         console.log(order)
         printer('Order Detail Print done!')
@@ -955,11 +896,9 @@ const printFinishesDetailsTicket = async (order, finishes) => {
         printer.println(order.serviceType.toUpperCase())
 
         printer.setTypeFontB()//ISRA
+        printer.setTextSize(1, 1);
         finishes.forEach(detail => {
-            printer.println(detail.clothingDescription)
-            printer.println(detail.colorDescription)
-            printer.println(detail.printDescription)
-            printer.println(detail.finishDescription)
+            printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
             printer.newLine()
         })
         printer.cut();

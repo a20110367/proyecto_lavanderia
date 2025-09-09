@@ -34,72 +34,43 @@ const iconStyle = {
   marginLeft: "-3px",
 };
 
+const cashCutStyle = {
+  fontSize: "24px",
+  margin: "auto",
+  marginTop: "7px",
+  marginLeft: "-3px",
+  color: "#226F54",
+};
+
+const ordersStyle = {
+  fontSize: "24px",
+  margin: "auto",
+  marginTop: "7px",
+  marginLeft: "-3px",
+  color: "#da2c38",
+};
+
+const crudStyle = {
+  fontSize: "24px",
+  margin: "auto",
+  marginTop: "7px",
+  marginLeft: "-3px",
+  color: "#FFB100",
+};
+
+const receptionStyle = {
+  fontSize: "24px",
+  margin: "auto",
+  marginTop: "7px",
+  marginLeft: "-3px",
+  color: "#f194b4",
+};
+
+
 const items1 = [
-  getItem(
-    "Autoservicio",
-    "/autoServicio",
-    <MdLocalLaundryService style={iconStyle} />
-  ),
-  getItem(
-    "Productos",
-    "/recepcionProductos",
-    <BsBasketFill style={iconStyle} />
-  ),
 
-  getItem(
-    "Encargo Ropa",
-    "/Encargo",
-    <MdOutlineLocalLaundryService style={iconStyle} />,
-    [
-      getItem("Recepcion", "/recepcionLavanderia"),
-      getItem("Entrega", "/entregaLavanderia"),
-    ]
-  ),
 
-  getItem("Planchado", "/planchadoIron", <MdIron style={iconStyle} />, [
-    getItem("Recepcion", "/recepcionPlanchado"),
-    getItem("Entrega", "/entregaPlanchado"),
-  ]),
-
-  getItem(
-    "Tintoreria",
-    "/Tintoreria",
-    <PiShirtFoldedDuotone style={iconStyle} />,
-    [
-      getItem("Recepcion", "/recepcionTintoreria"),
-      getItem("Entrega", "/entregaTintoreria"),
-    ]
-  ),
-
-  getItem(
-    "Encargo Varios",
-    "/encargoVarios",
-    <TbWashGentle style={iconStyle} />,
-    [
-      getItem("Recepcion", "/recepcionVarios"),
-      getItem("Entrega", "/entregaVarios"),
-    ]
-  ),
-
-  getItem("Pedidos", "/pedidos", <LuListOrdered style={iconStyle} />, [
-    getItem("Encargo Ropa", "/pedidosLavanderia"),
-    getItem("Autoservicio", "/pedidosAutoservicio"),
-    getItem("Planchado", "/pedidosPlanchado"),
-    getItem("Tintoreria", "/pedidosTintoreria"),
-    getItem("Encargo Varios", "/pedidosVarios"),
-    getItem("Pedidos Finalizados", "/pedidosFinalizados"),
-
-    getItem("Almacenados", "/pedidosAlmacenados"),
-  ]),
-
-  getItem(
-    "Encontrar Pedido",
-    "/buscarPedidos",
-    <LuPackageSearch style={iconStyle} />
-  ),
-  getItem("Clientes", "/clients", <HiShoppingCart style={iconStyle} />),
-
-  getItem("Caja", "/cajas", <HiCash style={iconStyle} />, [
+  getItem("Caja", "/cajas", <HiCash style={cashCutStyle} />, [
     getItem("Inicio de caja", "/inicioCaja"),
     getItem("Corte de caja", "/corteCaja"),
     getItem("Pedidos Pagados", "/cajaPedidos"),
@@ -127,7 +98,71 @@ const items1 = [
     getItem("Retiro de caja", "/retiro"),
   ]),
 
-  getItem("Equipos", "/", <HiWrenchScrewdriver style={iconStyle} />, [
+  getItem(
+    "Autoservicio",
+    "/autoServicio",
+    <MdLocalLaundryService style={receptionStyle} />
+  ),
+  getItem(
+    "Productos",
+    "/recepcionProductos",
+    <BsBasketFill style={receptionStyle} />
+  ),
+
+  getItem(
+    "Encargo Ropa",
+    "/Encargo",
+    <MdOutlineLocalLaundryService style={receptionStyle} />,
+    [
+      getItem("Recepcion", "/recepcionLavanderia"),
+      getItem("Entrega", "/entregaLavanderia"),
+    ]
+  ),
+
+  getItem("Planchado", "/planchadoIron", <MdIron style={receptionStyle} />, [
+    getItem("Recepcion", "/recepcionPlanchado"),
+    getItem("Entrega", "/entregaPlanchado"),
+  ]),
+
+  getItem(
+    "Tintoreria",
+    "/Tintoreria",
+    <PiShirtFoldedDuotone style={receptionStyle} />,
+    [
+      getItem("Recepcion", "/recepcionTintoreria"),
+      getItem("Entrega", "/entregaTintoreria"),
+    ]
+  ),
+
+  getItem(
+    "Encargo Varios",
+    "/encargoVarios",
+    <TbWashGentle style={receptionStyle} />,
+    [
+      getItem("Recepcion", "/recepcionVarios"),
+      getItem("Entrega", "/entregaVarios"),
+    ]
+  ),
+
+  getItem("Pedidos", "/pedidos", <LuListOrdered style={ordersStyle} />, [
+    getItem("Encargo Ropa", "/pedidosLavanderia"),
+    getItem("Autoservicio", "/pedidosAutoservicio"),
+    getItem("Planchado", "/pedidosPlanchado"),
+    getItem("Tintoreria", "/pedidosTintoreria"),
+    getItem("Encargo Varios", "/pedidosVarios"),
+    getItem("Pedidos Finalizados", "/pedidosFinalizados"),
+
+    getItem("Almacenados", "/pedidosAlmacenados"),
+  ]),
+
+  getItem(
+    "Encontrar Pedido",
+    "/buscarPedidos",
+    <LuPackageSearch style={ordersStyle} />
+  ),
+  getItem("Clientes", "/clients", <HiShoppingCart style={crudStyle} />),
+
+  getItem("Equipos", "/", <HiWrenchScrewdriver style={crudStyle} />, [
     getItem("Activar Equipos", "/activarEquipos"),
     getItem(<div style={{ display: "flex", flexDirection: "column" }}>
       <span style={{ lineHeight: 1 }}>Administrar</span>
@@ -140,9 +175,9 @@ const items1 = [
   ]),
 
 
-  getItem("Empleados", "/users", <HiUsers style={iconStyle} />),
+  getItem("Empleados", "/users", <HiUsers style={crudStyle} />),
 
-  getItem("Servicios", "/services", <RiHandCoinFill style={iconStyle} />, [
+  getItem("Servicios", "/services", <RiHandCoinFill style={crudStyle} />, [
     getItem("Encargo Ropa", "/servicesLavanderia"),
     getItem("Planchado", "/servicesPlanchado"),
     getItem("Autoservicio", "/servicesAutoservicio"),
@@ -151,7 +186,7 @@ const items1 = [
     getItem("Productos", "/productos"),
   ]),
 
-  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+  getItem("Administración", "/administracion", <HiCash style={cashCutStyle} />, [
     getItem("Reportes", "/reportes"),
     // getItem("Reportes Productos", "/reportesProductos"),
     getItem(<div style={{ display: "flex", flexDirection: "column" }}>
@@ -166,7 +201,7 @@ const items1 = [
     getItem("Caja Chica", "/cajaChica"),
   ]),
 
-  { type: "divider", style: { margin: "140px " } },
+  { type: "divider", style: { margin: "85px" } },
 
   // getItem("Configuración", "/settings", <SettingFilled style={iconStyle} />),
   getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
@@ -289,7 +324,7 @@ const items2 = [
     getItem("Productos", "/productos"),
   ]),
 
-  getItem("Administración", "/administracion", <HiCash style={iconStyle} />, [
+  getItem("Administración", "/administracion", <HiCash style={cashCutStyle} />, [
     getItem("Reportes", "/reportes"),
     // getItem("Reportes Productos", "/reportesProductos"),
     getItem(<div style={{ display: "flex", flexDirection: "column" }}>
@@ -304,7 +339,7 @@ const items2 = [
     getItem("Caja Chica", "/cajaChica"),
   ]),
 
-  { type: "divider", style: { margin: "140px " } },
+  { type: "divider", style: { margin: "85px " } },
 
   getItem("Cerrar Sesión", "/logout", <LogoutOutlined style={iconStyle} />),
 ];

@@ -12,7 +12,7 @@ import es from "date-fns/locale/es";
 import { useAuth } from "../../hooks/auth/auth";
 // import { orderTicket } from "../Ticket/Tickets";
 import api from "../../api/api";
-import { FaBoltLightning } from "react-icons/fa6";
+import { FaDollarSign } from "react-icons/fa";
 import { BsFillLightningFill } from "react-icons/bs";
 import { AiOutlinePlusCircle, AiOutlineMinusCircle } from "react-icons/ai";
 const { Option } = Select;
@@ -79,19 +79,21 @@ export default function PuntoVenta() {
   const [searchColor, setSearchColor] = useState("")
   const [searchPrint, setSearchPrint] = useState("")
   const [catalogD, setCatalogD] = useState({
-  clothingTypes: [
-    "n/a",
-  ],
-  clothingsColors: [
-    "n/a",
-  ],
-  clothingsPrints: [
-    "n/a",
-  ],
-  clothingsFinishes: [
-    "n/a",
-  ]
+    clothingTypes: [
+      "n/a",
+    ],
+    clothingsColors: [
+      "n/a",
+    ],
+    clothingsPrints: [
+      "n/a",
+    ],
+    clothingsFinishes: [
+      "n/a",
+    ]
   })
+  const [cashRemain, setCashRemain] = useState(0)
+  const [cashReceived, setCashReceived] = useState(0)
 
   const [isDryCleanModalVisible, setIsDryCleanModalVisible] = useState(false);
   const [pieces, setPieces] = useState(0);
@@ -111,49 +113,6 @@ export default function PuntoVenta() {
   // ];
   // const [selectedProducts, setSelectedProducts] = useState([]);
   const [isDeliveryDateSelected, setIsDeliveryDateSelected] = useState(false);
-
-  // // Función para agregar productos igual esto mandalo a la vrg
-  // const addProduct = (productName, price) => {
-  //   const existingProduct = selectedProducts.find(
-  //     (product) => product.name === productName
-  //   );
-
-  //   if (existingProduct) {
-  //     // Si el producto ya está en la lista, incrementa la cantidad
-  //     const updatedProducts = selectedProducts.map((product) =>
-  //       product.name === productName
-  //         ? { ...product, quantity: product.quantity + 1 }
-  //         : product
-  //     );
-  //     setSelectedProducts(updatedProducts);
-  //   } else {
-  //     // Si el producto no está en la lista, agrégalo con cantidad 1
-  //     setSelectedProducts([
-  //       ...selectedProducts,
-  //       { name: productName, price: price, quantity: 1 },
-  //     ]);
-  //   }
-  // };
-
-  // // Función para eliminar productos
-  // const removeProduct = (productName) => {
-  //   const updatedProducts = selectedProducts
-  //     .map((product) =>
-  //       product.name === productName
-  //         ? { ...product, quantity: product.quantity - 1 }
-  //         : product
-  //     )
-  //     .filter((product) => product.quantity > 0);
-  //   setSelectedProducts(updatedProducts);
-  // };
-
-  // // Función para calcular el precio total de los productos seleccionados
-  // const calculateProductTotal = () => {
-  //   return selectedProducts.reduce(
-  //     (total, product) => total + product.price * product.quantity,
-  //     0
-  //   );
-  // };
 
   useEffect(() => {
     async function fetcherFinishes() {
@@ -326,6 +285,7 @@ export default function PuntoVenta() {
       navigate("/inicioCaja");
       return;
     }
+    setCashRemain(payMethod === 'credit' ? (calculateSubtotalCredit() * -1) : (calculateSubtotal() * -1))
     setIsModalVisible(true);
   };
 
@@ -408,6 +368,8 @@ export default function PuntoVenta() {
             payTime: purchaseDate,
             fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
             payTotal: subTotal,
+            cash: parseFloat(cashReceived),
+            change: cashRemain
           },
         });
       }
@@ -438,6 +400,8 @@ export default function PuntoVenta() {
         notes: notes,
         cart: cart,
         extraTickets: true,
+        cash: cashReceived,
+        change: cashRemain,
       };
 
       localStorage.setItem("lastSelectedClient", clientName);
@@ -452,14 +416,33 @@ export default function PuntoVenta() {
         );
       }
 
-      // Regresar a la página anterior
-      window.history.back();
-
-      // GENERAR EL TICKET
-      await api.post("/generateTicket", {
-        order: order,
-        finishes: dryCleanDetails
-      });
+      if (payForm === 'advance' && payMethod === 'cash') {
+        Swal.fire({
+          title: `El cambio a regresar: ${cashRemain} pesos`,
+          text: 'Regrese el cambio a su respectivo cliente',
+          icon: "info",
+          showCancelButton: false,
+          confirmButtonText: "Listo, ya fue entregado.",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            // Regresar a la página anterior
+            window.history.back();
+            // GENERAR EL TICKET
+            await api.post("/generateTicket", {
+              order: order,
+              finishes: dryCleanDetails
+            });
+          }
+        },(error) => console.log(error));
+      } else {
+        // Regresar a la página anterior
+        window.history.back();
+        // GENERAR EL TICKET
+        await api.post("/generateTicket", {
+          order: order,
+          finishes: dryCleanDetails
+        });
+      }
 
     } catch (err) {
       console.error(err)
@@ -482,6 +465,19 @@ export default function PuntoVenta() {
   }
 
   const handleSave = async () => {
+
+    if (payMethod === 'cash' && payForm === 'advance') {
+      if (cashRemain < 0) {
+        Swal.fire('La cantidad ingresada es menor al Subtotal', 'Ingrese una cantidad mayor al Subtotal', 'error')
+        return
+      }
+    } else {
+      setCashReceived(0)
+      setCashRemain(0)
+    }
+    if (payMethod === 'credit' && payForm === 'advance') {
+      setCashReceived(calculateSubtotalCredit())
+    }
 
     if (!isDeliveryDateSelected && categoryId != 1) {
       Swal.fire('No se ha seleccionado fecha de entrega del pedido', 'Seleccione la fecha de entrega del pedido para continuar', 'info')
@@ -675,6 +671,15 @@ export default function PuntoVenta() {
       const removed = dryCleanDetails.slice(0, -1)
       setDryCleanDetails(removed)
     }
+  }
+
+  const setCashReceivedAndRemain = (receivedCash) => {
+    if (receivedCash < 0) {
+      setCashReceived(receivedCash * -1)
+    } else {
+      setCashReceived(receivedCash)
+    }
+    setCashRemain(receivedCash - (payMethod === 'credit' ? calculateSubtotalCredit() : calculateSubtotal()))
   }
 
   return (
@@ -1039,6 +1044,30 @@ export default function PuntoVenta() {
                           </Select>
                         </div>
                       )}
+                    {(payForm === "advance" && payMethod === 'cash') && (
+                      <div>
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Cantidad de Pago Recibido:
+                        </p>
+                        <FaDollarSign className="mr-4 absolute mt-3 text-green-600" size={16} />
+                        <input
+                          className="form-input"
+                          type="number"
+                          id="cash_remain"
+                          autoComplete="off"
+                          onChange={(e) => setCashReceivedAndRemain(e.target.value)}
+                          value={cashReceived}
+                          placeholder={"Ingrese la cantidad de dinero recibido."}
+                        />
+
+                        <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                          Cantidad de Pago Restante:
+                        </p>
+                        <p className={cashRemain < 0 ? "text-2xl text-red-600" : "text-2xl text-green-600"}>
+                          $ {cashRemain} pesos
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </Modal>
               </div>

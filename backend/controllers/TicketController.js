@@ -32,6 +32,8 @@ export const generateTicket = async (req, res) => {
     let payMethod = ''
     let payStatus = ''
     let payForm = ''
+    let cash
+    let change
 
     if (order.payStatus === 'paid') {
         payStatus = 'PAGADO'
@@ -195,6 +197,10 @@ export const generateTicket = async (req, res) => {
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+        if (order.cash > 0) {
+            printer.println(`Dinero Recibido: ${order.cash}`)
+            printer.println(`Cambio: ${order.change}`)
+        }
 
         printer.drawLine();
         printer.setTextSize(3, 3);
@@ -396,18 +402,6 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.newLine();
         printer.bold(false)
 
-
-        // printer.bold(true)
-        // if (order.pieces === 0 || !order.pieces) {
-        //     printer.println('Cliente: ' + order.client)
-        // } else {
-        //     printer.tableCustom([
-        //         { text: 'Cliente: ' + order.client, align: "LEFT", bold: true },
-        //         { text: 'PIEZAS: ' + order.pieces, align: "RIGHT" }
-        //     ]);
-        // }
-        // printer.bold(false)
-
         printer.println('F.Recepción: ' + formatDate(order.receptionDate) + ' Hora:' + formatTicketTime(order.receptionTime))
 
         if (order.serviceType != 'productos') {
@@ -437,6 +431,10 @@ const printTicketFromBackend = async (orderParameter) => {
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+        if (order.cash > 0) {
+            printer.println(`Dinero Recibido: ${order.cash}`)
+            printer.println(`Cambio: ${order.change}`)
+        }
 
         printer.drawLine();
         printer.setTextSize(3, 3);
@@ -1170,6 +1168,11 @@ export const reprintOrder = async (req, res) => {
             { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
             { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
         ]);
+
+        if (order.cash > 0) {
+            printer.println(`Dinero Recibido: ${order.cash}`)
+            printer.println(`Cambio: ${order.change}`)
+        }
 
         printer.drawLine();
         printer.setTextSize(3, 3);

@@ -567,8 +567,7 @@ const printOrderDetailIronTicket = async (order) => {
                 console.log(" Numero de Paquetes completos " + pivot2);
 
                 for (let j = 0; j < pivot2; j++) {
-                    // PRINT MAIN
-
+                    // PRINT MAIN                    
                     printer.drawLine()
                     printer.setTextSize(2, 2);
                     printer.bold(true)
@@ -818,6 +817,7 @@ const printOrderDetailIronTicket = async (order) => {
             printer.cut();
         }
 
+        printer.cut();
         console.log(order)
         printer('Order Detail Print done!')
     } catch (err) {
@@ -827,7 +827,6 @@ const printOrderDetailIronTicket = async (order) => {
 
 const printFinishesDetailsTicket = async (order, finishes) => {
     try {
-        printer.clear();
         printer.drawLine()
         printer.setTextSize(2, 2);
         printer.bold(true)
@@ -916,7 +915,7 @@ export const reprintTicket = async (req, res) => {
         let execute = await printer.execute()
         counter++;
         if (counter > 2) {
-            printer.clear;
+            printer.clear();
             counter = 0;
         }
         res.status(200).json('Print done!')

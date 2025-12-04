@@ -290,7 +290,7 @@ export const generateTicket = async (req, res) => {
 
 const printTicketFromBackend = async (orderParameter) => {
 
-    printer.cut()
+    //printer.cut()
 
     const order = orderParameter
 
@@ -543,7 +543,7 @@ const printOrderDetailTicket = async (order) => {
     }
 }
 
-const printOrderDetailIronTicket = async (order) => {
+const printOrderDetailIronTicket = async (order,finishes=[]) => {
     try {
         let count = 0;
         let quant = 0;
@@ -598,7 +598,7 @@ const printOrderDetailIronTicket = async (order) => {
                     printer.setTextNormal();//ISRA
                     printer.setTypeFontB()//ISRA
                     printer.setTextSize(2, 2);
-                    printer.println('Descripcion:')
+                    //printer.println('Descripcion:')
                     printer.println(`${detail.description}`)
                     printer.newLine()
                     // printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
@@ -641,11 +641,12 @@ const printOrderDetailIronTicket = async (order) => {
 
                     printer.setTypeFontB()//ISRA
                     printer.setTextSize(1, 1);
-                    finishes.forEach(detail => {
-                        printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
-                        printer.newLine()
-                    })
-
+                    if (finishes.length > 0) {
+                        finishes.forEach(detail => {
+                            printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
+                            printer.newLine()
+                        })
+                    }
                     printer.cut();
 
                     console.log("SE IMPRIMIO 6 piezas - paquete " + (j + 1));
@@ -683,7 +684,7 @@ const printOrderDetailIronTicket = async (order) => {
                         printer.setTextNormal();//ISRA
                         printer.setTypeFontB()//ISRA
                         printer.setTextSize(2, 2)
-                        printer.println('Descripcion:')
+                        //printer.println('Descripcion:')
                         printer.println(`${detail.description}`)
                         // printer.newLine()
                         // printer.println(`Cantidad: ${quant + 1} - ${totalPackages}`)
@@ -726,11 +727,12 @@ const printOrderDetailIronTicket = async (order) => {
 
                         printer.setTypeFontB()//ISRA
                         printer.setTextSize(1, 1);
-                        finishes.forEach(detail => {
-                            printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
-                            printer.newLine()
-                        })
-
+                        if (finishes.length > 0){
+                            finishes.forEach(detail => {
+                                printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
+                                printer.newLine()
+                            })
+                        }
                         printer.cut();
                     }
                     console.log("SE IMPRIMIERON " + pivot1 + " piezas - paquete " + (pivot2 + 1));
@@ -768,7 +770,7 @@ const printOrderDetailIronTicket = async (order) => {
             printer.setTextNormal();//ISRA
             printer.setTypeFontB()//ISRA
             printer.setTextSize(2, 2);
-            printer.println('Descripcion:')
+            //printer.println('Descripcion:')
             printer.println(`PIEZAS INDIVIDUALES`)
             // printer.newLine()
             // printer.println(`Cantidad: ${totalPackages} - ${totalPackages}`)
@@ -811,23 +813,24 @@ const printOrderDetailIronTicket = async (order) => {
 
             printer.setTypeFontB()//ISRA
             printer.setTextSize(1, 1);
-            finishes.forEach(detail => {
-                printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
-                printer.newLine()
-            })
-
+            if (finishes.length > 0) {
+                finishes.forEach(detail => {
+                    printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
+                    printer.newLine()
+                })
+            }
             printer.cut();
         }
 
         printer.cut();
         console.log(order)
-        printer('Order Detail Print done!')
+        console.log('Order Detail Print done!')
     } catch (err) {
         console.log(err)
     }
 }
 
-const printFinishesDetailsTicket = async (order, finishes) => {
+const printFinishesDetailsTicket = async (order, finishes=[]) => {
     try {
         printer.drawLine()
         printer.setTextSize(2, 2);
@@ -852,10 +855,12 @@ const printFinishesDetailsTicket = async (order, finishes) => {
 
         printer.bold(true)
         printer.println(`SERVICIOS:`)
+        printer.newLine();
         printer.bold(false)
         order.cart.forEach(async (detail, index) => {
-            printer.println('Descripcion:')
+            //printer.println('Descripcion:')
             printer.println(`${detail.description}`)
+            printer.newLine();
         })
 
         printer.newLine()
@@ -897,14 +902,16 @@ const printFinishesDetailsTicket = async (order, finishes) => {
 
         printer.setTypeFontB()//ISRA
         printer.setTextSize(1, 1);
-        finishes.forEach(detail => {
-            printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
-            printer.newLine()
-        })
+        if (finishes.length > 0) {
+            finishes.forEach(detail => {
+                printer.println(`${detail.clothingDescription} | ${detail.colorDescription}  | ${detail.printDescription} | ${detail.finishDescription}`)
+                printer.newLine()
+            })
+        }
         printer.cut();
 
         console.log(order)
-        printer('Order Finish Details Print done!')
+        console.log('Order Finish Details Print done!')
     } catch (err) {
         console.log(err)
     }

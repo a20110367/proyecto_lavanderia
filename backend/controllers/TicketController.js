@@ -290,6 +290,8 @@ export const generateTicket = async (req, res) => {
 
 const printTicketFromBackend = async (orderParameter) => {
 
+    printer.cut()
+
     const order = orderParameter
 
     let payMethod = ''

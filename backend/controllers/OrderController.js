@@ -1698,21 +1698,19 @@ export const createIronServiceOrder = async (req, res) => {
             i++;
         }
 
-        //if (!(req.finishes.length == 0)) {
+        if (!(req.body.finishes.length == 0)) {
+            const finishes = req.body.finishes.map((item) => ({
+                fk_idOrder: serviceOrder.id_order,
+                clothingDescription: item.clothingDescription,
+                colorDescription: item.colorDescription,
+                printDescription: item.printDescription,
+                finishDescription: item.finishDescription
+            }));
 
-        const finishes = req.finishes.map((item) => ({
-
-            fk_idOrder: serviceOrder.id_order,
-            clothingDescription: item.clothingDescription,
-            colorDescription: item.colorDescription,
-            printDescription: item.printDescription,
-            finishDescription: item.finishDescription
-        }));
-
-        await prisma.clothingFinishDetail.createMany({
-            data: finishes
-        });
-        //}
+            await prisma.clothingFinishDetail.createMany({
+                data: finishes
+            });
+        }
 
         const response = {
 

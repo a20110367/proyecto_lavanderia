@@ -220,8 +220,6 @@ export const generateTicket = async (req, res) => {
                     printOrderDetailTicket(order)
                 } else if (order.serviceType === 'tintoreria') {
                     printFinishesDetailsTicket(order, finishes)
-                    printer.clear()
-                    printFinishesDetailsTicket(order, finishes)
                 } else {
                     printOrderDetailIronTicket(order, finishes)
                 }
@@ -829,6 +827,7 @@ const printOrderDetailIronTicket = async (order) => {
 
 const printFinishesDetailsTicket = async (order, finishes) => {
     try {
+        printer.clear();
         printer.drawLine()
         printer.setTextSize(2, 2);
         printer.bold(true)

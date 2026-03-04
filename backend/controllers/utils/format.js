@@ -4,18 +4,18 @@ moment.locale('es-mx');
 // ----------------------------------------  FORMATS ------------------------------------- //
 
 export const formatDate = (dateStr) => {
-    const date = moment.utc(dateStr).format("L")
+    const date = moment(dateStr).local().format("L")
     return date;
 };
 
 export const formatTime = (dateStr) => {
-    const date = moment.local(dateStr).format("dddd LT");
+    const date = moment(dateStr).local().format("dddd LT");
     return date
 }
 
 export const formatTicketTime = (dateStr) => {
 
-    const date = moment.local(dateStr).format('LT')
+    const date = moment(dateStr).local().format('LT')
     return date
 }
 

@@ -7,6 +7,7 @@ import ReactPaginate from "react-paginate";
 import useSWR from "swr";
 import Swal from "sweetalert2";
 import api from "../../api/api";
+import Axios from "axios"
 
 import {
   IssuesCloseOutlined,
@@ -206,7 +207,7 @@ function PedidosGeneral() {
           <div>
             <p>
               El pedido para el cliente: {pedido.client.name} ha sido cambiado a
-              "En Proceso".
+              &quot;En Proceso&quot;.
             </p>
             {machineModelQueryParam && <p>EQUIPO: {machineModelQueryParam}</p>}
           </div>

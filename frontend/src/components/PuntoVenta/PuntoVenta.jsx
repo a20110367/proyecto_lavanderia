@@ -195,7 +195,16 @@ export default function PuntoVenta() {
 
       if (categoryId === 3 || categoryId === 4) {
         setPieces(pieces + serviceToAdd.pieces);
-      } else if (categoryId === 3 && numberOfPieces + pieces > maxIronCapacity) {
+      } // else if(categoryId === 3 && numberOfPieces + pieces > maxIronCapacity) {
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Se ha superado el No. de Piezas diarias",
+      //     text: "Intenta generar el pedido para otra fecha, o utiliza planchado Express",
+      //     confirmButtonColor: "#034078",
+      //   });
+      // }
+
+      if(categoryId === 3 && numberOfPieces + pieces > maxIronCapacity) {
         Swal.fire({
           icon: "error",
           title: "Se ha superado el No. de Piezas diarias",
@@ -299,7 +308,7 @@ export default function PuntoVenta() {
 
   // console.log(cart)
 
-  const saveOrderAndGenerateTicket = async (ironDate) => {
+  const saveOrderAndGenerateTicket = async (ironDate = false) => {
     const arrayService = [];
     let noOfItems = 0;
     cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
@@ -487,13 +496,13 @@ export default function PuntoVenta() {
         setIsModalVisible(false);
         if (categoryId === 3) {
           if (isExpress) {
-            saveOrderAndGenerateTicket()
+            await saveOrderAndGenerateTicket()
             await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
               pieces: pieces,
             });
           } else {
             if (numberOfPieces + pieces < maxIronCapacity) {
-              saveOrderAndGenerateTicket()
+              await saveOrderAndGenerateTicket()
               await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
                 pieces: pieces,
               });
@@ -513,7 +522,7 @@ export default function PuntoVenta() {
                     text: "Tu pedido ha sido generado con exito.",
                     icon: "success"
                   });
-                  saveOrderAndGenerateTicket(true)
+                  await saveOrderAndGenerateTicket(true)
                   await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
                     pieces: pieces,
                   });
@@ -523,7 +532,7 @@ export default function PuntoVenta() {
             }
           }
         } else {
-          saveOrderAndGenerateTicket()
+          await saveOrderAndGenerateTicket()
         }
       } catch (err) {
         console.log(err);

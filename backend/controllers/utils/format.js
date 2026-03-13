@@ -22,9 +22,11 @@ export const formatTicketTime = (dateStr) => {
 export const localTime = () => {
     let timeNow = moment.utc()
 
-    let dateUTC = moment.utc(timeNow).toDate();
+    let time = moment.utc(timeNow).toDate();
 
-    let timeLocal = moment(dateUTC).local().format('HH:mm')
+    console.log(time)
+
+    let timeLocal = moment(time).local().format('LT')
 
     console.log('Tiempo local ' + timeLocal)
 
@@ -35,9 +37,11 @@ export const localDate = () => {
 
     let dateNow = moment.utc()
 
-    let dateUTC = moment.utc(dateNow).toDate();
+    console.log(dateNow)
 
-    let dateLocal = moment(dateUTC).local('L')
+    let date = moment.utc(dateNow).toDate();
+
+    let dateLocal = moment(date).local().format('L')
 
     console.log('Fecha local ' + dateLocal)
 
@@ -46,9 +50,11 @@ export const localDate = () => {
 
 export const tolocalTime = (timeUTC) => {
 
-    let dateUTC = moment.utc(timeUTC).toDate();
+    let date = moment.utc(timeUTC).toDate();
 
-    let timeLocal = moment(dateUTC).local().format('HH:mm')
+    console.log(date)
+
+    let timeLocal = moment(date).local().format('HH:mm')
 
     console.log('Tiempo local ' + timeLocal)
 
@@ -58,9 +64,11 @@ export const tolocalTime = (timeUTC) => {
 export const toLocalDate = (dateUTC) => {
 
 
-    let dateUTC = moment.utc(dateUTC).toDate();
+    let date = moment.utc(dateUTC).toDate();
 
-    let dateLocal = moment(dateUTC).local('L')
+    console.log(date)
+
+    let dateLocal = moment(date).local().format('L')
 
     console.log('Fecha local ' + dateLocal)
 

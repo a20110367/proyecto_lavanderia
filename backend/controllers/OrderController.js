@@ -1954,7 +1954,13 @@ export const updateCancelledOrder = async (req, res) => {
 
         });
 
-        const [cashCutData, orderData, orderDetail, paymentData, ironControlData] = await prisma.$transaction([getCurrentCashCut, getOrderData, getOrderDetail, getPaymentData, getIronControl])
+        const [cashCutData, orderData, orderDetail, paymentData, ironControlData] = 
+        await prisma.$transaction
+            ([  getCurrentCashCut, 
+                getOrderData, 
+                getOrderDetail, 
+                getPaymentData, 
+                getIronControl])
 
         let payTotal = paymentData == null ? 0 : paymentData.payTotal;
         let cancelationTypeDefinition = orderData.payStatus == "paid" ? "refund" : "cancellation";

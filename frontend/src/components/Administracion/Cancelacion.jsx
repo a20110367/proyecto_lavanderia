@@ -97,19 +97,13 @@ function Cancelacion() {
 
       if (!cause) {
         setMotivoError("Este campo es obligatorio");
-        Swal.fire({
+        await Swal.fire({
           icon: "error",
           title: "Es necesario ingresar el motivo",
           text: "No puedes cancelar sin escribir un motivo",
           confirmButtonColor: "#034078",
         });
         isValid = false;
-        await api.post('/sendWarning', {
-          canceledOrder: canceledOrder,
-          casher: cookies.username,
-          date: moment().format('DD/MM/YYYY'),
-          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
-        })
       } else {
         setMotivoError("");
       }
@@ -121,42 +115,79 @@ function Cancelacion() {
         setMotivoError("");
       }
 
-
-
-      if (isValid) {
-        if (!canceledOrder.express) {
-          if ((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0) {
-            localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
-          } else {
-            localStorage.setItem("numberOfPieces", 0)
-          }
+      // Si hay errores de validación, registrar advertencia y retornar
+      if (!isValid) {
+        try {
+          await api.post('/sendWarning', {
+            canceledOrder: canceledOrder,
+            casher: cookies.username,
+            date: moment().format('DD/MM/YYYY'),
+            cause: `El cajero ${cookies.username} intentó realizar una cancelación sin completar los campos requeridos.`
+          });
+        } catch (err) {
+          console.error('Error al registrar advertencia de validación:', err);
         }
+        return;
+      }
 
-        setVisible(false);
-        // FILTER THE DELETED ELEMENT
-        const updatedCanceled = cancelaciones.filter((item) => item.id_order != orderId)
-        // console.log(updatedCanceled)
-        setCancelaciones(updatedCanceled)
+      // Si todas las validaciones pasaron, proceder con la cancelación
+      if (!canceledOrder.express) {
+        if ((localStorage.getItem("numberOfPieces") - canceledOrder.ironPieces) >= 0) {
+          localStorage.setItem("numberOfPieces", parseInt(localStorage.getItem("numberOfPieces")) - canceledOrder.ironPieces)
+        } else {
+          localStorage.setItem("numberOfPieces", 0)
+        }
+      }
 
-        Swal.fire({
-          title: "Orden Cancelada con Exito!",
-          text: "Se elimino con exito la orden además de notificar al dueño.",
-          icon: "success"
-        });
+      setVisible(false);
+      // FILTER THE DELETED ELEMENT
+      const updatedCanceled = cancelaciones.filter((item) => item.id_order != orderId)
+      setCancelaciones(updatedCanceled)
 
-        const cancelRes = await api.patch("/cancelOrder", {
+      await Swal.fire({
+        title: "Orden Cancelada con Exito!",
+        text: "Se elimino con exito la orden además de notificar al dueño.",
+        icon: "success"
+      });
+
+      // Realizar la cancelación
+      let cancelRes;
+      try {
+        cancelRes = await api.patch("/cancelOrder", {
           id_order: orderId,
           cause: cause,
         })
+      } catch (err) {
+        console.error('Error al cancelar la orden:', err);
+        Swal.fire({
+          icon: "error",
+          title: "Error al cancelar",
+          text: "Hubo un problema al procesar la cancelación",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
 
+      // Registrar en logs
+      try {
         await api.post('/log/write', {
           logEntry: `WARNING Cancelacion.jsx : ${cookies.username} has canceled an order of $${canceledOrder.totalPrice} with id: ${cancelRes.data.id_cancelledOrder}`
         });
+      } catch (err) {
+        console.error('Error al registrar log:', err);
+      }
 
-        // setForcePage(0);
+      // Obtener datos de la orden
+      let res;
+      try {
+        res = await api.get(`/orders/${orderId}`);
+      } catch (err) {
+        console.error('Error al obtener datos de la orden:', err);
+        return;
+      }
 
-        const res = await api.get(`/orders/${orderId}`);
-
+      // Generar ticket de cancelación
+      try {
         await api.post('/generate/order/canceled', {
           canceled: {
             id_canceled: cancelRes.data.id_cancelledOrder,
@@ -165,22 +196,36 @@ function Cancelacion() {
             cause: cause,
             casher: cookies.username,
             amount: canceledOrder.totalPrice,
-            order: await res.data,
+            order: res.data,
           }
         })
+      } catch (err) {
+        console.error('Error al generar ticket de cancelación:', err);
+      }
 
+      // Enviar advertencia de cancelación exitosa
+      try {
         await api.post('/sendWarning', {
           canceledOrder: canceledOrder,
           casher: cookies.username,
           date: moment().format('DD/MM/YYYY'),
           cause: cause
         })
-        setCause("");
-
+      } catch (err) {
+        console.error('Error al enviar advertencia de cancelación:', err);
       }
+
+      setCause("");
+
     }
     catch (err) {
-      console.error(err)
+      console.error('Error general en cancelación:', err)
+      Swal.fire({
+        icon: "error",
+        title: "Error inesperado",
+        text: "Ocurrió un error durante el proceso de cancelación",
+        confirmButtonColor: "#034078",
+      });
     }
   };
 

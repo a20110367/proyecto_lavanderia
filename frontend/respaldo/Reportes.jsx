@@ -140,7 +140,7 @@ function Reportes() {
 
   const handleFiltroPorFecha = () => {
     if (!dateRange || dateRange.length !== 2) {
-      Swal.fire({
+       Swal.fire({
         icon: "error",
         title: "Error",
         text: "Debes seleccionar una fecha de inicio y una fecha de término para buscar.",

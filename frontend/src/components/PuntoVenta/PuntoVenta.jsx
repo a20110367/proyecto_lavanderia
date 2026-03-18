@@ -479,7 +479,7 @@ export default function PuntoVenta() {
       if (cashRemain < 0) {
         Swal.fire('La cantidad ingresada es menor al Subtotal', 'Ingrese una cantidad mayor al Subtotal', 'error')
         return
-      }
+      }//fetcherFinishes
     } else {
       setCashReceived(0)
       setCashRemain(0)
@@ -490,53 +490,57 @@ export default function PuntoVenta() {
 
     if (!isDeliveryDateSelected && categoryId != 1) {
       Swal.fire('No se ha seleccionado fecha de entrega del pedido', 'Seleccione la fecha de entrega del pedido para continuar', 'info')
-    } else {
-      try {
-        setIsSaved(true);
-        setIsModalVisible(false);
-        if (categoryId === 3) {
-          if (isExpress) {
+      return
+    }
+
+    try {
+      setIsSaved(true);
+      setIsModalVisible(false);
+
+      if (categoryId === 3) {
+        if (isExpress) {
+          await saveOrderAndGenerateTicket()
+          await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
+            pieces: pieces,
+          });
+        } else {
+          if (numberOfPieces + pieces < maxIronCapacity) {
             await saveOrderAndGenerateTicket()
-            await api.patch(`/expressNewOrderIronControl/${lastIronControlId}`, {
+            await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
               pieces: pieces,
             });
           } else {
-            if (numberOfPieces + pieces < maxIronCapacity) {
-              await saveOrderAndGenerateTicket()
-              await api.patch(`/updateIronRegularOrderNew/${lastIronControlId}`, {
+            // ESPERAR la respuesta del usuario antes de continuar
+            const result = await Swal.fire({
+              title: "Se ha superado el No. de Piezas diarias",
+              text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#034078",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Si, generar el pedido!"
+            });
+
+            if (result.isConfirmed) {
+              await Swal.fire({
+                title: "Pedido Generado!",
+                text: "Tu pedido ha sido generado con exito.",
+                icon: "success"
+              });
+              await saveOrderAndGenerateTicket(true)
+              await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
                 pieces: pieces,
               });
-            } else {
-              Swal.fire({
-                title: "Se ha superado el No. de Piezas diarias",
-                text: "Como las piezas superaron el limite, el pedido se entregara un dia posterior",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#034078",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, generar el pedido!"
-              }).then(async (result) => {
-                if (result.isConfirmed) {
-                  Swal.fire({
-                    title: "Pedido Generado!",
-                    text: "Tu pedido ha sido generado con exito.",
-                    icon: "success"
-                  });
-                  await saveOrderAndGenerateTicket(true)
-                  await api.patch(`/updateIronRegularOrderForTomorrow/${lastIronControlId}`, {
-                    pieces: pieces,
-                  });
-                }
-              });
-              setIsModalVisible(false);
             }
           }
-        } else {
-          await saveOrderAndGenerateTicket()
         }
-      } catch (err) {
-        console.log(err);
+      } else {
+        await saveOrderAndGenerateTicket()
       }
+    } catch (err) {
+      console.log(err);
+      setIsSaved(false);
+      setIsModalVisible(true);
     }
   };
 

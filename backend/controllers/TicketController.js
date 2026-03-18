@@ -1,7 +1,8 @@
 import { ThermalPrinter, PrinterTypes, CharacterSet, BreakLine } from 'node-thermal-printer';
 import { NumerosALetras } from 'numero-a-letras'
-import { formatDate, formatTicketTime } from './utils/format.js'
+import { formatDate, formatTicketTime, localDate, localTime } from './utils/format.js'
 import moment from 'moment'
+import 'moment-timezone'
 
 moment.locale('es-mx');
 // import 'moment/locale/es.js'         //IMPORTS PARA MAS IDIOMAS PARA MOMENT
@@ -194,8 +195,8 @@ export const generateTicket = async (req, res) => {
         printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
-            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
-            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
+            { text: "FECHA: " + moment().tz('America/Mexico_City').format('l'), align: "LEFT", bold: true },
+            { text: 'HORA: ' + moment().tz('America/Mexico_City').format('LT'), align: "RIGHT" },
         ]);
         if (order.cash > 0) {
             printer.println(`Dinero Recibido: ${order.cash}`)
@@ -428,8 +429,8 @@ const printTicketFromBackend = async (orderParameter) => {
         printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
-            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
-            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
+            { text: "FECHA: " + moment().tz('America/Mexico_City').format('l'), align: "LEFT", bold: true },
+            { text: 'HORA: ' + moment().tz('America/Mexico_City').format('LT'), align: "RIGHT" },
         ]);
         if (order.cash > 0) {
             printer.println(`Dinero Recibido: ${order.cash}`)
@@ -1111,8 +1112,8 @@ export const reprintOrder = async (req, res) => {
         printer.println('NO. EXPEDIENTE PFC.B.E. 7/001836/2024')
 
         printer.tableCustom([
-            { text: "FECHA: " + moment().format('l'), align: "LEFT", bold: true },
-            { text: 'HORA: ' + moment().format('LT'), align: "RIGHT" },
+            { text: "FECHA: " + moment().tz('America/Mexico_City').format('l'), align: "LEFT", bold: true },
+            { text: 'HORA: ' + moment().tz('America/Mexico_City').format('LT'), align: "RIGHT" },
         ]);
 
         if (order.cash > 0) {
@@ -1587,7 +1588,7 @@ export const printReportService = async (req, res) => {
         printer.setTextQuadArea();
         printer.println(`REPORTE DE SERVICIOS`)
         printer.println("Fecha de Emisión:")
-        printer.println(moment().format("DD/MM/YYYY"))
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1791,7 +1792,7 @@ export const printReportServiceId = async (req, res) => {
         printer.println(report.summary[0].description)
         printer.newLine();
         printer.println("Fecha de Emisión:")
-        printer.println(moment().format("DD/MM/YYYY"))
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1846,7 +1847,7 @@ export const printReportProduct = async (req, res) => {
         printer.setTextQuadArea();
         printer.println(`REPORTE DE PRODUCTOS`)
         printer.println("Fecha de Emisión:")
-        printer.println(moment().format("DD/MM/YYYY"))
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1912,7 +1913,7 @@ export const printReportProductId = async (req, res) => {
         printer.println(report.suppliesSummary.description)
         printer.newLine();
         printer.println("Fecha de Emisión:")
-        printer.println(moment().format("DD/MM/YYYY"))
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -1979,7 +1980,7 @@ export const printReportIncome = async (req, res) => {
         printer.println('Ingresos')
         printer.newLine();
         printer.println("Fecha de Emisión:")
-        printer.println(moment().format("DD/MM/YYYY"))
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY"))
         printer.setTextNormal();
         printer.newLine();
 
@@ -2043,7 +2044,7 @@ export const printCanceledOrder = async (req, res) => {
         printer.println(canceled.id_canceled);
         printer.newLine();
         printer.println(`FECHA DE CANCELACIÓN`)
-        printer.println(moment().format("DD/MM/YYYY - HH:mm"));
+        printer.println(moment().tz('America/Mexico_City').format("DD/MM/YYYY - HH:mm"));
         printer.newLine();
         printer.println(`No. de Orden CANCELADA:`);
         printer.setTextSize(4, 4);
@@ -2118,8 +2119,8 @@ export const printCanceledOrder = async (req, res) => {
 
 export const printCanceledOrder1 = async (req, res) => {
     try {
-        console.log(moment().format("DD/MM/YYYY - HH:MM"));
-        res.status(200).json({ msg: moment().format("DD/MM/YYYY - HH:mm") })
+        console.log(moment().tz('America/Mexico_City').format("DD/MM/YYYY - HH:MM"));
+        res.status(200).json({ msg: moment().tz('America/Mexico_City').format("DD/MM/YYYY - HH:mm") })
     } catch (err) {
         console.error(err)
         res.status(400).json({ msg: err.message })

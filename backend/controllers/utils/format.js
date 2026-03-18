@@ -1,32 +1,35 @@
 import moment from 'moment'
+import 'moment-timezone'
 moment.locale('es-mx');
+
+// Timezone: UTC -6:00 (Centro)
+const TIMEZONE = 'America/Mexico_City'; // UTC -6:00
 
 // ----------------------------------------  FORMATS ------------------------------------- //
 
 export const formatDate = (dateStr) => {
-    const date = moment(dateStr).local().format("L")
+    const date = moment(dateStr).tz(TIMEZONE).format("L")
     return date;
 };
 
 export const formatTime = (dateStr) => {
-    const date = moment(dateStr).local().format("dddd LT");
+    const date = moment(dateStr).tz(TIMEZONE).format("dddd LT");
     return date
 }
 
 export const formatTicketTime = (dateStr) => {
-
-    const date = moment(dateStr).local().format('LT')
+    const date = moment(dateStr).tz(TIMEZONE).format('LT')
     return date
 }
 
 export const localTime = () => {
     let timeNow = moment.utc()
 
-    let time = moment.utc(timeNow).toDate();
+    let time = moment.utc(timeNow).tz(TIMEZONE).toDate();
 
     console.log(time)
 
-    let timeLocal = moment(time).local().format('LT')
+    let timeLocal = moment(time).tz(TIMEZONE).format('LT')
 
     console.log('Tiempo local ' + timeLocal)
 
@@ -39,9 +42,9 @@ export const localDate = () => {
 
     console.log(dateNow)
 
-    let date = moment.utc(dateNow).toDate();
+    let date = moment.utc(dateNow).tz(TIMEZONE).toDate();
 
-    let dateLocal = moment(date).local().format('L')
+    let dateLocal = moment(date).tz(TIMEZONE).format('L')
 
     console.log('Fecha local ' + dateLocal)
 

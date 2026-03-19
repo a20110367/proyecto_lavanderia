@@ -93,11 +93,11 @@ function Cancelacion() {
         // }
         setCanceledOrder(canceled)
         const res = await api.get(`/orders/${canceled.fk_idServiceOrder}`)
-        setOrder(await res.data)
+        setOrder(res.data)
         setVisible(true);
     };
 
-    const handlePrintOrderCanceledOrder = async (canceled) => {
+    const handlePrintOrderCanceledOrder = async () => {
         try{
             if(canceledOrder && order){
                 await api.post(`/generate/order/reprint`, {
@@ -114,15 +114,6 @@ function Cancelacion() {
 
     const handleMotivoInput = () => {
         setMotivoError(""); // Ocultar el mensaje de error cuando se escribe en el campo "Monto"
-    };
-
-    const handleConfirmCancelacion = async () => {
-        try {
-            setCanceledOrder
-        }
-        catch (err) {
-            console.error(err)
-        }
     };
 
     const handleClose = () => {

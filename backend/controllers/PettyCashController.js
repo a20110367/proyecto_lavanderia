@@ -67,27 +67,29 @@ export const getPettyCashBalance = async (req, res) => {
 
 export const createDepositPettyCash = async (req, res) => {
     try {
-        const { amount, balance, cause, movementDate, fk_user, pettyCashType } = req.body;
+        const { amount, cause, movementDate, fk_user, pettyCashType } = req.body;
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {
                 id_movement: true,
             }
         });
 
-        lastPettyCash._max === null ? lastPettyCash._max = 0 : lastPettyCash + 0;
-
-        const currentBalance = await prisma.pettyCash.findFirst({
-            where: {
-                id_movement: Number(lastPettyCash._max.id_movement),
-            },
-            select: {
-                balance: true,
+        let currentBalance = 0;
+        if (lastPettyCash._max.id_movement !== null) {
+            const lastRecord = await prisma.pettyCash.findFirst({
+                where: {
+                    id_movement: lastPettyCash._max.id_movement,
+                },
+                select: {
+                    balance: true,
+                }
+            });
+            if (lastRecord) {
+                currentBalance = lastRecord.balance;
             }
-        });
+        }
 
-        currentBalance.balance == null ? currentBalance.balance = 0 : currentBalance + 0;
-
-        const newBalance = currentBalance.balance + amount;
+        const newBalance = currentBalance + amount;
 
         const response = await prisma.pettyCash.create({
             data: {
@@ -108,27 +110,29 @@ export const createDepositPettyCash = async (req, res) => {
 
 export const createWithdrawalPettyCash = async (req, res) => {
     try {
-
-        const { amount, balance, cause, movementDate, fk_user, pettyCashType } = req.body;
+        const { amount, cause, movementDate, fk_user, pettyCashType } = req.body;
         const lastPettyCash = await prisma.pettyCash.aggregate({
             _max: {
                 id_movement: true,
             }
         });
-        lastPettyCash._max === null ? lastPettyCash._max = 0 : lastPettyCash + 0;
 
-        const currentBalance = await prisma.pettyCash.findFirst({
-            where: {
-                id_movement: Number(lastPettyCash._max.id_movement),
-            },
-            select: {
-                balance: true,
+        let currentBalance = 0;
+        if (lastPettyCash._max.id_movement !== null) {
+            const lastRecord = await prisma.pettyCash.findFirst({
+                where: {
+                    id_movement: lastPettyCash._max.id_movement,
+                },
+                select: {
+                    balance: true,
+                }
+            });
+            if (lastRecord) {
+                currentBalance = lastRecord.balance;
             }
-        });
+        }
 
-        currentBalance.balance == null ? currentBalance.balance = 0 : currentBalance + 0;
-
-        const newBalance = currentBalance.balance - amount;
+        const newBalance = currentBalance - amount;
 
         const response = await prisma.pettyCash.create({
             data: {

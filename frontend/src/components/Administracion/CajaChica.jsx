@@ -23,6 +23,7 @@ function CajaChica() {
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
   const [usuarioError, setUsuarioError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { cookies } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -118,11 +119,25 @@ function CajaChica() {
     if (!localStorage.getItem("cashCutId")) {
       setMotivoError("No se ha inicializado la caja");
       isValid = false;
-    } else {
-      setMotivoError("");
     }
 
     if (isValid) {
+      const result = await Swal.fire({
+        title: "¿Confirmar Abono?",
+        text: `¿Estás seguro de registrar un abono de $${monto} por "${motivo}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#034078",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, confirmar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      setLoading(true);
       try {
         const date = moment().format();
 
@@ -134,7 +149,6 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
         });
-        setVisibleAbono(false);
 
         const pettyCash = {
           id_movement: res.data.id_movement,
@@ -144,11 +158,7 @@ function CajaChica() {
           casher: cookies.username,
           cause: motivo,
           movementDate: date
-        }
-
-        await api.post('/generatePettyCashTicket', {
-          pettyCash: pettyCash,
-        })
+        };
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
@@ -166,23 +176,61 @@ function CajaChica() {
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
 
-        await api.post("/sendMessage", {
-          id_order: nuevoRetiro.id_movement,
-          name: "Rafa",
-          email: "a20110341@ceti.mx",
-          tel: "5213313839768",
-          message: `Se ha realizado un ABONO en la CAJA CHICA 
-          Monto: ${monto}, 
-          Motivo: ${motivo}. 
-          Cajero: ${cookies.username} 
-          Fecha: ${formatDate(date)}`,
-          subject: "Se ha realizado un ABONO en la CAJA CHICA",
-          text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
-          warning: true,
+        setVisibleAbono(false);
+        setMonto("");
+        setMotivo("");
+        Swal.fire({
+          icon: "success",
+          title: "Abono registrado exitosamente",
+          confirmButtonColor: "#034078",
         });
-        console.log("NOTIFICACIÓN ENVIADA...");
+
+        // Operaciones secundarias: ticket y notificación (no bloquean al usuario)
+        setTimeout(async () => {
+          try {
+            await api.post('/generatePettyCashTicket', {
+              pettyCash: pettyCash,
+            });
+          } catch (ticketErr) {
+            console.warn('Error generando ticket de abono:', ticketErr);
+            Swal.fire({
+              icon: "warning",
+              title: "Error al generar ticket",
+              text: "El abono se registró correctamente, pero no se pudo imprimir el ticket. Verifica la impresora.",
+              confirmButtonColor: "#034078",
+            });
+          }
+
+          try {
+            await api.post("/sendMessage", {
+              id_order: nuevoRetiro.id_movement,
+              name: "Rafa",
+              email: "a20110341@ceti.mx",
+              tel: "5213313839768",
+              message: `Se ha realizado un ABONO en la CAJA CHICA 
+              Monto: ${monto}, 
+              Motivo: ${motivo}. 
+              Cajero: ${cookies.username} 
+              Fecha: ${formatDate(date)}`,
+              subject: "Se ha realizado un ABONO en la CAJA CHICA",
+              text: `Se ha realizado un ABONO en la CAJA CHICA con monto de: ${monto}`,
+              warning: true,
+            });
+            console.log("NOTIFICACIÓN ENVIADA...");
+          } catch (msgErr) {
+            console.warn('Error al enviar notificación de abono:', msgErr);
+          }
+        }, 0);
       } catch (err) {
         console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrar el abono",
+          text: "Por favor, intenta nuevamente.",
+          confirmButtonColor: "#034078",
+        });
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -207,8 +255,6 @@ function CajaChica() {
     if (!localStorage.getItem("cashCutId")) {
       setMotivoError("No se ha inicializado la caja");
       isValid = false;
-    } else {
-      setMotivoError("");
     }
 
     const saldoTotal = retiros.reduce((total, movimiento) => {
@@ -240,6 +286,22 @@ function CajaChica() {
     }
 
     if (isValid) {
+      const result = await Swal.fire({
+        title: "¿Confirmar Retiro?",
+        text: `¿Estás seguro de registrar un retiro de $${monto} por "${motivo}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#034078",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, confirmar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      setLoading(true);
       try {
         const date = moment().format();
 
@@ -251,7 +313,6 @@ function CajaChica() {
           cause: motivo,
           movementDate: date,
         });
-        setVisible(false);
 
         const pettyCash = {
           id_movement: res.data.id_movement,
@@ -261,7 +322,7 @@ function CajaChica() {
           casher: cookies.username,
           cause: motivo,
           movementDate: date
-        }
+        };
 
         const nuevoRetiro = {
           id_movement: res.data.id_movement,
@@ -279,25 +340,59 @@ function CajaChica() {
         setRetiros([...retiros, nuevoRetiro]);
         setFilteredRetiros([...retiros, nuevoRetiro]);
 
-        await api.post("/sendMessage", {
-          id_order: nuevoRetiro.id_movement,
-          name: "Rafa",
-          message: `Se ha realizado un RETIRO en la CAJA CHICA
-          Monto: ${monto},
-          Motivo: ${motivo}.
-          Cajero: ${cookies.username}
-          Fecha: ${formatDate(date)}`,
-          subject: "Se ha realizado un RETIRO en la CAJA CHICA",
-          text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
-          warning: true,
+        setVisible(false);
+        setMonto("");
+        setMotivo("");
+        Swal.fire({
+          icon: "success",
+          title: "Retiro registrado exitosamente",
+          confirmButtonColor: "#034078",
         });
-        console.log("NOTIFICACIÓN ENVIADA...");
 
-        await api.post('/generatePettyCashTicket', {
-          pettyCash: pettyCash,
-        })
+        // Operaciones secundarias: ticket y notificación (no bloquean a usuario)
+        setTimeout(async () => {
+          try {
+            await api.post('/generatePettyCashTicket', {
+              pettyCash: pettyCash,
+            });
+          } catch (ticketErr) {
+            console.warn('Error generando ticket de retiro:', ticketErr);
+            Swal.fire({
+              icon: "warning",
+              title: "Error al generar ticket",
+              text: "El retiro se registró correctamente, pero no se pudo imprimir el ticket. Verifica la impresora.",
+              confirmButtonColor: "#034078",
+            });
+          }
+
+          try {
+            await api.post("/sendMessage", {
+              id_order: nuevoRetiro.id_movement,
+              name: "Rafa",
+              message: `Se ha realizado un RETIRO en la CAJA CHICA
+              Monto: ${monto},
+              Motivo: ${motivo}.
+              Cajero: ${cookies.username}
+              Fecha: ${formatDate(date)}`,
+              subject: "Se ha realizado un RETIRO en la CAJA CHICA",
+              text: `Se ha realizado un RETIRO en la CAJA CHICA con monto de: ${monto}`,
+              warning: true,
+            });
+            console.log("NOTIFICACIÓN ENVIADA...");
+          } catch (msgErr) {
+            console.warn('Error al enviar notificación de retiro:', msgErr);
+          }
+        }, 0);
       } catch (err) {
         console.log(err);
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrar el retiro",
+          text: "Por favor, intenta nuevamente.",
+          confirmButtonColor: "#034078",
+        });
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -432,6 +527,7 @@ function CajaChica() {
             key="confirmar"
             onClick={handleConfirmRetiro}
             className="btn-print text-white"
+            disabled={loading}
           >
             Confirmar Retiro de Caja
           </Button>,
@@ -439,6 +535,7 @@ function CajaChica() {
             key="cancelar"
             onClick={handleClose}
             className="btn-cancel-modal text-white"
+            disabled={loading}
           >
             Cancelar
           </Button>,
@@ -495,6 +592,7 @@ function CajaChica() {
             key="confirmar"
             onClick={handleConfirmAbono}
             className="btn-print text-white"
+            disabled={loading}
           >
             Confirmar Abono de Caja chica
           </Button>,
@@ -502,6 +600,7 @@ function CajaChica() {
             key="cancelar"
             onClick={handleAbonoClose}
             className="btn-cancel-modal text-white"
+            disabled={loading}
           >
             Cancelar
           </Button>,

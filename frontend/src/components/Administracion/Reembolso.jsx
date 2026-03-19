@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import { TbCircleLetterA, TbCircleLetterM } from "react-icons/tb";
 import { Modal, Button, Input } from "antd";
@@ -425,7 +425,7 @@ function Reembolso() {
           previousLinkClassName="prevOrNextLinkClassName"
           nextLinkClassName="prevOrNextLinkClassName"
           breakLinkClassName="breakLinkClassName"
-          forcePage = {(forcePage || 0)}
+          forcePage = {(forcePage||0)}
           activeLinkClassName="activeLinkClassName"
         />
       </div>

@@ -21,6 +21,7 @@ function Retiro() {
   const [montoError, setMontoError] = useState("");
   const [motivoError, setMotivoError] = useState("");
   const [usuarioError, setUsuarioError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { cookies } = useAuth();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -34,7 +35,7 @@ function Retiro() {
     return response.data;
   };
 
-  const { data } = useSWR("cashWithdrawals", fetcher);
+  const { data, mutate } = useSWR("cashWithdrawals", fetcher);
 
   useEffect(() => {
     if (data) {
@@ -82,31 +83,45 @@ function Retiro() {
   };
 
   const handleConfirmRetiro = async () => {
-    try {
-      let isValid = true;
+    let isValid = true;
 
-      if (!monto) {
-        setMontoError("Este campo es obligatorio");
-        isValid = false;
-      } else {
-        setMontoError("");
+    if (!monto) {
+      setMontoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMontoError("");
+    }
+
+    if (!motivo) {
+      setMotivoError("Este campo es obligatorio");
+      isValid = false;
+    } else {
+      setMotivoError("");
+    }
+
+    if (!localStorage.getItem("cashCutId")) {
+      setMotivoError("No se ha inicializado la caja");
+      isValid = false;
+    }
+
+    if (isValid) {
+      const result = await Swal.fire({
+        title: "¿Confirmar Retiro?",
+        text: `¿Estás seguro de registrar un retiro de $${monto} por "${motivo}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#034078",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, confirmar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!result.isConfirmed) {
+        return;
       }
 
-      if (!motivo) {
-        setMotivoError("Este campo es obligatorio");
-        isValid = false;
-      } else {
-        setMotivoError("");
-      }
-
-      if (!localStorage.getItem("cashCutId")) {
-        setMotivoError("No se ha inicializado la caja");
-        isValid = false;
-      } else {
-        setMotivoError("");
-      }
-
-      if (isValid) {
+      setLoading(true);
+      try {
         const date = moment().format();
 
         const res = await api.post("/cashWithdrawals", {
@@ -117,9 +132,7 @@ function Retiro() {
           cause: motivo,
           date: date,
         });
-        setVisible(false);
 
-        
         const nuevoRetiro = {
           id_cashWithdrawal: res.data.id_cashWithdrawal,
           amount: parseInt(monto),
@@ -128,45 +141,55 @@ function Retiro() {
           user: { name: cookies.username },
         };
 
-        setRetiros([...retiros, nuevoRetiro]);
-        setFilteredRetiros([...retiros, nuevoRetiro]);
+        // Refrescar la lista desde el servidor (mantenemos sincronía con SWR)
+        await mutate();
 
-        // const cashWithdrawal = {
-        //   cashWithdrawalType: "withdrawal",
-        //   id_cashWithdrawal: res.data.id_cashWithdrawal,
-        //   fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-        //   casher: cookies.username,
-        //   amount: parseInt(monto),
-        //   cause: motivo,
-        //   date: date,
-        // }
+        setVisible(false);
+        setMonto("");
+        setMotivo("");
+        setLoading(false);
 
-        await api.post('/log/write', {
-          logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
+        Swal.fire({
+          icon: "success",
+          title: "Retiro registrado exitosamente",
+          confirmButtonColor: "#034078",
         });
 
-        await api.post("/sendMessage", {
-          id_order: nuevoRetiro.id_cashWithdrawal,
-          name: "Rafa",
-          message: `Se ha realizado un RETIRO de CAJA
-          Monto: ${monto},
-          Motivo: ${motivo}.
-          Cajero: ${cookies.username}
-          Fecha: ${formatDate(date)}`,
-          subject: "Se ha realizado un RETIRO de CAJA",
-          text: `Se ha realizado un RETIRO de CAJA con monto de: ${monto}`,
-          warning: true,
+        // Ejecutar logging y notificaciones en background (sin bloquear UX)
+        setTimeout(async () => {
+          try {
+            await api.post('/log/write', {
+              logEntry: `WARNING Retiro.jsx : ${cookies.username} has made a cashWithdrawal of $${monto} with an id: ${res.data.id_cashWithdrawal}`
+            });
+
+            await api.post("/sendMessage", {
+              id_order: nuevoRetiro.id_cashWithdrawal,
+              name: "Rafa",
+              message: `Se ha realizado un RETIRO de CAJA
+              Monto: ${monto},
+              Motivo: ${motivo}.
+              Cajero: ${cookies.username}
+              Fecha: ${formatDate(date)}`,
+              subject: "Se ha realizado un RETIRO de CAJA",
+              text: `Se ha realizado un RETIRO de CAJA con monto de: ${monto}`,
+              warning: true,
+            });
+            console.log("OPERACIONES EN BACKGROUND COMPLETADAS");
+          } catch (bgErr) {
+            console.warn("Error en operaciones de background:", bgErr);
+          }
+        }, 100);
+
+      } catch (err) {
+        console.error(err);
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Error al registrar el retiro",
+          text: err.response?.data?.msg || "Por favor, intenta nuevamente.",
+          confirmButtonColor: "#034078",
         });
-        console.log("NOTIFICACIÓN ENVIADA...");
-
-        // await api.post('/generateCashWithdrawalTicket', {
-        //   cashWithdrawal: cashWithdrawal,
-        // })
-
       }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error con la impresora", "Intente y conecter la impresora", "error");
     }
   };
 
@@ -242,6 +265,7 @@ function Retiro() {
             key="confirmar"
             onClick={handleConfirmRetiro}
             className="btn-print text-white"
+            disabled={loading}
           >
             Confirmar Retiro de Caja
           </Button>,
@@ -249,6 +273,7 @@ function Retiro() {
             key="cancelar"
             onClick={handleClose}
             className="btn-cancel-modal text-white"
+            disabled={loading}
           >
             Cancelar
           </Button>,
@@ -276,7 +301,7 @@ function Retiro() {
             <Input
               value={motivo}
               onChange={(e) => setMotivo(e.target.value)}
-              placeholder="Ingrese el motivo"
+              placeholder="Ingrese el motivo del retiro"
               onInput={handleMotivoInput}
             />
             <p className="text-red-500">{motivoError}</p>

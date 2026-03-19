@@ -114,12 +114,6 @@ function Reembolso() {
       if (!motivo) {
         setMotivoError("Este campo es obligatorio");
         isValid = false;
-        await api.post('/sendWarning',{
-          canceledOrder: canceledOrder,
-          casher: cookies.username,
-          date: moment().format('DD/MM/YYYY'),
-          cause: `El cajero ${cookies.username} intento realizar una cancelación sin motivo.`
-        })
       } else {
         setMotivoError("");
       }
@@ -131,56 +125,146 @@ function Reembolso() {
         setMotivoError("");
       }
 
-      if (isValid) {
-        const date = moment().format();
-
-        const res = await api.post("/cashWithdrawals", {
-          cashWithdrawalType: "refound",
-          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          fk_user: cookies.token,
-          serviceOrder: parseInt(numeroPedido),
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
+      // Si hay errores de validación, mostrar mensaje y retornar
+      if (!isValid) {
+        await Swal.fire({
+          icon: "error",
+          title: "Campos obligatorios",
+          text: "Por favor complete todos los campos requeridos",
+          confirmButtonColor: "#034078",
         });
-
-        await api.patch(`/cancelOrder/${numeroPedido}`);
-
-        const cashWithdrawal = {
-          cashWithdrawalType: "refound",
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
-          serviceOrder: parseInt(numeroPedido),
-          casher: cookies.username,
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-        }
-
-        
-        const nuevoReembolso = {
-          id_cashWithdrawal: res.data.id_cashWithdrawal,
-          cashWithdrawalType: "refound",
-          serviceOrder: parseInt(numeroPedido),
-          amount: parseInt(monto),
-          cause: motivo,
-          date: date,
-        };
-
-        setReembolsos([...reembolsos, nuevoReembolso]);
-        setFilteredReembolsos([...reembolsos, nuevoReembolso]);
-
-        setVisible(false);
-
-        setForcePage(0);
-
-        await api.post('/generateCashWithdrawalTicket', {
-          cashWithdrawal: cashWithdrawal,
-        })
+        return;
       }
-    }
-    catch (err) {
-      console.log(err)
+
+      // Verificar que el monto sea válido
+      if (isNaN(parseFloat(monto)) || parseFloat(monto) <= 0) {
+        setMontoError("El monto debe ser un número positivo");
+        await Swal.fire({
+          icon: "error",
+          title: "Monto inválido",
+          text: "El monto debe ser un número positivo",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+
+      // Verificar que el número de pedido sea válido
+      if (isNaN(parseInt(numeroPedido)) || parseInt(numeroPedido) <= 0) {
+        setNumeroPedidoError("El número de pedido debe ser un número positivo");
+        await Swal.fire({
+          icon: "error",
+          title: "Número de pedido inválido",
+          text: "El número de pedido debe ser un número positivo",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+
+      // Confirmar el reembolso
+      const confirmResult = await Swal.fire({
+        title: "¿Confirmar reembolso?",
+        text: `¿Está seguro de procesar el reembolso de $${monto} para el pedido ${numeroPedido}?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#034078",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, confirmar",
+        cancelButtonText: "Cancelar"
+      });
+
+      if (!confirmResult.isConfirmed) {
+        return;
+      }
+
+      // Procesar el reembolso
+      const date = moment().format('DD/MM/YYYY');
+
+      // Crear el retiro de efectivo
+      let res;
+      try {
+        res = await api.post("/cashWithdrawals", {
+          cashWithdrawal: {
+            cashWithdrawalType: "refound",
+            fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+            serviceOrder: parseInt(numeroPedido),
+            casher: cookies.username,
+            amount: parseFloat(monto),
+            cause: motivo,
+            date: date,
+          }
+        });
+      } catch (err) {
+        console.error('Error al crear retiro de efectivo:', err);
+        await Swal.fire({
+          icon: "error",
+          title: "Error al procesar reembolso",
+          text: "No se pudo crear el registro de reembolso",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+
+      // Actualizar el estado local
+      const nuevoReembolso = {
+        id_cashWithdrawal: res.data.id_cashWithdrawal,
+        cashWithdrawalType: "refound",
+        serviceOrder: parseInt(numeroPedido),
+        amount: parseFloat(monto),
+        cause: motivo,
+        date: date,
+      };
+
+      setReembolsos([...reembolsos, nuevoReembolso]);
+      setFilteredReembolsos([...reembolsos, nuevoReembolso]);
+
+      // Limpiar formulario y cerrar modal
+      setVisible(false);
+      setMonto("");
+      setMotivo("");
+      setNumeroPedido("");
+      setForcePage(0);
+
+      // Generar ticket
+      try {
+        await api.post('/generateCashWithdrawalTicket', {
+          cashWithdrawal: {
+            cashWithdrawalType: "refound",
+            id_cashWithdrawal: res.data.id_cashWithdrawal,
+            fk_cashCut: parseInt(localStorage.getItem("cashCutId")),
+            serviceOrder: parseInt(numeroPedido),
+            casher: cookies.username,
+            amount: parseFloat(monto),
+            cause: motivo,
+            date: date,
+          }
+        });
+      } catch (err) {
+        console.error('Error al generar ticket:', err);
+        await Swal.fire({
+          icon: "warning",
+          title: "Reembolso procesado",
+          text: "El reembolso se registró correctamente, pero hubo un problema al generar el ticket",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+
+      // Mostrar mensaje de éxito
+      await Swal.fire({
+        title: "Reembolso procesado exitosamente",
+        text: "El reembolso ha sido registrado y el ticket generado",
+        icon: "success",
+        confirmButtonColor: "#034078",
+      });
+
+    } catch (err) {
+      console.error('Error general en reembolso:', err);
+      await Swal.fire({
+        icon: "error",
+        title: "Error inesperado",
+        text: "Ocurrió un error durante el proceso de reembolso",
+        confirmButtonColor: "#034078",
+      });
     }
   };
 

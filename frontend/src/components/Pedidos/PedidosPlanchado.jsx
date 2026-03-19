@@ -180,18 +180,18 @@ function PedidosPlanchado() {
   const handleFinishProcess = async (pedido) => {
     setLoading(true);
 
-    if (!pedido) {
-      console.error("El pedido seleccionado es indefinido.");
-      setLoading(false);
-      return;
-    }
-
-    const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
-    const availableMachines = [...ironsResponse.data];
-    const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`);
-    const selectedMachine = res.data[0];
-
     try {
+      if (!pedido) {
+        console.error("El pedido seleccionado es indefinido.");
+        showNotification("Error: no hay pedido seleccionado.");
+        return;
+      }
+
+      const [ironsResponse] = await Promise.all([api.get("/ironStations")]);
+      const availableMachines = [...ironsResponse.data];
+      const res = await api.get(`/ironQueueByOrder/${pedido.id_order}`);
+      const selectedMachine = res.data[0];
+
       if (selectedMachine && availableMachines) {
         // Actualizar localmente el estado del pedido a "finished"
         const updatedPedidos = pedidos.map((p) =>
@@ -216,20 +216,20 @@ function PedidosPlanchado() {
           fk_idStaffMember: cookies.token,
         });
 
-        console.log(pedido)
-
         if (pedido.express) {
           await api.patch(`/expressDoneOrderIronControl/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
-          })
+          });
         } else {
           await api.patch(`/updateIronRegularOrderDone/${lastIronControlId}`, {
             pieces: pedido.ironPieces,
           });
         }
+
         showNotification(
           "Pedido finalizado correctamente, NOTIFICACIÓN ENVIADA..."
         );
+
         await api.post("/sendMessage", {
           id_order: pedido.id_order,
           name:
@@ -252,6 +252,9 @@ function PedidosPlanchado() {
       setForcePage(0);
     } catch (error) {
       console.error("Error al finalizar el pedido:", error);
+      showNotification("Error al finalizar el pedido. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
     }
   };
 

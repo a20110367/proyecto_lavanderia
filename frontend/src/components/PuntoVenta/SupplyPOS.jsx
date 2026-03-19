@@ -188,10 +188,49 @@ export default function PuntoVenta() {
   };
 
   const handleSaveAndGenerateTicket = async () => {
+    // Validar que haya productos en el carrito
+    if (cart.length === 0) {
+      await Swal.fire({
+        icon: "error",
+        title: "Carrito vacío",
+        text: "Agregue productos al carrito antes de guardar",
+        confirmButtonColor: "#034078",
+      });
+      return;
+    }
+
+    // Validar que la caja esté inicializada
+    if (!localStorage.getItem("id_supplyCashCut")) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Caja no inicializada",
+        text: "Debe inicializar la caja antes de procesar pedidos",
+        confirmButtonColor: "#034078",
+      });
+      navigate("/inicioCaja");
+      return;
+    }
+
+    // Confirmar el pedido
+    const confirmResult = await Swal.fire({
+      title: "¿Confirmar pedido?",
+      text: `¿Está seguro de procesar el pedido por $${calculateSubtotal()}?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#034078",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, confirmar",
+      cancelButtonText: "Cancelar"
+    });
+
+    if (!confirmResult.isConfirmed) {
+      return;
+    }
+
     setIsSaved(true);
     setIsModalVisible(false);
-    const arrayProducts = [];
 
+    const arrayProducts = [];
     let noOfItems = 0;
     cart.forEach((detail) => (noOfItems = noOfItems + detail.quantity));
 
@@ -206,37 +245,65 @@ export default function PuntoVenta() {
     );
 
     const subTotal = calculateSubtotal();
-
-    const totalWithDiscount =
-      payMethod === "credit" ? subTotal - (subTotal * 0) : subTotal;
+    const totalWithDiscount = payMethod === "credit" ? subTotal - (subTotal * 0) : subTotal;
 
     try {
-      const res = await api.post(postUrl, {
-        productOrder: {
-          totalPrice: totalWithDiscount,
-          fk_client: parseInt(clientId),
-          payForm: payForm,
-          payStatus: payStatus,
-          fk_user: cookies.token,
-          receptionDate: purchaseDate,
-          numberOfItems: noOfItems,
-        },
-        products: arrayProducts,
-      });
-      // console.log(res);
-      // orderTicket(order);
+      // Crear la orden de suministro
+      let res;
+      try {
+        res = await api.post(postUrl, {
+          productOrder: {
+            totalPrice: totalWithDiscount,
+            fk_client: parseInt(clientId),
+            payForm: payForm,
+            payStatus: payStatus,
+            fk_user: cookies.token,
+            receptionDate: purchaseDate,
+            numberOfItems: noOfItems,
+          },
+          products: arrayProducts,
+        });
+      } catch (err) {
+        console.error('Error al crear orden de suministro:', err);
+        setIsSaved(false);
+        setIsModalVisible(true);
+        await Swal.fire({
+          icon: "error",
+          title: "Error al crear orden",
+          text: "No se pudo crear la orden de suministro",
+          confirmButtonColor: "#034078",
+        });
+        return;
+      }
+
       const idOrder = res.data.supplyOrder.id_supplyOrder;
       console.log(idOrder);
+
+      // Procesar pago si es anticipado
       if (payForm === "advance") {
-        await api.post("/supplyPayment", {
-          fk_idOrder: idOrder,
-          payMethod: payMethod,
-          payDate: purchaseDate,
-          payTime: purchaseDate,
-          fk_cashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
-          payTotal: calculateSubtotal(),
-        });
+        try {
+          await api.post("/supplyPayment", {
+            fk_idOrder: idOrder,
+            payMethod: payMethod,
+            payDate: purchaseDate,
+            payTime: purchaseDate,
+            fk_cashCut: parseInt(localStorage.getItem("id_supplyCashCut")),
+            payTotal: calculateSubtotal(),
+          });
+        } catch (err) {
+          console.error('Error al procesar pago:', err);
+          setIsSaved(false);
+          setIsModalVisible(true);
+          await Swal.fire({
+            icon: "error",
+            title: "Error en pago",
+            text: "La orden se creó pero hubo un problema con el pago",
+            confirmButtonColor: "#034078",
+          });
+          return;
+        }
       }
+
       const order = {
         id_order: res.data.supplyOrder.id_supplyOrder,
         payForm: payForm,
@@ -258,34 +325,58 @@ export default function PuntoVenta() {
         serviceType: serviceType,
         cart: cart,
       };
-      // GENERAR EL TICKET
-      await api.post("/generateTicket", {
-        order: order,
-      });
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg("Sin respuesta del Servidor");
-      } else if (err.response.status === 400) {
-        console.warn("Impresora desconectada o sin conexión.");
-        Swal.fire({
-          icon: "error",
-          title: "Impresora desconectada o sin conexión.",
-          text: "Revise la si la impresora se encuentra prendida y conectada.",
-          confirmButtonColor: "#034078",
+
+      // Generar ticket
+      try {
+        await api.post("/generateTicket", {
+          order: order,
         });
-      } else {
-        setErrMsg(
-          "Hubo un error al registrar la Orden, comuniquese con Soporte"
-        );
+      } catch (err) {
+        console.error('Error al generar ticket:', err);
+        if (err.response?.status === 400) {
+          await Swal.fire({
+            icon: "warning",
+            title: "Ticket no generado",
+            text: "La orden se procesó correctamente, pero la impresora está desconectada",
+            confirmButtonColor: "#034078",
+          });
+        } else {
+          await Swal.fire({
+            icon: "warning",
+            title: "Ticket no generado",
+            text: "La orden se procesó correctamente, pero hubo un problema con el ticket",
+            confirmButtonColor: "#034078",
+          });
+        }
+        // No retornamos aquí porque la orden ya se creó exitosamente
       }
+
+      // Actualizar localStorage
+      localStorage.setItem("lastSelectedClient", clientName);
+      localStorage.setItem("returningFromPuntoVenta", "true");
+
+      // Mostrar mensaje de éxito
+      await Swal.fire({
+        title: "Pedido procesado exitosamente",
+        text: "El pedido ha sido registrado correctamente",
+        icon: "success",
+        confirmButtonColor: "#034078",
+      });
+
+      // Regresar a la página anterior
+      window.history.back();
+
+    } catch (err) {
+      console.error('Error general en procesamiento:', err);
+      setIsSaved(false);
+      setIsModalVisible(true);
+      await Swal.fire({
+        icon: "error",
+        title: "Error inesperado",
+        text: "Ocurrió un error durante el procesamiento del pedido",
+        confirmButtonColor: "#034078",
+      });
     }
-
-    localStorage.setItem("lastSelectedClient", clientName);
-    localStorage.setItem("returningFromPuntoVenta", "true");
-
-    // Regresar a la página anterior
-    window.history.back();
   };
 
   const filteredServices = data;

@@ -89,7 +89,7 @@ function RecepcionProductos() {
     <div>
       <div className="mb-3">
         <div className="title-container">
-          <strong className="title-strong">Recepcion de Productos</strong>
+          <strong className="title-strong">Venta de Productos</strong>
         </div>
       </div>
       <div className="fc mb-4">

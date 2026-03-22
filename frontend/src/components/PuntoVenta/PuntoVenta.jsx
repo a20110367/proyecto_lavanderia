@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { HiOutlineSearch } from "react-icons/hi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -425,51 +425,54 @@ export default function PuntoVenta() {
         );
       }
 
+      // GENERAR EL TICKET PRIMERO (antes de window.history.back que puede interrumpir)
+      await api.post("/generateTicket", {
+        order: order,
+        finishes: dryCleanDetails
+      }).catch(ticketErr => {
+        console.warn('Advertencia: Error al generar ticket:', ticketErr);
+      });
+
       if (payForm === 'advance' && payMethod === 'cash') {
-        Swal.fire({
+        await Swal.fire({
           title: `El cambio a regresar: ${cashRemain} pesos`,
           text: 'Regrese el cambio a su respectivo cliente',
           icon: "info",
           showCancelButton: false,
           confirmButtonText: "Listo, ya fue entregado.",
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            // Regresar a la página anterior
-            window.history.back();
-            // GENERAR EL TICKET
-            await api.post("/generateTicket", {
-              order: order,
-              finishes: dryCleanDetails
-            });
-          }
-        },(error) => console.log(error));
-      } else {
-        // Regresar a la página anterior
-        window.history.back();
-        // GENERAR EL TICKET
-        await api.post("/generateTicket", {
-          order: order,
-          finishes: dryCleanDetails
         });
       }
 
+      // Regresar a la página anterior después de completar TODO
+      setTimeout(() => {
+        window.history.back();
+      }, 500);
+
     } catch (err) {
-      console.error(err)
+      console.error(err);
+      let errorMessage = "Hubo un error al registrar la Orden, comuniquese con Soporte";
+      let errorTitle = "Error al guardar la Orden";
+      
       if (!err?.response) {
-        setErrMsg("Sin respuesta del Servidor");
+        errorMessage = "Sin respuesta del Servidor. Verifique su conexión a internet.";
+        errorTitle = "Error de conexión";
       } else if (err.response.status === 400) {
-        console.warn("Impresora desconectada o sin conexión.");
-        Swal.fire({
-          icon: "error",
-          title: "Impresora desconectada o sin conexión.",
-          text: "Revise la si la impresora se encuentra prendida y conectada.",
-          confirmButtonColor: "#034078",
-        });
-      } else {
-        setErrMsg(
-          "Hubo un error al registrar la Orden, comuniquese con Soporte"
-        );
+        errorMessage = "Revise si la impresora se encuentra prendida y conectada.";
+        errorTitle = "Impresora desconectada o sin conexión";
+      } else if (err.response.status === 404) {
+        errorMessage = "Recurso no encontrado. Verifique los datos ingresados.";
+        errorTitle = "Error 404";
+      } else if (err.response.status === 500) {
+        errorMessage = "Error del servidor. Contacte al administrador.";
+        errorTitle = "Error del servidor";
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
       }
+      
+      // Lanzar error con información específica para que handleSave la capture
+      const error = new Error(errorMessage);
+      error.title = errorTitle;
+      throw error;
     }
   }
 
@@ -538,9 +541,22 @@ export default function PuntoVenta() {
         await saveOrderAndGenerateTicket()
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setIsSaved(false);
       setIsModalVisible(true);
+      
+      // Mostrar mensaje de error específico
+      const errorTitle = err.title || "Error al guardar el pedido";
+      const errorMessage = err.message || "Por favor intenta nuevamente.";
+      
+      Swal.fire({
+        icon: "error",
+        title: errorTitle,
+        text: errorMessage,
+        confirmButtonColor: "#034078"
+      });
+    } finally {
+      setIsSaved(false);
     }
   };
 
